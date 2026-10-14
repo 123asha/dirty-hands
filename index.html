@@ -10,7 +10,7 @@
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #fff; --ink: #000; } }
   :root[data-theme="dark"] { --bg: #fff; --ink: #000; }
   * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--bg); color: var(--ink); } html, body { overflow-x: clip; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); } html, body { overflow-x: clip; } html { scrollbar-gutter: stable; }
   body { font-family: "CoFo Sans", -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: var(--t18); -webkit-font-smoothing: antialiased; }
   p, h1, h2 { margin: 0; font-weight: 400; } a { color: inherit; text-decoration: none; }
   /* sections: sizes are authored in design pixels (u = viewport / 1400) */
@@ -21,7 +21,7 @@
   .s2 { height: calc(790 * var(--u)); margin-bottom: calc(348 * var(--u)); }
   .s2-in { position: relative; height: 100%; }
   .s3 { height: calc(100vh + 1800 * var(--u)); z-index: 3; }
-  .gray { position: sticky; top: calc(10 * var(--u)); margin: 0 calc(10 * var(--u)); height: calc(100vh - 20 * var(--u)); overflow: hidden; background: var(--gray); }
+  .gray { position: sticky; top: 0; margin: 0; height: 100vh; overflow: hidden; background: var(--gray); }
   .rest { height: calc(4515 * var(--u)); }
   .t { font-weight: 400; white-space: nowrap; }
   .h1 { font-size: calc(200.7 * var(--u)); line-height: .91; letter-spacing: -.08em; }
@@ -52,8 +52,14 @@
   .shop:hover { text-decoration: underline; text-underline-offset: .2em; }
   .bigrow { display: flex; justify-content: space-between; align-items: flex-start; width: max-content; padding-right: calc(3 * var(--u)); }
   .bigrow .name2 { position: static; }
+  /* About / Cases / Shop: the letters come one by one, then the counter */
+  .bigrow.rv { clip-path: none; translate: none; transition: none; }
+  .bigrow .lc { display: inline-block; opacity: 0; transform: translateY(70%); transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease); transition-delay: calc(var(--k) * 50ms); }
+  .bigrow.shown .lc { opacity: 1; transform: none; }
+  .bigrow.rv .cnt { opacity: 0; transition: opacity var(--dur) var(--ease) 400ms; }
+  .bigrow.rv.shown .cnt { opacity: .3; }
   .bigrow .cnt { width: calc(40 * var(--u)); text-align: right; right: 0; top: 0; }   /* counter sits at the top right of the word, as in the design */
-  .hl { position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); border-top: 1px solid var(--ink); height: 0; }
+  .hl { position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); border-top: 1px solid var(--rule); height: 0; }
   .dot { opacity: .1; position: absolute; width: calc(10 * var(--u)); height: calc(10 * var(--u)); background: #000; }
   .bar { background: #f2f2f2; }   /* the same strip as the cards at the very top */
   /* hero cards: fly from the top row into the second block */
@@ -82,8 +88,8 @@
   .rv.shown { clip-path: inset(-.3em -.5em -.3em -.5em); translate: 0 0; }
   @media (prefers-reduced-motion: reduce) { .rv { clip-path: none; translate: none; transition: none; } }
   /* partners: gray text that fills with black (left to right) when its row is level with the labels */
-  .partner .pf { display: inline-block; will-change: transform; color: transparent; background: linear-gradient(#000, #000) 0 0 / 0% 100% no-repeat, linear-gradient(#999, #999) 0 0 / 100% 100% no-repeat; -webkit-background-clip: text; background-clip: text; transition: background-size var(--dur) var(--ease); }
-  .partner.on .pf { background-size: 100% 100%, 100% 100%; }
+  .partner .pf { display: inline-block; will-change: transform; color: transparent; background: linear-gradient(#000, #000) 0 0 / 0% 100% no-repeat, linear-gradient(#999, #999) 0 0 / 100% 100% no-repeat; -webkit-background-clip: text; background-clip: text; translate: 0 0; transition: background-size var(--dur) var(--ease), translate var(--dur) var(--ease); }
+  .partner.on .pf { background-size: 100% 100%, 100% 100%; translate: calc(20 * var(--u)) 0; }   /* the name level with the labels steps 20 to the right, and comes back once passed */
   .plab-in { position: sticky; top: 50vh; height: calc(20 * var(--u)); }
   .plab-in > p { position: absolute; top: 0; }
   .pic { transform-origin: 50% 0; }
@@ -99,7 +105,7 @@
 <main class="page">
 
 <section class="hero">
-  <nav class="nav" style="left:calc(941 * var(--u))"><a href="#cases">Cases</a><a href="#about">About</a><a href="https://dirtyhands.ru" target="_blank" rel="noopener">Shop</a></nav>
+  <nav class="nav" style="left:calc(941 * var(--u))"><a href="#about">About</a><a href="#cases">Cases</a><a href="https://dirtyhands.ru" target="_blank" rel="noopener">Shop</a></nav>
 </section>
 
 <div class="hc" data-i="0" style="left:calc(20 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
@@ -135,8 +141,8 @@
 
 <section class="s3">
   <div class="gray">
-    <div class="card2" id="lisa" style="left:calc(40 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(357 * var(--u));"><span class="tick" style="width:calc(90 * var(--u))"></span><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(17 * var(--u));width:calc(440 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Lisa</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(321 * var(--u));width:calc(440 * var(--u))"></div></div>
-    <div class="card2" id="karen" style="left:calc(888 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(357 * var(--u));"><span class="tick" style="width:calc(127 * var(--u))"></span><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(17 * var(--u));width:calc(440 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(321 * var(--u));width:calc(440 * var(--u))"></div></div>
+    <div class="card2" id="lisa" style="left:calc(40 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(357 * var(--u));"><span class="tick" style="width:calc(90 * var(--u))"></span><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Lisa</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(321 * var(--u));width:calc(440 * var(--u))"></div></div>
+    <div class="card2" id="karen" style="left:calc(888 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(357 * var(--u));"><span class="tick" style="width:calc(127 * var(--u))"></span><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(321 * var(--u));width:calc(440 * var(--u))"></div></div>
   </div>
 </section>
 
@@ -174,8 +180,8 @@
   <i class="hl" style="top:calc(3495 * var(--u))"></i>
   <i class="hl" style="top:calc(3585 * var(--u))"></i>
   <i class="hl" style="top:calc(3675 * var(--u))"></i>
-  <div class="bigrow" style="left:calc(20 * var(--u));top:calc(3408 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Cases</p><span class="n cnt">12</span></div>
-  <div class="bigrow" style="right:calc(20 * var(--u));top:calc(3498 * var(--u));height:calc(98 * var(--u));"><p class="t name2">About</p><span class="n cnt">3</span></div>
+  <div class="bigrow" style="left:calc(20 * var(--u));top:calc(3408 * var(--u));height:calc(98 * var(--u));"><p class="t name2">About</p><span class="n cnt">12</span></div>
+  <div class="bigrow" style="right:calc(20 * var(--u));top:calc(3498 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Cases</p><span class="n cnt">3</span></div>
   <div class="bigrow" style="left:calc(581 * var(--u));top:calc(3588 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Shop</p><span class="n cnt">232</span></div>
 
   <p class="t big2" style="left:calc(250 * var(--u));top:calc(3997 * var(--u));width:calc(440 * var(--u));">Story</p>
@@ -187,12 +193,12 @@
   <p class="t18" style="left:calc(710 * var(--u));top:calc(4261 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
   <div class="dot" style="left:calc(613 * var(--u));top:calc(4015 * var(--u));"></div>
   <div class="dot" style="left:calc(613 * var(--u));top:calc(4090 * var(--u));"></div>
-  <div class="ph bar" style="left:calc(20.00 * var(--u));top:calc(4475 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="left:calc(250.17 * var(--u));top:calc(4475 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="left:calc(480.34 * var(--u));top:calc(4475 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="left:calc(710.51 * var(--u));top:calc(4475 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="left:calc(940.68 * var(--u));top:calc(4475 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="left:calc(1170.85 * var(--u));top:calc(4475 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:0;left:calc(20.00 * var(--u));top:calc(4455 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:1;left:calc(250.17 * var(--u));top:calc(4455 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:2;left:calc(480.34 * var(--u));top:calc(4455 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:3;left:calc(710.51 * var(--u));top:calc(4455 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:4;left:calc(940.68 * var(--u));top:calc(4455 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:5;left:calc(1170.85 * var(--u));top:calc(4455 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
 </section>
 
 <!-- extra scroll: the strip of pictures rises to 20 from the top, then the page starts over -->
@@ -231,6 +237,7 @@
 
   // scroll reveal: text rises from the bottom when it enters the screen, and resets when it goes back below
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    $('.bigrow .name2').forEach(w => { w.innerHTML = [...w.textContent].map((c, i) => `<span class="lc" style="--k:${i}">${c}</span>`).join(''); });
     const targets = $('.rest p, .rest a, .rest .n, .rest .t18, .rest .bigrow').filter(el => !el.parentElement.closest('.bigrow') && !el.classList.contains('partner'));
     const io = new IntersectionObserver(entries => {
       let k = 0;
@@ -345,7 +352,8 @@
     // partners: the row level with the sticky labels is black
     let best = 0, bd = Infinity;
     partnerTops.forEach((top, i) => { const dd = Math.abs(top + 38 - labY); if (dd < bd) { bd = dd; best = i; } });
-    partners.forEach((el, i) => el.classList.toggle('on', i === best));
+    const stuck = Math.abs(labY - V * 0.5) < 1;     // the labels are pinned: only then a name is active, and it returns to its place once the scroll moves on
+    partners.forEach((el, i) => el.classList.toggle('on', stuck && i === best));
     // names start a bit further apart and close up like train cars as they rise to the labels (the row level with them sits at its own place)
     partners.forEach((el, i) => { el.firstElementChild.style.transform = `translateY(${PGAP * ease((partnerTops[i] - (V * 0.5 - 38)) / (V * 0.6)) * U}px)`; });
 
@@ -369,14 +377,26 @@
     t0 = performance.now(); introDone = false;
     requestAnimationFrame(intro);
   }
+  const endBars = $('.bar');
+  function converge(done) {                       // the steps pull into one line at the top on their own, left to right
+    document.documentElement.style.overflow = 'hidden';
+    const rise = endBars.map(b => b.getBoundingClientRect().top - 20 * U), t1 = performance.now(), dur = DUR + 100, gap = 70;
+    (function f(now) {
+      let busy = false;
+      endBars.forEach((b, i) => { const k = clamp((now - t1 - i * gap) / dur); if (k < 1) busy = true; b.style.transform = `translateY(${-ease(k) * rise[i]}px)`; });
+      if (busy) requestAnimationFrame(f);
+      else { document.documentElement.style.overflow = ''; done(); endBars.forEach(b => { b.style.transform = ''; }); }
+    })(t1);
+  }
   addEventListener('scroll', () => {
-    if (!looping && introDone && scrollY >= scrollMax() - 1 && scrollMax() > innerHeight) { looping = true; restart(); }
+    if (!looping && introDone && scrollY >= scrollMax() - 1 && scrollMax() > innerHeight) { looping = true; converge(restart); }
     else if (looping && scrollY < innerHeight) looping = false;
   }, { passive: true });
 
   function intro(now) {
+    root.style.overflowY = 'hidden';                 // no scrolling while the cards drop and unfold
     tick(now);
-    if (now - t0 < INTRO) requestAnimationFrame(intro); else { introDone = true; tick(); }
+    if (now - t0 < INTRO) requestAnimationFrame(intro); else { introDone = true; root.style.overflowY = ''; tick(); }
   }
 
   measure();
