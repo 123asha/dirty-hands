@@ -64,7 +64,11 @@
   /* title letters rise one by one from below the screen */
   .ttl .h1 .ch { display: inline-block; white-space: pre; transform: translateY(150%); animation: rise .9s cubic-bezier(.2,.8,.2,1) forwards; }
   @keyframes rise { to { transform: none; } }
-  @media (prefers-reduced-motion: reduce) { .ttl .h1 .ch { animation: none; transform: none; } }
+  /* menu items appear one after another once the title is in */
+  .nav a { opacity: 0; transform: translateY(60%); animation: rise-in .7s cubic-bezier(.2,.8,.2,1) forwards; }
+  .nav a:nth-child(1) { animation-delay: 1100ms; } .nav a:nth-child(2) { animation-delay: 1220ms; } .nav a:nth-child(3) { animation-delay: 1340ms; }
+  @keyframes rise-in { to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .ttl .h1 .ch, .nav a { animation: none; transform: none; opacity: 1; } }
   /* partners: labels stick, the active row turns black */
   .partner { opacity: .4; transition: opacity .35s; } .partner.on { opacity: 1; }
   .plab-in { position: sticky; top: 50vh; height: calc(20 * var(--u)); }
@@ -85,12 +89,12 @@
   <nav class="nav" style="left:calc(941 * var(--u));bottom:calc(236 * var(--u))"><a href="#about">About</a><a href="#cases">Cases</a><a href="#events">Events</a></nav>
 </section>
 
-<div class="hc" data-i="0" style="left:calc(20 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(40 * var(--u));"></div>
-<div class="hc" data-i="1" style="left:calc(250.17 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(40 * var(--u));"></div>
-<div class="hc" data-i="2" style="left:calc(480.34 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(40 * var(--u));"></div>
-<div class="hc" data-i="3" style="left:calc(710.51 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(40 * var(--u));"></div>
-<div class="hc" data-i="4" style="left:calc(940.68 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(40 * var(--u));"></div>
-<div class="hc" data-i="5" style="left:calc(1170.85 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(40 * var(--u));"></div>
+<div class="hc" data-i="0" style="left:calc(20 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+<div class="hc" data-i="1" style="left:calc(250.17 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+<div class="hc" data-i="2" style="left:calc(480.34 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+<div class="hc" data-i="3" style="left:calc(710.51 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+<div class="hc" data-i="4" style="left:calc(940.68 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+<div class="hc" data-i="5" style="left:calc(1170.85 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
 
 <section class="s2" id="cases">
   <div class="s2-in">
@@ -118,8 +122,8 @@
 
 <section class="s3">
   <div class="gray">
-    <div class="card2" id="lisa" style="left:calc(40 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(501 * var(--u));"><span class="tick" style="width:calc(90 * var(--u))"></span><div class="rules" data-n="21" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(17 * var(--u));width:calc(440 * var(--u));height:calc(270 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(144 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(216 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(400 * var(--u))">Lisa</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(465 * var(--u));width:calc(440 * var(--u))"></div></div>
-    <div class="card2" id="karen" style="left:calc(888 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(501 * var(--u));"><span class="tick" style="width:calc(127 * var(--u))"></span><div class="rules" data-n="21" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(17 * var(--u));width:calc(440 * var(--u));height:calc(270 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(144 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(216 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(400 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(465 * var(--u));width:calc(440 * var(--u))"></div></div>
+    <div class="card2" id="lisa" hidden style="left:calc(40 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(501 * var(--u));"><span class="tick" style="width:calc(90 * var(--u))"></span><div class="rules" data-n="21" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(17 * var(--u));width:calc(440 * var(--u));height:calc(270 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(144 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(216 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(400 * var(--u))">Lisa</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(465 * var(--u));width:calc(440 * var(--u))"></div></div>
+    <div class="card2" id="karen" hidden style="left:calc(888 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(501 * var(--u));"><span class="tick" style="width:calc(127 * var(--u))"></span><div class="rules" data-n="21" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(17 * var(--u));width:calc(440 * var(--u));height:calc(270 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(144 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(216 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(400 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(465 * var(--u));width:calc(440 * var(--u))"></div></div>
   </div>
 </section>
 
@@ -196,11 +200,9 @@
   const KERN = [0, .02, .007, .057, .034, 0, .044, 0, .025, .019, 0];
   h1.innerHTML = [...h1.textContent].map((c, i) => `<span class="ch" style="animation-delay:${300 + i * 70}ms${KERN[i] ? `;margin-left:${KERN[i]}em` : ''}">${c}</span>`).join('');
 
-  // hold ⌘G (Ctrl+G) to show the layout grid
+  // ⌘G (Ctrl+G) turns the layout grid on and leaves it on; press again to hide it
   const grid = one('.grid');
-  addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.code === 'KeyG') { e.preventDefault(); grid.classList.add('on'); } });
-  addEventListener('keyup', e => { if (e.code === 'KeyG' || e.key === 'Meta' || e.key === 'Control') grid.classList.remove('on'); });
-  addEventListener('blur', () => grid.classList.remove('on'));
+  addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.code === 'KeyG') { e.preventDefault(); if (!e.repeat) grid.classList.toggle('on'); } });
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clamp = t => t < 0 ? 0 : t > 1 ? 1 : t;
@@ -260,7 +262,7 @@
     const arc = Math.sin(Math.PI * t);
     cards.forEach((c, i) => {
       const mid = i - 2.5, d = introDone ? 1 : drop((now - t0 - 200 - i * 110) / 700);
-      const h = lerp(40, H0[i], d);
+      const h = lerp(20, H0[i], d);
       const w = lerp(W0, PW, t), hh = lerp(h, PH, t);
       const cx = lerp(X0(i) + W0 / 2, PX, t) + mid * 14 * arc, cy = lerp(20 + h / 2 + y, s2Top + py, t) + mid * 6 * arc;
       c.style.width = w * U + 'px'; c.style.height = hh * U + 'px';
