@@ -88,8 +88,8 @@
   .rv.shown { clip-path: inset(-.3em -.5em -.3em -.5em); translate: 0 0; }
   @media (prefers-reduced-motion: reduce) { .rv { clip-path: none; translate: none; transition: none; } }
   /* partners: gray text that fills with black (left to right) when its row is level with the labels */
-  .partner .pf { display: inline-block; will-change: transform; color: transparent; background: linear-gradient(#000, #000) 0 0 / 0% 100% no-repeat, linear-gradient(#999, #999) 0 0 / 100% 100% no-repeat; -webkit-background-clip: text; background-clip: text; translate: 0 0; transition: background-size var(--dur) var(--ease), translate var(--dur) var(--ease); }
-  .partner.on .pf { background-size: 100% 100%, 100% 100%; translate: calc(20 * var(--u)) 0; }   /* the name level with the labels steps 20 to the right, and comes back once passed */
+  .partner .pf { display: inline-block; will-change: transform; color: transparent; background: linear-gradient(#000, #000) 0 0 / 0% 100% no-repeat, linear-gradient(#999, #999) 0 0 / 100% 100% no-repeat; -webkit-background-clip: text; background-clip: text; transition: background-size var(--dur) var(--ease); }
+  .partner.on .pf { background-size: 100% 100%, 100% 100%; }
   .plab-in { position: sticky; top: 50vh; height: calc(20 * var(--u)); }
   .plab-in > p { position: absolute; top: 0; }
   .pic { transform-origin: 50% 0; }
@@ -352,8 +352,7 @@
     // partners: the row level with the sticky labels is black
     let best = 0, bd = Infinity;
     partnerTops.forEach((top, i) => { const dd = Math.abs(top + 38 - labY); if (dd < bd) { bd = dd; best = i; } });
-    const stuck = Math.abs(labY - V * 0.5) < 1;     // the labels are pinned: only then a name is active, and it returns to its place once the scroll moves on
-    partners.forEach((el, i) => el.classList.toggle('on', stuck && i === best));
+    partners.forEach((el, i) => el.classList.toggle('on', i === best));
     // names start a bit further apart and close up like train cars as they rise to the labels (the row level with them sits at its own place)
     partners.forEach((el, i) => { el.firstElementChild.style.transform = `translateY(${PGAP * ease((partnerTops[i] - (V * 0.5 - 38)) / (V * 0.6)) * U}px)`; });
 
