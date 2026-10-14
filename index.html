@@ -62,13 +62,15 @@
   /* the ruled line through the middle of the first screen: the first line of the table. The cards gather onto it, and when they have landed the whole table opens from it */
   .midstrip { position: fixed; left: calc(20 * var(--u)); right: calc(20 * var(--u)); top: 50vh; height: 0; border-top: 1px solid var(--rule); z-index: 4; pointer-events: none; opacity: 0; }
   .midstrip.off { opacity: 0; }   /* the strip IS the first line of the table: at the landing it is swapped for the table's own line 0, which sits exactly on it */
+  /* a small caption above the line in the middle of the first screen; when the menu rising from below reaches its level, it goes up with the menu and stays up there until the title melts into the background */
+  .tagline { position: fixed; left: 0; right: 0; top: 50vh; text-align: center; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; z-index: 101; pointer-events: none; opacity: 0; }   /* exactly the menu's type */
   /* hero cards: fly from the top row into the second block */
   .hc { position: absolute; background: #f2f2f2; transform-origin: 50% 50%; z-index: 5; will-change: transform, width, height, left, top; }
   /* big title: sticks to the bottom of the screen through blocks 1-2, then rests above the gray block */
   .ttl { position: absolute; left: 0; top: 0; width: 100%; height: calc(100vh + 1199.3 * var(--u)); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; z-index: 100; mix-blend-mode: difference; }  /* above everything; inverts wherever it crosses text or blocks */
   .ttl .h1 { color: #fff; pointer-events: auto; position: sticky; bottom: calc(40 * var(--u)); height: calc(182.6 * var(--u)); margin: 0 calc(20 * var(--u)); text-align: center; white-space: nowrap; }
   .rt { width: calc(250 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; }
-  .rt .ln { display: block; white-space: nowrap; overflow: hidden; padding-bottom: .2em; margin-bottom: -.2em; }   /* the line mask (the line itself moves around the picture) */
+  .rt .ln { display: block; white-space: nowrap; overflow: hidden; padding-bottom: .2em; margin-bottom: -.2em; transition: transform var(--dur) var(--ease); }   /* the line mask; the line itself glides aside when the picture comes close */
   .rt .li { display: block; }
   /* line masks: text rises out of its own line */
   .m { display: block; overflow: hidden; padding-bottom: .3em; margin-bottom: -.3em; }
@@ -114,7 +116,12 @@
   .clay { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 900; mix-blend-mode: multiply; }
   /* photos (test images from a free stock) fill their blocks */
   .hc, .bar, .ph, .gray { background-size: cover; background-position: center; background-repeat: no-repeat; }
-  .gray { background-image: var(--imgL, none), var(--imgR, none); background-size: 50% 100%, 50% 100%; background-position: left center, right center; }
+  /* the people on the background: two halves; when Lisa's block comes up the left photo melts into the plain grey of the block */
+  .gray::before, .gray::after { content: ''; position: absolute; top: 0; bottom: 0; width: 50%; background-size: cover; background-position: center; z-index: 0; transition: opacity .9s var(--ease); }
+  .gray::before { left: 0; background-image: var(--imgL, none); }
+  .gray::after { right: 0; background-image: var(--imgR, none); }
+  .gray.no-left::before, .gray.no-right::after { opacity: 0; }
+  .gray > .card2 { z-index: 1; }
 </style>
 </head>
 <body>
@@ -125,6 +132,7 @@
 </section>
 
 <div class="midstrip" aria-hidden="true"></div>
+<div class="tagline">Interior ceramics studio</div>
 <div class="hc" data-i="0" style="left:calc(20 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
 <div class="hc" data-i="1" style="left:calc(250.17 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
 <div class="hc" data-i="2" style="left:calc(480.34 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
@@ -340,8 +348,8 @@
     };
     return api;
   }
-  const glPic = shaderPicture($('.pic')[0], CER[3]);
-  const midStrip = one('.midstrip');
+  const glPics = $('.pic').map((el, i) => shaderPicture(el, CER[[3, 5, 1][i]]));      // the shader on every big picture of the cases
+  const midStrip = one('.midstrip'), tagline = one('.tagline');
   const cards = $('.hc'), s2 = one('.s2'), s3 = one('.s3'), lisa = one('#lisa'), karen = one('#karen');
   const fan = $('.fan i'), nums = $('.s2 .num'), texts = $('.s2 .rt');
   const pics = $('.pic'), partners = $('.partner'), plab = one('.plab-in');
@@ -356,6 +364,7 @@
   const DUR = 600, GAP = 90, LEAD = 150;   // ms: one speed for every animation (same as --dur in the CSS)
   const INTRO = LEAD + 5 * GAP + DUR;   // ms until the last card has dropped
 
+  const CARD_SPEED = 1.7;              // how fast the content of Lisa's and Karen's cards comes in (1 = the original speed)
   const KD = 0.32;                     // how much later (share of the pinned scroll) Karen starts rising after Lisa
   const PGAP = 80;                     // design px the lowest partner names are pushed away from their place
   const LH = 18;                       // design line height, used as a margin around the picture
@@ -526,11 +535,17 @@
 
     // menu sticks 20 from the top: it starts 236 above the bottom of the first screen and rises with the scroll
     nav.style.top = Math.max(20, V - 236 - nav.offsetHeight / U - y) * U + 'px';
+    // the caption: above the middle line; once the menu has come up to its level, it rides up together with the menu and stays up there until the title melts away
+    {
+      const capH = tagline.offsetHeight / U, navTop = Math.max(20, V - 236 - nav.offsetHeight / U - y);
+      tagline.style.top = Math.min(V / 2 - 10 - capH, navTop + (nav.offsetHeight / U - capH) / 2) * U + 'px';
+    }
     // the title soaks into the background once it is released and led away: the edges bleed like water in clay, and by the gray block it has dried into nothing
     const release = ttlBox.offsetHeight / U - V + 40;                 // scroll position where the stuck title lets go
     const soak = ease(clamp((y - release) / (V * 0.5)));
     soakDisp.setAttribute('scale', (soak * 26 * U).toFixed(1)); soakBlur.setAttribute('stdDeviation', (soak * 5 * U).toFixed(2));
     h1.style.filter = soak > 0.001 ? 'url(#soak)' : 'none'; ttlBox.style.opacity = (1 - soak).toFixed(3);
+    tagline.style.opacity = (clamp((now - t0 - (INTRO - 300)) / 500) * (1 - soak)).toFixed(3);   // appears with the intro, goes together with the title
     // Story: the year of the paragraph that is nearest to the middle of the screen (hidden when none is close)
     let sIdx = -1, sDist = Infinity;
     storyP.forEach((q, i) => { const r = q.getBoundingClientRect(), d = Math.abs((r.top + r.height / 2) / U - V / 2); if (d < sDist) { sDist = d; sIdx = i; } });
@@ -619,8 +634,10 @@
     // a card plays its animation when it comes up into the screen, and plays back when it goes below again
     [[lisa, P3 / 0.6], [karen, (P3 - KD) / 0.6]].forEach(([el, k]) => {
       const top = lerp(V, -396, clamp(k));
-      if (!el._on && top < V * 0.8) { el._on = true; el._tl && el._tl.timeScale(1).play(); } else if (el._on && top >= V) { el._on = false; el._tl && el._tl.timeScale(2.2).reverse(); }
+      if (!el._on && top < V * 0.8) { el._on = true; el._tl && el._tl.timeScale(CARD_SPEED).play(); } else if (el._on && top >= V) { el._on = false; el._tl && el._tl.timeScale(CARD_SPEED * 2).reverse(); }
     });
+    // the photos on the background follow the cards: with Lisa the left one melts into grey; when Karen comes, it is the right one that goes grey and the left one is back
+    { const gr = one('.gray'); gr.classList.toggle('no-left', !!lisa._on && !karen._on); gr.classList.toggle('no-right', !!karen._on); }
 
     // partners: the row level with the sticky labels is black
     let best = 0, bd = Infinity;
@@ -633,7 +650,7 @@
     pics.forEach((el, i) => {
       const centre = (el.getBoundingClientRect().top + el.offsetHeight / 2) / U, p = Math.max(-1, Math.min(1, (centre - V / 2) / V));
       el.style.setProperty('--rx', (p * 13).toFixed(2) + 'deg'); el.style.setProperty('--ry', (p * (i % 2 ? -9 : 9)).toFixed(2) + 'deg');
-      if (i === 0 && glPic) glPic.draw(-p * 0.42, p * 0.5);                // the shader version (radians): the surface leans as the picture passes the middle of the screen
+      if (glPics[i]) glPics[i].draw(-p * 0.42, p * (i % 2 ? -0.5 : 0.5));   // the shader version (radians): the surface leans as the picture passes the middle of the screen
     });
   }
 
