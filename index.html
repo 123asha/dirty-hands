@@ -52,14 +52,9 @@
   .shop:hover { text-decoration: underline; text-underline-offset: .2em; }
   .bigrow { display: flex; justify-content: space-between; align-items: flex-start; width: max-content; padding-right: calc(3 * var(--u)); }
   .bigrow .name2 { position: static; }
-  /* About / Cases / Shop: the letters come one by one, then the counter */
   .bigrow.rv { clip-path: none; translate: none; transition: transform .9s var(--ease); }
   .bigrow { transform: translateX(calc(var(--dx, 0) * var(--u))); }     /* --dx: from the page centre to the word's own place (set in measure) */
   .bigrow.spread { transform: none; }
-  .bigrow .lc { display: inline-block; opacity: 0; transform: translateY(70%); transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease); transition-delay: calc(var(--k) * 50ms); }
-  .bigrow.shown .lc { opacity: 1; transform: none; }
-  .bigrow.rv .cnt { opacity: 0; transition: opacity var(--dur) var(--ease) 400ms; }
-  .bigrow.rv.shown .cnt { opacity: .3; }
   .bigrow .cnt { width: calc(40 * var(--u)); text-align: right; right: 0; top: 0; }   /* counter sits at the top right of the word, as in the design */
   .hl { position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); border-top: 1px solid var(--rule); height: 0; }
   .dot { opacity: .1; position: absolute; width: calc(10 * var(--u)); height: calc(10 * var(--u)); background: #000; }
@@ -67,7 +62,7 @@
   /* hero cards: fly from the top row into the second block */
   .hc { position: absolute; background: #f2f2f2; transform-origin: 50% 50%; z-index: 5; will-change: transform, width, height, left, top; }
   /* big title: sticks to the bottom of the screen through blocks 1-2, then rests above the gray block */
-  .ttl { position: absolute; left: 0; top: 0; width: 100%; height: calc(100vh + 1207.6 * var(--u)); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; z-index: 100; mix-blend-mode: difference; }  /* above everything; inverts wherever it crosses text or blocks */
+  .ttl { position: absolute; left: 0; top: 0; width: 100%; height: calc(100vh + 1037.3 * var(--u)); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; z-index: 100; mix-blend-mode: difference; }  /* above everything; inverts wherever it crosses text or blocks */
   .ttl .h1 { color: #fff; pointer-events: auto; position: sticky; bottom: calc(40 * var(--u)); height: calc(182.6 * var(--u)); margin: 0 calc(20 * var(--u)); text-align: center; white-space: nowrap; }
   /* second block: ruled lines open like a fan, text wraps around the picture */
   .fan i { transform-origin: 0 50%; transform: rotate(7deg) scaleX(0); transition: transform var(--dur) var(--ease); }
@@ -88,6 +83,10 @@
   /* text below the first screen rises from the bottom as it comes into view (not the title, menu, block 2 or the cards: they have their own) */
   .rv { clip-path: inset(100% -.5em -.3em -.5em); translate: 0 .8em; transition: clip-path var(--dur) var(--ease), translate var(--dur) var(--ease); }
   .rv.shown { clip-path: inset(-.3em -.5em -.3em -.5em); translate: 0 0; }
+  /* the short ruled lines under the pictures fan open one by one, left to right (right to left for the right-aligned text) */
+  .rules.cap i { transform-origin: 0 50%; transform: rotate(7deg) scaleX(0); transition: transform var(--dur) var(--ease); }
+  .rules.cap.rtl i { transform-origin: 100% 50%; transform: rotate(-7deg) scaleX(0); }
+  .rules.cap.shown i { transform: none; }
   @media (prefers-reduced-motion: reduce) { .rv { clip-path: none; translate: none; transition: none; } }
   /* partners: gray text that fills with black (left to right) when its row is level with the labels */
   .partner .pf { display: inline-block; will-change: transform; color: transparent; background: linear-gradient(#000, #000) 0 0 / 0% 100% no-repeat, linear-gradient(#999, #999) 0 0 / 100% 100% no-repeat; -webkit-background-clip: text; background-clip: text; transition: background-size var(--dur) var(--ease); }
@@ -99,11 +98,17 @@
   .grid { position: fixed; inset: 0; z-index: 1000; pointer-events: none; display: grid; grid-template-columns: repeat(6, 1fr); column-gap: calc(20 * var(--u)); padding: 0 calc(20 * var(--u)); opacity: 0; }
   .grid.on { opacity: 1; }
   .grid i { background: rgba(255, 0, 80, .08); box-shadow: inset 1px 0 rgba(255, 0, 80, .35), inset -1px 0 rgba(255, 0, 80, .35); }
+  /* Contact: shows up top right once the menu has stuck to the top, as plain text on the same line */
+  .ct { position: fixed; top: calc(20 * var(--u)); right: calc(20 * var(--u)); z-index: 101; color: #fff; mix-blend-mode: difference; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; }
+  .ctl { display: inline-flex; align-items: flex-start; gap: .25em; opacity: 0; translate: 0 .6em; pointer-events: none; transition: opacity var(--dur) var(--ease), translate var(--dur) var(--ease); }
+  .ctl svg { margin-top: .12em; }
+  .ct.on .ctl { opacity: 1; translate: 0 0; pointer-events: auto; }
   /* at the end of the page the title and the menu ride up from below behind the steps */
   .endttl { position: fixed; left: calc(20 * var(--u)); right: calc(20 * var(--u)); bottom: calc(40 * var(--u)); height: calc(182.6 * var(--u)); margin: 0; text-align: center; white-space: nowrap; color: #fff; mix-blend-mode: difference; z-index: 100; pointer-events: none; }
   .endnav { position: fixed; z-index: 101; color: #fff; mix-blend-mode: difference; }
   /* imprint tools: a small list in the corner, white + difference like the title and menu */
   .tools { position: fixed; left: calc(20 * var(--u)); bottom: calc(20 * var(--u)); z-index: 120; display: flex; flex-direction: column; align-items: flex-start; color: #fff; mix-blend-mode: difference; font-size: var(--t18); }
+  .tools[hidden] { display: none; }
   .tools button { all: unset; cursor: pointer; line-height: calc(18 * var(--u)); letter-spacing: -.01em; opacity: .4; transition: opacity var(--dur) var(--ease); }
   .tools button:hover, .tools button[aria-pressed="true"] { opacity: 1; }
   .tools button:focus-visible { outline: 1px solid currentColor; outline-offset: 2px; }
@@ -175,24 +180,24 @@
 
   <div class="ph pic" style="left:calc(20 * var(--u));top:calc(1386 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
   <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(1349 * var(--u))">01</span>
-  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(1386 * var(--u));width:calc(670 * var(--u));height:calc(57 * var(--u));"></div>
+  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(1386 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
   <p class="t18" style="left:calc(710 * var(--u));top:calc(1386 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
   <div class="ph pic" style="left:calc(710 * var(--u));top:calc(2087 * var(--u));width:calc(573 * var(--u));height:calc(458 * var(--u));"></div>
-  <div class="rules cap" data-n="4" data-step="19" style="left:calc(20 * var(--u));top:calc(2087 * var(--u));width:calc(670 * var(--u));height:calc(57 * var(--u));"></div>
+  <div class="rules cap rtl" data-n="4" data-step="19" style="left:calc(480 * var(--u));top:calc(2087 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
   <p class="t18" style="left:calc(480 * var(--u));top:calc(2087 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u));text-align:right">Artful wall compositions bring depth, texture, and character to your space.</p>
   <span class="n" style="left:calc(710 * var(--u));top:calc(2050 * var(--u))">01</span>
   <div class="ph pic" style="left:calc(20 * var(--u));top:calc(2704 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
   <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(2667 * var(--u))">01</span>
-  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(2704 * var(--u));width:calc(670 * var(--u));height:calc(57 * var(--u));"></div>
+  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(2704 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
   <p class="t18" style="left:calc(710 * var(--u));top:calc(2704 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
 
   <i class="hl" style="top:calc(3405 * var(--u))"></i>
   <i class="hl" style="top:calc(3495 * var(--u))"></i>
   <i class="hl" style="top:calc(3585 * var(--u))"></i>
   <i class="hl" style="top:calc(3675 * var(--u))"></i>
-  <div class="bigrow" style="left:calc(20 * var(--u));top:calc(3408 * var(--u));height:calc(98 * var(--u));"><p class="t name2">About</p><span class="n cnt">12</span></div>
+  <div class="bigrow" style="left:calc(250 * var(--u));top:calc(3408 * var(--u));height:calc(98 * var(--u));"><p class="t name2">About</p><span class="n cnt">12</span></div>
   <div class="bigrow" style="left:calc(940 * var(--u));top:calc(3498 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Cases</p><span class="n cnt">3</span></div>
-  <div class="bigrow" style="left:calc(581 * var(--u));top:calc(3588 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Shop</p><span class="n cnt">232</span></div>
+  <div class="bigrow" style="left:calc(480 * var(--u));top:calc(3588 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Shop</p><span class="n cnt">232</span></div>
 
   <p class="t big2" style="left:calc(250 * var(--u));top:calc(3997 * var(--u));width:calc(440 * var(--u));">Story</p>
   <p class="t18" style="left:calc(618 * var(--u));top:calc(3876 * var(--u));width:calc(285 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
@@ -215,7 +220,8 @@
 <div class="tail" style="height:calc(100vh - 60 * var(--u))"></div>
 
 </main>
-<div class="tools" role="group" aria-label="Imprint tool">
+<div class="ct"><a class="ctl" href="mailto:">Contact<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a></div>
+<div class="tools" role="group" aria-label="Imprint tool" hidden>
   <button type="button" data-tool="cap" aria-pressed="false">Круглый штамп</button>
   <button type="button" data-tool="fork" aria-pressed="false">Параллельные бороздки</button>
   <button type="button" data-tool="leaf" aria-pressed="false">Органический след</button>
@@ -231,6 +237,8 @@
   $('.rules[data-n]').forEach(r => {
     r.innerHTML = Array.from({ length: +r.dataset.n }, (_, i) => `<i style="top:calc(${i * r.dataset.step} * var(--u))"></i>`).join('');
   });
+
+  $('.rules.cap').forEach(r => [...r.children].forEach((l, i) => { l.style.transitionDelay = i * 70 + 'ms'; }));
 
   // title: one span per letter, staggered
   const h1 = one('.ttl .h1');
@@ -248,14 +256,13 @@
   const drop = t => (t = clamp(t), 1 + 2.4 * (t - 1) ** 3 + 1.4 * (t - 1) ** 2);   // ease-out with a small overshoot
   const lerp = (a, b, t) => a + (b - a) * t;
 
-  const nav = one('.nav');
+  const nav = one('.nav'), contact = one('.ct');
   const bigrows = $('.bigrow');
   let revealed = [];
 
   // scroll reveal: text rises from the bottom when it enters the screen, and resets when it goes back below
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
-    $('.bigrow .name2').forEach(w => { w.innerHTML = [...w.textContent].map((c, i) => `<span class="lc" style="--k:${i}">${c}</span>`).join(''); });
-    const targets = $('.rest p, .rest a, .rest .n, .rest .t18, .rest .bigrow').filter(el => !el.parentElement.closest('.bigrow') && !el.classList.contains('partner'));
+    const targets = $('.rest p, .rest a, .rest .n, .rest .t18, .rest .bigrow, .rest .rules.cap').filter(el => !el.parentElement.closest('.bigrow') && !el.classList.contains('partner'));
     const io = new IntersectionObserver(entries => {
       let k = 0;
       entries.forEach(e => {
@@ -263,7 +270,7 @@
         else if (e.boundingClientRect.top > 0) { e.target.style.transitionDelay = ''; e.target.classList.remove('shown'); }
       });
     }, { rootMargin: '0px 0px -6% 0px' });
-    targets.forEach(el => { el.classList.add('rv'); io.observe(el); });
+    targets.forEach(el => { if (!el.classList.contains('rules')) el.classList.add('rv'); io.observe(el); });
     revealed = targets;
   }
   const cards = $('.hc'), s2 = one('.s2'), s3 = one('.s3'), lisa = one('#lisa'), karen = one('#karen');
@@ -322,6 +329,8 @@
     const listMid = bigrows[0].getBoundingClientRect().top / U + 135;
     if (listMid <= V * 0.5) bigrows.forEach(b => b.classList.add('spread')); else if (listMid > V * 0.5 + 80) bigrows.forEach(b => b.classList.remove('spread'));
     nav.style.opacity = clamp((scrollMax() - scrollY) / (innerHeight * 0.5));
+    contact.style.opacity = nav.style.opacity;                              // fades out together with the menu at the end of the page
+    contact.classList.toggle('on', V - 236 - nav.offsetHeight / U - y <= 20);    // the menu has reached the top: Contact comes in
 
     // 1 → 2: cards drop in, then gather into one picture in block 2
     const E = s2Top + PY0 - V / 2;
@@ -708,8 +717,9 @@
 
   function size() { dpr = Math.min(2, devicePixelRatio || 1); cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; draw(); }
   addEventListener('resize', size); size();
+  const PRINTS = false;     // clay prints on a click are switched off for now
   addEventListener('pointerdown', e => {
-    if (e.button !== 0 || e.target.closest('a, button')) return;
+    if (!PRINTS || e.button !== 0 || e.target.closest('a, button')) return;
     const p = stamp(e.pageX, e.pageY);
     drag = { p, x: e.pageX * dpr, y: e.pageY * dpr, run: 0, w: R(16, 22) * unit() };
   });
