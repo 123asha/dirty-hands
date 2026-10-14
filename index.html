@@ -18,8 +18,8 @@
   section { position: relative; width: 100%; }
   .hero > *, .s2-in > *, .rest > *, .gray > *, .card2 > *, .list > *, .bigrow > * { position: absolute; }
   .hero { height: 100vh; }
-  .s2 { height: calc(2190 * var(--u)); margin-bottom: calc(348 * var(--u)); }
-  .s2-in { position: sticky; top: calc(50vh - 312 * var(--u)); height: calc(790 * var(--u)); }
+  .s2 { height: calc(790 * var(--u)); margin-bottom: calc(348 * var(--u)); }
+  .s2-in { position: relative; height: 100%; }
   .s3 { height: calc(100vh + 1800 * var(--u)); z-index: 3; }
   .gray { position: sticky; top: 0; margin: 0 calc(20 * var(--u)); height: 100vh; overflow: hidden; background: var(--gray); }
   .rest { height: calc(4515 * var(--u)); }
@@ -49,15 +49,18 @@
   /* hero cards: fly from the top row into the second block */
   .hc { position: absolute; background: #f2f2f2; transform-origin: 50% 50%; z-index: 5; will-change: transform, width, height, left, top; }
   /* big title: sticks to the bottom of the screen through blocks 1-2, then rests above the gray block */
-  .ttl { position: absolute; left: 0; top: 0; width: 100%; height: calc(100vh + 2607.6 * var(--u)); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; z-index: 2; }
+  .ttl { position: absolute; left: 0; top: 0; width: 100%; height: calc(100vh + 1207.6 * var(--u)); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; z-index: 2; }
   .ttl .h1 { position: sticky; bottom: calc(40 * var(--u)); height: calc(182.6 * var(--u)); margin: 0 calc(20 * var(--u)); text-align: center; white-space: nowrap; }
   /* second block: ruled lines open like a fan, text wraps around the picture */
-  .fan i { transform-origin: 0 50%; transform: scaleX(0); }
-  .s2 .num, .s2 .rt { opacity: 0; }
+  .fan i { transform-origin: 0 50%; transform: rotate(7deg) scaleX(0); transition: transform .9s cubic-bezier(.2,.7,.2,1); }
+  .s2.in .fan i { transform: none; }
+  .s2 .num, .s2 .rt { opacity: 0; transition: opacity .6s; }
+  .s2.in .rt { opacity: 1; } .s2.in .num { opacity: .3; }
   .rt { width: calc(250 * var(--u)); font-size: calc(18 * var(--u)); line-height: 1; letter-spacing: -.01em; }
   .rt .ln { display: block; white-space: nowrap; transition: transform .5s cubic-bezier(.2,.7,.2,1); }
   /* title letters rise one by one from below the screen */
   .ttl .h1 .ch { display: inline-block; white-space: pre; transform: translateY(150%); animation: rise .9s cubic-bezier(.2,.8,.2,1) forwards; }
+  .ttl .h1 .ch.kern { margin-left: .035em; }
   @keyframes rise { to { transform: none; } }
   @media (prefers-reduced-motion: reduce) { .ttl .h1 .ch { animation: none; transform: none; } }
   /* partners: labels stick, the active row turns black */
@@ -69,6 +72,8 @@
   .grid { position: fixed; inset: 0; z-index: 1000; pointer-events: none; display: grid; grid-template-columns: repeat(6, 1fr); column-gap: calc(20 * var(--u)); padding: 0 calc(20 * var(--u)); opacity: 0; }
   .grid.on { opacity: 1; }
   .grid i { background: rgba(255, 0, 80, .08); box-shadow: inset 1px 0 rgba(255, 0, 80, .35), inset -1px 0 rgba(255, 0, 80, .35); }
+  /* clay prints left by a click */
+  .clay { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 900; mix-blend-mode: multiply; }
 </style>
 </head>
 <body>
@@ -185,7 +190,7 @@
 
   // title: one span per letter, staggered
   const h1 = one('.ttl .h1');
-  h1.innerHTML = [...h1.textContent].map((c, i) => `<span class="ch" style="animation-delay:${300 + i * 70}ms">${c}</span>`).join('');
+  h1.innerHTML = [...h1.textContent].map((c, i) => `<span class="ch${i === 3 || i === 4 ? ' kern' : ''}" style="animation-delay:${300 + i * 70}ms">${c}</span>`).join('');
 
   // hold ⌘G (Ctrl+G) to show the layout grid
   const grid = one('.grid');
@@ -199,14 +204,16 @@
   const drop = t => (t = clamp(t), 1 + 2.4 * (t - 1) ** 3 + 1.4 * (t - 1) ** 2);   // ease-out with a small overshoot
   const lerp = (a, b, t) => a + (b - a) * t;
 
-  const cards = $('.hc'), s2 = one('.s2'), s2in = one('.s2-in'), s3 = one('.s3'), lisa = one('#lisa'), karen = one('#karen');
+  const cards = $('.hc'), s2 = one('.s2'), s3 = one('.s3'), lisa = one('#lisa'), karen = one('#karen');
   const fan = $('.fan i'), nums = $('.s2 .num'), texts = $('.s2 .rt');
+  // fan: lines draw one after another, then numbers and text
+  fan.forEach((l, i) => l.style.transitionDelay = i * 22 + 'ms');
+  texts.forEach((el, j) => el.style.transitionDelay = nums[j].style.transitionDelay = 600 + j * 80 + 'ms');
   const pics = $('.pic'), partners = $('.partner'), plab = one('.plab-in');
 
-  const X0 = i => 20 + 230.17 * i, W0 = 210.2, H0 = [262.7, 210, 262.7, 210, 262.7, 262.7], BAR = 28;
-  const PX = 700, PY = 312;            // picture centre inside the second block (design px)
-  const EX2 = 1400, EX3 = 1800;        // extra scroll while block 2 / the gray block are pinned
-  const SIZES = [[218.5, 210], [340, 260], [250, 330], [520, 300], [300, 380], [230, 280]];
+  const X0 = i => 20 + 230.17 * i, W0 = 210.2, H0 = [262.7, 210, 262.7, 210, 262.7, 262.7];
+  const PX = 700, PY0 = 211, PY1 = 649;   // picture centre x; its y inside block 2 while it is held mid-screen (design px)
+  const PW = 218.5, PH = 210, EX3 = 1800;  // picture size; extra scroll while the gray block is pinned
   const SHADE = [225, 212, 230, 216, 226, 210];
   const INTRO = 200 + 5 * 110 + 700;   // ms until the last card has dropped
 
@@ -235,22 +242,23 @@
   function tick(now = performance.now()) {
     // reads
     const y = scrollY / U, s2Top = s2.offsetTop / U, s3Top = s3.offsetTop / U;
-    const inTop = s2in.getBoundingClientRect().top / U + y;
+    const s2View = s2.getBoundingClientRect().top / U;
     const picTops = pics.map(p => p.getBoundingClientRect().top / U);
     const labY = plab.getBoundingClientRect().top / U, partnerTops = partners.map(p => p.getBoundingClientRect().top / U);
 
-    // 1 → 2: cards drop in, shrink to bars at the top, then fly into the middle of block 2
-    const E = s2Top + PY - V / 2, TS = Math.min(V * 0.3, E * 0.5);
-    const a = ease(y / (V * 0.25)), t = ease((y - TS) / (E - TS)), landed = y >= E;
-    // block 2 pinned: one picture replaces another
-    const p = clamp((y - E) / EX2), seg = p * 6, k = Math.min(5, Math.floor(seg)), sw = k > 0 ? ease((seg - k) / 0.3) : 1;
-    const cur = k > 0 ? [lerp(SIZES[k - 1][0], SIZES[k][0], sw), lerp(SIZES[k - 1][1], SIZES[k][1], sw)] : SIZES[0];
+    // 1 → 2: cards drop in, then gather into one picture in block 2
+    const E = s2Top + PY0 - V / 2;
+    const t = ease(y / E), landed = y >= E;
+    // block 2 scrolls under the picture: it stays mid-screen until the block has passed
+    const py = Math.min(PY1, Math.max(PY0, y + V / 2 - s2Top));
+    // one picture replaces another while it is held
+    const seg = clamp((py - PY0) / (PY1 - PY0)) * 6, k = Math.min(5, Math.floor(seg)), sw = k > 0 ? ease((seg - k) / 0.3) : 1;
     const arc = Math.sin(Math.PI * t);
     cards.forEach((c, i) => {
       const mid = i - 2.5, d = introDone ? 1 : drop((now - t0 - 200 - i * 110) / 700);
-      const h = lerp(lerp(40, H0[i], d), BAR, a);
-      const w = landed ? cur[0] : lerp(W0, SIZES[0][0], t), hh = landed ? cur[1] : lerp(h, SIZES[0][1], t);
-      const cx = lerp(X0(i) + W0 / 2, PX, t) + mid * 14 * arc, cy = lerp(20 + h / 2 + y, inTop + PY, t) + mid * 6 * arc;
+      const h = lerp(40, H0[i], d);
+      const w = lerp(W0, PW, t), hh = lerp(h, PH, t);
+      const cx = lerp(X0(i) + W0 / 2, PX, t) + mid * 14 * arc, cy = lerp(20 + h / 2 + y, s2Top + py, t) + mid * 6 * arc;
       c.style.width = w * U + 'px'; c.style.height = hh * U + 'px';
       c.style.left = (cx - w / 2) * U + 'px'; c.style.top = (cy - hh / 2) * U + 'px';
       c.style.transform = arc > 0.001 ? `rotate(${mid * 3 * arc}deg)` : '';
@@ -260,16 +268,14 @@
       c.style.zIndex = landed && i === k ? 6 : 5;
     });
 
-    // block 2: lines open left → right like a fan, then numbers and text appear
-    const P2 = (y + V - s2Top) / (V * 0.75);
-    fan.forEach((l, i) => { const s = ease((P2 - i * 0.012) / 0.4); l.style.transform = `rotate(${(1 - s) * 7}deg) scaleX(${s})`; });
+    // block 2: lines open like a fan once the block comes into view (again after scrolling back above it)
+    if (s2View < V * 0.8) s2.classList.add('in'); else if (s2View > V) s2.classList.remove('in');
+    // text wraps around the picture, line by line, as it scrolls past
+    const R = PX + PW / 2, top = py - PH / 2, bottom = py + PH / 2;
     texts.forEach((el, j) => {
-      const o = ease((P2 - 0.45 - j * 0.05) / 0.3);
-      el.style.opacity = o; nums[j].style.opacity = 0.3 * o;
-      // text wraps around the current picture, line by line
-      const L = +el.dataset.x, R = PX + cur[0] / 2, top = PY - cur[1] / 2, bottom = PY + cur[1] / 2;
+      const L = +el.dataset.x;
       lines[j].forEach((ln, li) => {
-        const T = +el.dataset.y + li * LH, hit = T < bottom && T + LH > top;
+        const T = +el.dataset.y + li * LH, hit = t > 0.85 && T < bottom && T + LH > top;
         const dx = hit ? Math.max(0, R + 31 - L) : 0;
         ln.style.transform = dx ? `translateX(${dx * U}px)` : '';
       });
@@ -303,6 +309,106 @@
   addEventListener('resize', () => { measure(); tick(); });
   document.fonts && document.fonts.ready.then(() => { measure(); tick(); });
   if (introDone) tick(); else { t0 = performance.now(); requestAnimationFrame(intro); }
+})();
+</script>
+<script>
+// click anywhere: a clay print (a fingertip, a few fingers or the side of a hand) stays, then soaks back into the page
+(() => {
+  const cv = document.createElement('canvas'), ctx = cv.getContext('2d');
+  cv.className = 'clay'; document.body.appendChild(cv);
+  const CLAY = '118,84,62', HOLD = 3500, FADE = 5500;
+  const R = (a, b) => a + Math.random() * (b - a);
+  let dpr = 1, prints = [], raf = 0;
+
+  // one print on its own canvas: rx, ry radii, ridge = parallel lines (side of hand) or loops (finger)
+  function print(rx, ry, ridge) {
+    const w = Math.ceil(rx * 2 + 8), h = Math.ceil(ry * 2 + 8), cx = w / 2, cy = h / 2;
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const g = c.getContext('2d'), step = Math.max(2 * dpr, Math.min(rx, ry) / (ridge === 'loop' ? 10 : 5));
+    g.fillStyle = `rgba(${CLAY},.24)`; g.beginPath(); g.ellipse(cx, cy, rx, ry, 0, 0, 7); g.fill();
+    g.lineCap = 'round';
+    const ph = R(0, 6), ox = cx + R(-.15, .15) * rx, oy = cy + R(0, .25) * ry;
+    const lines = ridge === 'loop' ? Math.ceil(Math.max(rx, ry) * 1.4 / step) : Math.ceil(ry * 2 / step);
+    for (let k = 1; k <= lines; k++) {
+      g.lineWidth = step * R(.35, .55);
+      g.strokeStyle = `rgba(${CLAY},${R(.4, .8)})`;
+      g.beginPath(); let pen = false;
+      if (ridge === 'loop') {
+        const rr = k * step;
+        for (let a = 0; a <= 6.3; a += .05) {
+          if (Math.random() < .03) { pen = false; continue; }
+          const wob = 1 + .05 * Math.sin(a * 3 + ph + k * .4) + .02 * Math.sin(a * 9 + k);
+          const x = ox + Math.cos(a) * rr * wob * (rx / ry), y = oy + Math.sin(a) * rr * wob;
+          pen ? g.lineTo(x, y) : (g.moveTo(x, y), pen = true);
+        }
+      } else {
+        const y0 = cy - ry + k * step;
+        for (let x = cx - rx; x <= cx + rx; x += 3 * dpr) {
+          if (Math.random() < .02) { pen = false; continue; }
+          const y = y0 + Math.sin(x / (rx * .35) + ph + k) * step * .35;
+          pen ? g.lineTo(x, y) : (g.moveTo(x, y), pen = true);
+        }
+      }
+      g.stroke();
+    }
+    for (let i = 0; i < rx; i++) {           // clay crumbs
+      g.fillStyle = `rgba(${CLAY},${R(.2, .7)})`;
+      g.beginPath(); g.arc(cx + R(-rx, rx), cy + R(-ry, ry), R(.3, 1.2) * step * .5, 0, 7); g.fill();
+    }
+    // soft, uneven edge
+    g.globalCompositeOperation = 'destination-in';
+    g.save(); g.translate(cx, cy); g.scale(1, ry / rx);
+    const gr = g.createRadialGradient(R(-.1, .1) * rx, R(-.1, .1) * rx, 0, 0, 0, rx);
+    gr.addColorStop(0, 'rgba(0,0,0,1)'); gr.addColorStop(R(.55, .75), 'rgba(0,0,0,.85)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = gr; g.fillRect(-rx, -rx, rx * 2, rx * 2); g.restore();
+    g.globalCompositeOperation = 'destination-out';
+    for (let i = 0; i < 5; i++) { const a = R(0, 7); g.beginPath(); g.arc(cx + Math.cos(a) * rx, cy + Math.sin(a) * ry, R(.2, .45) * rx, 0, 7); g.fillStyle = `rgba(0,0,0,${R(.3, .8)})`; g.fill(); }
+    return c;
+  }
+
+  function stamp(x, y) {
+    const u = document.documentElement.clientWidth / 1400 * dpr, pieces = [], kind = Math.random();
+    const turn = R(-.6, .6);
+    if (kind < .45) {                          // one fingertip
+      const rx = R(20, 26) * u;
+      pieces.push({ img: print(rx, rx * R(1.25, 1.4), 'loop'), dx: 0, dy: 0, rot: turn });
+    } else if (kind < .8) {                    // a few fingers side by side, middle ones higher
+      const n = 2 + Math.floor(R(0, 3)), gap = 46 * u;
+      for (let i = 0; i < n; i++) {
+        const m = i - (n - 1) / 2, rx = (24 - Math.abs(m) * 3 + R(-2, 2)) * u;
+        const ax = m * gap, ay = Math.abs(m) * Math.abs(m) * 10 * u + R(-4, 4) * u;
+        pieces.push({ img: print(rx, rx * R(1.3, 1.45), 'loop'), dx: ax * Math.cos(turn) - ay * Math.sin(turn), dy: ax * Math.sin(turn) + ay * Math.cos(turn), rot: turn + m * .12 });
+      }
+    } else {                                   // side of the hand
+      const rx = R(85, 110) * u;
+      pieces.push({ img: print(rx, rx * R(.2, .26), 'lines'), dx: 0, dy: 0, rot: turn * .6 + Math.PI / 2 * (Math.random() < .5 ? 1 : 0) });
+    }
+    prints.push({ x: x * dpr, y: y * dpr, pieces, born: performance.now() });
+    if (!raf) raf = requestAnimationFrame(draw);
+  }
+
+  function draw() {
+    raf = 0;
+    const now = performance.now(), sx = scrollX * dpr, sy = scrollY * dpr;
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    prints = prints.filter(p => now - p.born < HOLD + FADE);
+    prints.forEach(p => {
+      const age = now - p.born, f = Math.min(1, Math.max(0, (age - HOLD) / FADE)), soak = f * f * (3 - 2 * f);
+      ctx.globalAlpha = Math.min(1, age / 120) * (1 - soak);
+      ctx.filter = soak > 0.01 ? `blur(${soak * 4 * dpr}px)` : 'none';
+      const press = 1 + .04 * Math.max(0, 1 - age / 160);
+      p.pieces.forEach(q => {
+        ctx.save(); ctx.translate(p.x + q.dx - sx, p.y + q.dy - sy); ctx.rotate(q.rot); ctx.scale(press, press);
+        ctx.drawImage(q.img, -q.img.width / 2, -q.img.height / 2); ctx.restore();
+      });
+    });
+    ctx.globalAlpha = 1; ctx.filter = 'none';
+    if (prints.length) raf = requestAnimationFrame(draw);
+  }
+
+  function size() { dpr = Math.min(2, devicePixelRatio || 1); cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; draw(); }
+  addEventListener('resize', size); size();
+  addEventListener('pointerdown', e => { if (e.button === 0 && !e.target.closest('a, button')) stamp(e.pageX, e.pageY); });
 })();
 </script>
 </body>
