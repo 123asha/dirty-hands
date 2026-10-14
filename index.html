@@ -55,6 +55,11 @@
   .bigrow.rv { clip-path: none; translate: none; transition: transform .9s var(--ease); }
   .bigrow { transform: translateX(calc(var(--dx, 0) * var(--u))); }     /* --dx: from the page centre to the word's own place (set in measure) */
   .bigrow.spread { transform: none; }
+  /* Story: a grey year at the top right of the word, it follows the paragraph that is in the middle of the screen */
+  .tagged { width: max-content; padding-right: calc(3 * var(--u)); }
+  .tagged .big2 { position: static; }
+  .tagged .yr { position: absolute; top: 0; right: 0; width: calc(44 * var(--u)); text-align: right; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; opacity: .3; transition: opacity .2s ease-out; }
+  .tagged .yr.sw { opacity: 0; }
   .bigrow .cnt { width: calc(40 * var(--u)); text-align: right; right: 0; top: 0; }   /* counter sits at the top right of the word, as in the design */
   .hl { position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); border-top: 1px solid var(--rule); height: 0; }
   .dot { opacity: .1; position: absolute; width: calc(10 * var(--u)); height: calc(10 * var(--u)); background: #000; }
@@ -203,13 +208,13 @@
   <div class="bigrow" style="left:calc(940 * var(--u));top:calc(3466.8 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Cases</p><span class="n cnt">3</span></div>
   <div class="bigrow" style="left:calc(480 * var(--u));top:calc(3540.2 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Shop</p><span class="n cnt">232</span></div>
 
-  <p class="t big2" style="left:calc(250 * var(--u));top:calc(3997 * var(--u));width:calc(440 * var(--u));">Story</p>
-  <p class="t18" style="left:calc(618 * var(--u));top:calc(3876 * var(--u));width:calc(285 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(3953 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(4030 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(4107 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(4184 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(4261 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <div class="tagged" style="left:calc(250 * var(--u));top:calc(3997 * var(--u));"><p class="t big2">Story</p><span class="yr" aria-hidden="true"></span></div>
+  <p class="t18" data-year="2019" style="left:calc(618 * var(--u));top:calc(3876 * var(--u));width:calc(285 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <p class="t18" data-year="2020" style="left:calc(710 * var(--u));top:calc(3953 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <p class="t18" data-year="2021" style="left:calc(710 * var(--u));top:calc(4030 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <p class="t18" data-year="2022" style="left:calc(710 * var(--u));top:calc(4107 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <p class="t18" data-year="2023" style="left:calc(710 * var(--u));top:calc(4184 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <p class="t18" data-year="2024" style="left:calc(710 * var(--u));top:calc(4261 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
   <div class="dot" style="left:calc(613 * var(--u));top:calc(4015 * var(--u));"></div>
   <div class="dot" style="left:calc(613 * var(--u));top:calc(4090 * var(--u));"></div>
   <div class="ph bar" style="--i:0;left:calc(20.00 * var(--u));top:calc(4455 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
@@ -225,6 +230,7 @@
 
 </main>
 <div class="ct"><a class="ctl" href="mailto:">Contact<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="soak" x="-4%" y="-25%" width="108%" height="150%"><feTurbulence type="fractalNoise" baseFrequency=".011 .028" numOctaves="3" seed="7" result="n"/><feDisplacementMap id="soakDisp" in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G" result="d"/><feGaussianBlur id="soakBlur" in="d" stdDeviation="0"/></filter></svg>
 <div class="tools" role="group" aria-label="Imprint tool" hidden>
   <button type="button" data-tool="cap" aria-pressed="false">Круглый штамп</button>
   <button type="button" data-tool="fork" aria-pressed="false">Параллельные бороздки</button>
@@ -260,17 +266,21 @@
   const drop = t => (t = clamp(t), 1 + 2.4 * (t - 1) ** 3 + 1.4 * (t - 1) ** 2);   // ease-out with a small overshoot
   const lerp = (a, b, t) => a + (b - a) * t;
 
-  const nav = one('.nav'), contact = one('.ct'), contactLink = one('.ctl');
-  const bigrows = $('.bigrow');
+  const nav = one('.nav'), contact = one('.ct'), contactLink = one('.ctl'), ttlBox = one('.ttl'), soakDisp = one('#soakDisp'), soakBlur = one('#soakBlur');
+  const bigrows = $('.bigrow'), storyP = $('[data-year]'), storyYear = one('.yr');
   let revealed = [];
 
   // scroll reveal: text rises from the bottom when it enters the screen, and resets when it goes back below
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
     const targets = $('.rest p, .rest a, .rest .n, .rest .t18, .rest .bigrow, .rest .rules.cap').filter(el => !el.parentElement.closest('.bigrow') && !el.classList.contains('partner'));
     const io = new IntersectionObserver(entries => {
-      let k = 0;
-      entries.forEach(e => {
-        if (e.isIntersecting) { e.target.style.transitionDelay = k++ * 60 + 'ms'; e.target.classList.add('shown'); const t = e.target; setTimeout(() => { t.style.transitionDelay = ''; }, 900); }
+      let k = 0, m = 0;
+      entries.slice().sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top).forEach(e => {    // top to bottom, one after another
+        if (e.isIntersecting) {
+          const story = e.target.hasAttribute('data-year');                       // the Story paragraphs come in clearly one by one
+          e.target.style.transitionDelay = (story ? m++ * 170 : k++ * 60) + 'ms'; e.target.classList.add('shown');
+          const t = e.target; setTimeout(() => { t.style.transitionDelay = ''; }, 1500);
+        }
         else if (e.boundingClientRect.top > 0) { e.target.style.transitionDelay = ''; e.target.classList.remove('shown'); }
       });
     }, { rootMargin: '0px 0px -6% 0px' });
@@ -290,8 +300,8 @@
   const pics = $('.pic'), partners = $('.partner'), plab = one('.plab-in');
 
   const X0 = i => 20 + 230.17 * i, W0 = 210.2, H0 = [262.7, 210, 262.7, 210, 262.7, 262.7];
-  const PX = 700, PY0 = 0, PY1 = 775;    // picture centre x; its y inside block 2 while it is held mid-screen (design px)
-  const PW = 218.5, PH = 210, EX3 = 1800;  // picture size; extra scroll while the gray block is pinned
+  const PX = 700, PY0 = 0, PY1 = 772;    // picture centre x; its y inside block 2 while it is held mid-screen (design px). PH = 12 ruled bands; PY1 = last line (880) minus half of it
+  const PW = 218.5, PH = 216, EX3 = 1800;  // picture size; extra scroll while the gray block is pinned
   const SHADE = [225, 212, 230, 216, 226, 210];
   const DUR = 600, GAP = 90, LEAD = 150;   // ms: one speed for every animation (same as --dur in the CSS)
   const INTRO = LEAD + 5 * GAP + DUR;   // ms until the last card has dropped
@@ -324,7 +334,7 @@
       [...p.children].forEach(sp => { const top = sp.offsetTop; (rows.length && rows[rows.length - 1].top === top) ? rows[rows.length - 1].w.push(sp.textContent) : rows.push({ top, w: [sp.textContent] }); });
       p.innerHTML = rows.map((r, i) => `<span class="ln2" style="--i:${i}"><span>${r.w.join(' ')} </span></span>`).join('');
     });
-    bigrows.forEach(b => b.style.setProperty('--dx', (700 - (b.offsetLeft + b.offsetWidth / 2) / U).toFixed(2)));   // every word starts on the page centre
+    bigrows.forEach(b => b.style.setProperty('--dx', (0.4 * (700 - (b.offsetLeft + b.offsetWidth / 2) / U)).toFixed(2)));   // every word starts 60% of the way to its place, so the words never sit on top of each other
   }
 
   function tick(now = performance.now()) {
@@ -336,6 +346,18 @@
 
     // menu sticks 20 from the top: it starts 236 above the bottom of the first screen and rises with the scroll
     nav.style.top = Math.max(20, V - 236 - nav.offsetHeight / U - y) * U + 'px';
+    // the title soaks into the background while it is stuck: the edges bleed like water in clay, then it dries into a faint stain
+    const soak = ease(clamp(y / V));
+    soakDisp.setAttribute('scale', (soak * 26 * U).toFixed(1)); soakBlur.setAttribute('stdDeviation', (soak * 5 * U).toFixed(2));
+    h1.style.filter = soak > 0.001 ? 'url(#soak)' : 'none'; ttlBox.style.opacity = (1 - 0.82 * soak).toFixed(3);
+    // Story: the year of the paragraph that is nearest to the middle of the screen (hidden when none is close)
+    let sIdx = -1, sDist = Infinity;
+    storyP.forEach((q, i) => { const r = q.getBoundingClientRect(), d = Math.abs((r.top + r.height / 2) / U - V / 2); if (d < sDist) { sDist = d; sIdx = i; } });
+    const year = sDist < V * 0.35 ? storyP[sIdx].dataset.year : '';
+    if (year !== storyYear.dataset.cur) {
+      storyYear.dataset.cur = year; clearTimeout(storyYear._t); storyYear.classList.add('sw');
+      storyYear._t = setTimeout(() => { storyYear.textContent = year; if (year) storyYear.classList.remove('sw'); }, 180);
+    }
     // About / Cases / Shop: they come in on the centre and, once the list has reached the middle of the screen, take their places on their own
     const listMid = bigrows[0].getBoundingClientRect().top / U + 122;
     if (listMid <= V * 0.5) bigrows.forEach(b => b.classList.add('spread')); else if (listMid > V * 0.5 + 80) bigrows.forEach(b => b.classList.remove('spread'));
