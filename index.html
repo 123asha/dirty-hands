@@ -20,7 +20,7 @@
   section { position: relative; width: 100%; }
   .hero > *, .s2-in > *, .rest > *, .gray > *, .card2 > *, .list > *, .bigrow > * { position: absolute; }
   .hero { height: 100vh; }
-  .s2 { height: calc(916 * var(--u)); margin-bottom: calc(348 * var(--u)); }
+  .s2 { height: calc(952 * var(--u)); margin-bottom: calc(348 * var(--u)); }
   .s2-in { position: relative; height: 100%; }
   .s3 { height: calc(100vh + 1260 * var(--u)); z-index: 3; }
   .gray { position: sticky; top: 0; margin: 0; height: 100vh; overflow: hidden; background: var(--gray); }
@@ -59,10 +59,13 @@
   .hl { position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); border-top: 1px solid var(--rule); height: 0; }
   .dot { opacity: .1; position: absolute; width: calc(10 * var(--u)); height: calc(10 * var(--u)); background: #000; }
   .bar { background: #f2f2f2; }   /* the same strip as the cards at the very top */
+  /* the ruled line through the middle of the first screen: the first line of the table. The cards gather onto it, and when they have landed the whole table opens from it */
+  .midstrip { position: fixed; left: calc(20 * var(--u)); right: calc(20 * var(--u)); top: 50vh; height: 0; border-top: 1px solid var(--rule); z-index: 4; pointer-events: none; opacity: 0; }
+  .midstrip.off { opacity: 0; }   /* the strip IS the first line of the table: at the landing it is swapped for the table's own line 0, which sits exactly on it */
   /* hero cards: fly from the top row into the second block */
   .hc { position: absolute; background: #f2f2f2; transform-origin: 50% 50%; z-index: 5; will-change: transform, width, height, left, top; }
   /* big title: sticks to the bottom of the screen through blocks 1-2, then rests above the gray block */
-  .ttl { position: absolute; left: 0; top: 0; width: 100%; height: calc(100vh + 1163.3 * var(--u)); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; z-index: 100; mix-blend-mode: difference; }  /* above everything; inverts wherever it crosses text or blocks */
+  .ttl { position: absolute; left: 0; top: 0; width: 100%; height: calc(100vh + 1199.3 * var(--u)); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; z-index: 100; mix-blend-mode: difference; }  /* above everything; inverts wherever it crosses text or blocks */
   .ttl .h1 { color: #fff; pointer-events: auto; position: sticky; bottom: calc(40 * var(--u)); height: calc(182.6 * var(--u)); margin: 0 calc(20 * var(--u)); text-align: center; white-space: nowrap; }
   .rt { width: calc(250 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; }
   .rt .ln { display: block; white-space: nowrap; overflow: hidden; padding-bottom: .2em; margin-bottom: -.2em; }   /* the line mask (the line itself moves around the picture) */
@@ -84,7 +87,11 @@
   .partner.on .pf { background-size: 100% 100%, 100% 100%; }
   .plab-in { position: sticky; top: 50vh; height: calc(20 * var(--u)); }
   .plab-in > p { position: absolute; top: 0; }
-  .pic { transform-origin: 50% 0; }
+  /* the big pictures keep their frame; the image inside turns a little in space as you scroll, for a feeling of volume */
+  .pic { overflow: hidden; }
+  .pic-gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .pic.gl::before { display: none; }
+  .pic::before { content: ''; position: absolute; inset: 0; background: var(--img) center / cover no-repeat; transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(1.24); will-change: transform; }
   /* ⌘G layout grid: 6 columns, 20 gutters, 20 margins */
   .grid { position: fixed; inset: 0; z-index: 1000; pointer-events: none; display: grid; grid-template-columns: repeat(6, 1fr); column-gap: calc(20 * var(--u)); padding: 0 calc(20 * var(--u)); opacity: 0; }
   .grid.on { opacity: 1; }
@@ -105,6 +112,9 @@
   .tools button:focus-visible { outline: 1px solid currentColor; outline-offset: 2px; }
   /* clay prints left by a click */
   .clay { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 900; mix-blend-mode: multiply; }
+  /* photos (test images from a free stock) fill their blocks */
+  .hc, .bar, .ph, .gray { background-size: cover; background-position: center; background-repeat: no-repeat; }
+  .gray { background-image: var(--imgL, none), var(--imgR, none); background-size: 50% 100%, 50% 100%; background-position: left center, right center; }
 </style>
 </head>
 <body>
@@ -114,6 +124,7 @@
   <nav class="nav" style="left:calc(941 * var(--u))"><a href="#about">About</a><a href="#cases">Cases</a><a href="https://dirtyhands.ru" target="_blank" rel="noopener">Shop</a></nav>
 </section>
 
+<div class="midstrip" aria-hidden="true"></div>
 <div class="hc" data-i="0" style="left:calc(20 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
 <div class="hc" data-i="1" style="left:calc(250.17 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
 <div class="hc" data-i="2" style="left:calc(480.34 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
@@ -123,23 +134,23 @@
 
 <section class="s2" id="cases">
   <div class="s2-in">
-    <div class="rules fan" data-n="48" data-step="18" style="left:calc(20 * var(--u));top:calc(34 * var(--u));width:calc(1360 * var(--u));height:calc(846 * var(--u));"></div>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(178 * var(--u))">01</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(250 * var(--u))">02</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(322 * var(--u))">03</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(394 * var(--u))">04</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(466 * var(--u))">05</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(538 * var(--u))">06</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(610 * var(--u))">07</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(682 * var(--u))">08</span>
-    <p class="rt" data-x="710" data-y="178" style="left:calc(710 * var(--u));top:calc(178 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
-    <p class="rt" data-x="710" data-y="250" style="left:calc(710 * var(--u));top:calc(250 * var(--u))">Mirrors bring light and balance to your space with expressive sculptural forms.</p>
-    <p class="rt" data-x="710" data-y="322" style="left:calc(710 * var(--u));top:calc(322 * var(--u))">Compact side tables combine everyday function with distinctive design.</p>
-    <p class="rt" data-x="710" data-y="394" style="left:calc(710 * var(--u));top:calc(394 * var(--u))">Open shelving turns storage into a thoughtful display for books, art, and objects.</p>
-    <p class="rt" data-x="710" data-y="466" style="left:calc(710 * var(--u));top:calc(466 * var(--u))">Expressive sculptural forms bring a distinct presence to their surroundings.</p>
-    <p class="rt" data-x="710" data-y="538" style="left:calc(710 * var(--u));top:calc(538 * var(--u))">Architectural lines and expressive forms bring urban character to your space.</p>
-    <p class="rt" data-x="710" data-y="610" style="left:calc(710 * var(--u));top:calc(610 * var(--u))">Distinctive vessels hold flowers or stand beautifully as objects on their own.</p>
-    <p class="rt" data-x="710" data-y="682" style="left:calc(710 * var(--u));top:calc(682 * var(--u))">A warm glow and thoughtful form bring an intimate touch to your space.</p>
+    <div class="rules fan" data-n="50" data-step="18" style="left:calc(20 * var(--u));top:calc(34 * var(--u));width:calc(1360 * var(--u));height:calc(882 * var(--u));"></div>
+    <span class="n num" style="left:calc(20 * var(--u));top:calc(196 * var(--u))">01</span>
+    <span class="n num" style="left:calc(20 * var(--u));top:calc(268 * var(--u))">02</span>
+    <span class="n num" style="left:calc(20 * var(--u));top:calc(340 * var(--u))">03</span>
+    <span class="n num" style="left:calc(20 * var(--u));top:calc(412 * var(--u))">04</span>
+    <span class="n num" style="left:calc(20 * var(--u));top:calc(484 * var(--u))">05</span>
+    <span class="n num" style="left:calc(20 * var(--u));top:calc(556 * var(--u))">06</span>
+    <span class="n num" style="left:calc(20 * var(--u));top:calc(628 * var(--u))">07</span>
+    <span class="n num" style="left:calc(20 * var(--u));top:calc(700 * var(--u))">08</span>
+    <p class="rt" data-x="710" data-y="196" style="left:calc(710 * var(--u));top:calc(196 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
+    <p class="rt" data-x="710" data-y="268" style="left:calc(710 * var(--u));top:calc(268 * var(--u))">Mirrors bring light and balance to your space with expressive sculptural forms.</p>
+    <p class="rt" data-x="710" data-y="340" style="left:calc(710 * var(--u));top:calc(340 * var(--u))">Compact side tables combine everyday function with distinctive design.</p>
+    <p class="rt" data-x="710" data-y="412" style="left:calc(710 * var(--u));top:calc(412 * var(--u))">Open shelving turns storage into a thoughtful display for books, art, and objects.</p>
+    <p class="rt" data-x="710" data-y="484" style="left:calc(710 * var(--u));top:calc(484 * var(--u))">Expressive sculptural forms bring a distinct presence to their surroundings.</p>
+    <p class="rt" data-x="710" data-y="556" style="left:calc(710 * var(--u));top:calc(556 * var(--u))">Architectural lines and expressive forms bring urban character to your space.</p>
+    <p class="rt" data-x="710" data-y="628" style="left:calc(710 * var(--u));top:calc(628 * var(--u))">Distinctive vessels hold flowers or stand beautifully as objects on their own.</p>
+    <p class="rt" data-x="710" data-y="700" style="left:calc(710 * var(--u));top:calc(700 * var(--u))">A warm glow and thoughtful form bring an intimate touch to your space.</p>
   </div>
 </section>
 
@@ -156,8 +167,10 @@
   <div class="t18" id="about" style="left:calc(20 * var(--u));top:calc(52 * var(--u));width:calc(440 * var(--u));opacity:.4;line-height:1">About Dirty Hands</div>
   <p class="t18 lr" style="left:calc(710 * var(--u));top:calc(52 * var(--u));width:calc(440 * var(--u));padding-right:calc(40 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects and wall panels to sculptural forms and interior accents that enhance spaces and set their emotional tone.</p>
   <div class="ph" style="left:calc(641.5 * var(--u));top:calc(272.25 * var(--u));width:calc(117 * var(--u));height:calc(112.5 * var(--u));"></div>
-  <p class="t18 lr" style="left:calc(940 * var(--u));top:calc(142 * var(--u));width:calc(440 * var(--u));padding-right:calc(40 * var(--u));">The studio was founded by designers and entrepreneurs Lisa and Karen, who combine professional expertise with artistic intuition to bring unconventional ideas to life. Their approach reimagines ceramics, moving beyond functional plates and pots towards an artistic language that expresses the style, mood, and character of a space.</p>
-  <a class="t18 shop" style="left:calc(940 * var(--u));top:calc(296 * var(--u));" href="https://dirtyhands.ru" target="_blank" rel="noopener">Shop now →</a>
+  <div class="stack" style="left:calc(940 * var(--u));top:calc(142 * var(--u));width:calc(440 * var(--u));">
+    <p class="t18 lr" style="padding-right:calc(40 * var(--u));">The studio was founded by designers and entrepreneurs Lisa and Karen, who combine professional expertise with artistic intuition to bring unconventional ideas to life. Their approach reimagines ceramics, moving beyond functional plates and pots towards an artistic language that expresses the style, mood, and character of a space.</p>
+    <a class="t18 shop" style="display:block;width:max-content;margin-top:calc(40 * var(--u));" href="https://dirtyhands.ru" target="_blank" rel="noopener">Shop now →</a>
+  </div>
 
   <div class="plab" style="left:0;top:calc(611 * var(--u));width:100%;height:calc(460 * var(--u));"><div class="plab-in">
     <p class="t18" style="left:calc(20 * var(--u));opacity:.4">Our Partners</p>
@@ -190,15 +203,15 @@
   <div class="bigrow" style="left:calc(940 * var(--u));top:calc(3466.8 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Cases</p><span class="n cnt">3</span></div>
   <div class="bigrow" style="left:calc(480 * var(--u));top:calc(3540.2 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Shop</p><span class="n cnt">232</span></div>
 
-  <div class="tagged" style="left:calc(250 * var(--u));top:calc(3997 * var(--u));"><p class="t big2">Story</p><span class="yr" aria-hidden="true"></span></div>
+  <div class="tagged" style="left:calc(250 * var(--u));top:calc(3856 * var(--u));"><p class="t big2">Story</p><span class="yr" aria-hidden="true"></span></div>
   <p class="t18" data-year="2019" style="left:calc(710 * var(--u));top:calc(3876 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
   <p class="t18" data-year="2020" style="left:calc(710 * var(--u));top:calc(3953 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
   <p class="t18" data-year="2021" style="left:calc(710 * var(--u));top:calc(4030 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
   <p class="t18" data-year="2022" style="left:calc(710 * var(--u));top:calc(4107 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
   <p class="t18" data-year="2023" style="left:calc(710 * var(--u));top:calc(4184 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
   <p class="t18" data-year="2024" style="left:calc(710 * var(--u));top:calc(4261 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <div class="dot" style="left:calc(613 * var(--u));top:calc(4015 * var(--u));"></div>
-  <div class="dot" style="left:calc(613 * var(--u));top:calc(4090 * var(--u));"></div>
+  <div class="dot" style="left:calc(613 * var(--u));top:calc(3862.5 * var(--u));"></div>
+  <div class="dot" style="left:calc(613 * var(--u));top:calc(3937.5 * var(--u));"></div>
   <div class="ph bar" style="--i:0;left:calc(20.00 * var(--u));top:calc(4455 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
   <div class="ph bar" style="--i:1;left:calc(250.17 * var(--u));top:calc(4455 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
   <div class="ph bar" style="--i:2;left:calc(480.34 * var(--u));top:calc(4455 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
@@ -249,21 +262,104 @@
   const nav = one('.nav'), contact = one('.ct'), contactLink = one('.ctl'), ttlBox = one('.ttl'), soakDisp = one('#soakDisp'), soakBlur = one('#soakBlur');
   const bigrows = $('.bigrow'), storyP = $('[data-year]'), storyYear = one('.yr'), storyPinned = [one('.tagged'), ...$('.dot')];
   const storyMid = i => (storyP[i].offsetTop + storyP[i].offsetHeight / 2) / U;   // centre of a Story paragraph inside the page section (design px)
+  // test photos on the theme of ceramics: public-domain (CC0) pictures from Wikimedia Commons, the same six on the cards at the top and on the strip at the end, so the loop stays seamless
+  const CER = [
+ "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Delphis_range_vase_byPolle_Pottery_01.jpg/960px-Delphis_range_vase_byPolle_Pottery_01.jpg",
+ "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Delphis_range_vase_byPolle_Pottery_02.jpg/960px-Delphis_range_vase_byPolle_Pottery_02.jpg",
+ "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cf/Grueby_Pottery_Company_%28American%29_-_Vase_-_1972.1064_-_Cleveland_Museum_of_Art.jpg/960px-Grueby_Pottery_Company_%28American%29_-_Vase_-_1972.1064_-_Cleveland_Museum_of_Art.jpg",
+ "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/Maya_Late_Classic_Polychrome_Ceramic_Vase%2C_13cm.jpg/960px-Maya_Late_Classic_Polychrome_Ceramic_Vase%2C_13cm.jpg",
+ "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/36/Rookwood_Pottery_Company_%28American%2C_established_1880%29%2C_Emma_D._Foertmeyer_%28American%29%2C_Gorham_Manufacturing_Company_%28American%2C_founded_1831%29_-_Jar_-_1991.140_-_Cleveland_Museum_of_Art.jpg/960px-thumbnail.jpg",
+ "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Weller_Pottery_%28American%29%2C_Jacques_Sicard_%28French%2C_1865-1923%29_-_Vase_-_1983.227_-_Cleveland_Museum_of_Art.jpg/960px-Weller_Pottery_%28American%29%2C_Jacques_Sicard_%28French%2C_1865-1923%29_-_Vase_-_1983.227_-_Cleveland_Museum_of_Art.jpg"
+];
+  const IMG = n => `url("${CER[n % CER.length]}")`;
+  $('.hc').forEach((c, i) => { c.style.backgroundImage = IMG(i); });
+  $('.bar').forEach((b, i) => { b.style.backgroundImage = IMG(i); });
+  $('.pic').forEach((e, i) => { e.style.setProperty('--img', IMG([3, 5, 1][i])); });      // the big pictures: the image lives in ::before, inside the frame
+  one('.rest > .ph:not(.pic):not(.bar)').style.backgroundImage = IMG(4);
+  one('.gray').style.setProperty('--imgL', `url("https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/Woman_in_a_headwrap_in_Quebec_City.jpg/1280px-Woman_in_a_headwrap_in_Quebec_City.jpg")`);   // photos of people on the background: one for each half, under Lisa and under Karen
+  one('.gray').style.setProperty('--imgR', `url("https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Woman%2C_portrait_Fortepan_11855.jpg/1280px-Woman%2C_portrait_Fortepan_11855.jpg")`);
+
+  // ---- shader on one picture: the image lies on a slightly domed, glazed surface that turns in space as you scroll, with light and a highlight (a feeling of volume inside the frame)
+  function shaderPicture(el, src) {
+    const cv = document.createElement('canvas'); cv.className = 'pic-gl';
+    const gl = cv.getContext('webgl', { antialias: true });
+    if (!gl) return null;
+    const mk = (type, code) => { const sh = gl.createShader(type); gl.shaderSource(sh, code); gl.compileShader(sh); return gl.getShaderParameter(sh, gl.COMPILE_STATUS) ? sh : (console.warn(gl.getShaderInfoLog(sh)), null); };
+    const vs = mk(gl.VERTEX_SHADER, 'attribute vec2 a; varying vec2 v; void main(){ v = a * .5 + .5; gl_Position = vec4(a, 0., 1.); }');
+    const fs = mk(gl.FRAGMENT_SHADER, `precision highp float;
+      uniform sampler2D tex; uniform vec2 res; uniform vec2 rot; uniform float imgAspect; varying vec2 v;
+      mat3 rotY(float a){ float c = cos(a), s = sin(a); return mat3(c, 0., -s, 0., 1., 0., s, 0., c); }
+      mat3 rotX(float a){ float c = cos(a), s = sin(a); return mat3(1., 0., 0., 0., c, s, 0., -s, c); }
+      void main(){
+        float asp = res.x / res.y;
+        vec2 sc = (v * 2. - 1.) * vec2(asp, 1.);                       // the point of the screen
+        mat3 R = rotY(rot.y) * rotX(rot.x);
+        const float DOME = .22, CAM = 2.6;
+        vec2 q = sc;
+        for (int i = 0; i < 7; i++) {                                    // find which point of the surface is seen here
+          vec2 qn = q / vec2(asp, 1.);
+          vec3 P = R * vec3(q, DOME * (1. - dot(qn, qn)));
+          vec2 S = P.xy * CAM / (CAM - P.z);
+          q += sc - S;
+        }
+        vec2 qn = q / vec2(asp, 1.);
+        vec3 n = normalize(R * normalize(vec3(2. * DOME * qn.x / asp, 2. * DOME * qn.y, 1.)));
+        vec3 L = normalize(vec3(-.35, .55, .75));
+        float diff = .70 + .42 * max(dot(n, L), 0.);
+        float spec = pow(max(dot(n, normalize(L + vec3(0., 0., 1.))), 0.), 36.) * .42;     // the gloss of the glaze
+        vec2 cover = asp > imgAspect ? vec2(1., imgAspect / asp) : vec2(asp / imgAspect, 1.);
+        vec2 uv = qn * .5 * .84 * cover + .5;
+        vec4 c = texture2D(tex, vec2(uv.x, 1. - uv.y));
+        gl_FragColor = vec4(c.rgb * diff + spec, 1.);
+      }`);
+    if (!vs || !fs) return null;
+    const pr = gl.createProgram(); gl.attachShader(pr, vs); gl.attachShader(pr, fs); gl.linkProgram(pr);
+    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return null;
+    gl.useProgram(pr);
+    const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    const u = n => gl.getUniformLocation(pr, n);
+    const api = { ready: false, rx: 0, ry: 0 };
+    const img = new Image(); img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.uniform1f(u('imgAspect'), img.naturalWidth / img.naturalHeight);
+      el.appendChild(cv); el.classList.add('gl'); api.ready = true; api.draw();
+    };
+    img.onerror = () => {};                                              // no picture: the CSS version stays
+    img.src = src;
+    api.draw = (rx = api.rx, ry = api.ry) => {
+      api.rx = rx; api.ry = ry; if (!api.ready) return;
+      const dpr = Math.min(2, devicePixelRatio || 1), w = Math.round(el.clientWidth * dpr), h = Math.round(el.clientHeight * dpr);
+      if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; gl.viewport(0, 0, w, h); }
+      gl.uniform2f(u('res'), w, h); gl.uniform2f(u('rot'), rx, ry);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    };
+    return api;
+  }
+  const glPic = shaderPicture($('.pic')[0], CER[3]);
+  const midStrip = one('.midstrip');
   const cards = $('.hc'), s2 = one('.s2'), s3 = one('.s3'), lisa = one('#lisa'), karen = one('#karen');
   const fan = $('.fan i'), nums = $('.s2 .num'), texts = $('.s2 .rt');
   const pics = $('.pic'), partners = $('.partner'), plab = one('.plab-in');
 
   const X0 = i => 20 + 230.17 * i, W0 = 210.2, H0 = [262.7, 210, 262.7, 210, 262.7, 262.7];
-  const PX = 700, PY0 = 0, PY1 = 772;    // picture centre x; its y inside block 2 while it is held mid-screen (design px). PH = 12 ruled bands; PY1 = last line (880) minus half of it
+  const PX = 700, PY0 = 34, PY1 = 808;    // picture centre x; its y inside block 2 while it is held mid-screen (design px). PH = 12 ruled bands; PY1 = last line (916) minus half of it
   const PW = 218.5, PH = 216, EX3 = 1260;  // picture size; extra scroll while the gray block is pinned
   const SHADE = [225, 212, 230, 216, 226, 210];
-  const DEPTH = [260, -230, 120, -300, 190, -140];   // design px each card moves towards (+) or away from (-) the viewer while the cards fly together
+  // while the cards fly they stand on a sphere (a ring seen from the front, with a little height): each one has an angle around it and a latitude;
+  // the ring makes exactly one turn from take-off to landing, so some cards are nearer than the others and some behind. They always face the viewer.
+  const SPH = 540, TH = [0, 1, 2, 3, 4, 5].map(i => i * Math.PI / 3), LA = [0.3, -0.25, 0.3, -0.25, 0.3, -0.25];   // six cards in order around the ring, a little up and down so it reads as a sphere
   const DUR = 600, GAP = 90, LEAD = 150;   // ms: one speed for every animation (same as --dur in the CSS)
   const INTRO = LEAD + 5 * GAP + DUR;   // ms until the last card has dropped
 
+  const KD = 0.32;                     // how much later (share of the pinned scroll) Karen starts rising after Lisa
   const PGAP = 80;                     // design px the lowest partner names are pushed away from their place
   const LH = 18;                       // design line height, used as a margin around the picture
-  let U = 1, V = 0, lines = [], t0 = performance.now(), introDone = reduce, lastW = 0, rebuild = 0;
+  let U = 1, V = 0, lines = [], t0 = performance.now(), introDone = reduce, lastW = 0, rebuild = 0, prevY = 0, closedBack = false;
 
   // split each paragraph into its rendered lines, so every line can wrap around the picture on its own
   function splitLines() {
@@ -283,6 +379,7 @@
     root.style.setProperty('--W', w + 'px');
     U = w / 1400; V = innerHeight / U;
     splitLines();
+    alignShop();
     bigrows.forEach(b => b.style.setProperty('--dx', (0.4 * (700 - (b.offsetLeft + b.offsetWidth / 2) / U)).toFixed(2)));   // every word starts 60% of the way to its place, so the words never sit on top of each other
   }
 
@@ -290,7 +387,7 @@
   const G = !reduce && window.gsap && window.ScrollTrigger;
   if (G) gsap.registerPlugin(ScrollTrigger);
   const EASE = 'power3.out';
-  let pairs = [], touched = [];
+  let pairs = [], touched = [], fanTl = null, blockTexts = [], tableOpen = false;
 
   function splitMask(el) {                          // every rendered line gets its own mask: .m > .mi
     const text = el.dataset.text || (el.dataset.text = el.textContent.trim().replace(/\s+/g, ' '));
@@ -300,7 +397,7 @@
     el.innerHTML = rows.map(r => `<span class="m"><span class="mi">${r.w.join(' ')} </span></span>`).join('');
     return [...el.querySelectorAll('.mi')];
   }
-  const fanIn = (tl, lines, o = {}) => tl.fromTo(lines, { scaleX: 0, rotation: o.rot ?? 7, transformOrigin: o.origin || '0 50%' }, { scaleX: 1, rotation: 0, duration: o.dur ?? .95, ease: EASE, stagger: { each: o.each ?? .02 } }, o.at ?? 0);
+  const fanIn = (tl, lines, o = {}) => tl.fromTo(lines, { scaleX: 0, rotation: 0, transformOrigin: o.origin || '0 50%' }, { scaleX: 1, rotation: 0, duration: o.dur ?? .95, ease: EASE, stagger: { each: o.each ?? .02 } }, o.at ?? 0);
   const riseIn = (tl, inner, o = {}) => tl.fromTo(inner, { yPercent: 112 }, { yPercent: 0, duration: o.dur ?? 1, ease: EASE, stagger: { each: o.each ?? .08 } }, o.at ?? 0);
   const fadeIn = (tl, els, to, at, o = {}) => tl.fromTo(els, { autoAlpha: 0 }, { autoAlpha: to, duration: o.dur ?? .7, ease: 'power2.out', stagger: o.each ?? 0 }, at);
 
@@ -320,6 +417,30 @@
   }
   const textTl = (inner, o = {}) => riseIn(gsap.timeline({ paused: true }), inner, o).parent || null;
 
+  function openTable(on) {
+    if (!G || on === tableOpen) return;
+    tableOpen = on;
+    if (!fanTl) return;
+    if (on) {
+      fanTl.timeScale(1).play();
+      blockTexts.forEach((b, k) => { if (b.seen) { b.dc && b.dc.kill(); b.dc = gsap.delayedCall(.55 + k * .09, () => b.tl.timeScale(1).play()); } });
+    } else {
+      fanTl.timeScale(3.6).reverse();                                                       // the whole table goes away quickly
+      blockTexts.forEach(b => { b.dc && b.dc.kill(); b.tl.timeScale(3.6).reverse(); });
+    }
+  }
+
+
+  // the small picture stands on the same line as "Shop now": its bottom edge on the baseline of the link (the link follows the length of the paragraph)
+  function alignShop() {
+    const shop = one('.stack .shop'), pic = one('.rest > .ph:not(.pic):not(.bar)'), rest = one('.rest');
+    if (!shop || !pic) return;
+    const mk = document.createElement('span'); mk.style.cssText = 'display:inline-block;width:0;height:0';
+    (shop.querySelector('.mi') || shop).appendChild(mk);
+    const base = (mk.getBoundingClientRect().bottom - rest.getBoundingClientRect().top) / U; mk.remove();
+    pic.style.top = (base - pic.offsetHeight / U) * U + 'px';
+  }
+
   function buildMotion() {
     if (!G) return;
     pairs.forEach(({ st, tl }) => { st.kill(); tl.kill(); }); pairs = [];
@@ -328,15 +449,22 @@
     const done = new Set();
     const topOf = el => parseFloat((el.style.top.match(/calc\(([\d.]+)/) || [0, 0])[1]);
 
-    // block 2: the fan of lines, then the numbers and the paragraphs one after another
+    // block 2 ("the table"): it opens when the cards have landed on the strip: the lines fan out first, then the paragraphs rise one after another
     const fanLines = [...fan]; touched.push(...fanLines);
-    mk(s2, tl => fanIn(tl, fanLines, { each: .014 }), 'top 85%');
-    stag(texts.map((p, j) => {
-      const tl = gsap.timeline({ paused: true }), n = nums[j]; touched.push(n);
+    fanTl = gsap.timeline({ paused: true });
+    fanIn(fanTl, fanLines.slice(1), { each: .016, at: 0 });                                  // the others open from it, downwards
+    pairs.push({ st: { kill() {}, start: Infinity }, tl: fanTl });
+    blockTexts = texts.map((p, j) => {
+      const tl = gsap.timeline({ paused: true }), n = nums[j], b = { el: p, tl, seen: false, dc: null }; touched.push(n);
       fadeIn(tl, n, .3, 0, { dur: .8 });
       riseIn(tl, [...p.querySelectorAll('.li')], { at: 0, each: .09 });
-      done.add(p); return { el: p, tl };
-    }), { start: 'top 92%', delay: .5, gap: .1 });
+      done.add(p);
+      const st = ScrollTrigger.create({ trigger: p, start: 'top 95%',
+        onEnter: () => { b.seen = true; if (tableOpen) { b.dc && b.dc.kill(); b.dc = gsap.delayedCall(.15, () => tl.timeScale(1).play()); } },
+        onLeaveBack: () => { b.seen = false; b.dc && b.dc.kill(); tl.timeScale(2.2).reverse(); } });
+      pairs.push({ st, tl: { progress() {}, kill() { tl.kill(); } } }); return b;
+    });
+    if (tableOpen) { fanTl.progress(1); blockTexts.forEach(b => { if (b.seen) b.tl.progress(1); }); }
 
     // the short ruled lines under the pictures: they fan open from the side the text is aligned to, then the text rises line by line
     $('.rules.cap').forEach(r => {
@@ -344,7 +472,7 @@
       const n = $('.rest > .n').find(x => Math.abs(topOf(x) - (topOf(r) - 37)) < 2), lines = [...r.children];
       done.add(p); touched.push(...lines); n && touched.push(n);
       mk(r, tl => {
-        fanIn(tl, lines, { origin: rtl ? '100% 50%' : '0 50%', rot: rtl ? -7 : 7, each: .09 });
+        fanIn(tl, lines, { origin: rtl ? '100% 50%' : '0 50%', each: .09 });
         n && fadeIn(tl, n, .3, .45);
         riseIn(tl, inner, { at: '>-0.6', each: .1 });
       });
@@ -367,13 +495,9 @@
       if (c._on) tl.progress(1);
     });
 
-    // About / Cases / Shop: the lines draw, then the words rise, then the counters
+    // About / Cases / Shop: only the lines draw (as everywhere); the words are simply there and slide to their places on the sides
     const hl = $('.hl'); touched.push(...hl);
-    const words = bigrows.map(b => ({ w: splitMask(b.querySelector('.name2')), c: b.querySelector('.cnt') })); touched.push(...words.map(x => x.c));
-    mk(hl[0], tl => {
-      tl.fromTo(hl, { scaleX: 0, transformOrigin: '0 50%' }, { scaleX: 1, duration: 1.1, ease: EASE, stagger: .14 }, 0);
-      words.forEach(({ w, c }, i) => { riseIn(tl, w, { at: .6 + i * .15 }); fadeIn(tl, c, .3, 1 + i * .15); });
-    }, 'top 85%');
+    mk(hl[0], tl => { tl.fromTo(hl, { scaleX: 0, transformOrigin: '0 50%' }, { scaleX: 1, duration: 1.1, ease: EASE, stagger: .14 }, 0); }, 'top 85%');
 
     // all other text: line by line, one paragraph after another
     const items = [];
@@ -386,6 +510,7 @@
     });
     stag(items, { gap: .16 });
 
+    alignShop();
     ScrollTrigger.refresh();
     pairs.forEach(({ st, tl }) => { if (scrollY >= st.start && scrollY > 0) tl.progress(1); });     // what is already above the screen stays shown
   }
@@ -437,24 +562,41 @@
     const py = Math.min(PY1, Math.max(PY0, y + V / 2 - s2Top));
     // one picture replaces another while it is held
     const seg = clamp((py - PY0) / (PY1 - PY0)) * 6, k = Math.min(5, Math.floor(seg)), sw = k > 0 ? ease((seg - k) / 0.3) : 1;
+    midStrip.classList.toggle('off', landed);                                              // gone once the table's first line has taken its place
+    midStrip.style.opacity = landed ? '' : clamp((now - t0 - (INTRO - 300)) / 500).toFixed(3);
+    // the table is open from the landing of the cards until its last row reaches the middle of the screen
+    const lastRow = texts[texts.length - 1].getBoundingClientRect(), lastRowMid = (lastRow.top + lastRow.height / 2) / U;
+    // opens at the landing; goes away before the landing when you scroll back (the table first, then only its first line is left); and when its last row is in the middle
+    const dir = y - prevY; prevY = y;
+    const rowOK = lastRowMid > V / 2, backClose = dir < 0 && y < E + 70;
+    if (y >= E + 70 || y < E) closedBack = false;
+    if (tableOpen && (backClose || !rowOK)) { if (backClose) closedBack = true; openTable(false); }
+    else if (!tableOpen && landed && rowOK && !closedBack) openTable(true);
+    if (G) fan[0].style.visibility = landed ? 'visible' : 'hidden';                        // the table's first line: the strip's place from the landing on
     const arc = Math.sin(Math.PI * t);
     cards.forEach((c, i) => {
       const mid = i - 2.5, d = introDone ? 1 : drop((now - t0 - LEAD - i * GAP) / DUR);
       const h = lerp(20, H0[i], d);
       const w = lerp(W0, PW, t), hh = lerp(h, PH, t);
-      const cx = lerp(X0(i) + W0 / 2, PX, t) + mid * 14 * arc, cy = lerp(20 + h / 2 + y, s2Top + py, t) + mid * 6 * arc;
+      // from the very first bit of scroll every card goes straight to its own place on the ring (no scatter first); the ring turns once, then it collapses onto the landing point
+      const wIn = ease(clamp(t / 0.14)), wOut = ease(clamp((1 - t) / 0.2)), ring = wIn * wOut;
+      const th = TH[i] + 2 * Math.PI * t, cl = Math.cos(LA[i]), sx = Math.sin(th) * cl, sz = Math.cos(th) * cl, sy = Math.sin(LA[i]);   // point on the sphere
+      const cyC = s2Top + py - y;                                                          // the landing point on the screen (it rises with the scroll until it is at the middle)
+      const cx = lerp(lerp(X0(i) + W0 / 2, PX + SPH * 0.9 * sx, wIn), PX, 1 - wOut);
+      const cy = lerp(lerp(20 + h / 2, cyC + SPH * 0.55 * sy, wIn), cyC, 1 - wOut) + y;     // page coordinates, as before
       c.style.width = w * U + 'px'; c.style.height = hh * U + 'px';
       // fixed to the screen until the picture is released, so it never lags behind a fast scroll
       const fixed = y < E + PY1 - PY0;
       c.style.position = fixed ? 'fixed' : 'absolute';
       c.style.left = (cx - w / 2) * U + 'px'; c.style.top = (cy - hh / 2 - (fixed ? y : 0)) * U + 'px';
       // depth: on one plane at the start, some further away and some closer while they fly (arc), one plane again once gathered
-      const Z = DEPTH[i] * U * arc, RY = (i % 2 ? 1 : -1) * (5 + i * 2) * arc;
-      c.style.transform = arc > 0.001 ? `perspective(${1400 * U}px) translateZ(${Z.toFixed(1)}px) rotateY(${RY.toFixed(2)}deg) rotate(${mid * 3 * arc}deg)` : '';
+      const Z = SPH * sz * U * ring, far = Math.max(0, -sz) * ring;
+      c.style.transform = ring > 0.001 ? `perspective(${1100 * U}px) translateZ(${Z.toFixed(1)}px)` : '';   // faces the viewer: no tilt, no turn
+      c.style.filter = far > 0.01 ? `brightness(${(1 - 0.3 * far).toFixed(3)}) blur(${(2.4 * far * U).toFixed(2)}px)` : '';   // the further away, the darker and softer
       const g = Math.round(landed ? SHADE[i] : lerp(242, 225, t));
-      c.style.background = `rgb(${g},${g},${g})`;
+      c.style.backgroundColor = `rgb(${g},${g},${g})`;
       c.style.opacity = !landed ? 1 : i === k ? sw : (i === k - 1 && sw < 1 ? 1 : 0);
-      c.style.zIndex = arc > 0.001 && !landed ? 5 + Math.round((DEPTH[i] + 300) / 100) : landed && i === k ? 6 : 5;   // nearer cards are in front
+      c.style.zIndex = ring > 0.001 && !landed ? 5 + Math.round((sz + 1) * 3) : landed && i === k ? 6 : 5;   // nearer cards are in front
     });
 
     // text wraps around the picture, line by line, as it scrolls past
@@ -473,9 +615,9 @@
     // gray block pinned: Lisa rises through it, then Karen
     const P3 = clamp((y - s3Top) / EX3);
     lisa.style.top = lerp(V, -396, clamp(P3 / 0.6)) * U + 'px';
-    karen.style.top = lisa.style.top;                                   // Karen rises together with Lisa, at the same height
+    karen.style.top = lerp(V, -396, clamp((P3 - KD) / 0.6)) * U + 'px';   // Karen follows a bit lower: at first only Lisa is on the screen
     // a card plays its animation when it comes up into the screen, and plays back when it goes below again
-    [[lisa, P3 / 0.6], [karen, P3 / 0.6]].forEach(([el, k]) => {
+    [[lisa, P3 / 0.6], [karen, (P3 - KD) / 0.6]].forEach(([el, k]) => {
       const top = lerp(V, -396, clamp(k));
       if (!el._on && top < V * 0.8) { el._on = true; el._tl && el._tl.timeScale(1).play(); } else if (el._on && top >= V) { el._on = false; el._tl && el._tl.timeScale(2.2).reverse(); }
     });
@@ -487,11 +629,11 @@
     // names start a bit further apart and close up like train cars as they rise to the labels (the row level with them sits at its own place)
     partners.forEach((el, i) => { el.firstElementChild.style.transform = `translateY(${PGAP * ease((partnerTops[i] - (V * 0.5 - 38)) / (V * 0.6)) * U}px)`; });
 
-    // photos change like slides
+    // the big pictures: the frame does not change; the image inside turns slightly in space as the picture passes through the screen
     pics.forEach((el, i) => {
-      const g = ease((V - picTops[i]) / (V * 0.8));
-      el.style.transform = `scaleY(${0.62 + 0.38 * g})`;
-      el.style.background = `rgba(169,169,169,${.15 + .12 * (Math.floor(g * 3) % 3) / 2})`;
+      const centre = (el.getBoundingClientRect().top + el.offsetHeight / 2) / U, p = Math.max(-1, Math.min(1, (centre - V / 2) / V));
+      el.style.setProperty('--rx', (p * 13).toFixed(2) + 'deg'); el.style.setProperty('--ry', (p * (i % 2 ? -9 : 9)).toFixed(2) + 'deg');
+      if (i === 0 && glPic) glPic.draw(-p * 0.42, p * 0.5);                // the shader version (radians): the surface leans as the picture passes the middle of the screen
     });
   }
 
