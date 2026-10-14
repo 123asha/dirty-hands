@@ -4,14 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dirty Hands Layout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet">
 <style>
   @font-face { font-family: "CoFo Sans"; src: url("CoFoSans-Regular450.woff2") format("woff2"); font-weight: 400; font-display: swap; }
-  :root { --bg: #fff; --ink: #000; --u: calc(var(--W, 100vw) / 1400); --ph: rgba(169,169,169,.15); --gray: #f2f2f2; --rule: #d9d9d9; }
+  :root { --t18: min(18px, calc(18 * var(--u))); --bg: #fff; --ink: #000; --u: calc(var(--W, 100vw) / 1400); --ph: rgba(169,169,169,.15); --gray: #f2f2f2; --rule: #d9d9d9; }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #fff; --ink: #000; } }
   :root[data-theme="dark"] { --bg: #fff; --ink: #000; }
   * { box-sizing: border-box; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); } html, body { overflow-x: clip; }
-  body { font-family: "CoFo Sans", -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: calc(18 * var(--u)); -webkit-font-smoothing: antialiased; }
+  body { font-family: "CoFo Sans", -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: var(--t18); -webkit-font-smoothing: antialiased; }
   p, h1, h2 { margin: 0; font-weight: 400; } a { color: inherit; text-decoration: none; }
   /* sections: sizes are authored in design pixels (u = viewport / 1400) */
   .page { position: relative; width: 100%; overflow: clip; }
@@ -28,12 +31,12 @@
   .big2 { font-size: calc(108 * var(--u)); line-height: .91; letter-spacing: -.04em; }
   .name { font-size: calc(52 * var(--u)); line-height: .91; letter-spacing: -.03em; }
   .name2 { font-size: calc(108 * var(--u)); line-height: .91; letter-spacing: -.04em; }
-  .t18 { font-size: calc(18 * var(--u)); line-height: 1.08; letter-spacing: -.01em; }
+  .t18 { font-size: var(--t18); line-height: 1.08; letter-spacing: -.01em; }
   .ph { background: var(--ph); }
-  .nav { display: flex; gap: calc(12 * var(--u)); font-size: calc(18 * var(--u)); line-height: .91; letter-spacing: -.01em; }
-  .row { display: flex; gap: calc(31 * var(--u)); font-size: calc(18 * var(--u)); line-height: 1; letter-spacing: -.01em; position: absolute; }
+  .nav { display: flex; gap: calc(12 * var(--u)); font-size: var(--t18); line-height: .91; letter-spacing: -.01em; }
+  .row { display: flex; gap: calc(31 * var(--u)); font-size: var(--t18); line-height: 1; letter-spacing: -.01em; position: absolute; }
   .row p { width: calc(250 * var(--u)); }
-  .n { width: calc(40 * var(--u)); opacity: .3; font-size: calc(18 * var(--u)); line-height: .91; flex: none; }
+  .n { width: calc(40 * var(--u)); opacity: .3; font-size: var(--t18); line-height: .91; flex: none; }
   .rules { pointer-events: none; }
   .rules i { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--rule); }
   .rules.cap { z-index: 0; }
@@ -50,13 +53,13 @@
   .hc { position: absolute; background: #f2f2f2; transform-origin: 50% 50%; z-index: 5; will-change: transform, width, height, left, top; }
   /* big title: sticks to the bottom of the screen through blocks 1-2, then rests above the gray block */
   .ttl { position: absolute; left: 0; top: 0; width: 100%; height: calc(100vh + 1207.6 * var(--u)); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; z-index: 2; }
-  .ttl .h1 { position: sticky; bottom: calc(40 * var(--u)); height: calc(182.6 * var(--u)); margin: 0 calc(20 * var(--u)); text-align: center; white-space: nowrap; }
+  .ttl .h1 { pointer-events: auto; position: sticky; bottom: calc(40 * var(--u)); height: calc(182.6 * var(--u)); margin: 0 calc(20 * var(--u)); text-align: center; white-space: nowrap; }
   /* second block: ruled lines open like a fan, text wraps around the picture */
   .fan i { transform-origin: 0 50%; transform: rotate(7deg) scaleX(0); transition: transform .9s cubic-bezier(.2,.7,.2,1); }
   .s2.in .fan i { transform: none; }
   .s2 .num, .s2 .rt { opacity: 0; transition: opacity .6s; }
   .s2.in .rt { opacity: 1; } .s2.in .num { opacity: .3; }
-  .rt { width: calc(250 * var(--u)); font-size: calc(18 * var(--u)); line-height: 1; letter-spacing: -.01em; }
+  .rt { width: calc(250 * var(--u)); font-size: var(--t18); line-height: 1; letter-spacing: -.01em; }
   .rt .ln { display: block; white-space: nowrap; transition: transform .5s cubic-bezier(.2,.7,.2,1); }
   /* title letters rise one by one from below the screen */
   .ttl .h1 .ch { display: inline-block; white-space: pre; transform: translateY(150%); animation: rise .9s cubic-bezier(.2,.8,.2,1) forwards; }
@@ -190,7 +193,7 @@
   // title: one span per letter, staggered
   const h1 = one('.ttl .h1');
   // extra space before letters, matched to the layout (em): D i r t y _ H a n d s
-  const KERN = [0, .077, .007, .057, .034, 0, .044, 0, .025, .019, 0];
+  const KERN = [0, .02, .007, .057, .034, 0, .044, 0, .025, .019, 0];
   h1.innerHTML = [...h1.textContent].map((c, i) => `<span class="ch" style="animation-delay:${300 + i * 70}ms${KERN[i] ? `;margin-left:${KERN[i]}em` : ''}">${c}</span>`).join('');
 
   // hold ⌘G (Ctrl+G) to show the layout grid
@@ -218,7 +221,7 @@
   const SHADE = [225, 212, 230, 216, 226, 210];
   const INTRO = 200 + 5 * 110 + 700;   // ms until the last card has dropped
 
-  const LH = 18;                       // text line height (design px)
+  const LH = 18;                       // design line height, used as a margin around the picture
   let U = 1, V = 0, lines = [], t0 = performance.now(), introDone = reduce;
 
   // split each paragraph into its rendered lines, so every line can wrap around the picture on its own
@@ -279,7 +282,7 @@
     texts.forEach((el, j) => {
       const L = +el.dataset.x;
       lines[j].forEach((ln, li) => {
-        const T = +el.dataset.y + li * LH, hit = t > 0.85 && T < bottom + LH && T + LH > top - LH;
+        const T = +el.dataset.y + ln.offsetTop / U, hit = t > 0.85 && T < bottom + LH && T + LH > top - LH;
         const dx = hit ? Math.max(0, R + 31 - L) : 0, was = +ln.dataset.dx || 0;
         if (dx === was) return;
         ln.dataset.dx = dx;
@@ -324,7 +327,7 @@
 (() => {
   const cv = document.createElement('canvas'), ctx = cv.getContext('2d');
   cv.className = 'clay'; document.body.appendChild(cv);
-  const CLAY = '118,84,62', HOLD = 3500, FADE = 5500;
+  const CLAY = '122,84,58', HOLD = 3500, FADE = 5500;
   const R = (a, b) => a + Math.random() * (b - a);
   let dpr = 1, prints = [], raf = 0, drag = null;
 
@@ -334,20 +337,20 @@
     const c = document.createElement('canvas'); c.width = w; c.height = h;
     const g = c.getContext('2d'), step = Math.max(2 * dpr, Math.min(rx, ry) / (ridge === 'loop' ? 10 : 5));
     // uneven clay film: thin base plus thicker patches
-    g.fillStyle = `rgba(${CLAY},.14)`; g.beginPath(); g.ellipse(cx, cy, rx, ry, 0, 0, 7); g.fill();
+    g.fillStyle = `rgba(${CLAY},.62)`; g.beginPath(); g.ellipse(cx, cy, rx, ry, 0, 0, 7); g.fill();
     for (let i = 0; i < 9; i++) {
       const bx = cx + R(-.7, .7) * rx, by = cy + R(-.7, .7) * ry, br = R(.25, .65) * Math.min(rx, ry) * 1.4;
       const gr = g.createRadialGradient(bx, by, 0, bx, by, br);
-      gr.addColorStop(0, `rgba(${CLAY},${R(.12, .32)})`); gr.addColorStop(1, `rgba(${CLAY},0)`);
+      gr.addColorStop(0, `rgba(${CLAY},${R(.2, .45)})`); gr.addColorStop(1, `rgba(${CLAY},0)`);
       g.fillStyle = gr; g.fillRect(bx - br, by - br, br * 2, br * 2);
     }
-    // ridges, broken and uneven
-    g.lineCap = 'round';
+    // ridges: lighter valleys pressed into the clay, broken and uneven
+    g.lineCap = 'round'; g.globalCompositeOperation = 'destination-out';
     const ph = R(0, 6), ox = cx + R(-.15, .15) * rx, oy = cy + R(0, .25) * ry;
     const lines = ridge === 'loop' ? Math.ceil(Math.max(rx, ry) * 1.4 / step) : Math.ceil(ry * 2 / step);
     for (let k = 1; k <= lines; k++) {
       g.lineWidth = step * R(.3, .6);
-      g.strokeStyle = `rgba(${CLAY},${R(.18, .5)})`;
+      g.strokeStyle = `rgba(0,0,0,${R(.35, .7)})`;
       g.beginPath(); let pen = false;
       if (ridge === 'loop') {
         const rr = k * step;
@@ -367,6 +370,7 @@
       }
       g.stroke();
     }
+    g.globalCompositeOperation = 'source-over';
     // grain and crumbs
     for (let i = 0, n = rx * ry / (6 * dpr * dpr); i < n; i++) {
       g.fillStyle = `rgba(${CLAY},${R(.08, .4)})`;
@@ -384,14 +388,49 @@
     g.globalCompositeOperation = 'destination-in';
     g.save(); g.translate(cx, cy); g.scale(1, ry / rx);
     const gr = g.createRadialGradient(R(-.1, .1) * rx, R(-.1, .1) * rx, 0, 0, 0, rx);
-    gr.addColorStop(0, 'rgba(0,0,0,1)'); gr.addColorStop(R(.5, .7), 'rgba(0,0,0,.8)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+    gr.addColorStop(0, 'rgba(0,0,0,1)'); gr.addColorStop(R(.68, .82), 'rgba(0,0,0,.95)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
     g.fillStyle = gr; g.fillRect(-rx, -rx, rx * 2, rx * 2); g.restore();
     g.globalCompositeOperation = 'destination-out';
-    for (let i = 0; i < 8; i++) { const a = R(0, 7), d = R(.6, 1.05); g.beginPath(); g.arc(cx + Math.cos(a) * rx * d, cy + Math.sin(a) * ry * d, R(.15, .4) * Math.min(rx, ry) * 1.5, 0, 7); g.fillStyle = `rgba(0,0,0,${R(.3, .8)})`; g.fill(); }
+    for (let i = 0; i < 5; i++) { const a = R(0, 7), d = R(.75, 1.1); g.beginPath(); g.arc(cx + Math.cos(a) * rx * d, cy + Math.sin(a) * ry * d, R(.15, .4) * Math.min(rx, ry) * 1.5, 0, 7); g.fillStyle = `rgba(0,0,0,${R(.3, .8)})`; g.fill(); }
     return c;
   }
 
   const unit = () => document.documentElement.clientWidth / 1400 * dpr;
+
+  // a signature written in clay with a finger, revealed left to right
+  function signature(text, size) {
+    const g0 = document.createElement('canvas').getContext('2d'), font = `${size}px "Caveat Brush", cursive`;
+    g0.font = font;
+    const w = Math.ceil(g0.measureText(text).width + size * .6), h = Math.ceil(size * 1.5);
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const g = c.getContext('2d');
+    g.font = font; g.textBaseline = 'middle'; g.fillStyle = `rgba(${CLAY},.85)`;
+    g.lineJoin = 'round'; g.strokeStyle = `rgba(${CLAY},.5)`; g.lineWidth = size * .05;
+    g.strokeText(text, size * .3, h / 2); g.fillText(text, size * .3, h / 2);
+    // finger streaks along the writing and clay grain
+    g.globalCompositeOperation = 'destination-out'; g.lineCap = 'round';
+    for (let y = 0; y < h; y += size * R(.035, .06)) {
+      g.strokeStyle = `rgba(0,0,0,${R(.2, .5)})`; g.lineWidth = size * R(.008, .02);
+      g.beginPath(); for (let x = 0; x < w; x += 6) g.lineTo(x, y + Math.sin(x / (size * .7) + y) * size * .03); g.stroke();
+    }
+    for (let i = 0; i < w * h / 90; i++) { g.fillStyle = `rgba(0,0,0,${R(.1, .5)})`; g.fillRect(R(0, w), R(0, h), R(.5, 2) * dpr, R(.5, 2) * dpr); }
+    g.globalCompositeOperation = 'source-over';
+    const copy = document.createElement('canvas'); copy.width = w; copy.height = h; copy.getContext('2d').drawImage(c, 0, 0);
+    g.clearRect(0, 0, w, h); g.filter = `blur(${.7 * dpr}px)`; g.drawImage(copy, 0, 0); g.filter = 'none';
+    g.globalAlpha = .6; g.drawImage(copy, 0, 0); g.globalAlpha = 1;
+    return c;
+  }
+  let signed = null;
+  const title = document.querySelector('.ttl .h1');
+  title.addEventListener('pointerenter', async () => {
+    if (signed && prints.includes(signed)) return;     // one signature at a time
+    try { await document.fonts.load('80px "Caveat Brush"'); } catch (e) {}
+    const u = unit(), r = title.getBoundingClientRect();
+    const img = signature('Lisa & Karen', 78 * u);
+    signed = { x: (r.left + r.width * .3 + scrollX) * dpr, y: (r.top + scrollY) * dpr - 30 * u, pieces: [{ img, dx: 0, dy: 0, rot: -.07, a: 1, reveal: 1400 }], born: performance.now() };
+    prints.push(signed);
+    if (!raf) raf = requestAnimationFrame(draw);
+  });
 
   function stamp(x, y) {
     const u = unit(), pieces = [], kind = Math.random(), turn = R(-.6, .6);
@@ -433,16 +472,17 @@
     raf = 0;
     const now = performance.now(), sx = scrollX * dpr, sy = scrollY * dpr;
     ctx.clearRect(0, 0, cv.width, cv.height);
-    prints = prints.filter(p => p === (drag && drag.p) || now - p.born < HOLD + FADE);
+    prints = prints.filter(p => p === (drag && drag.p) || now - p.born < HOLD + FADE + (p.pieces[0].reveal || 0));
     prints.forEach(p => {
-      const age = now - p.born, f = Math.min(1, Math.max(0, (age - HOLD) / FADE)), soak = f * f * (3 - 2 * f);
-      const base = Math.min(1, age / 120) * (1 - soak);
+      const age = now - p.born, f = Math.min(1, Math.max(0, (age - HOLD - (p.pieces[0].reveal || 0)) / FADE)), soak = f * f * (3 - 2 * f);
+      const base = (p.pieces[0].reveal ? 1 : Math.min(1, age / 120)) * (1 - soak);
       ctx.filter = soak > 0.01 ? `blur(${soak * 4 * dpr}px)` : 'none';
       const press = 1 + .04 * Math.max(0, 1 - age / 160);
       p.pieces.forEach(q => {
         ctx.globalAlpha = base * q.a;
         ctx.save(); ctx.translate(p.x + q.dx - sx, p.y + q.dy - sy); ctx.rotate(q.rot); ctx.scale(press, press);
-        ctx.drawImage(q.img, -q.img.width / 2, -q.img.height / 2); ctx.restore();
+        const W = q.reveal ? Math.max(1, q.img.width * Math.min(1, age / q.reveal)) : q.img.width;
+        ctx.drawImage(q.img, 0, 0, W, q.img.height, -q.img.width / 2, -q.img.height / 2, W, q.img.height); ctx.restore();
       });
     });
     ctx.globalAlpha = 1; ctx.filter = 'none';
