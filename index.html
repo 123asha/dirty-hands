@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet">
 <style>
   @font-face { font-family: "CoFo Sans"; src: url("CoFoSans-Regular450.woff2") format("woff2"); font-weight: 400; font-display: swap; }
-  :root { --t18: min(18px, calc(18 * var(--u))); --bg: #fff; --ink: #000; --u: calc(var(--W, 100vw) / 1400); --ph: rgba(169,169,169,.15); --gray: #f2f2f2; --rule: #d9d9d9; }
+  :root { --t18: min(18px, calc(18 * var(--u))); --bg: #fff; --ink: #000; --u: calc(var(--W, 100vw) / 1400); --ph: rgba(169,169,169,.15); --gray: #f2f2f2; --rule: #d9d9d9; --dur: .6s; --ease: cubic-bezier(.2,.8,.2,1); }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #fff; --ink: #000; } }
   :root[data-theme="dark"] { --bg: #fff; --ink: #000; }
   * { box-sizing: border-box; }
@@ -24,7 +24,7 @@
   .s2 { height: calc(790 * var(--u)); margin-bottom: calc(348 * var(--u)); }
   .s2-in { position: relative; height: 100%; }
   .s3 { height: calc(100vh + 1800 * var(--u)); z-index: 3; }
-  .gray { position: sticky; top: 0; margin: 0 calc(20 * var(--u)); height: 100vh; overflow: hidden; background: var(--gray); }
+  .gray { position: sticky; top: calc(20 * var(--u)); margin: 0 calc(20 * var(--u)); height: calc(100vh - 40 * var(--u)); overflow: hidden; background: var(--gray); }
   .rest { height: calc(4515 * var(--u)); }
   .t { font-weight: 400; white-space: nowrap; }
   .h1 { font-size: calc(200.7 * var(--u)); line-height: .91; letter-spacing: -.08em; }
@@ -33,14 +33,24 @@
   .name2 { font-size: calc(108 * var(--u)); line-height: .91; letter-spacing: -.04em; }
   .t18 { font-size: var(--t18); line-height: 1.08; letter-spacing: -.01em; }
   .ph { background: var(--ph); }
+  /* menu: rises with the scroll from its place in the hero, then stays 20 from the top (top is set in tick); white + difference, like the title, so it stays readable over blocks */
+  .hero > .nav { position: fixed; top: calc(100vh - 253 * var(--u)); z-index: 101; color: #fff; mix-blend-mode: difference; }
   .nav { display: flex; gap: calc(12 * var(--u)); font-size: var(--t18); line-height: .91; letter-spacing: -.01em; }
-  .row { display: flex; gap: calc(31 * var(--u)); font-size: var(--t18); line-height: 1; letter-spacing: -.01em; position: absolute; }
+  .row { display: flex; gap: calc(31 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; position: absolute; }
   .row p { width: calc(250 * var(--u)); }
   .n { width: calc(40 * var(--u)); opacity: .3; font-size: var(--t18); line-height: .91; flex: none; }
   .rules { pointer-events: none; }
   .rules i { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--rule); }
   .rules.cap { z-index: 0; }
   .card2 { background: #fff; }
+  /* Lisa / Karen: when a card comes up inside the pinned block, it plays like block 2 — ruled lines fan open one by one, then rows, name and tick */
+  .card2 .rules i { transform-origin: 0 50%; transform: rotate(7deg) scaleX(0); transition: transform var(--dur) var(--ease); }
+  .card2.in .rules i { transform: none; }
+  .card2 .row, .card2 .name { opacity: 0; transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
+  .card2 .name { transform: translateY(40%); }
+  .card2.in .row, .card2.in .name { opacity: 1; transform: none; }
+  .card2 .tick { transform-origin: 0 50%; transform: scaleX(0); transition: transform var(--dur) var(--ease); }
+  .card2.in .tick { transform: none; }
   .tick { display: block; height: calc(4 * var(--u)); background: #000; position: absolute; left: 0; top: 0; }
   .shop:hover { text-decoration: underline; text-underline-offset: .2em; }
   .bigrow { display: flex; justify-content: space-between; align-items: flex-start; }
@@ -52,25 +62,31 @@
   /* hero cards: fly from the top row into the second block */
   .hc { position: absolute; background: #f2f2f2; transform-origin: 50% 50%; z-index: 5; will-change: transform, width, height, left, top; }
   /* big title: sticks to the bottom of the screen through blocks 1-2, then rests above the gray block */
-  .ttl { position: absolute; left: 0; top: 0; width: 100%; height: calc(100vh + 1207.6 * var(--u)); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; z-index: 2; }
-  .ttl .h1 { pointer-events: auto; position: sticky; bottom: calc(40 * var(--u)); height: calc(182.6 * var(--u)); margin: 0 calc(20 * var(--u)); text-align: center; white-space: nowrap; }
+  .ttl { position: absolute; left: 0; top: 0; width: 100%; height: calc(100vh + 1207.6 * var(--u)); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; z-index: 100; mix-blend-mode: difference; }  /* above everything; inverts wherever it crosses text or blocks */
+  .ttl .h1 { color: #fff; pointer-events: auto; position: sticky; bottom: calc(40 * var(--u)); height: calc(182.6 * var(--u)); margin: 0 calc(20 * var(--u)); text-align: center; white-space: nowrap; }
   /* second block: ruled lines open like a fan, text wraps around the picture */
-  .fan i { transform-origin: 0 50%; transform: rotate(7deg) scaleX(0); transition: transform .9s cubic-bezier(.2,.7,.2,1); }
+  .fan i { transform-origin: 0 50%; transform: rotate(7deg) scaleX(0); transition: transform var(--dur) var(--ease); }
   .s2.in .fan i { transform: none; }
-  .s2 .num, .s2 .rt { opacity: 0; transition: opacity .6s; }
+  .s2 .num, .s2 .rt { opacity: 0; transition: opacity var(--dur) var(--ease); }
   .s2.in .rt { opacity: 1; } .s2.in .num { opacity: .3; }
-  .rt { width: calc(250 * var(--u)); font-size: var(--t18); line-height: 1; letter-spacing: -.01em; }
-  .rt .ln { display: block; white-space: nowrap; transition: transform .5s cubic-bezier(.2,.7,.2,1); }
+  .rt { width: calc(250 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; }
+  .rt .ln { display: block; white-space: nowrap; transition: transform var(--dur) var(--ease); }
   /* title letters rise one by one from below the screen */
-  .ttl .h1 .ch { display: inline-block; white-space: pre; transform: translateY(150%); animation: rise .9s cubic-bezier(.2,.8,.2,1) forwards; }
+  .ttl .h1 .ch { display: inline-block; white-space: pre; transform: translateY(150%); animation: rise var(--dur) var(--ease) forwards; }
   @keyframes rise { to { transform: none; } }
   /* menu items appear one after another once the title is in */
-  .nav a { opacity: 0; transform: translateY(60%); animation: rise-in .7s cubic-bezier(.2,.8,.2,1) forwards; }
-  .nav a:nth-child(1) { animation-delay: 1100ms; } .nav a:nth-child(2) { animation-delay: 1220ms; } .nav a:nth-child(3) { animation-delay: 1340ms; }
+  .nav a { opacity: 0; transform: translateY(60%); animation: rise-in var(--dur) var(--ease) forwards; }
+  .nav a:nth-child(1) { animation-delay: 800ms; } .nav a:nth-child(2) { animation-delay: 900ms; } .nav a:nth-child(3) { animation-delay: 1000ms; }
   @keyframes rise-in { to { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: reduce) { .ttl .h1 .ch, .nav a { animation: none; transform: none; opacity: 1; } }
   /* partners: labels stick, the active row turns black */
-  .partner { opacity: .4; transition: opacity .35s; } .partner.on { opacity: 1; }
+  /* text below the first screen rises from the bottom as it comes into view (not the title, menu, block 2 or the cards: they have their own) */
+  .rv { clip-path: inset(100% -.5em -.3em -.5em); translate: 0 .8em; transition: clip-path var(--dur) var(--ease), translate var(--dur) var(--ease); }
+  .rv.shown { clip-path: inset(-.3em -.5em -.3em -.5em); translate: 0 0; }
+  @media (prefers-reduced-motion: reduce) { .rv { clip-path: none; translate: none; transition: none; } }
+  /* partners: gray text that fills with black (left to right) when its row is level with the labels */
+  .partner .pf { display: inline-block; will-change: transform; color: transparent; background: linear-gradient(#000, #000) 0 0 / 0% 100% no-repeat, linear-gradient(#999, #999) 0 0 / 100% 100% no-repeat; -webkit-background-clip: text; background-clip: text; transition: background-size var(--dur) var(--ease); }
+  .partner.on .pf { background-size: 100% 100%, 100% 100%; }
   .plab-in { position: sticky; top: 50vh; height: calc(20 * var(--u)); }
   .plab-in > p { position: absolute; top: 0; }
   .pic { transform-origin: 50% 0; }
@@ -86,7 +102,7 @@
 <main class="page">
 
 <section class="hero">
-  <nav class="nav" style="left:calc(941 * var(--u));bottom:calc(236 * var(--u))"><a href="#about">About</a><a href="#cases">Cases</a><a href="#events">Events</a></nav>
+  <nav class="nav" style="left:calc(941 * var(--u))"><a href="#about">About</a><a href="#cases">Cases</a><a href="#events">Events</a></nav>
 </section>
 
 <div class="hc" data-i="0" style="left:calc(20 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
@@ -122,8 +138,8 @@
 
 <section class="s3">
   <div class="gray">
-    <div class="card2" id="lisa" hidden style="left:calc(40 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(501 * var(--u));"><span class="tick" style="width:calc(90 * var(--u))"></span><div class="rules" data-n="21" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(17 * var(--u));width:calc(440 * var(--u));height:calc(270 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(144 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(216 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(400 * var(--u))">Lisa</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(465 * var(--u));width:calc(440 * var(--u))"></div></div>
-    <div class="card2" id="karen" hidden style="left:calc(888 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(501 * var(--u));"><span class="tick" style="width:calc(127 * var(--u))"></span><div class="rules" data-n="21" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(17 * var(--u));width:calc(440 * var(--u));height:calc(270 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(144 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(216 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(400 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(465 * var(--u));width:calc(440 * var(--u))"></div></div>
+    <div class="card2" id="lisa" style="left:calc(40 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(501 * var(--u));"><span class="tick" style="width:calc(90 * var(--u))"></span><div class="rules" data-n="21" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(17 * var(--u));width:calc(440 * var(--u));height:calc(270 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(144 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(216 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(400 * var(--u))">Lisa</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(465 * var(--u));width:calc(440 * var(--u))"></div></div>
+    <div class="card2" id="karen" style="left:calc(888 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(501 * var(--u));"><span class="tick" style="width:calc(127 * var(--u))"></span><div class="rules" data-n="21" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(17 * var(--u));width:calc(440 * var(--u));height:calc(270 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(144 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(216 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(400 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(465 * var(--u));width:calc(440 * var(--u))"></div></div>
   </div>
 </section>
 
@@ -138,32 +154,32 @@
     <p class="t18" style="left:calc(20 * var(--u));opacity:.4">Our Partners</p>
     <p class="t18" style="left:calc(250 * var(--u));width:calc(210 * var(--u));text-align:right">type of space</p>
   </div></div>
-  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(589 * var(--u));width:calc(674 * var(--u));">The Greeks</p>
-  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(695 * var(--u));width:calc(674 * var(--u));">Novikov</p>
-  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(801 * var(--u));width:calc(674 * var(--u));">Club Brera</p>
-  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(907 * var(--u));width:calc(674 * var(--u));">AVA</p>
-  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(1013 * var(--u));width:calc(674 * var(--u));">Rodina Moskva</p>
+  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(589 * var(--u));width:calc(674 * var(--u));"><span class="pf">The Greeks</span></p>
+  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(695 * var(--u));width:calc(674 * var(--u));"><span class="pf">Novikov</span></p>
+  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(801 * var(--u));width:calc(674 * var(--u));"><span class="pf">Club Brera</span></p>
+  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(907 * var(--u));width:calc(674 * var(--u));"><span class="pf">AVA</span></p>
+  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(1013 * var(--u));width:calc(674 * var(--u));"><span class="pf">Rodina Moskva</span></p>
 
-  <div class="ph pic" style="left:calc(690 * var(--u));top:calc(1386 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
+  <div class="ph pic" style="left:calc(20 * var(--u));top:calc(1386 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
   <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(1349 * var(--u))">01</span>
-  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(1386 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(1386 * var(--u));width:calc(210 * var(--u));line-height:1">Artful wall compositions bring depth, texture, and character to your space.</p>
-  <div class="ph pic" style="left:calc(1283 * var(--u));top:calc(2087 * var(--u));width:calc(573 * var(--u));height:calc(458 * var(--u));"></div>
+  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(1386 * var(--u));width:calc(670 * var(--u));height:calc(57 * var(--u));"></div>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(1386 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <div class="ph pic" style="left:calc(710 * var(--u));top:calc(2087 * var(--u));width:calc(573 * var(--u));height:calc(458 * var(--u));"></div>
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(20 * var(--u));top:calc(2087 * var(--u));width:calc(670 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(480 * var(--u));top:calc(2087 * var(--u));width:calc(210 * var(--u));">Artful wall compositions bring depth, texture, and character to your space.</p>
-  <span class="n" style="text-align:right;left:calc(690 * var(--u));top:calc(2050 * var(--u))">01</span>
-  <div class="ph pic" style="left:calc(690 * var(--u));top:calc(2704 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
+  <p class="t18" style="left:calc(480 * var(--u));top:calc(2087 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u));text-align:right">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <span class="n" style="left:calc(710 * var(--u));top:calc(2050 * var(--u))">01</span>
+  <div class="ph pic" style="left:calc(20 * var(--u));top:calc(2704 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
   <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(2667 * var(--u))">01</span>
-  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(2704 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(2704 * var(--u));width:calc(210 * var(--u));line-height:1">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(2704 * var(--u));width:calc(670 * var(--u));height:calc(57 * var(--u));"></div>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(2704 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
 
   <i class="hl" style="top:calc(3405 * var(--u))"></i>
   <i class="hl" style="top:calc(3495 * var(--u))"></i>
   <i class="hl" style="top:calc(3585 * var(--u))"></i>
   <i class="hl" style="top:calc(3675 * var(--u))"></i>
   <div class="bigrow" id="events" style="left:calc(20 * var(--u));top:calc(3408 * var(--u));width:calc(308 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Events</p><span class="n cnt">12</span></div>
-  <div class="bigrow" style="left:calc(1012 * var(--u));top:calc(3495 * var(--u));width:calc(368 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Courses</p><span class="n cnt">3</span></div>
-  <div class="bigrow" style="left:calc(581 * var(--u));top:calc(3585 * var(--u));width:calc(238 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Shop</p><span class="n cnt">232</span></div>
+  <div class="bigrow" style="left:calc(1012 * var(--u));top:calc(3498 * var(--u));width:calc(368 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Courses</p><span class="n cnt">3</span></div>
+  <div class="bigrow" style="left:calc(581 * var(--u));top:calc(3588 * var(--u));width:calc(238 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Shop</p><span class="n cnt">232</span></div>
 
   <p class="t big2" style="left:calc(250 * var(--u));top:calc(3997 * var(--u));width:calc(440 * var(--u));">Story</p>
   <p class="t18" style="left:calc(618 * var(--u));top:calc(3876 * var(--u));width:calc(285 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
@@ -198,7 +214,7 @@
   const h1 = one('.ttl .h1');
   // extra space before letters, matched to the layout (em): D i r t y _ H a n d s
   const KERN = [0, .02, .007, .057, .034, 0, .044, 0, .025, .019, 0];
-  h1.innerHTML = [...h1.textContent].map((c, i) => `<span class="ch" style="animation-delay:${300 + i * 70}ms${KERN[i] ? `;margin-left:${KERN[i]}em` : ''}">${c}</span>`).join('');
+  h1.innerHTML = [...h1.textContent].map((c, i) => `<span class="ch" style="animation-delay:${200 + i * 50}ms${KERN[i] ? `;margin-left:${KERN[i]}em` : ''}">${c}</span>`).join('');
 
   // ⌘G (Ctrl+G) turns the layout grid on and leaves it on; press again to hide it
   const grid = one('.grid');
@@ -210,19 +226,42 @@
   const drop = t => (t = clamp(t), 1 + 2.4 * (t - 1) ** 3 + 1.4 * (t - 1) ** 2);   // ease-out with a small overshoot
   const lerp = (a, b, t) => a + (b - a) * t;
 
+  const nav = one('.nav');
+  let revealed = [];
+
+  // scroll reveal: text rises from the bottom when it enters the screen, and resets when it goes back below
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    const targets = $('.rest p, .rest a, .rest .n, .rest .t18, .rest .bigrow').filter(el => !el.parentElement.closest('.bigrow') && !el.classList.contains('partner'));
+    const io = new IntersectionObserver(entries => {
+      let k = 0;
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.style.transitionDelay = k++ * 60 + 'ms'; e.target.classList.add('shown'); const t = e.target; setTimeout(() => { t.style.transitionDelay = ''; }, 900); }
+        else if (e.boundingClientRect.top > 0) { e.target.style.transitionDelay = ''; e.target.classList.remove('shown'); }
+      });
+    }, { rootMargin: '0px 0px -6% 0px' });
+    targets.forEach(el => { el.classList.add('rv'); io.observe(el); });
+    revealed = targets;
+  }
   const cards = $('.hc'), s2 = one('.s2'), s3 = one('.s3'), lisa = one('#lisa'), karen = one('#karen');
+  [lisa, karen].forEach(c => {
+    c.querySelectorAll('.rules').forEach((r, k) => r.querySelectorAll('i').forEach((l, i) => l.style.transitionDelay = (k ? 400 : 0) + i * 15 + 'ms'));
+    c.querySelectorAll('.row').forEach((r, j) => r.style.transitionDelay = 300 + j * 80 + 'ms');
+    c.querySelector('.name').style.transitionDelay = '600ms';
+  });
   const fan = $('.fan i'), nums = $('.s2 .num'), texts = $('.s2 .rt');
   // fan: lines draw one after another, then numbers and text
-  fan.forEach((l, i) => l.style.transitionDelay = i * 22 + 'ms');
-  texts.forEach((el, j) => el.style.transitionDelay = nums[j].style.transitionDelay = 600 + j * 80 + 'ms');
+  fan.forEach((l, i) => l.style.transitionDelay = i * 15 + 'ms');
+  texts.forEach((el, j) => el.style.transitionDelay = nums[j].style.transitionDelay = 450 + j * 60 + 'ms');
   const pics = $('.pic'), partners = $('.partner'), plab = one('.plab-in');
 
   const X0 = i => 20 + 230.17 * i, W0 = 210.2, H0 = [262.7, 210, 262.7, 210, 262.7, 262.7];
   const PX = 700, PY0 = 0, PY1 = 790;    // picture centre x; its y inside block 2 while it is held mid-screen (design px)
   const PW = 218.5, PH = 210, EX3 = 1800;  // picture size; extra scroll while the gray block is pinned
   const SHADE = [225, 212, 230, 216, 226, 210];
-  const INTRO = 200 + 5 * 110 + 700;   // ms until the last card has dropped
+  const DUR = 600, GAP = 90, LEAD = 150;   // ms: one speed for every animation (same as --dur in the CSS)
+  const INTRO = LEAD + 5 * GAP + DUR;   // ms until the last card has dropped
 
+  const PGAP = 80;                     // design px the lowest partner names are pushed away from their place
   const LH = 18;                       // design line height, used as a margin around the picture
   let U = 1, V = 0, lines = [], t0 = performance.now(), introDone = reduce;
 
@@ -252,6 +291,9 @@
     const picTops = pics.map(p => p.getBoundingClientRect().top / U);
     const labY = plab.getBoundingClientRect().top / U, partnerTops = partners.map(p => p.getBoundingClientRect().top / U);
 
+    // menu sticks 20 from the top: it starts 236 above the bottom of the first screen and rises with the scroll
+    nav.style.top = Math.max(20, V - 236 - nav.offsetHeight / U - y) * U + 'px';
+
     // 1 → 2: cards drop in, then gather into one picture in block 2
     const E = s2Top + PY0 - V / 2;
     const t = ease(y / E), landed = y >= E;
@@ -261,7 +303,7 @@
     const seg = clamp((py - PY0) / (PY1 - PY0)) * 6, k = Math.min(5, Math.floor(seg)), sw = k > 0 ? ease((seg - k) / 0.3) : 1;
     const arc = Math.sin(Math.PI * t);
     cards.forEach((c, i) => {
-      const mid = i - 2.5, d = introDone ? 1 : drop((now - t0 - 200 - i * 110) / 700);
+      const mid = i - 2.5, d = introDone ? 1 : drop((now - t0 - LEAD - i * GAP) / DUR);
       const h = lerp(20, H0[i], d);
       const w = lerp(W0, PW, t), hh = lerp(h, PH, t);
       const cx = lerp(X0(i) + W0 / 2, PX, t) + mid * 14 * arc, cy = lerp(20 + h / 2 + y, s2Top + py, t) + mid * 6 * arc;
@@ -288,7 +330,6 @@
         const dx = hit ? Math.max(0, R + 31 - L) : 0, was = +ln.dataset.dx || 0;
         if (dx === was) return;
         ln.dataset.dx = dx;
-        ln.style.transition = dx > was ? 'none' : '';   // move out of the way at once, come back smoothly
         ln.style.transform = dx ? `translateX(${dx * U}px)` : '';
       });
     });
@@ -297,11 +338,18 @@
     const P3 = clamp((y - s3Top) / EX3);
     lisa.style.top = lerp(V, -540, clamp(P3 / 0.6)) * U + 'px';
     karen.style.top = lerp(V, -540, clamp((P3 - 0.4) / 0.6)) * U + 'px';
+    // a card plays its animation when it comes up into the screen, and resets when it goes back below
+    [[lisa, P3 / 0.6], [karen, (P3 - 0.4) / 0.6]].forEach(([el, k]) => { const top = lerp(V, -540, clamp(k)); if (top < V * 0.8) el.classList.add('in'); else if (top >= V) el.classList.remove('in'); });
 
     // partners: the row level with the sticky labels is black
     let best = 0, bd = Infinity;
     partnerTops.forEach((top, i) => { const dd = Math.abs(top + 22 - labY); if (dd < bd) { bd = dd; best = i; } });
     partners.forEach((el, i) => el.classList.toggle('on', i === best));
+    // names start a bit further apart and close up like train cars as they rise to the labels (the row level with them sits at its own place)
+    partners.forEach((el, i) => { el.firstElementChild.style.transform = `translateY(${PGAP * ease((partnerTops[i] - V * 0.4) / (V * 0.6)) * U}px)`; });
+
+    // after a jump (anchor, fast scroll) text left above may still be shown: hide what is now below the screen
+    revealed.forEach(el => { if (el.classList.contains('shown') && el.getBoundingClientRect().top > innerHeight) el.classList.remove('shown'); });
 
     // photos change like slides
     pics.forEach((el, i) => {
