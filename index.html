@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dirty Hands Layout</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <style>
   @font-face { font-family: "CoFo Sans"; src: url("CoFoSans-Regular450.woff2") format("woff2"); font-weight: 400; font-display: swap; }
   :root { --t18: min(18px, calc(18 * var(--u))); --bg: #fff; --ink: #000; --u: calc(var(--W, 100vw) / 1400); --ph: rgba(169,169,169,.15); --gray: #f2f2f2; --rule: #d9d9d9; --dur: .6s; --ease: cubic-bezier(.2,.8,.2,1); }
@@ -20,7 +22,7 @@
   .hero { height: 100vh; }
   .s2 { height: calc(916 * var(--u)); margin-bottom: calc(348 * var(--u)); }
   .s2-in { position: relative; height: 100%; }
-  .s3 { height: calc(100vh + 1800 * var(--u)); z-index: 3; }
+  .s3 { height: calc(100vh + 1260 * var(--u)); z-index: 3; }
   .gray { position: sticky; top: 0; margin: 0; height: 100vh; overflow: hidden; background: var(--gray); }
   .rest { height: calc(4515 * var(--u)); }
   .t { font-weight: 400; white-space: nowrap; }
@@ -40,22 +42,15 @@
   .rules i { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--rule); }
   .rules.cap { z-index: 0; }
   .card2 { background: #fff; }
-  /* Lisa / Karen: when a card comes up inside the pinned block, it plays like block 2 — ruled lines fan open one by one, then rows, name and tick */
-  .card2 .rules i { transform-origin: 0 50%; transform: rotate(7deg) scaleX(0); transition: transform var(--dur) var(--ease); }
-  .card2.in .rules i { transform: none; }
-  .card2 .row, .card2 .name { opacity: 0; transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
-  .card2 .name { transform: translateY(40%); }
-  .card2.in .row, .card2.in .name { opacity: 1; transform: none; }
-  .card2 .tick { transform-origin: 0 50%; transform: scaleX(0); transition: transform var(--dur) var(--ease); }
-  .card2.in .tick { transform: none; }
   .tick { display: block; height: calc(4 * var(--u)); background: #000; position: absolute; left: 0; top: 0; }
   .shop:hover { text-decoration: underline; text-underline-offset: .2em; }
   .bigrow { display: flex; justify-content: space-between; align-items: flex-start; width: max-content; padding-right: calc(3 * var(--u)); }
   .bigrow .name2 { position: static; }
-  .bigrow.rv { clip-path: none; translate: none; transition: transform .9s var(--ease); }
-  .bigrow { transform: translateX(calc(var(--dx, 0) * var(--u))); }     /* --dx: from the page centre to the word's own place (set in measure) */
+  .bigrow { transform: translateX(calc(var(--dx, 0) * var(--u))); transition: transform .9s var(--ease); }     /* --dx: from the page centre to the word's own place (set in measure) */
   .bigrow.spread { transform: none; }
   /* Story: a grey year at the top right of the word, it follows the paragraph that is in the middle of the screen */
+  [data-year] { transition: transform .8s var(--ease); }
+  [data-year].past { transform: translateX(calc(-92 * var(--u))); }   /* a paragraph that has gone above the middle steps aside, like the text next to the picture in block 2 */
   .tagged { width: max-content; padding-right: calc(3 * var(--u)); }
   .tagged .big2 { position: static; }
   .tagged .yr { position: absolute; top: 0; right: 0; width: calc(44 * var(--u)); text-align: right; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; opacity: .3; transition: opacity .2s ease-out; }
@@ -69,13 +64,12 @@
   /* big title: sticks to the bottom of the screen through blocks 1-2, then rests above the gray block */
   .ttl { position: absolute; left: 0; top: 0; width: 100%; height: calc(100vh + 1163.3 * var(--u)); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; z-index: 100; mix-blend-mode: difference; }  /* above everything; inverts wherever it crosses text or blocks */
   .ttl .h1 { color: #fff; pointer-events: auto; position: sticky; bottom: calc(40 * var(--u)); height: calc(182.6 * var(--u)); margin: 0 calc(20 * var(--u)); text-align: center; white-space: nowrap; }
-  /* second block: ruled lines open like a fan, text wraps around the picture */
-  .fan i { transform-origin: 0 50%; transform: rotate(7deg) scaleX(0); transition: transform var(--dur) var(--ease); }
-  .s2.in .fan i { transform: none; }
-  .s2 .num, .s2 .rt { opacity: 0; transition: opacity var(--dur) var(--ease); }
-  .s2.in .rt { opacity: 1; } .s2.in .num { opacity: .3; }
   .rt { width: calc(250 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; }
-  .rt .ln { display: block; white-space: nowrap; transition: transform var(--dur) var(--ease); }
+  .rt .ln { display: block; white-space: nowrap; overflow: hidden; padding-bottom: .2em; margin-bottom: -.2em; }   /* the line mask (the line itself moves around the picture) */
+  .rt .li { display: block; }
+  /* line masks: text rises out of its own line */
+  .m { display: block; overflow: hidden; padding-bottom: .3em; margin-bottom: -.3em; }
+  .mi { display: block; white-space: nowrap; }
   /* title letters rise one by one from below the screen */
   .ttl .h1 .ch { display: inline-block; white-space: pre; transform: translateY(150%); animation: rise var(--dur) var(--ease) forwards; }
   @keyframes rise { to { transform: none; } }
@@ -85,18 +79,6 @@
   @keyframes rise-in { to { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: reduce) { .ttl .h1 .ch, .nav a { animation: none; transform: none; opacity: 1; } }
   /* partners: labels stick, the active row turns black */
-  /* text below the first screen rises from the bottom as it comes into view (not the title, menu, block 2 or the cards: they have their own) */
-  .rv { clip-path: inset(100% -.5em -.3em -.5em); translate: 0 .8em; transition: clip-path var(--dur) var(--ease), translate var(--dur) var(--ease); }
-  .rv.shown { clip-path: inset(-.3em -.5em -.3em -.5em); translate: 0 0; }
-  /* paragraphs that come in line by line: every line rises from under its own mask */
-  .lr .ln2 { display: block; overflow: hidden; padding-bottom: .2em; margin-bottom: -.2em; }
-  .lr .ln2 > span { display: block; white-space: nowrap; transform: translateY(115%); transition: transform var(--dur) var(--ease); transition-delay: calc(var(--i, 0) * 90ms); }
-  .lr.shown .ln2 > span { transform: none; }
-  /* the short ruled lines under the pictures fan open one by one, left to right (right to left for the right-aligned text) */
-  .rules.cap i { transform-origin: 0 50%; transform: rotate(7deg) scaleX(0); transition: transform var(--dur) var(--ease); }
-  .rules.cap.rtl i { transform-origin: 100% 50%; transform: rotate(-7deg) scaleX(0); }
-  .rules.cap.shown i { transform: none; }
-  @media (prefers-reduced-motion: reduce) { .rv { clip-path: none; translate: none; transition: none; } }
   /* partners: gray text that fills with black (left to right) when its row is level with the labels */
   .partner .pf { display: inline-block; will-change: transform; color: transparent; background: linear-gradient(#000, #000) 0 0 / 0% 100% no-repeat, linear-gradient(#999, #999) 0 0 / 100% 100% no-repeat; -webkit-background-clip: text; background-clip: text; transition: background-size var(--dur) var(--ease); }
   .partner.on .pf { background-size: 100% 100%, 100% 100%; }
@@ -166,7 +148,7 @@
 <section class="s3">
   <div class="gray">
     <div class="card2" id="lisa" style="left:calc(20 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(357 * var(--u));"><span class="tick" style="width:calc(90 * var(--u))"></span><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Lisa</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(321 * var(--u));width:calc(440 * var(--u))"></div></div>
-    <div class="card2" id="karen" style="left:calc(940 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(357 * var(--u));"><span class="tick" style="width:calc(127 * var(--u))"></span><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(321 * var(--u));width:calc(440 * var(--u))"></div></div>
+    <div class="card2" id="karen" style="left:calc(710 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(357 * var(--u));"><span class="tick" style="width:calc(127 * var(--u))"></span><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(321 * var(--u));width:calc(440 * var(--u))"></div></div>
   </div>
 </section>
 
@@ -209,7 +191,7 @@
   <div class="bigrow" style="left:calc(480 * var(--u));top:calc(3540.2 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Shop</p><span class="n cnt">232</span></div>
 
   <div class="tagged" style="left:calc(250 * var(--u));top:calc(3997 * var(--u));"><p class="t big2">Story</p><span class="yr" aria-hidden="true"></span></div>
-  <p class="t18" data-year="2019" style="left:calc(618 * var(--u));top:calc(3876 * var(--u));width:calc(285 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <p class="t18" data-year="2019" style="left:calc(710 * var(--u));top:calc(3876 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
   <p class="t18" data-year="2020" style="left:calc(710 * var(--u));top:calc(3953 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
   <p class="t18" data-year="2021" style="left:calc(710 * var(--u));top:calc(4030 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
   <p class="t18" data-year="2022" style="left:calc(710 * var(--u));top:calc(4107 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
@@ -248,8 +230,6 @@
     r.innerHTML = Array.from({ length: +r.dataset.n }, (_, i) => `<i style="top:calc(${i * r.dataset.step} * var(--u))"></i>`).join('');
   });
 
-  $('.rules.cap').forEach(r => [...r.children].forEach((l, i) => { l.style.transitionDelay = i * 70 + 'ms'; }));
-
   // title: one span per letter, staggered
   const h1 = one('.ttl .h1');
   // extra space before letters, matched to the layout (em): D i r t y _ H a n d s
@@ -267,48 +247,23 @@
   const lerp = (a, b, t) => a + (b - a) * t;
 
   const nav = one('.nav'), contact = one('.ct'), contactLink = one('.ctl'), ttlBox = one('.ttl'), soakDisp = one('#soakDisp'), soakBlur = one('#soakBlur');
-  const bigrows = $('.bigrow'), storyP = $('[data-year]'), storyYear = one('.yr');
-  let revealed = [];
-
-  // scroll reveal: text rises from the bottom when it enters the screen, and resets when it goes back below
-  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
-    const targets = $('.rest p, .rest a, .rest .n, .rest .t18, .rest .bigrow, .rest .rules.cap').filter(el => !el.parentElement.closest('.bigrow') && !el.classList.contains('partner'));
-    const io = new IntersectionObserver(entries => {
-      let k = 0, m = 0;
-      entries.slice().sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top).forEach(e => {    // top to bottom, one after another
-        if (e.isIntersecting) {
-          const story = e.target.hasAttribute('data-year');                       // the Story paragraphs come in clearly one by one
-          e.target.style.transitionDelay = (story ? m++ * 170 : k++ * 60) + 'ms'; e.target.classList.add('shown');
-          const t = e.target; setTimeout(() => { t.style.transitionDelay = ''; }, 1500);
-        }
-        else if (e.boundingClientRect.top > 0) { e.target.style.transitionDelay = ''; e.target.classList.remove('shown'); }
-      });
-    }, { rootMargin: '0px 0px -6% 0px' });
-    targets.forEach(el => { if (!el.classList.contains('rules') && !el.classList.contains('lr')) el.classList.add('rv'); io.observe(el); });
-    revealed = targets;
-  }
+  const bigrows = $('.bigrow'), storyP = $('[data-year]'), storyYear = one('.yr'), storyPinned = [one('.tagged'), ...$('.dot')];
+  const storyMid = i => (storyP[i].offsetTop + storyP[i].offsetHeight / 2) / U;   // centre of a Story paragraph inside the page section (design px)
   const cards = $('.hc'), s2 = one('.s2'), s3 = one('.s3'), lisa = one('#lisa'), karen = one('#karen');
-  [lisa, karen].forEach(c => {
-    c.querySelectorAll('.rules').forEach((r, k) => r.querySelectorAll('i').forEach((l, i) => l.style.transitionDelay = (k ? 400 : 0) + i * 15 + 'ms'));
-    c.querySelectorAll('.row').forEach((r, j) => r.style.transitionDelay = 300 + j * 80 + 'ms');
-    c.querySelector('.name').style.transitionDelay = '600ms';
-  });
   const fan = $('.fan i'), nums = $('.s2 .num'), texts = $('.s2 .rt');
-  // fan: lines draw one after another, then numbers and text
-  fan.forEach((l, i) => l.style.transitionDelay = i * 15 + 'ms');
-  texts.forEach((el, j) => el.style.transitionDelay = nums[j].style.transitionDelay = 450 + j * 60 + 'ms');
   const pics = $('.pic'), partners = $('.partner'), plab = one('.plab-in');
 
   const X0 = i => 20 + 230.17 * i, W0 = 210.2, H0 = [262.7, 210, 262.7, 210, 262.7, 262.7];
   const PX = 700, PY0 = 0, PY1 = 772;    // picture centre x; its y inside block 2 while it is held mid-screen (design px). PH = 12 ruled bands; PY1 = last line (880) minus half of it
-  const PW = 218.5, PH = 216, EX3 = 1800;  // picture size; extra scroll while the gray block is pinned
+  const PW = 218.5, PH = 216, EX3 = 1260;  // picture size; extra scroll while the gray block is pinned
   const SHADE = [225, 212, 230, 216, 226, 210];
+  const DEPTH = [260, -230, 120, -300, 190, -140];   // design px each card moves towards (+) or away from (-) the viewer while the cards fly together
   const DUR = 600, GAP = 90, LEAD = 150;   // ms: one speed for every animation (same as --dur in the CSS)
   const INTRO = LEAD + 5 * GAP + DUR;   // ms until the last card has dropped
 
   const PGAP = 80;                     // design px the lowest partner names are pushed away from their place
   const LH = 18;                       // design line height, used as a margin around the picture
-  let U = 1, V = 0, lines = [], t0 = performance.now(), introDone = reduce;
+  let U = 1, V = 0, lines = [], t0 = performance.now(), introDone = reduce, lastW = 0, rebuild = 0;
 
   // split each paragraph into its rendered lines, so every line can wrap around the picture on its own
   function splitLines() {
@@ -317,27 +272,127 @@
       p.innerHTML = text.split(' ').map(w => `<span>${w}</span>`).join(' ');
       const rows = [];
       [...p.children].forEach(s => { const top = s.offsetTop; (rows.length && rows[rows.length - 1].top === top) ? rows[rows.length - 1].w.push(s.textContent) : rows.push({ top, w: [s.textContent] }); });
-      p.innerHTML = rows.map(r => `<span class="ln">${r.w.join(' ')}</span>`).join('');
+      p.innerHTML = rows.map(r => `<span class="ln"><span class="li">${r.w.join(' ')} </span></span>`).join('');
       return [...p.children];
     });
   }
 
   function measure() {
     const w = root.clientWidth;
+    lastW = w;
     root.style.setProperty('--W', w + 'px');
     U = w / 1400; V = innerHeight / U;
     splitLines();
-    $('.lr').forEach(p => {
-      const text = p.dataset.text || (p.dataset.text = p.textContent.trim());
-      p.innerHTML = text.split(' ').map(w => `<span>${w}</span>`).join(' ');
-      const rows = [];
-      [...p.children].forEach(sp => { const top = sp.offsetTop; (rows.length && rows[rows.length - 1].top === top) ? rows[rows.length - 1].w.push(sp.textContent) : rows.push({ top, w: [sp.textContent] }); });
-      p.innerHTML = rows.map((r, i) => `<span class="ln2" style="--i:${i}"><span>${r.w.join(' ')} </span></span>`).join('');
-    });
     bigrows.forEach(b => b.style.setProperty('--dx', (0.4 * (700 - (b.offsetLeft + b.offsetWidth / 2) / U)).toFixed(2)));   // every word starts 60% of the way to its place, so the words never sit on top of each other
   }
 
+  // ---- motion (GSAP + ScrollTrigger): the ruled lines draw first, then the text comes in line by line from under its mask; scrolling back plays it in reverse
+  const G = !reduce && window.gsap && window.ScrollTrigger;
+  if (G) gsap.registerPlugin(ScrollTrigger);
+  const EASE = 'power3.out';
+  let pairs = [], touched = [];
+
+  function splitMask(el) {                          // every rendered line gets its own mask: .m > .mi
+    const text = el.dataset.text || (el.dataset.text = el.textContent.trim().replace(/\s+/g, ' '));
+    el.innerHTML = text.split(' ').map(w => `<span>${w}</span>`).join(' ');
+    const rows = [];
+    [...el.children].forEach(sp => { const top = sp.offsetTop; (rows.length && rows[rows.length - 1].top === top) ? rows[rows.length - 1].w.push(sp.textContent) : rows.push({ top, w: [sp.textContent] }); });
+    el.innerHTML = rows.map(r => `<span class="m"><span class="mi">${r.w.join(' ')} </span></span>`).join('');
+    return [...el.querySelectorAll('.mi')];
+  }
+  const fanIn = (tl, lines, o = {}) => tl.fromTo(lines, { scaleX: 0, rotation: o.rot ?? 7, transformOrigin: o.origin || '0 50%' }, { scaleX: 1, rotation: 0, duration: o.dur ?? .95, ease: EASE, stagger: { each: o.each ?? .02 } }, o.at ?? 0);
+  const riseIn = (tl, inner, o = {}) => tl.fromTo(inner, { yPercent: 112 }, { yPercent: 0, duration: o.dur ?? 1, ease: EASE, stagger: { each: o.each ?? .08 } }, o.at ?? 0);
+  const fadeIn = (tl, els, to, at, o = {}) => tl.fromTo(els, { autoAlpha: 0 }, { autoAlpha: to, duration: o.dur ?? .7, ease: 'power2.out', stagger: o.each ?? 0 }, at);
+
+  function mk(trigger, fn, start = 'top 88%') {    // one timeline that plays when its trigger comes up, and reverses when you scroll back above it
+    const tl = gsap.timeline({ paused: true }); fn(tl);
+    const st = ScrollTrigger.create({ trigger, start, onEnter: () => tl.timeScale(1).play(), onLeaveBack: () => tl.timeScale(2.2).reverse() });
+    pairs.push({ st, tl }); return tl;
+  }
+  function stag(items, o = {}) {                     // items that come up together are revealed one after another
+    items.forEach(i => { i.el._tl = i.tl; });
+    const sts = ScrollTrigger.batch(items.map(i => i.el), {
+      start: o.start || 'top 90%', interval: .1,
+      onEnter: b => b.forEach((el, k) => { el._dc && el._dc.kill(); el._dc = gsap.delayedCall((o.delay || 0) + k * (o.gap ?? .14), () => el._tl.timeScale(1).play()); }),
+      onLeaveBack: b => b.forEach(el => { el._dc && el._dc.kill(); el._tl.timeScale(2.2).reverse(); })
+    });
+    sts.forEach((st, i) => pairs.push({ st, tl: items[i].tl }));
+  }
+  const textTl = (inner, o = {}) => riseIn(gsap.timeline({ paused: true }), inner, o).parent || null;
+
+  function buildMotion() {
+    if (!G) return;
+    pairs.forEach(({ st, tl }) => { st.kill(); tl.kill(); }); pairs = [];
+    if (touched.length) gsap.set(touched, { clearProps: 'transform,opacity,visibility,transformOrigin,scale,rotate,translate' });   // only what GSAP set: the inline left/top/width of the lines stay
+    touched = [];
+    const done = new Set();
+    const topOf = el => parseFloat((el.style.top.match(/calc\(([\d.]+)/) || [0, 0])[1]);
+
+    // block 2: the fan of lines, then the numbers and the paragraphs one after another
+    const fanLines = [...fan]; touched.push(...fanLines);
+    mk(s2, tl => fanIn(tl, fanLines, { each: .014 }), 'top 85%');
+    stag(texts.map((p, j) => {
+      const tl = gsap.timeline({ paused: true }), n = nums[j]; touched.push(n);
+      fadeIn(tl, n, .3, 0, { dur: .8 });
+      riseIn(tl, [...p.querySelectorAll('.li')], { at: 0, each: .09 });
+      done.add(p); return { el: p, tl };
+    }), { start: 'top 92%', delay: .5, gap: .1 });
+
+    // the short ruled lines under the pictures: they fan open from the side the text is aligned to, then the text rises line by line
+    $('.rules.cap').forEach(r => {
+      const p = r.nextElementSibling, inner = splitMask(p), rtl = r.classList.contains('rtl');
+      const n = $('.rest > .n').find(x => Math.abs(topOf(x) - (topOf(r) - 37)) < 2), lines = [...r.children];
+      done.add(p); touched.push(...lines); n && touched.push(n);
+      mk(r, tl => {
+        fanIn(tl, lines, { origin: rtl ? '100% 50%' : '0 50%', rot: rtl ? -7 : 7, each: .09 });
+        n && fadeIn(tl, n, .3, .45);
+        riseIn(tl, inner, { at: '>-0.6', each: .1 });
+      });
+    });
+
+    // Lisa and Karen: the bar, the lines, then the text, the name and the lines below (played from tick when the card comes up)
+    [lisa, karen].forEach(c => {
+      const rl = c.querySelectorAll('.rules'), top = [...rl[0].children], bot = [...rl[1].children], bar = c.querySelector('.tick');
+      const nn = [...c.querySelectorAll('.row .n')], inner = [...c.querySelectorAll('.row p')].flatMap(splitMask), nm = splitMask(c.querySelector('.name'));
+      touched.push(...top, ...bot, bar, ...nn);
+      if (c._tl) c._tl.kill();
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo(bar, { scaleX: 0, transformOrigin: '0 50%' }, { scaleX: 1, duration: .9, ease: EASE }, 0);
+      fanIn(tl, top, { each: .022, at: .1 });
+      fadeIn(tl, nn, .3, 1, { dur: .6, each: .15 });
+      riseIn(tl, inner, { at: .9, each: .1 });
+      riseIn(tl, nm, { at: 1.4 });
+      fanIn(tl, bot, { each: .09, at: 1.5 });
+      c._tl = tl; pairs.push({ st: { kill() {}, start: Infinity }, tl });
+      if (c._on) tl.progress(1);
+    });
+
+    // About / Cases / Shop: the lines draw, then the words rise, then the counters
+    const hl = $('.hl'); touched.push(...hl);
+    const words = bigrows.map(b => ({ w: splitMask(b.querySelector('.name2')), c: b.querySelector('.cnt') })); touched.push(...words.map(x => x.c));
+    mk(hl[0], tl => {
+      tl.fromTo(hl, { scaleX: 0, transformOrigin: '0 50%' }, { scaleX: 1, duration: 1.1, ease: EASE, stagger: .14 }, 0);
+      words.forEach(({ w, c }, i) => { riseIn(tl, w, { at: .6 + i * .15 }); fadeIn(tl, c, .3, 1 + i * .15); });
+    }, 'top 85%');
+
+    // all other text: line by line, one paragraph after another
+    const items = [];
+    $('.rest p.t18, .rest a.t18, .rest #about, .tagged .big2').forEach(el => {
+      if (done.has(el) || el.closest('.plab-in') || el.closest('.bigrow')) return;
+      const tl = gsap.timeline({ paused: true }); riseIn(tl, splitMask(el), { each: .09 }); items.push({ el, tl });
+    });
+    $('.rest > .ph:not(.pic):not(.bar), .dot').forEach(el => {
+      const tl = gsap.timeline({ paused: true }), to = +getComputedStyle(el).opacity; touched.push(el); fadeIn(tl, el, to, 0, { dur: .9 }); items.push({ el, tl });
+    });
+    stag(items, { gap: .16 });
+
+    ScrollTrigger.refresh();
+    pairs.forEach(({ st, tl }) => { if (scrollY >= st.start && scrollY > 0) tl.progress(1); });     // what is already above the screen stays shown
+  }
+
   function tick(now = performance.now()) {
+    // the width of the page changes when the scrollbar appears or goes (no resize event for that): re-measure so everything stays on the grid
+    if (root.clientWidth !== lastW) { measure(); clearTimeout(rebuild); rebuild = setTimeout(buildMotion, 200); }
     // reads
     const y = scrollY / U, s2Top = s2.offsetTop / U, s3Top = s3.offsetTop / U;
     const s2View = s2.getBoundingClientRect().top / U;
@@ -346,10 +401,11 @@
 
     // menu sticks 20 from the top: it starts 236 above the bottom of the first screen and rises with the scroll
     nav.style.top = Math.max(20, V - 236 - nav.offsetHeight / U - y) * U + 'px';
-    // the title soaks into the background while it is stuck: the edges bleed like water in clay, then it dries into a faint stain
-    const soak = ease(clamp(y / V));
+    // the title soaks into the background once it is released and led away: the edges bleed like water in clay, and by the gray block it has dried into nothing
+    const release = ttlBox.offsetHeight / U - V + 40;                 // scroll position where the stuck title lets go
+    const soak = ease(clamp((y - release) / (V * 0.5)));
     soakDisp.setAttribute('scale', (soak * 26 * U).toFixed(1)); soakBlur.setAttribute('stdDeviation', (soak * 5 * U).toFixed(2));
-    h1.style.filter = soak > 0.001 ? 'url(#soak)' : 'none'; ttlBox.style.opacity = (1 - 0.82 * soak).toFixed(3);
+    h1.style.filter = soak > 0.001 ? 'url(#soak)' : 'none'; ttlBox.style.opacity = (1 - soak).toFixed(3);
     // Story: the year of the paragraph that is nearest to the middle of the screen (hidden when none is close)
     let sIdx = -1, sDist = Infinity;
     storyP.forEach((q, i) => { const r = q.getBoundingClientRect(), d = Math.abs((r.top + r.height / 2) / U - V / 2); if (d < sDist) { sDist = d; sIdx = i; } });
@@ -358,6 +414,11 @@
       storyYear.dataset.cur = year; clearTimeout(storyYear._t); storyYear.classList.add('sw');
       storyYear._t = setTimeout(() => { storyYear.textContent = year; if (year) storyYear.classList.remove('sw'); }, 180);
     }
+    // Story: the word, its year and the two squares stay on the screen while the paragraphs scroll past the middle; a paragraph that has gone above the middle steps aside
+    const restTop = one('.rest').offsetTop / U, pinA = restTop + storyMid(0), pinB = restTop + storyMid(storyP.length - 1);
+    const hold = Math.min(pinB - pinA, Math.max(0, y - (pinA - V / 2)));
+    storyPinned.forEach(el => { el.style.transform = hold ? `translateY(${hold * U}px)` : ''; });
+    storyP.forEach(q => { const r = q.getBoundingClientRect(); q.classList.toggle('past', (r.top + r.height / 2) / U < V / 2 - 40); });
     // About / Cases / Shop: they come in on the centre and, once the list has reached the middle of the screen, take their places on their own
     const listMid = bigrows[0].getBoundingClientRect().top / U + 122;
     if (listMid <= V * 0.5) bigrows.forEach(b => b.classList.add('spread')); else if (listMid > V * 0.5 + 80) bigrows.forEach(b => b.classList.remove('spread'));
@@ -387,15 +448,15 @@
       const fixed = y < E + PY1 - PY0;
       c.style.position = fixed ? 'fixed' : 'absolute';
       c.style.left = (cx - w / 2) * U + 'px'; c.style.top = (cy - hh / 2 - (fixed ? y : 0)) * U + 'px';
-      c.style.transform = arc > 0.001 ? `rotate(${mid * 3 * arc}deg)` : '';
+      // depth: on one plane at the start, some further away and some closer while they fly (arc), one plane again once gathered
+      const Z = DEPTH[i] * U * arc, RY = (i % 2 ? 1 : -1) * (5 + i * 2) * arc;
+      c.style.transform = arc > 0.001 ? `perspective(${1400 * U}px) translateZ(${Z.toFixed(1)}px) rotateY(${RY.toFixed(2)}deg) rotate(${mid * 3 * arc}deg)` : '';
       const g = Math.round(landed ? SHADE[i] : lerp(242, 225, t));
       c.style.background = `rgb(${g},${g},${g})`;
       c.style.opacity = !landed ? 1 : i === k ? sw : (i === k - 1 && sw < 1 ? 1 : 0);
-      c.style.zIndex = landed && i === k ? 6 : 5;
+      c.style.zIndex = arc > 0.001 && !landed ? 5 + Math.round((DEPTH[i] + 300) / 100) : landed && i === k ? 6 : 5;   // nearer cards are in front
     });
 
-    // block 2: lines open like a fan once the block comes into view (again after scrolling back above it)
-    if (s2View < V * 0.8) s2.classList.add('in'); else if (s2View > V) s2.classList.remove('in');
     // text wraps around the picture, line by line, as it scrolls past
     const R = PX + PW / 2, top = py - PH / 2, bottom = py + PH / 2;
     texts.forEach((el, j) => {
@@ -412,9 +473,12 @@
     // gray block pinned: Lisa rises through it, then Karen
     const P3 = clamp((y - s3Top) / EX3);
     lisa.style.top = lerp(V, -396, clamp(P3 / 0.6)) * U + 'px';
-    karen.style.top = lerp(V, -396, clamp((P3 - 0.4) / 0.6)) * U + 'px';
-    // a card plays its animation when it comes up into the screen, and resets when it goes back below
-    [[lisa, P3 / 0.6], [karen, (P3 - 0.4) / 0.6]].forEach(([el, k]) => { const top = lerp(V, -396, clamp(k)); if (top < V * 0.8) el.classList.add('in'); else if (top >= V) el.classList.remove('in'); });
+    karen.style.top = lisa.style.top;                                   // Karen rises together with Lisa, at the same height
+    // a card plays its animation when it comes up into the screen, and plays back when it goes below again
+    [[lisa, P3 / 0.6], [karen, P3 / 0.6]].forEach(([el, k]) => {
+      const top = lerp(V, -396, clamp(k));
+      if (!el._on && top < V * 0.8) { el._on = true; el._tl && el._tl.timeScale(1).play(); } else if (el._on && top >= V) { el._on = false; el._tl && el._tl.timeScale(2.2).reverse(); }
+    });
 
     // partners: the row level with the sticky labels is black
     let best = 0, bd = Infinity;
@@ -422,9 +486,6 @@
     partners.forEach((el, i) => el.classList.toggle('on', i === best));
     // names start a bit further apart and close up like train cars as they rise to the labels (the row level with them sits at its own place)
     partners.forEach((el, i) => { el.firstElementChild.style.transform = `translateY(${PGAP * ease((partnerTops[i] - (V * 0.5 - 38)) / (V * 0.6)) * U}px)`; });
-
-    // after a jump (anchor, fast scroll) text left above may still be shown: hide what is now below the screen
-    revealed.forEach(el => { if (el.classList.contains('shown') && el.getBoundingClientRect().top > innerHeight) el.classList.remove('shown'); });
 
     // photos change like slides
     pics.forEach((el, i) => {
@@ -476,10 +537,10 @@
     if (now - t0 < INTRO) requestAnimationFrame(intro); else { introDone = true; root.style.overflowY = ''; tick(); }
   }
 
-  measure();
+  measure(); buildMotion();
   addEventListener('scroll', () => tick(), { passive: true });
-  addEventListener('resize', () => { measure(); tick(); });
-  document.fonts && document.fonts.ready.then(() => { measure(); tick(); });
+  addEventListener('resize', () => { measure(); tick(); clearTimeout(rebuild); rebuild = setTimeout(buildMotion, 200); });
+  document.fonts && document.fonts.ready.then(() => { measure(); buildMotion(); tick(); });
   if (introDone) tick(); else { t0 = performance.now(); requestAnimationFrame(intro); }
 })();
 </script>
