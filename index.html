@@ -4,9 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dirty Hands Layout</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet">
 <style>
   @font-face { font-family: "CoFo Sans"; src: url("CoFoSans-Regular450.woff2") format("woff2"); font-weight: 400; font-display: swap; }
   :root { --t18: min(18px, calc(18 * var(--u))); --bg: #fff; --ink: #000; --u: calc(var(--W, 100vw) / 1400); --ph: rgba(169,169,169,.15); --gray: #f2f2f2; --rule: #d9d9d9; --dur: .6s; --ease: cubic-bezier(.2,.8,.2,1); }
@@ -446,41 +443,6 @@
   }
 
   const unit = () => document.documentElement.clientWidth / 1400 * dpr;
-
-  // a signature written in clay with a finger, revealed left to right
-  function signature(text, size) {
-    const g0 = document.createElement('canvas').getContext('2d'), font = `${size}px "Caveat Brush", cursive`;
-    g0.font = font;
-    const w = Math.ceil(g0.measureText(text).width + size * .6), h = Math.ceil(size * 1.5);
-    const c = document.createElement('canvas'); c.width = w; c.height = h;
-    const g = c.getContext('2d');
-    g.font = font; g.textBaseline = 'middle'; g.fillStyle = `rgba(${CLAY},.85)`;
-    g.lineJoin = 'round'; g.strokeStyle = `rgba(${CLAY},.5)`; g.lineWidth = size * .05;
-    g.strokeText(text, size * .3, h / 2); g.fillText(text, size * .3, h / 2);
-    // finger streaks along the writing and clay grain
-    g.globalCompositeOperation = 'destination-out'; g.lineCap = 'round';
-    for (let y = 0; y < h; y += size * R(.035, .06)) {
-      g.strokeStyle = `rgba(0,0,0,${R(.2, .5)})`; g.lineWidth = size * R(.008, .02);
-      g.beginPath(); for (let x = 0; x < w; x += 6) g.lineTo(x, y + Math.sin(x / (size * .7) + y) * size * .03); g.stroke();
-    }
-    for (let i = 0; i < w * h / 90; i++) { g.fillStyle = `rgba(0,0,0,${R(.1, .5)})`; g.fillRect(R(0, w), R(0, h), R(.5, 2) * dpr, R(.5, 2) * dpr); }
-    g.globalCompositeOperation = 'source-over';
-    const copy = document.createElement('canvas'); copy.width = w; copy.height = h; copy.getContext('2d').drawImage(c, 0, 0);
-    g.clearRect(0, 0, w, h); g.filter = `blur(${.7 * dpr}px)`; g.drawImage(copy, 0, 0); g.filter = 'none';
-    g.globalAlpha = .6; g.drawImage(copy, 0, 0); g.globalAlpha = 1;
-    return c;
-  }
-  let signed = null;
-  const title = document.querySelector('.ttl .h1');
-  title.addEventListener('pointerenter', async () => {
-    if (signed && prints.includes(signed)) return;     // one signature at a time
-    try { await document.fonts.load('80px "Caveat Brush"'); } catch (e) {}
-    const u = unit(), r = title.getBoundingClientRect();
-    const img = signature('Lisa & Karen', 78 * u);
-    signed = { x: (r.left + r.width * .3 + scrollX) * dpr, y: (r.top + scrollY) * dpr - 30 * u, pieces: [{ img, dx: 0, dy: 0, rot: -.07, a: 1, reveal: 1400 }], born: performance.now() };
-    prints.push(signed);
-    if (!raf) raf = requestAnimationFrame(draw);
-  });
 
   function stamp(x, y) {
     const u = unit(), pieces = [], kind = Math.random(), turn = R(-.6, .6);
