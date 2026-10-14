@@ -18,7 +18,7 @@
   section { position: relative; width: 100%; }
   .hero > *, .s2-in > *, .rest > *, .gray > *, .card2 > *, .list > *, .bigrow > * { position: absolute; }
   .hero { height: 100vh; }
-  .s2 { height: calc(790 * var(--u)); margin-bottom: calc(348 * var(--u)); }
+  .s2 { height: calc(916 * var(--u)); margin-bottom: calc(348 * var(--u)); }
   .s2-in { position: relative; height: 100%; }
   .s3 { height: calc(100vh + 1800 * var(--u)); z-index: 3; }
   .gray { position: sticky; top: 0; margin: 0; height: 100vh; overflow: hidden; background: var(--gray); }
@@ -62,7 +62,7 @@
   /* hero cards: fly from the top row into the second block */
   .hc { position: absolute; background: #f2f2f2; transform-origin: 50% 50%; z-index: 5; will-change: transform, width, height, left, top; }
   /* big title: sticks to the bottom of the screen through blocks 1-2, then rests above the gray block */
-  .ttl { position: absolute; left: 0; top: 0; width: 100%; height: calc(100vh + 1037.3 * var(--u)); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; z-index: 100; mix-blend-mode: difference; }  /* above everything; inverts wherever it crosses text or blocks */
+  .ttl { position: absolute; left: 0; top: 0; width: 100%; height: calc(100vh + 1163.3 * var(--u)); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; z-index: 100; mix-blend-mode: difference; }  /* above everything; inverts wherever it crosses text or blocks */
   .ttl .h1 { color: #fff; pointer-events: auto; position: sticky; bottom: calc(40 * var(--u)); height: calc(182.6 * var(--u)); margin: 0 calc(20 * var(--u)); text-align: center; white-space: nowrap; }
   /* second block: ruled lines open like a fan, text wraps around the picture */
   .fan i { transform-origin: 0 50%; transform: rotate(7deg) scaleX(0); transition: transform var(--dur) var(--ease); }
@@ -83,6 +83,10 @@
   /* text below the first screen rises from the bottom as it comes into view (not the title, menu, block 2 or the cards: they have their own) */
   .rv { clip-path: inset(100% -.5em -.3em -.5em); translate: 0 .8em; transition: clip-path var(--dur) var(--ease), translate var(--dur) var(--ease); }
   .rv.shown { clip-path: inset(-.3em -.5em -.3em -.5em); translate: 0 0; }
+  /* paragraphs that come in line by line: every line rises from under its own mask */
+  .lr .ln2 { display: block; overflow: hidden; padding-bottom: .2em; margin-bottom: -.2em; }
+  .lr .ln2 > span { display: block; white-space: nowrap; transform: translateY(115%); transition: transform var(--dur) var(--ease); transition-delay: calc(var(--i, 0) * 90ms); }
+  .lr.shown .ln2 > span { transform: none; }
   /* the short ruled lines under the pictures fan open one by one, left to right (right to left for the right-aligned text) */
   .rules.cap i { transform-origin: 0 50%; transform: rotate(7deg) scaleX(0); transition: transform var(--dur) var(--ease); }
   .rules.cap.rtl i { transform-origin: 100% 50%; transform: rotate(-7deg) scaleX(0); }
@@ -100,7 +104,7 @@
   .grid i { background: rgba(255, 0, 80, .08); box-shadow: inset 1px 0 rgba(255, 0, 80, .35), inset -1px 0 rgba(255, 0, 80, .35); }
   /* Contact: shows up top right once the menu has stuck to the top, as plain text on the same line */
   .ct { position: fixed; top: calc(20 * var(--u)); right: calc(20 * var(--u)); z-index: 101; color: #fff; mix-blend-mode: difference; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; }
-  .ctl { display: inline-flex; align-items: flex-start; gap: .25em; opacity: 0; translate: 0 .6em; pointer-events: none; transition: opacity var(--dur) var(--ease), translate var(--dur) var(--ease); }
+  .ctl { display: inline-flex; align-items: flex-start; gap: .25em; opacity: 0; translate: 0 .6em; pointer-events: none; transition: opacity .2s ease-out, translate .3s var(--ease); }
   .ctl svg { margin-top: .12em; }
   .ct.on .ctl { opacity: 1; translate: 0 0; pointer-events: auto; }
   /* at the end of the page the title and the menu ride up from below behind the steps */
@@ -132,23 +136,23 @@
 
 <section class="s2" id="cases">
   <div class="s2-in">
-    <div class="rules fan" data-n="41" data-step="18" style="left:calc(20 * var(--u));top:calc(34 * var(--u));width:calc(1360 * var(--u));height:calc(720 * var(--u));"></div>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(106 * var(--u))">01</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(178 * var(--u))">02</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(250 * var(--u))">03</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(322 * var(--u))">04</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(394 * var(--u))">05</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(466 * var(--u))">06</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(538 * var(--u))">07</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(610 * var(--u))">08</span>
-    <p class="rt" data-x="710" data-y="106" style="left:calc(710 * var(--u));top:calc(106 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
-    <p class="rt" data-x="710" data-y="178" style="left:calc(710 * var(--u));top:calc(178 * var(--u))">Mirrors bring light and balance to your space with expressive sculptural forms.</p>
-    <p class="rt" data-x="710" data-y="250" style="left:calc(710 * var(--u));top:calc(250 * var(--u))">Compact side tables combine everyday function with distinctive design.</p>
-    <p class="rt" data-x="710" data-y="322" style="left:calc(710 * var(--u));top:calc(322 * var(--u))">Open shelving turns storage into a thoughtful display for books, art, and objects.</p>
-    <p class="rt" data-x="710" data-y="394" style="left:calc(710 * var(--u));top:calc(394 * var(--u))">Expressive sculptural forms bring a distinct presence to their surroundings.</p>
-    <p class="rt" data-x="710" data-y="466" style="left:calc(710 * var(--u));top:calc(466 * var(--u))">Architectural lines and expressive forms bring urban character to your space.</p>
-    <p class="rt" data-x="710" data-y="538" style="left:calc(710 * var(--u));top:calc(538 * var(--u))">Distinctive vessels hold flowers or stand beautifully as objects on their own.</p>
-    <p class="rt" data-x="710" data-y="610" style="left:calc(710 * var(--u));top:calc(610 * var(--u))">A warm glow and thoughtful form bring an intimate touch to your space.</p>
+    <div class="rules fan" data-n="48" data-step="18" style="left:calc(20 * var(--u));top:calc(34 * var(--u));width:calc(1360 * var(--u));height:calc(846 * var(--u));"></div>
+    <span class="n num" style="left:calc(20 * var(--u));top:calc(178 * var(--u))">01</span>
+    <span class="n num" style="left:calc(20 * var(--u));top:calc(250 * var(--u))">02</span>
+    <span class="n num" style="left:calc(20 * var(--u));top:calc(322 * var(--u))">03</span>
+    <span class="n num" style="left:calc(20 * var(--u));top:calc(394 * var(--u))">04</span>
+    <span class="n num" style="left:calc(20 * var(--u));top:calc(466 * var(--u))">05</span>
+    <span class="n num" style="left:calc(20 * var(--u));top:calc(538 * var(--u))">06</span>
+    <span class="n num" style="left:calc(20 * var(--u));top:calc(610 * var(--u))">07</span>
+    <span class="n num" style="left:calc(20 * var(--u));top:calc(682 * var(--u))">08</span>
+    <p class="rt" data-x="710" data-y="178" style="left:calc(710 * var(--u));top:calc(178 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
+    <p class="rt" data-x="710" data-y="250" style="left:calc(710 * var(--u));top:calc(250 * var(--u))">Mirrors bring light and balance to your space with expressive sculptural forms.</p>
+    <p class="rt" data-x="710" data-y="322" style="left:calc(710 * var(--u));top:calc(322 * var(--u))">Compact side tables combine everyday function with distinctive design.</p>
+    <p class="rt" data-x="710" data-y="394" style="left:calc(710 * var(--u));top:calc(394 * var(--u))">Open shelving turns storage into a thoughtful display for books, art, and objects.</p>
+    <p class="rt" data-x="710" data-y="466" style="left:calc(710 * var(--u));top:calc(466 * var(--u))">Expressive sculptural forms bring a distinct presence to their surroundings.</p>
+    <p class="rt" data-x="710" data-y="538" style="left:calc(710 * var(--u));top:calc(538 * var(--u))">Architectural lines and expressive forms bring urban character to your space.</p>
+    <p class="rt" data-x="710" data-y="610" style="left:calc(710 * var(--u));top:calc(610 * var(--u))">Distinctive vessels hold flowers or stand beautifully as objects on their own.</p>
+    <p class="rt" data-x="710" data-y="682" style="left:calc(710 * var(--u));top:calc(682 * var(--u))">A warm glow and thoughtful form bring an intimate touch to your space.</p>
   </div>
 </section>
 
@@ -156,16 +160,16 @@
 
 <section class="s3">
   <div class="gray">
-    <div class="card2" id="lisa" style="left:calc(40 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(357 * var(--u));"><span class="tick" style="width:calc(90 * var(--u))"></span><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Lisa</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(321 * var(--u));width:calc(440 * var(--u))"></div></div>
-    <div class="card2" id="karen" style="left:calc(888 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(357 * var(--u));"><span class="tick" style="width:calc(127 * var(--u))"></span><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(321 * var(--u));width:calc(440 * var(--u))"></div></div>
+    <div class="card2" id="lisa" style="left:calc(20 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(357 * var(--u));"><span class="tick" style="width:calc(90 * var(--u))"></span><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Lisa</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(321 * var(--u));width:calc(440 * var(--u))"></div></div>
+    <div class="card2" id="karen" style="left:calc(940 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(357 * var(--u));"><span class="tick" style="width:calc(127 * var(--u))"></span><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(321 * var(--u));width:calc(440 * var(--u))"></div></div>
   </div>
 </section>
 
 <section class="rest">
   <div class="t18" id="about" style="left:calc(20 * var(--u));top:calc(52 * var(--u));width:calc(440 * var(--u));opacity:.4;line-height:1">About Dirty Hands</div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(52 * var(--u));width:calc(440 * var(--u));padding-right:calc(40 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects and wall panels to sculptural forms and interior accents that enhance spaces and set their emotional tone.</p>
+  <p class="t18 lr" style="left:calc(710 * var(--u));top:calc(52 * var(--u));width:calc(440 * var(--u));padding-right:calc(40 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects and wall panels to sculptural forms and interior accents that enhance spaces and set their emotional tone.</p>
   <div class="ph" style="left:calc(641.5 * var(--u));top:calc(272.25 * var(--u));width:calc(117 * var(--u));height:calc(112.5 * var(--u));"></div>
-  <p class="t18" style="left:calc(940 * var(--u));top:calc(142 * var(--u));width:calc(440 * var(--u));padding-right:calc(40 * var(--u));">The studio was founded by designers and entrepreneurs Lisa and Karen, who combine professional expertise with artistic intuition to bring unconventional ideas to life. Their approach reimagines ceramics, moving beyond functional plates and pots towards an artistic language that expresses the style, mood, and character of a space.</p>
+  <p class="t18 lr" style="left:calc(940 * var(--u));top:calc(142 * var(--u));width:calc(440 * var(--u));padding-right:calc(40 * var(--u));">The studio was founded by designers and entrepreneurs Lisa and Karen, who combine professional expertise with artistic intuition to bring unconventional ideas to life. Their approach reimagines ceramics, moving beyond functional plates and pots towards an artistic language that expresses the style, mood, and character of a space.</p>
   <a class="t18 shop" style="left:calc(940 * var(--u));top:calc(296 * var(--u));" href="https://dirtyhands.ru" target="_blank" rel="noopener">Shop now →</a>
 
   <div class="plab" style="left:0;top:calc(611 * var(--u));width:100%;height:calc(460 * var(--u));"><div class="plab-in">
@@ -191,13 +195,13 @@
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(2704 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
   <p class="t18" style="left:calc(710 * var(--u));top:calc(2704 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
 
-  <i class="hl" style="top:calc(3405 * var(--u))"></i>
-  <i class="hl" style="top:calc(3495 * var(--u))"></i>
-  <i class="hl" style="top:calc(3585 * var(--u))"></i>
-  <i class="hl" style="top:calc(3675 * var(--u))"></i>
-  <div class="bigrow" style="left:calc(250 * var(--u));top:calc(3408 * var(--u));height:calc(98 * var(--u));"><p class="t name2">About</p><span class="n cnt">12</span></div>
-  <div class="bigrow" style="left:calc(940 * var(--u));top:calc(3498 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Cases</p><span class="n cnt">3</span></div>
-  <div class="bigrow" style="left:calc(480 * var(--u));top:calc(3588 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Shop</p><span class="n cnt">232</span></div>
+  <i class="hl" style="top:calc(3405.0 * var(--u))"></i>
+  <i class="hl" style="top:calc(3478.4 * var(--u))"></i>
+  <i class="hl" style="top:calc(3551.9 * var(--u))"></i>
+  <i class="hl" style="top:calc(3625.3 * var(--u))"></i>
+  <div class="bigrow" style="left:calc(250 * var(--u));top:calc(3393.3 * var(--u));height:calc(98 * var(--u));"><p class="t name2">About</p><span class="n cnt">12</span></div>
+  <div class="bigrow" style="left:calc(940 * var(--u));top:calc(3466.8 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Cases</p><span class="n cnt">3</span></div>
+  <div class="bigrow" style="left:calc(480 * var(--u));top:calc(3540.2 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Shop</p><span class="n cnt">232</span></div>
 
   <p class="t big2" style="left:calc(250 * var(--u));top:calc(3997 * var(--u));width:calc(440 * var(--u));">Story</p>
   <p class="t18" style="left:calc(618 * var(--u));top:calc(3876 * var(--u));width:calc(285 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
@@ -256,7 +260,7 @@
   const drop = t => (t = clamp(t), 1 + 2.4 * (t - 1) ** 3 + 1.4 * (t - 1) ** 2);   // ease-out with a small overshoot
   const lerp = (a, b, t) => a + (b - a) * t;
 
-  const nav = one('.nav'), contact = one('.ct');
+  const nav = one('.nav'), contact = one('.ct'), contactLink = one('.ctl');
   const bigrows = $('.bigrow');
   let revealed = [];
 
@@ -270,7 +274,7 @@
         else if (e.boundingClientRect.top > 0) { e.target.style.transitionDelay = ''; e.target.classList.remove('shown'); }
       });
     }, { rootMargin: '0px 0px -6% 0px' });
-    targets.forEach(el => { if (!el.classList.contains('rules')) el.classList.add('rv'); io.observe(el); });
+    targets.forEach(el => { if (!el.classList.contains('rules') && !el.classList.contains('lr')) el.classList.add('rv'); io.observe(el); });
     revealed = targets;
   }
   const cards = $('.hc'), s2 = one('.s2'), s3 = one('.s3'), lisa = one('#lisa'), karen = one('#karen');
@@ -286,7 +290,7 @@
   const pics = $('.pic'), partners = $('.partner'), plab = one('.plab-in');
 
   const X0 = i => 20 + 230.17 * i, W0 = 210.2, H0 = [262.7, 210, 262.7, 210, 262.7, 262.7];
-  const PX = 700, PY0 = 0, PY1 = 790;    // picture centre x; its y inside block 2 while it is held mid-screen (design px)
+  const PX = 700, PY0 = 0, PY1 = 775;    // picture centre x; its y inside block 2 while it is held mid-screen (design px)
   const PW = 218.5, PH = 210, EX3 = 1800;  // picture size; extra scroll while the gray block is pinned
   const SHADE = [225, 212, 230, 216, 226, 210];
   const DUR = 600, GAP = 90, LEAD = 150;   // ms: one speed for every animation (same as --dur in the CSS)
@@ -313,6 +317,13 @@
     root.style.setProperty('--W', w + 'px');
     U = w / 1400; V = innerHeight / U;
     splitLines();
+    $('.lr').forEach(p => {
+      const text = p.dataset.text || (p.dataset.text = p.textContent.trim());
+      p.innerHTML = text.split(' ').map(w => `<span>${w}</span>`).join(' ');
+      const rows = [];
+      [...p.children].forEach(sp => { const top = sp.offsetTop; (rows.length && rows[rows.length - 1].top === top) ? rows[rows.length - 1].w.push(sp.textContent) : rows.push({ top, w: [sp.textContent] }); });
+      p.innerHTML = rows.map((r, i) => `<span class="ln2" style="--i:${i}"><span>${r.w.join(' ')} </span></span>`).join('');
+    });
     bigrows.forEach(b => b.style.setProperty('--dx', (700 - (b.offsetLeft + b.offsetWidth / 2) / U).toFixed(2)));   // every word starts on the page centre
   }
 
@@ -326,11 +337,15 @@
     // menu sticks 20 from the top: it starts 236 above the bottom of the first screen and rises with the scroll
     nav.style.top = Math.max(20, V - 236 - nav.offsetHeight / U - y) * U + 'px';
     // About / Cases / Shop: they come in on the centre and, once the list has reached the middle of the screen, take their places on their own
-    const listMid = bigrows[0].getBoundingClientRect().top / U + 135;
+    const listMid = bigrows[0].getBoundingClientRect().top / U + 122;
     if (listMid <= V * 0.5) bigrows.forEach(b => b.classList.add('spread')); else if (listMid > V * 0.5 + 80) bigrows.forEach(b => b.classList.remove('spread'));
     nav.style.opacity = clamp((scrollMax() - scrollY) / (innerHeight * 0.5));
     contact.style.opacity = nav.style.opacity;                              // fades out together with the menu at the end of the page
     contact.classList.toggle('on', V - 236 - nav.offsetHeight / U - y <= 20);    // the menu has reached the top: Contact comes in
+    // once stuck, the menu slides along with the scroll towards Contact until 40 are left between them
+    const stickY = V - 256 - nav.offsetHeight / U, slide = clamp((y - stickY) / 600);
+    const gapTo = contactLink.getBoundingClientRect().left - 40 * U - (nav.offsetLeft + nav.offsetWidth);
+    nav.style.transform = slide > 0 && gapTo > 0 ? `translateX(${gapTo * slide}px)` : '';
 
     // 1 → 2: cards drop in, then gather into one picture in block 2
     const E = s2Top + PY0 - V / 2;
