@@ -49,12 +49,16 @@
   .bigrow { transform: translateX(calc(var(--dx, 0) * var(--u))); transition: transform .9s var(--ease); }     /* --dx: from the page centre to the word's own place (set in measure) */
   .bigrow.spread { transform: none; }
   /* Story: a grey year at the top right of the word, it follows the paragraph that is in the middle of the screen */
-  [data-year] { transition: transform .8s var(--ease); }
-  [data-year].past { transform: translateX(calc(-92 * var(--u))); }   /* a paragraph that has gone above the middle steps aside, like the text next to the picture in block 2 */
   .tagged { width: max-content; padding-right: calc(3 * var(--u)); }
   .tagged .big2 { position: static; }
   .tagged .yr { position: absolute; top: 0; right: 0; width: calc(44 * var(--u)); text-align: right; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; opacity: .3; transition: opacity .2s ease-out; }
   .tagged .yr.sw { opacity: 0; }
+  .tagged .yr { line-height: 1.15; }
+  .yr .dg { display: inline-block; position: relative; overflow: hidden; height: 1.15em; vertical-align: top; }
+  .yr .dgi { display: block; transition: transform .22s var(--ease); }
+  .yr .dgi.in { position: absolute; left: 0; top: 0; }
+  .dot { transition: translate .3s var(--ease); }
+  .dot.apart-up { translate: 0 calc(-14 * var(--u)); } .dot.apart-down { translate: 0 calc(14 * var(--u)); }   /* the two squares step away from each other and come back */
   .bigrow .cnt { width: calc(40 * var(--u)); text-align: right; right: 0; top: 0; }   /* counter sits at the top right of the word, as in the design */
   .hl { position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); border-top: 1px solid var(--rule); height: 0; }
   .dot { opacity: .1; position: absolute; width: calc(10 * var(--u)); height: calc(10 * var(--u)); background: #000; }
@@ -73,7 +77,7 @@
   .rt .ln { display: block; white-space: nowrap; overflow: hidden; padding-bottom: .2em; margin-bottom: -.2em; transition: transform var(--dur) var(--ease); }   /* the line mask; the line itself glides aside when the picture comes close */
   .rt .li { display: block; }
   /* line masks: text rises out of its own line */
-  .m { display: block; overflow: hidden; padding-bottom: .3em; margin-bottom: -.3em; }
+  .m { display: block; overflow: hidden; padding: 0 .25em .3em .1em; margin: 0 -.25em -.3em -.1em; }   /* room at the sides too: big letters with tight spacing hang over the edge of their box */
   .mi { display: block; white-space: nowrap; }
   /* title letters rise one by one from below the screen */
   .ttl .h1 .ch { display: inline-block; white-space: pre; transform: translateY(150%); animation: rise var(--dur) var(--ease) forwards; }
@@ -268,6 +272,35 @@
   const lerp = (a, b, t) => a + (b - a) * t;
 
   const nav = one('.nav'), contact = one('.ct'), contactLink = one('.ctl'), ttlBox = one('.ttl'), soakDisp = one('#soakDisp'), soakBlur = one('#soakBlur');
+  // the year rolls like a counter: the last digits change one by one, each digit sliding in from below (or above when going back)
+  const yrSlots = [0, 1, 2, 3].map(() => { const n = document.createElement('span'); n.className = 'dg'; return { node: n, el: null, ch: null }; });
+  one('.yr').append(...yrSlots.map(s => s.node));
+  let yrCur = null, yrTimer = 0;
+  function drawYear(str, dir) {
+    str.split('').forEach((ch, i) => {
+      const slot = yrSlots[i]; if (slot.ch === ch) return;
+      const old = slot.el, el = document.createElement('span'); el.className = 'dgi'; el.textContent = ch;
+      if (old && dir) {
+        el.classList.add('in'); el.style.transform = `translateY(${dir > 0 ? 100 : -100}%)`; slot.node.appendChild(el); void el.offsetWidth;
+        el.style.transform = 'none'; old.style.transform = `translateY(${dir > 0 ? -100 : 100}%)`;
+        setTimeout(() => { old.remove(); el.classList.remove('in'); el.style.transform = ''; }, 260);
+      } else { if (old) old.remove(); slot.node.appendChild(el); }
+      slot.el = el; slot.ch = ch;
+    });
+  }
+  function rollYear(target) {
+    clearInterval(yrTimer);
+    if (yrCur === null) { drawYear(String(target), 0); yrCur = target; return; }
+    const dir = target > yrCur ? 1 : -1;
+    yrTimer = setInterval(() => { if (yrCur === target) return clearInterval(yrTimer); yrCur += dir; drawYear(String(yrCur), dir); }, 95);
+  }
+  // when a paragraph reaches the middle the two squares step apart and then back together
+  const squares = $('.dot');
+  function beatSquares() {
+    if (squares.length < 2) return;
+    squares[0].classList.add('apart-up'); squares[1].classList.add('apart-down');
+    setTimeout(() => { squares[0].classList.remove('apart-up'); squares[1].classList.remove('apart-down'); }, 300);
+  }
   const bigrows = $('.bigrow'), storyP = $('[data-year]'), storyYear = one('.yr'), storyPinned = [one('.tagged'), ...$('.dot')];
   const storyMid = i => (storyP[i].offsetTop + storyP[i].offsetHeight / 2) / U;   // centre of a Story paragraph inside the page section (design px)
   // test photos on the theme of ceramics: public-domain (CC0) pictures from Wikimedia Commons, the same six on the cards at the top and on the strip at the end, so the loop stays seamless
@@ -551,14 +584,14 @@
     storyP.forEach((q, i) => { const r = q.getBoundingClientRect(), d = Math.abs((r.top + r.height / 2) / U - V / 2); if (d < sDist) { sDist = d; sIdx = i; } });
     const year = sDist < V * 0.35 ? storyP[sIdx].dataset.year : '';
     if (year !== storyYear.dataset.cur) {
-      storyYear.dataset.cur = year; clearTimeout(storyYear._t); storyYear.classList.add('sw');
-      storyYear._t = setTimeout(() => { storyYear.textContent = year; if (year) storyYear.classList.remove('sw'); }, 180);
+      storyYear.dataset.cur = year;
+      if (!year) { storyYear.classList.add('sw'); yrCur = null; clearInterval(yrTimer); }
+      else { storyYear.classList.remove('sw'); rollYear(+year); beatSquares(); }
     }
-    // Story: the word, its year and the two squares stay on the screen while the paragraphs scroll past the middle; a paragraph that has gone above the middle steps aside
+    // Story: the word, its year and the two squares stay on the screen while the paragraphs (all in the 4th column) scroll past the middle
     const restTop = one('.rest').offsetTop / U, pinA = restTop + storyMid(0), pinB = restTop + storyMid(storyP.length - 1);
     const hold = Math.min(pinB - pinA, Math.max(0, y - (pinA - V / 2)));
     storyPinned.forEach(el => { el.style.transform = hold ? `translateY(${hold * U}px)` : ''; });
-    storyP.forEach(q => { const r = q.getBoundingClientRect(); q.classList.toggle('past', (r.top + r.height / 2) / U < V / 2 - 40); });
     // About / Cases / Shop: they come in on the centre and, once the list has reached the middle of the screen, take their places on their own
     const listMid = bigrows[0].getBoundingClientRect().top / U + 122;
     if (listMid <= V * 0.5) bigrows.forEach(b => b.classList.add('spread')); else if (listMid > V * 0.5 + 80) bigrows.forEach(b => b.classList.remove('spread'));
