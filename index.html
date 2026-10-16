@@ -39,6 +39,9 @@
   .nav { display: flex; gap: calc(12 * var(--u)); font-size: var(--t18); line-height: .91; letter-spacing: -.01em; }
   .row { display: flex; gap: calc(31 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; position: absolute; }
   .row p { width: calc(250 * var(--u)); }
+  .card2 .row { gap: 0 !important; }
+  .card2 .row .n { flex: none; width: calc(230 * var(--u)); }   /* in the Lisa and Karen cards the text starts at the second column */
+  .card2 .row p { width: calc(210 * var(--u)); }
   .n { width: calc(40 * var(--u)); opacity: .3; font-size: var(--t18); line-height: .91; flex: none; }
   .rules { pointer-events: none; }
   .rules i { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--rule); }
@@ -73,6 +76,11 @@
   /* hero cards: fly from the top row into the second block */
   .hc .hs { display: none; position: absolute; top: 0; height: 100%; overflow: hidden; left: calc(var(--j) * var(--sw) - 1px); width: calc(var(--sw) + 3px); backface-visibility: visible; }   /* the strips overlap a little so no light seams show between them */
   .hc .hs i { position: absolute; top: 0; height: 100%; left: calc(-1 * var(--j) * var(--sw) + 1px); width: var(--cw); background-size: cover; background-position: center; background-repeat: no-repeat; }
+  .hc .hc-alt { position: absolute; inset: 0; background: center / cover no-repeat; opacity: 0; transition: opacity .45s var(--ease); pointer-events: none; }
+  .hc.hov .hc-alt { opacity: 1; }
+  .hc .hc-lab { position: absolute; left: 0; top: calc(100% + 12 * var(--u)); font-size: var(--t18); line-height: .91; letter-spacing: -.01em; white-space: nowrap; opacity: 0; transform: translateY(calc(6 * var(--u))); transition: opacity .35s var(--ease), transform .35s var(--ease); pointer-events: none; }
+  .hc.hov .hc-lab { opacity: 1; transform: none; }
+  .hc.bent .hc-alt, .hc.bent .hc-lab { display: none; }
   .hc.drum .hs { left: 0; width: 100%; top: calc(var(--j) * var(--sh)); height: calc(var(--sh) + 1px); backface-visibility: hidden; }
   .hc.drum .hs i { left: 0; width: 100%; top: calc(-1 * var(--j) * var(--sh)); height: var(--ch); }
   .hc.bent { background: none !important; transform-style: preserve-3d; }   /* flying in the ring, the card is cut into strips and bent: a picture glued inside a cylinder */
@@ -81,7 +89,7 @@
   /* big title: sticks to the bottom of the screen through blocks 1-2, then rests above the gray block */
   .ttl { position: absolute; left: 0; top: 0; width: 100%; height: calc(100vh + 1559.3 * var(--u)); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; z-index: 100; mix-blend-mode: difference; }  /* above everything; inverts wherever it crosses text or blocks */
   .ttl .h1 { color: #fff; pointer-events: auto; position: sticky; bottom: calc(21.7 * var(--u)); height: calc(182.6 * var(--u)); margin: 0 calc(20 * var(--u)); text-align: center; white-space: nowrap; }
-  .rt { width: calc(250 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; }
+  .rt { width: calc(330 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; }
   .rt .ln { display: block; white-space: nowrap; overflow: hidden; padding-bottom: .2em; margin-bottom: -.2em; transition: transform .42s var(--ease); }   /* the line mask; the line itself glides aside when the picture comes close */
   .rt .li { display: block; }
   /* line masks: text rises out of its own line */
@@ -136,6 +144,7 @@
   .gray::after { right: 0; background-image: var(--imgR, none); background-size: var(--bgS, cover); background-position: var(--bgR, center); }
   .gray.no-left::before, .gray.no-right::after { opacity: 0; }
   .gray > .card2 { z-index: 1; }
+  .card2 > .cmark { left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
 
   /* the two views: Story as a horizontal timeline, and a case opened over the page */
   .ov { position: fixed; inset: 0; z-index: 400; visibility: hidden; pointer-events: none; }
@@ -190,15 +199,9 @@
     <span class="n num" style="left:calc(20 * var(--u));top:calc(196 * var(--u))">01</span>
     <span class="n num" style="left:calc(20 * var(--u));top:calc(268 * var(--u))">02</span>
     <span class="n num" style="left:calc(20 * var(--u));top:calc(340 * var(--u))">03</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(412 * var(--u))">04</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(484 * var(--u))">05</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(556 * var(--u))">06</span>
-    <p class="rt" data-x="710" data-y="196" style="left:calc(710 * var(--u));top:calc(196 * var(--u))">DirtyHands art ceramics studio</p>
-    <p class="rt" data-x="710" data-y="268" style="left:calc(710 * var(--u));top:calc(268 * var(--u))">Custom ceramic objects and interior design pieces — from intimate pieces to large-scale works.</p>
-    <p class="rt" data-x="710" data-y="340" style="left:calc(710 * var(--u));top:calc(340 * var(--u))">We create expressive ceramics and offer master classes for those who appreciate form, texture, and character.</p>
-    <p class="rt" data-x="710" data-y="412" style="left:calc(710 * var(--u));top:calc(412 * var(--u))">We create signature pieces — from tabletop art objects and panels to three-dimensional decorative forms and interior accents that enhance space and set the emotional tone of any interior.</p>
-    <p class="rt" data-x="710" data-y="484" style="left:calc(710 * var(--u));top:calc(484 * var(--u))">The studio was founded by designers and entrepreneurs Lisa and Karen, who combine their professional vision and artistic flair to realize unconventional ideas.</p>
-    <p class="rt" data-x="710" data-y="556" style="left:calc(710 * var(--u));top:calc(556 * var(--u))">Their approach is a reimagining of ceramics: from practical plates and pots to a highly artistic language that speaks to the style, mood, and character of a space.</p>
+    <p class="rt" data-x="710" data-y="196" style="left:calc(710 * var(--u));top:calc(196 * var(--u))">DirtyHands art ceramics studio. Custom ceramic objects and interior design pieces — from intimate pieces to large-scale works. We create expressive ceramics and offer master classes for those who appreciate form, texture, and character.</p>
+    <p class="rt" data-x="710" data-y="268" style="left:calc(710 * var(--u));top:calc(268 * var(--u))">We create signature pieces — from tabletop art objects and panels to three-dimensional decorative forms and interior accents that enhance space and set the emotional tone of any interior.</p>
+    <p class="rt" data-x="710" data-y="340" style="left:calc(710 * var(--u));top:calc(340 * var(--u))">The studio was founded by designers and entrepreneurs Lisa and Karen, who combine their professional vision and artistic flair to realize unconventional ideas. Their approach is a reimagining of ceramics: from practical plates and pots to a highly artistic language that speaks to the style, mood, and character of a space.</p>
   </div>
 </section>
 
@@ -247,9 +250,9 @@
   <i class="hl" style="top:calc(3478.4 * var(--u))"></i>
   <i class="hl" style="top:calc(3551.9 * var(--u))"></i>
   <i class="hl" style="top:calc(3625.3 * var(--u))"></i>
-  <div class="bigrow" style="left:calc(250 * var(--u));top:calc(3393.3 * var(--u));height:calc(98 * var(--u));"><p class="t name2">About</p><span class="n cnt">12</span></div>
-  <div class="bigrow" style="left:calc(940 * var(--u));top:calc(3466.8 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Cases</p><span class="n cnt">3</span></div>
-  <div class="bigrow" style="left:calc(480 * var(--u));top:calc(3540.2 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Shop</p><span class="n cnt">232</span></div>
+  <div class="bigrow" style="left:calc(250 * var(--u));top:calc(3393.3 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Unconventional</p></div>
+  <div class="bigrow" style="left:calc(940 * var(--u));top:calc(3466.8 * var(--u));height:calc(98 * var(--u));"><p class="t name2">ceramic</p></div>
+  <div class="bigrow" style="left:calc(480 * var(--u));top:calc(3540.2 * var(--u));height:calc(98 * var(--u));"><p class="t name2">forms</p></div>
 
   <div class="tagged" style="left:calc(250 * var(--u));top:calc(3856 * var(--u));"><p class="t big2">Story</p><span class="yr" aria-hidden="true"></span></div>
   <p class="t18" data-year="2019" style="left:calc(710 * var(--u));top:calc(3876 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
@@ -362,7 +365,7 @@
   const storyMid = i => (storyP[i].offsetTop + storyP[i].offsetHeight / 2) / U;   // centre of a Story paragraph inside the page section (design px)
   // test photos on the theme of ceramics: public-domain (CC0) pictures from Wikimedia Commons, the same six on the cards at the top and on the strip at the end, so the loop stays seamless
   const CER = [
- "photos/tattoo-relief.jpg",
+ "photos/tattoo-relief.webp",
  "photos/red-vase.jpg",
  "photos/cone-table.jpg",
  "photos/blue-mug.jpg",
@@ -373,9 +376,23 @@
  "photos/purple-shelves.jpg"
 ];
   const IMG = n => `url("${CER[n % CER.length]}")`;
-  $('.hc').forEach((c, i) => { c.style.backgroundImage = IMG(i); });
+  // the top cards: one work from each category of the shop (dirtyhands.ru/catalog), cut out of its background
+  const HERO_SRC = ['photos/tattoo-relief.webp', 'photos/mirror-beetles.webp', 'photos/table-cubeball.webp', 'photos/bust.webp', 'photos/urban-angel.webp', 'photos/vase-brutskin.webp'];   // panel, mirror, table, sculpture, urban, vase
+  const HERO = i => `url("${HERO_SRC[i % HERO_SRC.length]}")`;
+  const CUTOUT = new Set([0, 1, 2, 3, 4, 5]);                                  // all cut out: no box behind them, and shown whole (contain), never cropped
+  const HOVER_SRC = ['photos/int-panel.jpg', 'photos/int-mirror.jpg', 'photos/int-table.jpg', 'photos/red-vase.jpg', 'photos/int-urban.jpg', 'photos/int-vase.jpg'];   // the same work in an interior
+  const CATS = ['Panels', 'Mirrors', 'Tables', 'Sculptures', 'Urbans', 'Vases'];
+  $('.hc').forEach((c, i) => {
+    c.style.backgroundImage = HERO(i); if (CUTOUT.has(i)) c.style.backgroundSize = 'contain';
+    const alt = document.createElement('div'); alt.className = 'hc-alt'; alt.style.backgroundImage = `url("${HOVER_SRC[i]}")`;
+    const lab = document.createElement('span'); lab.className = 'hc-lab'; lab.textContent = CATS[i];
+    c.append(alt, lab);
+    c.addEventListener('mouseenter', () => { if (scrollY < 4) c.classList.add('hov'); });   // at rest on top: the cut-out turns into the photo in an interior, the category shows below
+    c.addEventListener('mouseleave', () => c.classList.remove('hov'));
+  });
+  addEventListener('scroll', () => { if (scrollY >= 4) $('.hc.hov').forEach(c => c.classList.remove('hov')); }, { passive: true });
   const HS = 14, DRUM = false;     // the drum of pictures in the table is switched off for now (flip to true to bring it back)
-  $('.hc').forEach((c, i) => { c._hs = []; for (let j = 0; j < HS; j++) { const st = document.createElement('div'); st.className = 'hs'; st.style.setProperty('--j', j); const im = document.createElement('i'); im.style.backgroundImage = IMG(i); st.append(im); c.append(st); c._hs.push(st); } });
+  $('.hc').forEach((c, i) => { c._hs = []; for (let j = 0; j < HS; j++) { const st = document.createElement('div'); st.className = 'hs'; st.style.setProperty('--j', j); const im = document.createElement('i'); im.style.backgroundImage = HERO(i); if (CUTOUT.has(i)) im.style.backgroundSize = 'contain'; st.append(im); c.append(st); c._hs.push(st); } });
   $('.bar').forEach((b, i) => { b.style.backgroundImage = IMG(i); });
   $('.pic').forEach((e, i) => { e.style.setProperty('--img', IMG([3, 5, 1][i])); });      // the big pictures: the image lives in ::before, inside the frame
   one('.rest > .ph:not(.pic):not(.bar)').style.backgroundImage = IMG(4);
@@ -501,6 +518,7 @@
     U = w / 1400; V = innerHeight / U;
     splitLines();
     // the paragraphs of the table follow one another down the ruled lines, one empty line between them, however many lines each one takes
+    flowSig = '';
     { let y0 = 196; texts.forEach((p, j) => { p.dataset.y = y0; p.style.top = y0 * U + 'px'; if (nums[j]) nums[j].style.top = y0 * U + 'px'; y0 += (lines[j].length + 1) * LH; }); }
     alignShop();
     bigrows.forEach(b => b.style.setProperty('--dx', (0.4 * (700 - (b.offsetLeft + b.offsetWidth / 2) / U)).toFixed(2)));   // every word starts 60% of the way to its place, so the words never sit on top of each other
@@ -560,16 +578,14 @@
   }
 
 
-  // the small picture stands on the same line as "Shop now": its bottom edge on the baseline of the link (the link follows the length of the paragraph)
+  // the small picture stands level with "Shop now": its middle on the middle of the link (the link follows the length of the paragraph)
   function alignShop() {
     const shop = one('.stack .shop'), pic = one('.rest > .ph:not(.pic):not(.bar)'), rest = one('.rest');
     if (!shop || !pic) return;
     const p1 = one('.rest > p.lr'), stack = one('.stack');                     // the second paragraph steps in right where the first one ends, however many lines it has
     if (p1 && stack) stack.style.top = p1.offsetTop + p1.offsetHeight + 'px';
-    const mk = document.createElement('span'); mk.style.cssText = 'display:inline-block;width:0;height:0';
-    (shop.querySelector('.mi') || shop).appendChild(mk);
-    const base = (mk.getBoundingClientRect().bottom - rest.getBoundingClientRect().top) / U; mk.remove();
-    pic.style.top = (base - pic.offsetHeight / U) * U + 'px';
+    const sr = shop.getBoundingClientRect(), mid = ((sr.top + sr.bottom) / 2 - rest.getBoundingClientRect().top) / U;   // the middle of the picture on the middle of "Shop now"
+    pic.style.top = (mid - pic.offsetHeight / U / 2) * U + 'px';
   }
 
   function buildMotion() {
@@ -770,10 +786,11 @@
   $('.pic').forEach((pic, i) => pic.addEventListener('click', e => { e.stopPropagation(); openCase(i, pic); }));
 
   // Clay on the empty background (made separately, see glina.html): the sheet is transparent, hands covered in clay leave prints and smears on it, and the marks sink away by themselves
-  (function clay() {
-  const cv = document.createElement('canvas'); cv.setAttribute('aria-hidden', 'true');
-  cv.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:300;pointer-events:none;display:block;mix-blend-mode:difference';   // above the page, blended by difference: the clay is drawn in inverted colours, so on white it is dark clay, and whatever it lies on (text, lines) turns to its negative
-  document.body.prepend(cv);
+  function makeClay(opt = {}) {                                         // live: the sheet over the page that follows the hand; with opt.cv: a still sheet (the marks on the Lisa and Karen cards)
+  const live = !opt.cv;
+  const cv = opt.cv || document.createElement('canvas'); cv.setAttribute('aria-hidden', 'true');
+  if (live) cv.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:300;pointer-events:none;display:block;mix-blend-mode:difference';   // above the page, blended by difference: the clay is drawn in inverted colours, so on white it is dark clay, and whatever it lies on (text, lines) turns to its negative
+  if (live) document.body.prepend(cv);
   const ctx = cv.getContext('2d');
 
   let S = 1, W = 0, H = 0, T = null, D = null, img = null;
@@ -813,7 +830,7 @@
   /* ---------- buffers & drawing ---------- */
   function alloc() {
     const ns = 1;                         // drawn at css-pixel size: soft clay needs no more, and it is 4 times lighter on a retina screen
-    const nw = Math.max(2, Math.round(innerWidth * ns)), nh = Math.max(2, Math.round(innerHeight * ns));
+    const nw = Math.max(2, Math.round((opt.w || innerWidth) * ns)), nh = Math.max(2, Math.round((opt.h || innerHeight) * ns));
     const nT = new Float32Array(nw * nh), nD = new Float32Array(nw * nh).fill(-100);
     if (T && ns === S) {
       const cw = Math.min(W, nw), ch = Math.min(H, nh);
@@ -852,9 +869,9 @@
         let g = (THIN[1] + (THICK[1] - THIN[1]) * m) * dk;
         let b = (THIN[2] + (THICK[2] - THIN[2]) * m) * dk;
         const spec = wet * Math.max(0, s - 1.05) * 0.9 * a;
-        d[p]     = 255 - (r + (255 - r) * spec);
-        d[p + 1] = 255 - (g + (255 - g) * spec);
-        d[p + 2] = 255 - (b + (255 - b) * spec);
+        d[p]     = live ? 255 - (r + (255 - r) * spec) : r + (255 - r) * spec;   // the live sheet is drawn inverted (it is blended by difference)
+        d[p + 1] = live ? 255 - (g + (255 - g) * spec) : g + (255 - g) * spec;
+        d[p + 2] = live ? 255 - (b + (255 - b) * spec) : b + (255 - b) * spec;
         d[p + 3] = a * 255;
       }
     }
@@ -1256,9 +1273,11 @@
 
   const kept = [0, 4];   // «Жирный отпечаток» and «Комок глины», mixed at random
 
+  if (!live) { alloc(); return { variants, finger, print, autoSmear, render() { shade(0, 0, W - 1, H - 1, now() + 100); ctx.putImageData(img, 0, 0); } }; }   // a still sheet: no hands, no fading
+
   /* ---------- input ---------- */
   const hands = new Map();
-  const empty = el => !el.closest('a, .pic, .more, .ov, nav, button, .close-cursor');
+  const empty = el => !el.closest('a, .pic, .hc, .more, .ov, nav, button, .close-cursor');
 
   addEventListener('pointerdown', e => {
     if (e.button || openView || !empty(e.target)) return;
@@ -1349,7 +1368,8 @@
   addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(alloc, 150); });
   alloc();
   requestAnimationFrame(tick);
-  })();
+  }
+  makeClay();
   const navLinks = $('.hero > .nav a'), NAVK = [0.07, 0.12, 0.22], navCur = [0, 0, 0];
   let navTarget = 0, navRun = false;
   function navStep() {
@@ -1359,6 +1379,96 @@
     navLinks.forEach((a, i) => { a.style.translate = navCur[i] ? navCur[i].toFixed(1) + 'px 0' : ''; });
     if (busy) requestAnimationFrame(navStep); else navRun = false;
   }
+  // ---- the table text, laid out with pretext (github.com/chenglou/pretext): every line gets the width that is left beside the picture at its height
+  let PT = null, prepFs = 0, preps = [], flowSig = '';
+  import('https://esm.sh/@chenglou/pretext@1.0.0').then(m => { PT = m; return document.fonts ? document.fonts.ready : 0; }).then(() => { prepFs = 0; flowSig = ''; tick(); }).catch(() => {});
+  // the outline of a cut-out picture, read from its transparency: left and right edge in 48 rows (null for a picture with no transparency: then the text keeps clear of its whole box)
+  const shapes = {};
+  function shapeOf(i) {
+    if (i in shapes) return shapes[i];
+    shapes[i] = null;
+    const m = /url\("?([^")]+)"?\)/.exec(HERO(i)); if (!m) return null;
+    const img = new Image(); img.onload = () => {
+      const N = 48, W = 96, H = 96, cv = document.createElement('canvas'); cv.width = W; cv.height = H; const g = cv.getContext('2d');
+      const sc = (CUTOUT.has(i) ? Math.min : Math.max)(W / img.width, H / img.height); g.drawImage(img, (W - img.width * sc) / 2, (H - img.height * sc) / 2, img.width * sc, img.height * sc);   // as background-size: contain (cut-outs) or cover
+      const d = g.getImageData(0, 0, W, H).data; let any = false; const rows = [];
+      for (let r = 0; r < N; r++) { let L = -1, R = -1; for (let y = Math.floor(r * H / N); y < Math.floor((r + 1) * H / N); y++) for (let x = 0; x < W; x++) if (d[(y * W + x) * 4 + 3] > 40) { if (L < 0 || x < L) L = x; if (x > R) R = x; } else any = true; rows.push(R < 0 ? [-1, -1] : [L / W, (R + 1) / W]); }
+      shapes[i] = any ? rows : null; flowSig = ''; tick();
+    };
+    img.src = m[1]; return null;
+  }
+  function obstacleRight(y0, y1, ob) {                                   // the right edge of the picture (or of the figure in it) beside the band y0..y1, in design px
+    const PADV = 6;
+    if (!ob || y1 < ob.top - PADV || y0 > ob.top + ob.h + PADV) return -Infinity;
+    if (!ob.shape) return ob.cx + ob.w / 2;
+    let r = -Infinity; const n = ob.shape.length;
+    for (let i = 0; i < n; i++) {
+      const sy0 = ob.top + i / n * ob.h, sy1 = ob.top + (i + 1) / n * ob.h;
+      if (sy1 < y0 - PADV || sy0 > y1 + PADV || ob.shape[i][1] < 0) continue;
+      r = Math.max(r, ob.cx - ob.w / 2 + ob.shape[i][1] * ob.w);
+    }
+    return r;
+  }
+  function syncClones() {                                                  // lines added by the flow follow the reveal animation of their paragraph's first line
+    texts.forEach((p, j) => { const lead = lines[j] && lines[j][0] && lines[j][0].firstElementChild; if (!lead) return; lines[j].forEach(ln => { if (ln._clone) { const li = ln.firstElementChild; if (li.style.cssText !== lead.style.cssText) li.style.cssText = lead.style.cssText; } }); });
+  }
+  if (window.gsap) gsap.ticker.add(syncClones);
+  function flowTable(ob) {
+    if (!PT || !texts.length) return;
+    const fs = parseFloat(getComputedStyle(texts[0]).fontSize);
+    if (fs !== prepFs) { prepFs = fs; flowSig = ''; preps = texts.map(p => PT.prepareWithSegments(p.dataset.text, `${fs}px "CoFo Sans"`, { letterSpacing: -0.01 * fs })); }
+    const sig = ob ? `${Math.round(ob.top)}|${ob.shape ? ob.shape.length + ':' + ob.shape[10][1] : 0}|${U}` : `-|${U}`;
+    if (sig === flowSig) return; flowSig = sig;
+    let y0 = 196;
+    texts.forEach((p, j) => {
+      const L = +p.dataset.x, C = 330, rows = []; let cur = { segmentIndex: 0, graphemeIndex: 0 };   // C: the text column, narrower than two grid columns, so the lines stay easy to read
+      for (let k = 0; k < 40; k++) {
+        const yl = y0 + k * LH, x0 = Math.max(L, obstacleRight(yl, yl + LH, ob) + 24), w = L + C - x0;
+        if (w < 70) { rows.push(null); continue; }                                  // no room beside the picture: this ruled line stays empty
+        const range = PT.layoutNextLineRange(preps[j], w * U, cur); if (!range) break;
+        rows.push({ x: x0 - L, t: PT.materializeLineRange(preps[j], range).text }); cur = range.end;
+      }
+      while (rows.length && rows[rows.length - 1] === null) rows.pop();
+      const ls = lines[j];
+      while (ls.length < rows.length) { const c = ls[ls.length - 1].cloneNode(true); c._clone = true; p.appendChild(c); ls.push(c); }
+      ls.forEach((ln, i) => {
+        if (i >= rows.length) { ln.style.display = 'none'; return; }
+        const r = rows[i], li = ln.firstElementChild, txt = r ? r.t : '\u00a0';
+        ln.style.display = ''; ln.style.transition = 'none';
+        if (li.textContent !== txt) li.textContent = txt;
+        ln.style.transform = r && r.x ? `translateX(${(r.x * U).toFixed(1)}px)` : '';
+      });
+      p.dataset.y = y0; p.style.top = y0 * U + 'px'; if (nums[j]) nums[j].style.top = y0 * U + 'px';
+      y0 += (rows.length + 1) * LH;
+    });
+  }
+
+  // ---- one clay mark on each of the Lisa and Karen cards, made by the same clay as the live marks: a finger print or a longer smear, placed at random, drawn in as the card scrolls up
+  const cardMarks = [lisa, karen].map(card => { const cv = document.createElement('canvas'); cv.className = 'cmark'; card.prepend(cv); return { card, cv, smear: Math.random() < 0.55, w: 0, h: 0, drawn: -1 }; });
+  function makeMark(m) {
+    const w = m.card.offsetWidth, h = m.card.offsetHeight; if (!w || !h) return;
+    m.w = w; m.h = h; m.drawn = -1;
+    const c = makeClay({ cv: m.cv, w, h });
+    if (m.smear) {                                                       // a finger put down and dragged across, until the clay runs out
+      const x = w * (0.12 + Math.random() * 0.25), y = h * (0.2 + Math.random() * 0.5), a = (Math.random() - 0.5) * 0.9, dir = Math.random() < 0.5 ? 1 : -1;
+      const sx = dir > 0 ? x : w - x, f = c.finger(sx, y, { load: 1.5 });
+      c.print(f); const len = w * (0.4 + Math.random() * 0.3); c.autoSmear(f, Math.cos(a) * dir, Math.sin(a), len);
+      m.from = sx; m.to = sx + Math.cos(a) * dir * len; m.cy = y; m.r = f.ry * 1.6;
+    } else {
+      const x = w * (0.2 + Math.random() * 0.6), y = h * (0.15 + Math.random() * 0.6);
+      c.variants[Math.random() < 0.5 ? 0 : 11].run(x, y); m.cx = x; m.cy = y; m.r = 70;
+    }
+    c.render();
+  }
+  function drawMark(m, rev) {
+    if (m.w !== m.card.offsetWidth || m.h !== m.card.offsetHeight) makeMark(m);
+    rev = Math.round(clamp(rev) * 100) / 100; if (rev === m.drawn) return; m.drawn = rev;
+    if (m.smear) {                                                       // the smear appears along its way
+      const lo = Math.min(m.from, m.to) - m.r, hi = Math.max(m.from, m.to) + m.r, edge = m.to > m.from ? lo + (hi - lo) * rev : hi - (hi - lo) * rev;
+      m.cv.style.clipPath = m.to > m.from ? `inset(0 ${Math.max(0, m.w - edge)}px 0 0)` : `inset(0 0 0 ${Math.max(0, edge)}px)`;
+    } else m.cv.style.clipPath = `circle(${(rev * m.r).toFixed(1)}px at ${m.cx}px ${m.cy}px)`;   // the print spreads from where the finger touched
+  }
+
   function tick(now = performance.now()) {
     // the width of the page changes when the scrollbar appears or goes (no resize event for that): re-measure so everything stays on the grid
     if (root.clientWidth !== lastW) { measure(); clearTimeout(rebuild); rebuild = setTimeout(buildMotion, 200); }
@@ -1468,31 +1578,20 @@
       }
       c.style.filter = !bend && far > 0.01 ? `brightness(${(1 - 0.3 * far).toFixed(3)}) blur(${(2.4 * far * U).toFixed(2)}px)` : '';   // the further away, the darker (flying cards are bent strips: no blur on them)
       const g = Math.round(landed ? SHADE[i] : lerp(242, 225, t));
-      c.style.backgroundColor = `rgb(${g},${g},${g})`;
-      c.style.opacity = !landed ? 1 : DRUM ? (Math.abs(i - (k > 0 ? k - 1 + sw : 0)) < 1.45 ? 1 : 0) : i === k ? sw : (i === k - 1 && sw < 1 ? 1 : 0);
+      c.style.backgroundColor = CUTOUT.has(i) ? 'transparent' : `rgb(${g},${g},${g})`;   // the woman is cut out: no box behind her, the text runs along her outline
+      c.style.opacity = !landed ? 1 : DRUM ? (Math.abs(i - (k > 0 ? k - 1 + sw : 0)) < 1.45 ? 1 : 0) : (i === k ? sw : (i === k - 1 && sw < 1 ? 1 : 0));   // the pictures take turns in the table
       c.style.zIndex = ring > 0.001 && !landed ? 5 + Math.round((sz + 1) * 3) : landed && i === k ? 6 : 5;   // nearer cards are in front
     });
 
-    // text wraps around the picture, line by line, as it scrolls past
-    const R = PX + PW / 2, top = py - PH / 2, bottom = py + PH / 2;
-    const M = LH + 70 + Math.min(300, Math.abs(dir) * 14);                  // the lines step away before the picture arrives: the faster the scroll, the earlier
-    texts.forEach((el, j) => {
-      const L = +el.dataset.x;
-      lines[j].forEach((ln, li) => {
-        const T = +el.dataset.y + ln.offsetTop / U, hit = t > 0.85 && T < bottom + M && T + LH > top - M;
-        const dx = hit ? Math.max(0, R + 31 - L) : 0, was = +ln.dataset.dx || 0;
-        if (dx === was) return;
-        ln.dataset.dx = dx;
-        ln.style.transition = dx > was && Math.abs(dir) > 28 ? 'none' : '';      // in a fast scroll the line steps aside at once, so the picture never runs over it; it glides back
-        ln.style.transform = dx ? `translateX(${dx * U}px)` : '';
-      });
-    });
+    // text flows around the picture held in the table (pretext lays the lines out again as it moves); the first picture, the woman, is flowed around by her own outline
+    flowTable(t > 0.85 ? { cx: PX, top: py - PW / 2, w: PW, h: PW, shape: landed ? shapeOf(sw < 0.5 && k > 0 ? k - 1 : k) : null } : null);
 
     // gray block pinned: Lisa rises through it, then Karen
     const P3 = clamp((y - s3Top) / EX3);
     lisa.style.top = lerp(V, -396, clamp(P3 / 0.6)) * U + 'px';
     karen.style.top = lerp(V, -396, clamp((P3 - KD) / 0.6)) * U + 'px';   // Karen follows a bit lower: at first only Lisa is on the screen
     // a card plays its animation when it comes up into the screen, and plays back when it goes below again
+    drawMark(cardMarks[0], (P3 / 0.6 - 0.25) / 0.45); drawMark(cardMarks[1], ((P3 - KD) / 0.6 - 0.25) / 0.45);   // the clay marks draw in while the cards come up
     [[lisa, P3 / 0.6], [karen, (P3 - KD) / 0.6]].forEach(([el, k]) => {
       const top = lerp(V, -396, clamp(k));
       if (!el._on && top < V * 0.97) { el._on = true; el._tl && el._tl.timeScale(CARD_SPEED).play(); } else if (el._on && top >= V) { el._on = false; el._tl && el._tl.timeScale(CARD_SPEED * 2).reverse(); }
