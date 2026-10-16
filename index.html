@@ -366,14 +366,15 @@
   const storyMid = i => (storyP[i].offsetTop + storyP[i].offsetHeight / 2) / U;   // centre of a Story paragraph inside the page section (design px)
   // test photos on the theme of ceramics: public-domain (CC0) pictures from Wikimedia Commons, the same six on the cards at the top and on the strip at the end, so the loop stays seamless
   const CER = [
- "photos/purple-shelves.jpg",
+ "photos/tattoo-relief.jpg",
  "photos/red-vase.jpg",
  "photos/cone-table.jpg",
  "photos/blue-mug.jpg",
  "photos/white-pots.jpg",
  "photos/green-sculpture.jpg",
  "photos/bedroom.jpg",
- "photos/relief.jpg"
+ "photos/relief.jpg",
+ "photos/purple-shelves.jpg"
 ];
   const IMG = n => `url("${CER[n % CER.length]}")`;
   $('.hc').forEach((c, i) => { c.style.backgroundImage = IMG(i); });
@@ -508,9 +509,9 @@
     // the photo of Karen and Lisa covers the whole grey block, split between its two halves so it reads as one picture
     { const gr = one('.gray'), w = gr.offsetWidth, h = innerHeight, sc = Math.max(w / 1680, h / 850), iw = 1680 * sc, ih = 850 * sc, ox = (w - iw) / 2, oy = (h - ih) * 0.15;   // kept near the top, so the faces stay in the frame
       gr.style.setProperty('--bgS', `${iw}px ${ih}px`); gr.style.setProperty('--bgL', `${ox}px ${oy}px`); gr.style.setProperty('--bgR', `${ox - w / 2}px ${oy}px`); }
-    // the title stays pinned to the bottom until the first line of the table text comes up to its top edge, then it leaves with the page
-    const firstRow = Math.min(...[...document.querySelectorAll('.s2 .rt')].map(e => +e.dataset.y));
-    ttlBox.style.height = (one('.s2').offsetTop / U + firstRow + 182.6) * U + 'px';
+    // the title stays pinned to the bottom while the table goes over it, until the last line of the table text comes up to its top edge; then it leaves with the page
+    const lastRow = Math.max(...[...document.querySelectorAll('.s2 .rt')].map(e => +e.dataset.y));
+    ttlBox.style.height = (one('.s2').offsetTop / U + lastRow + 182.6) * U + 'px';
   }
 
   // ---- motion (GSAP + ScrollTrigger): the ruled lines draw first, then the text comes in line by line from under its mask; scrolling back plays it in reverse
@@ -1375,7 +1376,8 @@
     const release = ttlBox.offsetHeight / U - V + 40;                 // scroll position where the stuck title lets go
     const soak = ease(clamp((y - release) / (V * 0.5)));
     soakDisp.setAttribute('scale', ((soak * 26 * U) || 0).toFixed(1)); soakBlur.setAttribute('stdDeviation', ((soak * 5 * U) || 0).toFixed(2));
-    h1.style.filter = soak > 0.001 ? 'url(#soak)' : 'none'; ttlBox.style.opacity = (1 - soak).toFixed(3);
+    h1.style.filter = soak > 0.001 ? `blur(${(soak * 18 * U).toFixed(2)}px)` : 'none'; ttlBox.style.opacity = (1 - soak).toFixed(3);   // after the table it sinks into the background: blurred, and the page goes over it
+    ttlBox.style.zIndex = soak > 0.001 ? '0' : '';
     tagline.style.opacity = (clamp((now - t0 - (INTRO - 300)) / 500) * (1 - soak)).toFixed(3);   // appears with the intro, goes together with the title
     // Story: the year of the paragraph that is nearest to the middle of the screen (hidden when none is close)
     let sIdx = -1, sDist = Infinity;
