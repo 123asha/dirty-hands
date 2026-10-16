@@ -24,7 +24,7 @@
   .s2 { height: calc(1168 * var(--u)); margin-bottom: calc(348 * var(--u)); }
   .s2-in { position: relative; height: 100%; }
   .s3 { z-index: 3; }
-  .gray { position: relative; margin: 0; height: calc(1800 * var(--u)); overflow: hidden; }   /* a block that scrolls with the page, with no grey fill of its own: first the photo of Karen and Lisa (it moves slower, parallax), then their two cards come up over it one after the other */
+  .gray { position: relative; margin: 0; height: calc(1250 * var(--u)); overflow: hidden; }   /* a block that scrolls with the page, with no grey fill of its own: first the photo of Karen and Lisa (it moves slower, parallax), then their two cards come up over it one after the other */
   .rest { height: calc(6245 * var(--u)); }
   /* vertical spacing, one rule for the page below (design px, from the visible bottom of one thing to the visible top of the next):
      20 inside a block (a number to its picture), 40 from a text to its link, 120 between the items of one section (case to case), 200 between sections */
@@ -113,8 +113,9 @@
   @media (prefers-reduced-motion: reduce) { .ttl .h1 .ch, .nav a { animation: none; transform: none; opacity: 1; } }
   /* partners: labels stick, the active row turns black */
   /* partners: gray text that fills with black (left to right) when its row is level with the labels */
-  .partner .pf { clip-path: inset(-12% 106% -25% -6%); display: inline-block; will-change: transform; padding: 0 .14em; margin: 0 -.14em; color: transparent; background: linear-gradient(90deg, #000 44%, transparent 52%) 100% 0 / 300% 100% no-repeat, linear-gradient(#999, #999) 0 0 / 100% 100% no-repeat; -webkit-background-clip: text; background-clip: text; transition: background-position var(--dur) var(--ease); }   /* the fill runs in like paint: a soft edge, not a hard wipe */
-  .partner.on .pf { background-position: 0 0, 0 0; }
+  .partner .pf { display: inline-block; will-change: transform; overflow: hidden; padding: .06em .14em .14em; margin: -.06em -.14em -.14em; vertical-align: top; }   /* the mask the letters come down from, as in the headings */
+  .partner .pf .c { display: inline-block; white-space: pre; color: transparent; background: linear-gradient(90deg, #000 44%, transparent 52%) 100% 0 / 300% 100% no-repeat, linear-gradient(#999, #999) 0 0 / 100% 100% no-repeat; -webkit-background-clip: text; background-clip: text; transition: background-position .5s var(--ease) calc(var(--i, 0) * 45ms); transform: translateY(-115%); }   /* each letter fills with black in its turn, with a soft edge, one after another */
+  .partner.on .pf .c { background-position: 0 0, 0 0; }
   .plab-in { position: sticky; top: 50vh; height: calc(20 * var(--u)); }
   .plab-in > p, .plab-in > .quote { position: absolute; top: 0; }
   .quote .rules { position: absolute; }
@@ -871,14 +872,14 @@
     for (const [d, j] of [...byD].reverse()) if (d < 0) { const pj = byD.find(x => x[0] === d + 1)[1]; centre[d] = centre[d + 1] - wOf(pj) / 2 - GAP - wOf(j) / 2; }
     const arcAt = p => { const a = Math.floor(p), b = Math.ceil(p); const ca = centre[a] ?? centre[Math.max(lo0, Math.min(hi0, a))], cb = centre[b] ?? centre[Math.max(lo0, Math.min(hi0, b))]; return ca + (cb - ca) * (p - a); };
     const lo0 = Math.min(...order), hi0 = Math.max(...order);
-    const st = { bend: 0, spread: 0 }; let pos = 0, target = 0, run = true, snapT = 0, drag = null;
+    const st = { bend: 0, spread: 0, k: 0.01, damp: 0.8 }; let vel = 0, pos = 0, target = 0, run = true, snapT = 0, drag = null;     // the cylinder follows the hand like a heavy wheel: a soft spring, so it starts and stops gently
     const place = () => {
       const R = RAD / Math.max(0.08, st.bend);                                        // flat at first, then it bulges
       photos.forEach(p => {
         // the others come out from under the clicked one one after another, overlapping in time: sideways round the cylinder to their places, and each from above or below
         const turn = Math.abs(p.d) * 2 - (p.d > 0 ? 2 : 1), e = p.d === 0 ? 1 : ease((st.spread * (srcs.length + 1) - turn) / 3);
         const at = centre[p.d];                                                       // the others stand in their places already; like the cards on the main page, they open from a thin strip on the middle line
-        const lineY = innerHeight / 2, hh = p.d === 0 ? p.ph : p.ph * e + 14 * U * (1 - e), cy = p.d === 0 ? p.tj + p.ph / 2 : lineY + (p.tj + p.ph / 2 - lineY) * e, dy = 0;
+        const lineY = innerHeight / 2, hh = p.d === 0 ? p.ph : p.ph * e, cy = p.d === 0 ? p.tj + p.ph / 2 : lineY + (p.tj + p.ph / 2 - lineY) * e, dy = 0;
         p.strips.forEach(s => { s.el.style.top = (cy - hh / 2).toFixed(1) + 'px'; s.el.style.height = hh.toFixed(1) + 'px'; s.el.firstChild.style.top = ((hh - p.ph) / 2).toFixed(1) + 'px'; });
         let most = 0;
         p.strips.forEach(s => {
@@ -890,8 +891,8 @@
         p.strips.forEach(s => { s.el.style.opacity = s.f ? 1 : 0; s.el.style.setProperty('--w', most ? (1 - s.f / most).toFixed(3) : 0); });
       });
     };
-    (function loop() { if (!run) return; pos += (target - pos) * 0.1; place(); requestAnimationFrame(loop); })();   // the cylinder follows a little behind the hand, so it glides on after the scroll stops
-    const lo = Math.min(...order), hi = Math.max(...order), nudge = v => { if (closing) return; target = Math.max(lo - 0.3, Math.min(hi + 0.3, v)); clearTimeout(snapT); snapT = setTimeout(() => { target = Math.max(lo, Math.min(hi, Math.round(target))); }, 140); };
+    (function loop() { if (!run) return; if (!st.fixed) { vel = (vel + (target - pos) * st.k) * st.damp; pos += vel; } place(); requestAnimationFrame(loop); })();   // the cylinder follows a little behind the hand, so it glides on after the scroll stops
+    const lo = Math.min(...order), hi = Math.max(...order), nudge = v => { if (closing) return; target = Math.max(lo - 0.3, Math.min(hi + 0.3, v)); clearTimeout(snapT); snapT = setTimeout(() => { target = Math.max(lo, Math.min(hi, Math.round(target))); }, 180); };
     const onWheel = e => { e.preventDefault(); nudge(target + (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) / SPc * 0.9); };
     const onKey = e => { if (closing) return; if (e.key === 'ArrowRight') target = Math.min(hi, Math.round(target) + 1); else if (e.key === 'ArrowLeft') target = Math.max(lo, Math.round(target) - 1); };
     const onDown = e => { drag = { x: e.clientX, t: target, moved: false }; };
@@ -914,8 +915,9 @@
     riseIn(tl, inT, { at: 1, each: .07, dur: .8 });                                                             // the text in front
     let closing = false;
     openView = { close() {                                                // first the cylinder turns back to the picture that was clicked, then everything folds back into the card
-      if (closing) return; closing = true; drag = null; clearTimeout(snapT); target = 0;
-      (function wait() { if (Math.abs(pos) > 0.01) return requestAnimationFrame(wait); pos = 0; tl.timeScale(1.8).reverse(); })();
+      if (closing) return; closing = true; drag = null; clearTimeout(snapT);
+      const back = { v: pos }; target = 0; st.fixed = true; gsap.to(back, { v: 0, duration: .3, ease: 'power2.inOut', onUpdate() { pos = back.v; }, onComplete() { pos = 0; } });   // the cylinder turns back on one smooth curve ...
+      gsap.delayedCall(.04, () => tl.timeScale(3.4).reverse());                                                   // ... and the folding follows almost at once, as one movement, at about the old speed
     } };
     tl.timeScale(1).play();
   }
@@ -1657,17 +1659,14 @@
     }
   }
 
-  function typeName(pf, on) {                                              // letter by letter: the clip opens exactly to the right edge of each next letter
-    if (!G) { pf.style.clipPath = 'none'; return; }
-    const tn = pf.firstChild, w = pf.getBoundingClientRect().width, n = tn.length, edges = [], r = document.createRange();
-    for (let k = 1; k <= n; k++) { r.setStart(tn, 0); r.setEnd(tn, k); edges.push(r.getBoundingClientRect().right - pf.getBoundingClientRect().left); }
-    const inset = e => `inset(-12% ${Math.max(-w * 0.06, w - e)}px -25% -6%)`;
-    const full = 'inset(-12% -6% -25% -6%)';
-    if (pf._tl) pf._tl.kill();
-    const tl = pf._tl = gsap.timeline();
-    if (on) { for (let k = 0; k < n; k++) tl.set(pf, { clipPath: k === n - 1 ? full : inset(edges[k]) }, k * 0.07); }
-    else { for (let k = n - 2; k >= -1; k--) tl.set(pf, { clipPath: k < 0 ? inset(0) : inset(edges[k]) }, (n - 2 - k) * 0.025); }
+  partners.forEach(el => { const pf = el.firstElementChild, t = pf.textContent; pf.innerHTML = [...t].map((ch, i) => `<span class="c" style="--i:${i}">${ch === ' ' ? '&nbsp;' : ch}</span>`).join(''); if (!G) [...pf.children].forEach(c => { c.style.transform = 'none'; }); });
+  function typeName(pf, on) {                                              // letter by letter, as the headings: the letters come down from above one after another, and go back up
+    if (!G) return;
+    const L = [...pf.children];
+    if (on) gsap.to(L, { yPercent: 0, y: 0, duration: .6, ease: EASE, stagger: .05, overwrite: true });
+    else gsap.to(L, { yPercent: -115, duration: .35, ease: EASE, stagger: { each: .02, from: 'end' }, overwrite: true });
   }
+  let yS = 0, mv = 0, smoothRaf = 0;
   function tick(now = performance.now()) {
     // the width of the page changes when the scrollbar appears or goes (no resize event for that): re-measure so everything stays on the grid
     if (root.clientWidth !== lastW) { measure(); clearTimeout(rebuild); rebuild = setTimeout(buildMotion, 200); }
@@ -1717,13 +1716,18 @@
     navTarget = slide > 0 && gapTo > 0 ? gapTo * slide : 0;                    // Shop goes first and drags the others after it: Cases a little later, About last
     if (!navRun) { navRun = true; requestAnimationFrame(navStep); }
 
+    // a little inertia for the cards (about 10%): they follow the scroll a step behind and settle after it; while they are catching up they bend, once at rest they straighten
+    { const nw = performance.now(), dt = Math.min(64, nw - (tick._t || nw)); tick._t = nw; const k = 1 - Math.pow(1 - 0.2, dt / 16.7); yS = tick._i ? yS + (y - yS) * k : y; tick._i = 1; }
+    const lag = Math.abs(y - yS); if (lag < 0.25) yS = y; else if (!smoothRaf) smoothRaf = requestAnimationFrame(() => { smoothRaf = 0; tick(); });
+    mv += (clamp(lag / 30) - mv) * 0.25; if (mv < 0.01 && lag < 0.25) mv = 0;
+    const yc = yS;
     // 1 → 2: from the first bit of scroll the cards slide together into one pile, turn into cut-outs there, and the pile opens into a wheel that stays on the screen
     const E = s2Top + PY0 - V / 2;
-    const t = ease(y / E), landed = y >= E;
+    const t = ease(yc / E), landed = yc >= E;
     // block 2 scrolls under the wheel: its centre stays in the middle of the screen until the table's last line has come up to it
-    const py = Math.min(PY1, Math.max(PY0, y + V / 2 - s2Top));
+    const py = Math.min(PY1, Math.max(PY0, yc + V / 2 - s2Top));
     // the wheel: six cut-outs on a flat circle, upright like the cabins of a big wheel; the scroll turns it so that the work of the paragraph level with its centre stands at three o'clock, right beside the text
-    const R = Math.max(150, Math.min(250, V / 2 - 60 - PH / 2)), WX = PX - R, WY = Math.min(s2Top + PY1, y + V / 2);   // centre in page coordinates, mid-screen from the start: three o'clock is where the single picture used to be held
+    const R = Math.max(150, Math.min(250, V / 2 - 60 - PH / 2)), WX = PX - R, WY = Math.min(s2Top + PY1, yc + V / 2);   // centre in page coordinates, mid-screen from the start: three o'clock is where the single picture used to be held
     const pc = texts.map(p => +p.dataset.c0);                         // fixed middles: the flow moves the paragraphs, but must not move the wheel
     let p = 0; for (let j = 0; j < pc.length - 1; j++) if (py > pc[j]) p = j + Math.min(1, (py - pc[j]) / (pc[j + 1] - pc[j]));   // 0 until the first paragraph, 5 from the last one on, turning with the scroll in between
     midStrip.classList.toggle('off', landed);                                              // gone once the table's first line has taken its place
@@ -1731,58 +1735,67 @@
     // the table is open from the landing of the cards until its last row reaches the middle of the screen
     const lastRow = texts[texts.length - 1].getBoundingClientRect(), lastRowMid = (lastRow.top + lastRow.height / 2) / U;
     // opens at the landing; goes away before the landing when you scroll back (the table first, then only its first line is left); and when its last row is in the middle
-    const dir = y - prevY; prevY = y;
-    const rowOK = lastRow.bottom / U > -40, backClose = dir < 0 && y < E + 70;
-    if (y >= E + 70 || y < E) closedBack = false;
+    const dir = yc - prevY; prevY = yc;
+    const rowOK = lastRow.bottom / U > -40, backClose = dir < 0 && yc < E + 70;
+    if (yc >= E + 70 || yc < E) closedBack = false;
     if (tableOpen && (backClose || !rowOK)) { if (backClose) closedBack = true; openTable(false); }
     else if (!tableOpen && landed && rowOK && !closedBack) openTable(true);
     if (G) fan[0].style.visibility = landed ? 'visible' : 'hidden';                        // the table's first line: the strip's place from the landing on
     const q = clamp(t / 0.7);                                                            // the first 70% of the way: the ring, as before
     const wIn = ease(clamp(q / 0.2)), wOut = ease(clamp((1 - q) / 0.3)), ring = wIn * wOut;   // every card goes straight to its place on the ring, the ring turns once, then it closes into the pile
-    const open = ease(clamp((t - 0.78) / 0.22));                                         // in the pile they turn into cut-outs, then the pile opens into the wheel
+    const open = 0;                                                                      // the pile stays a pile (it no longer opens into a wheel): the cut-outs lie in the middle and are turned over like cards as you scroll
     const ang = cards.map((_, i) => (i - p) * Math.PI / 3);                              // 0 = three o'clock; the next card waits below it and comes up as its paragraph does
     const SZ = cards.map((_, i) => Math.cos(TH[i] + 2 * Math.PI * q) * Math.cos(LA[i]));   // depth on the ring
-    const KEY = q < 1 ? SZ : ang.map(a => Math.cos(a)), RANK = KEY.map((v, i) => KEY.filter((w, j) => w < v || (w === v && j > i)).length);   // on the ring the nearer cards are in front; in the pile and on the wheel the nearer to three o'clock, the higher (the two orders agree where the ring closes, so nothing jumps)
+    const DEPTH = i => Math.abs(p - i);                                                   // the works lie one exactly on another in the middle and flow into each other: the nearest one is in front
+    const PM = ease(clamp((q - 0.4) / 0.55));                                             // as the ring closes, the depth order glides into the order of the categories, so the pile is already right when it forms: panels on top, then mirrors, tables, ...
+    const KEY = q < 1 ? SZ.map((v, i) => v * (1 - PM) + (1 - 2 * i / 5) * PM) : cards.map((_, i) => -DEPTH(i)), RANK = KEY.map((v, i) => KEY.filter((w, j) => w < v || (w === v && j > i)).length);   // on the ring the nearer cards are in front; in the pile and on the wheel the nearer to three o'clock, the higher (the two orders agree where the ring closes, so nothing jumps)
     const obs = [];
     cards.forEach((c, i) => {
       const d = introDone ? 1 : drop((now - t0 - LEAD - i * GAP) / DUR), h = lerp(20, H0[i], d);
       const w = lerp(W0, PW, q), hh = lerp(h, PH, q);
       const fan = Math.atan2(Math.sin(ang[i]), Math.cos(ang[i])) * open;          // the pile lies at three o'clock, in the middle of the screen; opening, the cards run round the wheel to their places (up or down, whichever is shorter) and the top one stays where it is
-      const tx = WX + R * Math.cos(fan) + PILE[i][0] * (1 - open), ty = WY + R * Math.sin(fan) + PILE[i][1] * (1 - open);   // its place in the pile, then on the wheel (page coordinates)
+      const sd = p - i, settle = q < 1 ? 1 : 0, leave = 0;   // the card in the middle lies straight; the others lie askew under it; the front one slides out to the left (first half) and comes back to the very back of the stack (second half)
+      const tx = WX + R * Math.cos(fan) + PILE[i][0] * settle - leave * 380, ty = WY + R * Math.sin(fan) + PILE[i][1] * settle - leave * 50;   // its place in the pile (page coordinates)
       const th = TH[i] + 2 * Math.PI * q, cl = Math.cos(LA[i]), sx = Math.sin(th) * cl, sy = Math.sin(LA[i]);   // point on the sphere
       const cx = lerp(lerp(X0(i) + W0 / 2, PX + SPH * 0.9 * sx, wIn), tx, 1 - wOut);
-      const cy = lerp(lerp(20 + h / 2, V * 0.4 + SPH * 0.55 * sy, wIn) + y, ty, 1 - wOut);   // page coordinates; the ring turns a little above the middle of the screen
+      const cy = lerp(lerp(20 + h / 2, V * 0.4 + SPH * 0.55 * sy, wIn) + yc, ty, 1 - wOut);   // page coordinates; the ring turns a little above the middle of the screen
       c.style.width = w * U + 'px'; c.style.height = hh * U + 'px';
       // fixed to the screen while the wheel is held, so it never lags behind a fast scroll
-      const fixed = y < E + PY1 - PY0;
+      const fixed = yc < E + PY1 - PY0;
       c.style.position = fixed ? 'fixed' : 'absolute';
-      c.style.left = (cx - w / 2) * U + 'px'; c.style.top = (cy - hh / 2 - (fixed ? y : 0)) * U + 'px';
+      c.style.left = (cx - w / 2) * U + 'px'; c.style.top = (cy - hh / 2 - (fixed ? yc : 0)) * U + 'px';
       c.classList.toggle('photo', t < 0.72);                                // photos with their backgrounds on top and on the ring, cut-outs once they lie in the pile
       if (t > 0) {                                                          // (at rest on top the hover owns the transform)
-        const rot = PILE[i][2] * (1 - wOut) * (1 - open);                   // a pile lies a little askew
-        const bend = landed ? 0 : ease(clamp(t / 0.14)) * ease(clamp((1 - t) / 0.2));   // concave all the way: from the first bit of scroll, round the ring, through the pile, until they settle flat on the wheel
+        const rot = PILE[i][2] * (1 - wOut) * settle - leave * 16;          // a pile lies a little askew; a card thrown off turns as it goes
+        const bend = landed ? 0 : ease(clamp(t / 0.14)) * ease(clamp((1 - t) / 0.2)) * mv;   // concave all the way: from the first bit of scroll, round the ring, through the pile, until they settle flat on the wheel
         const Z = SPH * SZ[i] * U * ring, far = Math.max(0, -SZ[i]) * ring;   // on the ring some are nearer and some further away (and darker)
-        c.classList.toggle('bent', bend > 0.001);
-        if (bend > 0.001) {                                                 // cut into strips and bent: a picture glued inside a cylinder, turned a little towards the middle of the ring, later of the wheel
-          const turn = 38 * (ring * sx + (1 - wOut) * bend * Math.max(-1, Math.min(1, (cx - PX) / R))), wpx = w * U, Rc = wpx / (bend * 1.15);
+        const live = bend > 0.001 || ring > 0.001 || (!landed && t < 0.99);   // on the ring the cards keep their depth even when straight
+        c.classList.toggle('bent', live);
+        if (live) {                                                 // cut into strips and bent: a picture glued inside a cylinder, turned a little towards the middle of the ring, later of the wheel
+          const turn = 38 * (ring * sx + (1 - wOut) * bend * Math.max(-1, Math.min(1, (cx - PX) / R))), wpx = w * U, Rc = wpx / (Math.max(bend, 0.0008) * 1.15);
           const br = far > 0.01 ? `brightness(${(1 - 0.3 * far).toFixed(3)})` : '';
           c.style.transform = `perspective(${1100 * U}px) translateZ(${Z.toFixed(1)}px) rotate(${rot.toFixed(2)}deg) rotateY(${turn.toFixed(1)}deg)`;
           c.style.setProperty('--cw', wpx + 'px'); c.style.setProperty('--sw', wpx / HS + 'px');
           c._hs.forEach((st, j) => { const u = ((j + .5) / HS - .5) * wpx, al = u / Rc; st.style.transform = `translate3d(${(Rc * Math.sin(al) - u).toFixed(2)}px,0,${(-Rc * (1 - Math.cos(al))).toFixed(2)}px) rotateY(${al.toFixed(4)}rad)`; st.style.filter = br; });
-        } else c.style.transform = rot ? `rotate(${rot.toFixed(2)}deg)` : '';
+        } else c.style.transform = `${rot ? `rotate(${rot.toFixed(2)}deg) ` : ''}scale(${(c._flow || 1).toFixed(3)})`;
       }
-      c.style.filter = '';
+      {                                                                    // one work flows into the next: the one leaving softens, swells a little and fades while the next comes out of the blur, sharp, in the same place
+        const w = ease(clamp((0.62 - Math.abs(sd)) / 0.37)), hide = q < 1 ? 0 : ease(clamp((t - 0.7) / 0.3));   // until the pile has formed they are all there
+        c.style.opacity = lerp(1, w, hide).toFixed(3);
+        c.style.filter = hide > 0.01 && w < 0.999 ? `blur(${((1 - w) * hide * 18 * U).toFixed(1)}px)` : '';
+        c._flow = 1 + (-sd) * 0.09 * hide;
+      }
       const g = Math.round(landed ? SHADE[i] : lerp(242, 225, t));
       c.style.backgroundColor = CUTOUT.has(i) ? 'transparent' : `rgb(${g},${g},${g})`;   // cut out: no box behind them, the text runs along their outlines
       c.style.zIndex = t > 0 ? 5 + RANK[i] : 5;                                 // at rest in the top row they are all level
-      if (t > 0.85) obs.push({ cx, top: cy - s2Top - hh / 2, w, h: hh, shape: shapeOf(i) });
+      if (t > 0.85 && DEPTH(i) < 0.62) obs.push({ cx, top: cy - s2Top - hh / 2, w, h: hh, shape: shapeOf(i) });   // the text runs round the card in the middle (and the one that is leaving)
     });
 
     // text flows around the wheel (pretext lays the lines out again as it turns): mostly around the work at three o'clock, by its own outline
     flowTable(obs.length ? obs : null);
 
     // the photo block scrolls with the page: the photo inside lags behind (parallax), the two cards run a little ahead of it, Lisa not far below Karen
-    const gp = clamp((y + V - s3Top) / (1800 + V));                     // 0: the block comes in at the bottom, 1: it has gone out at the top
+    const gp = clamp((y + V - s3Top) / (1250 + V));                     // 0: the block comes in at the bottom, 1: it has gone out at the top
     one('.gray').style.setProperty('--par', gp.toFixed(4));
     lisa.style.top = (560 - (gp - 0.5) * 160) * U + 'px';                // (the #lisa card carries Karen's name: it is the first one)
     karen.style.top = (780 - (gp - 0.5) * 560) * U + 'px';
