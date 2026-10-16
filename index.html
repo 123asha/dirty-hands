@@ -25,7 +25,7 @@
   .s2-in { position: relative; height: 100%; }
   .s3 { z-index: 3; }
   .gray { position: relative; margin: 0; height: calc(980 * var(--u)); overflow: hidden; }   /* a block that scrolls with the page, with no grey fill of its own: first the photo of Karen and Lisa (it moves slower, parallax), then their two cards come up over it one after the other */
-  .rest { height: calc(6245 * var(--u)); }
+  .rest { height: calc(6005 * var(--u)); }
   /* vertical spacing, one rule for the page below (design px, from the visible bottom of one thing to the visible top of the next):
      20 inside a block (a number to its picture), 40 from a text to its link, 120 between the items of one section (case to case), 200 between sections */
   .t { font-weight: 400; white-space: nowrap; }
@@ -81,7 +81,8 @@
   .hc .hs i { position: absolute; top: 0; height: 100%; left: calc(-1 * var(--j) * var(--sw) + 1px); width: var(--cw); background-size: cover; background-position: center; background-repeat: no-repeat; }
   .hc .hc-altimg { position: absolute; background-repeat: no-repeat; }
   .hc .hc-alt { position: absolute; inset: 0; overflow: hidden; opacity: 0; transition: opacity .45s var(--ease); pointer-events: none; }
-  .hc.hov .hc-alt, .hc.photo .hc-alt { opacity: 1; }   /* on top the works are shown in their photos; in the table they are cut out */
+  .hc.hov .hc-alt, .hc.photo .hc-alt { opacity: 1; }
+  .hc.photo { background-image: none !important; }   /* while the cards show their photos the cut-out under them is not there at all, so on a reload it never shows first */   /* on top the works are shown in their photos; in the table they are cut out */
   .hc .hs b { position: absolute; top: 0; height: 100%; left: calc(-1 * var(--j) * var(--sw) + 1px); width: var(--cw); background: center / cover no-repeat; opacity: 0; transition: opacity .4s var(--ease); }
   .hc .hs i { transition: opacity .4s var(--ease); }
   .hc.photo .hs b { opacity: 1; }
@@ -115,8 +116,11 @@
   /* partners: labels stick, the active row turns black */
   /* partners: gray text that fills with black (left to right) when its row is level with the labels */
   .partner .pf { display: inline-block; will-change: transform; overflow: hidden; padding: .06em .14em .14em; margin: -.06em -.14em -.14em; vertical-align: top; }   /* the mask the letters come down from, as in the headings */
-  .partner .pf .c { display: inline-block; white-space: pre; color: transparent; background: linear-gradient(90deg, #000 44%, transparent 52%) 100% 0 / 300% 100% no-repeat, linear-gradient(#999, #999) 0 0 / 100% 100% no-repeat; -webkit-background-clip: text; background-clip: text; transition: background-position .5s var(--ease) calc(var(--i, 0) * 45ms); transform: translateY(115%); }   /* each letter fills with black in its turn, with a soft edge, one after another */
+  .partner .pf .c { display: inline-block; white-space: pre; color: transparent; background: linear-gradient(90deg, #000 44%, transparent 52%) 100% 0 / 300% 100% no-repeat, linear-gradient(#c8c8c8, #c8c8c8) 0 0 / 100% 100% no-repeat; -webkit-background-clip: text; background-clip: text; transition: background-position .5s var(--ease) calc(var(--i, 0) * 45ms); transform: translateY(115%); }   /* each letter fills with black in its turn, with a soft edge, one after another */
   .partner.on .pf .c { background-position: 0 0, 0 0; }
+  .partner.pinned { mix-blend-mode: difference; z-index: 6; }   /* held over the cases: white letters in difference read black on white and white on the photos */
+  .partner.pinned .pf .c { background-image: linear-gradient(90deg, #fff 44%, transparent 52%), linear-gradient(#373737, #373737); }
+  .partner { cursor: pointer; }
   .plab-in { position: sticky; top: 50vh; height: calc(20 * var(--u)); }
   .plab-in > p, .plab-in > .quote { position: absolute; top: 0; }
   .quote .rules { position: absolute; }
@@ -260,45 +264,45 @@
   <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(997.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">AVA</span></p>
   <p class="t name2 partner" style="display:none;left:calc(706 * var(--u));top:calc(1124.8 * var(--u));width:calc(674 * var(--u));"><span class="pf">Rodina Moskva</span></p>
 
-  <div class="ph pic" style="left:calc(20 * var(--u));top:calc(1460 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
-  <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(1423 * var(--u))">01</span>
-  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(1460 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(1460 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
-  <div class="ph pic" style="left:calc(710 * var(--u));top:calc(2153 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
-  <div class="rules cap rtl" data-n="4" data-step="19" style="left:calc(480 * var(--u));top:calc(2153 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(480 * var(--u));top:calc(2153 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u));text-align:right">Artful wall compositions bring depth, texture, and character to your space.</p>
-  <span class="n" style="left:calc(710 * var(--u));top:calc(2116 * var(--u))">02</span>
-  <div class="ph pic" style="left:calc(20 * var(--u));top:calc(2768 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
-  <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(2731 * var(--u))">03</span>
-  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(2768 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(2768 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
-  <div class="ph pic" style="left:calc(940 * var(--u));top:calc(3461 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
-  <div class="rules cap rtl" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(3461 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(3461 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u));text-align:right">Artful wall compositions bring depth, texture, and character to your space.</p>
-  <span class="n" style="left:calc(940 * var(--u));top:calc(3424 * var(--u))">04</span>
-  <div class="ph pic" style="left:calc(20 * var(--u));top:calc(4076 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
-  <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(4039 * var(--u))">05</span>
-  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(4076 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(4076 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <div class="ph pic" style="left:calc(20 * var(--u));top:calc(1220 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
+  <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(1183 * var(--u))">01</span>
+  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(1220 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(1220 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <div class="ph pic" style="left:calc(480 * var(--u));top:calc(1913 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
+  <div class="rules cap" data-n="4" data-step="19" style="left:calc(940 * var(--u));top:calc(1913 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
+  <p class="t18" style="left:calc(940 * var(--u));top:calc(1913 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <span class="n" style="text-align:right;left:calc(873 * var(--u));top:calc(1876 * var(--u))">02</span>
+  <div class="ph pic" style="left:calc(20 * var(--u));top:calc(2528 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
+  <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(2491 * var(--u))">03</span>
+  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(2528 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(2528 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <div class="ph pic" style="left:calc(480 * var(--u));top:calc(3221 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
+  <div class="rules cap" data-n="4" data-step="19" style="left:calc(940 * var(--u));top:calc(3221 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
+  <p class="t18" style="left:calc(940 * var(--u));top:calc(3221 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <span class="n" style="text-align:right;left:calc(873 * var(--u));top:calc(3184 * var(--u))">04</span>
+  <div class="ph pic" style="left:calc(20 * var(--u));top:calc(3836 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
+  <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(3799 * var(--u))">05</span>
+  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(3836 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(3836 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
 
-  <svg class="morph" viewBox="0 0 200 300" aria-hidden="true" style="left:calc(570 * var(--u));top:calc(4791 * var(--u));width:calc(260 * var(--u));height:calc(390 * var(--u));"><path class="mb" d=""/><path class="ml" d=""/><path class="mh" d=""/><path class="mx" d=""/><path class="my" d=""/></svg>
-  <i class="hl" style="top:calc(4866 * var(--u))"></i>
-  <i class="hl" style="top:calc(4939.4 * var(--u))"></i>
-  <i class="hl" style="top:calc(5012.9 * var(--u))"></i>
-  <i class="hl" style="top:calc(5086.3 * var(--u))"></i>
-  <div class="bigrow" style="left:calc(20 * var(--u));top:calc(4858.8 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Unconventional</p></div>
-  <div class="bigrow" style="left:calc(940 * var(--u));top:calc(4932.2 * var(--u));height:calc(98 * var(--u));"><p class="t name2">ceramic</p></div>
-  <div class="bigrow" style="left:calc(480 * var(--u));top:calc(5005.7 * var(--u));height:calc(98 * var(--u));"><p class="t name2">forms</p></div>
+  <svg class="morph" viewBox="0 0 200 300" aria-hidden="true" style="left:calc(570 * var(--u));top:calc(4551 * var(--u));width:calc(260 * var(--u));height:calc(390 * var(--u));"><path class="mb" d=""/><path class="ml" d=""/><path class="mh" d=""/><path class="mx" d=""/><path class="my" d=""/></svg>
+  <i class="hl" style="top:calc(4626 * var(--u))"></i>
+  <i class="hl" style="top:calc(4699.4 * var(--u))"></i>
+  <i class="hl" style="top:calc(4772.9 * var(--u))"></i>
+  <i class="hl" style="top:calc(4846.3 * var(--u))"></i>
+  <div class="bigrow" style="left:calc(20 * var(--u));top:calc(4618.8 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Unconventional</p></div>
+  <div class="bigrow" style="left:calc(940 * var(--u));top:calc(4692.2 * var(--u));height:calc(98 * var(--u));"><p class="t name2">ceramic</p></div>
+  <div class="bigrow" style="left:calc(480 * var(--u));top:calc(4765.7 * var(--u));height:calc(98 * var(--u));"><p class="t name2">forms</p></div>
 
-  <div class="tagged" style="left:calc(250 * var(--u));top:calc(5371 * var(--u));"><p class="t big2">Story</p><span class="yr" aria-hidden="true"></span></div>
-  <p class="t18" data-year="2019" style="left:calc(710 * var(--u));top:calc(5391 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <p class="t18" data-year="2020" style="left:calc(710 * var(--u));top:calc(5511 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <p class="t18" data-year="2021" style="left:calc(710 * var(--u));top:calc(5631 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <p class="t18" data-year="2022" style="left:calc(710 * var(--u));top:calc(5751 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <p class="t18" data-year="2023" style="left:calc(710 * var(--u));top:calc(5871 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <a class="t18 more" style="display:none;left:calc(710 * var(--u));top:calc(5969 * var(--u));" href="#story">More →</a>
-  <div class="dot" style="left:calc(613 * var(--u));top:calc(5377.5 * var(--u));"></div>
-  <div class="dot" style="left:calc(613 * var(--u));top:calc(5452.5 * var(--u));"></div>
+  <div class="tagged" style="left:calc(250 * var(--u));top:calc(5131 * var(--u));"><p class="t big2">Story</p><span class="yr" aria-hidden="true"></span></div>
+  <p class="t18" data-year="2019" style="left:calc(710 * var(--u));top:calc(5151 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <p class="t18" data-year="2020" style="left:calc(710 * var(--u));top:calc(5271 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <p class="t18" data-year="2021" style="left:calc(710 * var(--u));top:calc(5391 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <p class="t18" data-year="2022" style="left:calc(710 * var(--u));top:calc(5511 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <p class="t18" data-year="2023" style="left:calc(710 * var(--u));top:calc(5631 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <a class="t18 more" style="display:none;left:calc(710 * var(--u));top:calc(5729 * var(--u));" href="#story">More →</a>
+  <div class="dot" style="left:calc(613 * var(--u));top:calc(5137.5 * var(--u));"></div>
+  <div class="dot" style="left:calc(613 * var(--u));top:calc(5212.5 * var(--u));"></div>
   <div class="ph bar" style="--i:0;left:calc(20.00 * var(--u));top:calc(6185 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
   <div class="ph bar" style="--i:1;left:calc(250.17 * var(--u));top:calc(6185 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
   <div class="ph bar" style="--i:2;left:calc(480.34 * var(--u));top:calc(6185 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
@@ -435,7 +439,7 @@
   }
   const CATS = ['Panels', 'Mirrors', 'Tables', 'Sculptures', 'Urbans', 'Vases'];
   $('.hc').forEach((c, i) => {
-    c.style.backgroundImage = HERO(i); if (CUTOUT.has(i)) c.style.backgroundSize = 'contain';
+    c.style.backgroundImage = HERO(i); if (CUTOUT.has(i)) c.style.backgroundSize = 'contain'; c.classList.add('photo');
     const alt = document.createElement('div'); alt.className = 'hc-alt'; const altImg = document.createElement('div'); altImg.className = 'hc-altimg'; altImg.style.backgroundImage = `url("${HOVER_SRC[i]}")`; alt.append(altImg);
     { const f = frameFor(i, 210.2, CARD_H[i]); Object.assign(altImg.style, { left: `calc(${f.x.toFixed(2)} * var(--u))`, top: `calc(${f.y.toFixed(2)} * var(--u))`, width: `calc(${f.w.toFixed(2)} * var(--u))`, height: `calc(${f.h.toFixed(2)} * var(--u))`, backgroundSize: '100% 100%' }); }   // fixed size: the card is a window that grows over it, the picture itself is never stretched   // the work stays where its cut-out stands
     const lab = document.createElement('span'); lab.className = 'hc-lab'; lab.textContent = CATS[i];
@@ -534,6 +538,7 @@
   const cards = $('.hc'), s2 = one('.s2'), s3 = one('.s3'), lisa = one('#lisa'), karen = one('#karen');
   const fan = $('.fan i'), nums = $('.s2 .num'), texts = $('.s2 .rt');
   const pics = $('.pic'), partners = $('.partner'), plab = one('.plab-in');
+  partners.forEach((el, i) => el.addEventListener('click', () => { const pc = pics[i]; if (!pc) return; scrollTo({ top: pc.getBoundingClientRect().top + scrollY - (innerHeight - pc.offsetHeight) / 2, behavior: 'smooth' }); }));   // a name is an anchor: it takes you to its case
 
   // "Clients about us": the quote on the left (two lines between ruled lines, one column wide) changes with the client that is level with the labels
   // (placeholder quotes: to be replaced with the real ones)
@@ -1430,7 +1435,7 @@
 
   /* ---------- input ---------- */
   const hands = new Map();
-  const empty = el => !el.closest('a, .pic, .hc, .more, [data-year], .ov, nav, button, .close-cursor');
+  const empty = el => !el.closest('a, .pic, .hc, .more, [data-year], .partner, .ov, nav, button, .close-cursor');
 
   function quick(x, y, R) {                                              // a mark left by a click on a link, a picture or a window: it melts away sooner
     const t = now() - (HOLD - 0.7), x0 = Math.max(0, (x - R) * S | 0), x1 = Math.min(W - 1, (x + R) * S | 0), y0 = Math.max(0, (y - R) * S | 0), y1 = Math.min(H - 1, (y + R) * S | 0);
@@ -1463,7 +1468,7 @@
       const n = Math.max(2, Math.floor(10 / h.fs.length)), len = Math.min(dist, n * 3), st = Math.max(1, Math.ceil(len / 3)), ux = dx / dist, uy = dy / dist;
       for (const f of h.fs) {
         const bx = f.x, by = f.y;
-        for (let k = 1; k <= st; k++) { f.x = bx + ux * len * k / st; f.y = by + uy * len * k / st; smear(f, ux, uy); f.load *= 0.9671; }       // the paint lasts longer (20% more than before)
+        for (let k = 1; k <= st; k++) { f.x = bx + ux * len * k / st; f.y = by + uy * len * k / st; smear(f, ux, uy); f.load *= 0.9747; }       // the paint lasts longer (20% more than before)
       }
       h.x += ux * len; h.y += uy * len;
     }
@@ -1688,7 +1693,12 @@
     const y = scrollY / U, s2Top = s2.offsetTop / U, s3Top = s3.offsetTop / U;
     const s2View = s2.getBoundingClientRect().top / U;
     const picTops = pics.map(p => p.getBoundingClientRect().top / U);
-    const labY = plab.getBoundingClientRect().top / U, partnerTops = partners.map(p => p.getBoundingClientRect().top / U);
+    const labY = plab.getBoundingClientRect().top / U, partnerTops = partners.map(p => p.getBoundingClientRect().top / U - (p._pin || 0) - (gsap.getProperty(p, 'y') || 0) / U);
+    // the names are the names of the projects: once the last one has come up to the labels they stay where they are while the cases scroll under them (inverted over the photos), and go on up with the last case
+    const shownP = partners.filter(p => p.style.display !== 'none'), lastP = partners.indexOf(shownP[shownP.length - 1]);
+    const pinY0 = partnerTops[lastP] + y - (V * 0.5 - 38), pinY1 = picTops[pics.length - 1] + y + pics[pics.length - 1].offsetHeight / U - (V * 0.5 - 38) - 40;
+    const pin = Math.max(0, Math.min(y - pinY0, pinY1 - pinY0)), pinned = y > pinY0 && y < pinY1;
+    partners.forEach((p, i) => { p._pin = pin; p.style.translate = pin ? `0 ${(pin * U).toFixed(1)}px` : ''; p.classList.toggle('pinned', pin > 0); partnerTops[i] += pin; });
 
     // menu sticks 20 from the top: it starts 236 above the bottom of the first screen and rises with the scroll
     nav.style.top = Math.max(20, V / 2 + 12 - y) * U + 'px';                     // the row stands just under the middle line and rises with the scroll
@@ -1830,7 +1840,13 @@
     // partners: the row level with the sticky labels is black
     let best = 0, bd = Infinity;
     partnerTops.forEach((top, i) => { const dd = Math.abs(top + 38 - labY); if (dd < bd) { bd = dd; best = i; } });
+    let caseNow = -1; if (pinned) { let bc = 0, cd = Infinity; picTops.forEach((t, k) => { const dd = Math.abs(t + pics[k].offsetHeight / U / 2 - V / 2); if (dd < cd) { cd = dd; bc = k; } }); best = partners.indexOf(shownP[Math.min(bc, shownP.length - 1)]); caseNow = bc; }   // in the cases the name of the case on the screen is the one in black
     partners.forEach((el, i) => el.classList.toggle('on', i === best));
+    { const side = y > pinY0 + 160 ? 1 : 0;   // as we come to the cases the names move over to the right edge, the first one pulling the others like a train, and stay there to the end; back again when we scroll back up
+      if (side !== tick._side) { tick._side = side; shownP.forEach((el, k) => {   // on the right they are a size smaller, like an h3 (70%)
+        const L = el.firstElementChild, a = L.firstElementChild.getBoundingClientRect(), b = L.lastElementChild.getBoundingClientRect(), x0 = a.left - gsap.getProperty(el, 'x'), wd = (b.right - a.left) / (parseFloat(getComputedStyle(el).fontSize) / (108 * U));
+        const n = shownP.length, T = V / 2 - 38 - (n - 1 - k) * 127.2, D = V / 2 - ((n - 1) * 89 + 69) / 2 + k * 89;   // on the right the rows close up with the smaller type, the group standing in the middle of the screen
+        gsap.to(el, { x: side ? 1380 * U - x0 - wd * 0.7 : 0, y: side ? (D - T) * U : 0, fontSize: (side ? 75.6 : 108) * U, duration: .9, ease: EASE, delay: k * .07, overwrite: true, onComplete() { if (!side) el.style.fontSize = ''; } }); }); } }
     setQuote(best);
     // names start a bit further apart and close up like train cars as they rise to the labels (the row level with them sits at its own place)
     partners.forEach((el, i) => { const pf = el.firstElementChild, onScreen = partnerTops[i] < V * 0.9; if (onScreen !== !!pf._in) { pf._in = onScreen; typeName(pf, onScreen); } });   // the names come in one letter at a time when their row comes up, and go back the same way
