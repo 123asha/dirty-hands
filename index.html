@@ -23,8 +23,8 @@
   .hero { height: calc(115vh + 478 * var(--u)); }   /* a long first scroll, so the cards fly into the table slowly (30% longer than the 100vh + 360 it was) */
   .s2 { height: calc(1168 * var(--u)); margin-bottom: calc(348 * var(--u)); }
   .s2-in { position: relative; height: 100%; }
-  .s3 { height: calc(100vh + 1260 * var(--u)); z-index: 3; }
-  .gray { position: sticky; top: 0; margin: 0; height: 100vh; overflow: hidden; background: var(--gray); }
+  .s3 { z-index: 3; }
+  .gray { position: relative; margin: 0; height: calc(1400 * var(--u)); overflow: hidden; background: var(--gray); }   /* a square block that scrolls with the page; the photo in it moves slower (parallax) */
   .rest { height: calc(4730 * var(--u)); }
   .t { font-weight: 400; white-space: nowrap; }
   .h1, .big2, .name, .name2, .endttl { font-family: "CoFo Cinema", "CoFo Sans", sans-serif; text-transform: uppercase; }   /* the headings */
@@ -144,7 +144,7 @@
   /* photos (test images from a free stock) fill their blocks */
   .hc, .bar, .ph, .gray { background-size: cover; background-position: center; background-repeat: no-repeat; }
   /* the people on the background: two halves; when Lisa's block comes up the left photo melts into the plain grey of the block */
-  .gray::before, .gray::after { content: ''; position: absolute; top: 0; bottom: calc(-160 * var(--u)); transform: translateY(calc(var(--par, 0) * -160 * var(--u))); width: 50%; background-size: cover; background-position: center; z-index: 0; transition: opacity .9s var(--ease); }
+  .gray::before, .gray::after { content: ''; position: absolute; top: calc(-160 * var(--u)); bottom: calc(-160 * var(--u)); transform: translateY(calc((var(--par, .5) - .5) * 300 * var(--u))); width: 50%; background-size: cover; background-position: center; z-index: 0; transition: opacity .9s var(--ease); }
   .gray::before { left: 0; background-image: var(--imgL, none); background-size: var(--bgS, cover); background-position: var(--bgL, center); }
   .gray::after { right: 0; background-image: var(--imgR, none); background-size: var(--bgS, cover); background-position: var(--bgR, center); }
   .gray.no-left::before, .gray.no-right::after { opacity: 0; }
@@ -209,12 +209,12 @@
 <section class="s2" id="cases">
   <div class="s2-in">
     <div class="rules fan" data-n="62" data-step="18" style="left:calc(20 * var(--u));top:calc(34 * var(--u));width:calc(1360 * var(--u));height:calc(1098 * var(--u));"></div>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(196 * var(--u))">01</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(268 * var(--u))">02</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(340 * var(--u))">03</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(412 * var(--u))">04</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(484 * var(--u))">05</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(556 * var(--u))">06</span>
+    <span class="n num" style="left:calc(480 * var(--u));top:calc(196 * var(--u))">01</span>
+    <span class="n num" style="left:calc(480 * var(--u));top:calc(268 * var(--u))">02</span>
+    <span class="n num" style="left:calc(480 * var(--u));top:calc(340 * var(--u))">03</span>
+    <span class="n num" style="left:calc(480 * var(--u));top:calc(412 * var(--u))">04</span>
+    <span class="n num" style="left:calc(480 * var(--u));top:calc(484 * var(--u))">05</span>
+    <span class="n num" style="left:calc(480 * var(--u));top:calc(556 * var(--u))">06</span>
     <p class="rt" data-x="710" data-y="196" style="left:calc(710 * var(--u));top:calc(196 * var(--u))">Panels — ceramic paintings for the wall, carved and glazed by hand, from a single tile to a whole room.</p>
     <p class="rt" data-x="710" data-y="268" style="left:calc(710 * var(--u));top:calc(268 * var(--u))">Mirrors framed in ceramic relief: beetles, leaves and small stories that catch the light of the room.</p>
     <p class="rt" data-x="710" data-y="340" style="left:calc(710 * var(--u));top:calc(340 * var(--u))">Tables of glazed clay — a cube, a sphere, a quiet corner where a cup or a book can rest.</p>
@@ -270,9 +270,9 @@
   <i class="hl" style="top:calc(3478.4 * var(--u))"></i>
   <i class="hl" style="top:calc(3551.9 * var(--u))"></i>
   <i class="hl" style="top:calc(3625.3 * var(--u))"></i>
-  <div class="bigrow" style="left:calc(20 * var(--u));top:calc(3393.3 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Unconventional</p></div>
-  <div class="bigrow" style="left:calc(940 * var(--u));top:calc(3466.8 * var(--u));height:calc(98 * var(--u));"><p class="t name2">ceramic</p></div>
-  <div class="bigrow" style="left:calc(480 * var(--u));top:calc(3540.2 * var(--u));height:calc(98 * var(--u));"><p class="t name2">forms</p></div>
+  <div class="bigrow" style="left:calc(20 * var(--u));top:calc(3397.8 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Unconventional</p></div>
+  <div class="bigrow" style="left:calc(940 * var(--u));top:calc(3471.2 * var(--u));height:calc(98 * var(--u));"><p class="t name2">ceramic</p></div>
+  <div class="bigrow" style="left:calc(480 * var(--u));top:calc(3544.7 * var(--u));height:calc(98 * var(--u));"><p class="t name2">forms</p></div>
 
   <div class="tagged" style="left:calc(250 * var(--u));top:calc(3856 * var(--u));"><p class="t big2">Story</p><span class="yr" aria-hidden="true"></span></div>
   <p class="t18" data-year="2019" style="left:calc(710 * var(--u));top:calc(3876 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
@@ -527,7 +527,7 @@
 
   const X0 = i => 20 + 230.17 * i, W0 = 210.2, H0 = [262.7, 210, 262.7, 210, 262.7, 262.7];
   const PX = 700, PY0 = 34, PY1 = 1132;    // picture centre x; its y inside block 2 while it is held (design px). PH = 12 ruled bands; PY1 = the last line (1132): the picture rides down until that line is at its middle
-  const PW = 218.5, PH = 216, EX3 = 1260;  // picture size; extra scroll while the gray block is pinned
+  const PW = 218.5, PH = 216;              // picture size
   const SHADE = [225, 212, 230, 216, 226, 210];
   // while the cards fly they stand on a sphere (a ring seen from the front, with a little height): each one has an angle around it and a latitude;
   // the ring makes exactly one turn from take-off to landing, so some cards are nearer than the others and some behind. They always face the viewer.
@@ -536,7 +536,6 @@
   const INTRO = LEAD + 5 * GAP + DUR;   // ms until the last card has dropped
 
   const CARD_SPEED = 1.5;              // how fast the content of Lisa's and Karen's cards comes in (1 = the original speed)
-  const KD = 0.32;                     // how much later (share of the pinned scroll) Karen starts rising after Lisa
   const PGAP = 80;                     // design px the lowest partner names are pushed away from their place
   const LH = 18;                       // design line height, used as a margin around the picture
   let U = 1, V = 0, lines = [], t0 = performance.now(), introDone = reduce, lastW = 0, rebuild = 0, prevY = 0, closedBack = false;
@@ -565,7 +564,7 @@
     alignShop();
     bigrows.forEach(b => b.style.setProperty('--dx', (0.4 * (700 - (b.offsetLeft + b.offsetWidth / 2) / U)).toFixed(2)));   // every word starts 60% of the way to its place, so the words never sit on top of each other
     // the photo of Karen and Lisa covers the whole grey block, split between its two halves so it reads as one picture
-    { const gr = one('.gray'), w = gr.offsetWidth, h = innerHeight + 160 * U, sc = Math.max(w / 1680, h / 850), iw = 1680 * sc, ih = 850 * sc, ox = (w - iw) / 2, oy = (h - ih) * 0.15;   // kept near the top, so the faces stay in the frame
+    { const gr = one('.gray'), w = gr.offsetWidth, h = gr.offsetHeight + 320 * U, sc = Math.max(w / 1680, h / 850), iw = 1680 * sc, ih = 850 * sc, ox = (w - iw) / 2, oy = (h - ih) * 0.15;   // kept near the top, so the faces stay in the frame
       gr.style.setProperty('--bgS', `${iw}px ${ih}px`); gr.style.setProperty('--bgL', `${ox}px ${oy}px`); gr.style.setProperty('--bgR', `${ox - w / 2}px ${oy}px`); }
     // the title stays pinned to the bottom while the whole table goes over it; then it leaves with the page
     ttlBox.style.height = (one('.s2').offsetTop / U + 1168 + 182.6) * U + 'px';   // pinned until the whole table (1168 high) has gone up past its top edge
@@ -673,11 +672,11 @@
       touched.push(...top, ...bot, ...nn);
       if (c._tl) c._tl.kill();
       const tl = gsap.timeline({ paused: true });
-      fanIn(tl, top, { each: .014, at: .02, dur: .7 });
-      fadeIn(tl, nn, .3, .25, { dur: .5, each: .1 });
-      riseIn(tl, inner, { at: .2, each: .07, dur: .8 });
-      riseIn(tl, nm, { at: .45, dur: .8 });
-      fanIn(tl, bot, { each: .06, at: .5, dur: .7 });
+      fanIn(tl, top, { each: .045, at: 0, dur: .9 });                   // the ruled lines fan out one after another, as in the table
+      fadeIn(tl, nn, .3, .75, { dur: .5, each: .1 });                     // then the text comes in
+      riseIn(tl, inner, { at: .75, each: .07, dur: .8 });
+      riseIn(tl, nm, { at: 1.05, dur: .8 });
+      fanIn(tl, bot, { each: .08, at: 1.05, dur: .8 });
       c._tl = tl; pairs.push({ st: { kill() {}, start: Infinity }, tl });
       if (c._on) tl.progress(1);
     });
@@ -1498,13 +1497,15 @@
     const X = (f, t, side) => { const lump = f.amp * Math.sin(t * f.freq * Math.PI + (side > 0 ? 0.9 : 0)) * Math.sin(t * Math.PI); return 100 + f.lean * (1 - t) + side * (prof(side > 0 ? f.rR : f.rL, t) + lump); };
     const Y = (f, t) => L(f.top, f.bot, t), q = v => v.toFixed(1);
     function draw(f) {
-      const pts = []; for (let i = 0; i <= N; i++) pts.push([X(f, i / N, -1), Y(f, i / N)]); for (let i = N; i >= 0; i--) pts.push([X(f, i / N, 1), Y(f, i / N)]);
-      let d = `M${q(pts[0][0])} ${q(pts[0][1])}`; for (let i = 1; i < pts.length - 1; i++) d += `Q${q(pts[i][0])} ${q(pts[i][1])} ${q((pts[i][0] + pts[i + 1][0]) / 2)} ${q((pts[i][1] + pts[i + 1][1]) / 2)}`;
-      body.setAttribute('d', d);
-      const x0 = X(f, 0, -1), x1 = X(f, 0, 1), rx = (x1 - x0) / 2, ry = rx * 0.24;
+      const TILT = 0.7;                                                   // seen from 45 degrees: every round section is an ellipse half as tall as it is wide times sin 45
+      const side = s => { const p = []; for (let i = 0; i <= N; i++) p.push([X(f, i / N, s), Y(f, i / N)]); return p; };
+      const curve = p => { let d = ''; for (let i = 1; i < p.length - 1; i++) d += `Q${q(p[i][0])} ${q(p[i][1])} ${q((p[i][0] + p[i + 1][0]) / 2)} ${q((p[i][1] + p[i + 1][1]) / 2)}`; return d + `L${q(p[p.length - 1][0])} ${q(p[p.length - 1][1])}`; };
+      const Ls = side(-1), Rs = side(1).reverse(), bl = Ls[N], br = Rs[0], rb = (br[0] - bl[0]) / 2;
+      body.setAttribute('d', `M${q(Ls[0][0])} ${q(Ls[0][1])}` + curve(Ls) + `A${q(rb)} ${q(rb * TILT)} 0 0 0 ${q(br[0])} ${q(br[1])}` + curve(Rs));   // the base: the front half of its ellipse
+      const x0 = X(f, 0, -1), x1 = X(f, 0, 1), rx = (x1 - x0) / 2, ry = rx * TILT;
       lip.setAttribute('d', `M${q(x0)} ${q(f.top)}a${q(rx)} ${q(ry)} 0 1 0 ${q(2 * rx)} 0a${q(rx)} ${q(ry)} 0 1 0 ${q(-2 * rx)} 0`);
       const [hx, hy, hc] = f.hole, ht = (hc - f.top) / (f.bot - f.top), hcx = 100 + f.lean * (1 - ht) + (prof(f.rR, ht) - prof(f.rL, ht)) / 2;
-      hole.setAttribute('d', hx > 1 ? `M${q(hcx - hx)} ${q(hc)}a${q(hx)} ${q(hy)} 0 1 0 ${q(2 * hx)} 0a${q(hx)} ${q(hy)} 0 1 0 ${q(-2 * hx)} 0` : '');
+      hole.setAttribute('d', hx > 1 ? `M${q(hcx - hx)} ${q(hc)}a${q(hx)} ${q(hy)} 0 1 0 ${q(2 * hx)} 0a${q(hx)} ${q(hy)} 0 1 0 ${q(-2 * hx)} 0` : '');   // the hole goes through the side: it is seen face on
       const [h, t1, t2] = f.ear, ear = side => { const xa = X(f, t1, side), xb = X(f, t2, side), ya = Y(f, t1), yb = Y(f, t2); return h > 1 ? `M${q(xa)} ${q(ya)}C${q(xa + side * h)} ${q(ya - 6)} ${q(xb + side * h)} ${q(yb + 6)} ${q(xb)} ${q(yb)}` : ''; };
       earL.setAttribute('d', ear(-1)); earR.setAttribute('d', ear(1));
     }
@@ -1741,15 +1742,14 @@
     // text flows around the picture held in the table (pretext lays the lines out again as it moves); the first picture, the woman, is flowed around by her own outline
     flowTable(t > 0.85 ? { cx: PX, top: py - PW / 2, w: PW, h: PW, shape: landed ? shapeOf(sw < 0.5 && k > 0 ? k - 1 : k) : null } : null);
 
-    // gray block pinned: Lisa rises through it, then Karen
-    const P3 = clamp((y - s3Top) / EX3);
-    lisa.style.top = lerp(V, -396, clamp(P3 / 0.6)) * U + 'px';
-    karen.style.top = lerp(V, -396, clamp((P3 - KD) / 0.6)) * U + 'px';   // Karen follows a bit lower: at first only Lisa is on the screen
-    // a card plays its animation when it comes up into the screen, and plays back when it goes below again
-    one('.gray').style.setProperty('--par', clamp(P3).toFixed(4));   // parallax: the photo inside the frame climbs a little slower than the cards
-    drawMark(cardMarks[0], (P3 / 0.6 - 0.25) / 0.45); drawMark(cardMarks[1], ((P3 - KD) / 0.6 - 0.25) / 0.45);   // the clay marks draw in while the cards come up
-    [[lisa, P3 / 0.6], [karen, (P3 - KD) / 0.6]].forEach(([el, k]) => {
-      const top = lerp(V, -396, clamp(k));
+    // the photo block scrolls with the page: the photo inside lags behind (parallax), the two cards run a little ahead of it, Lisa not far below Karen
+    const gp = clamp((y + V - s3Top) / (1400 + V));                     // 0: the block comes in at the bottom, 1: it has gone out at the top
+    one('.gray').style.setProperty('--par', gp.toFixed(4));
+    lisa.style.top = (330 - (gp - 0.5) * 260) * U + 'px';                // (the #lisa card carries Karen's name: it is the first one)
+    karen.style.top = (470 - (gp - 0.5) * 340) * U + 'px';
+    [[lisa, cardMarks[0]], [karen, cardMarks[1]]].forEach(([el, m]) => {
+      const top = s3Top + parseFloat(el.style.top) / U - y;              // on the screen, design px
+      drawMark(m, (V * 0.95 - top) / (V * 0.45));                        // the clay mark draws in while the card comes up
       if (!el._on && top < V * 0.97) { el._on = true; el._tl && el._tl.timeScale(CARD_SPEED).play(); } else if (el._on && top >= V) { el._on = false; el._tl && el._tl.timeScale(CARD_SPEED * 2).reverse(); }
     });
     // the photos on the background follow the cards: with Lisa the left one melts into grey; when Karen comes, it is the right one that goes grey and the left one is back
