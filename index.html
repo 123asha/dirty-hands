@@ -24,7 +24,7 @@
   .s2 { height: calc(1168 * var(--u)); margin-bottom: calc(348 * var(--u)); }
   .s2-in { position: relative; height: 100%; }
   .s3 { z-index: 3; }
-  .gray { position: relative; margin: 0; height: calc(1400 * var(--u)); overflow: hidden; background: var(--gray); }   /* a square block that scrolls with the page; the photo in it moves slower (parallax) */
+  .gray { position: relative; margin: 0; height: calc(1400 * var(--u)); overflow: hidden; }   /* a square block that scrolls with the page, with no grey fill of its own: the photo of Karen and Lisa lies on the white page and moves slower (parallax) */
   .rest { height: calc(4730 * var(--u)); }
   .t { font-weight: 400; white-space: nowrap; }
   .h1, .big2, .name, .name2, .endttl { font-family: "CoFo Cinema", "CoFo Sans", sans-serif; text-transform: uppercase; }   /* the headings */
@@ -34,6 +34,7 @@
   .name2 { font-size: calc(108 * var(--u)); line-height: .91; letter-spacing: -.01em; }
   .t18 { font-size: var(--t18); line-height: 1.08; letter-spacing: -.01em; }
   .ph { background: var(--ph); }
+  #about { scroll-margin-top: calc(52 * var(--u)); }   /* the About link brings the block up to its own top edge, not the heading flush against the screen's */
   /* menu: rises with the scroll from its place in the hero, then stays 20 from the top (top is set in tick); white + difference, like the title, so it stays readable over blocks */
   .hero > .nav { position: fixed; top: calc(50vh + 12 * var(--u)); z-index: 101; color: #fff; mix-blend-mode: difference; }
   .nav { display: flex; gap: calc(12 * var(--u)); font-size: var(--t18); line-height: .91; letter-spacing: -.01em; }
@@ -141,8 +142,8 @@
   .clay { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 900; mix-blend-mode: multiply; }
   /* photos (test images from a free stock) fill their blocks */
   .hc, .bar, .ph, .gray { background-size: cover; background-position: center; background-repeat: no-repeat; }
-  /* the people on the background: two halves; when Lisa's block comes up the left photo melts into the plain grey of the block */
-  .gray::before, .gray::after { content: ''; position: absolute; top: calc(-160 * var(--u)); bottom: calc(-160 * var(--u)); transform: translateY(calc((var(--par, .5) - .5) * 300 * var(--u))); width: 50%; background-size: cover; background-position: center; background-repeat: no-repeat; z-index: 0; transition: opacity .9s var(--ease); }
+  /* the people on the background: two halves; when Lisa's block comes up the left photo melts away into the page */
+  .gray::before, .gray::after { content: ''; position: absolute; top: calc(-160 * var(--u)); bottom: calc(-160 * var(--u)); transform: translateY(calc((var(--par, .5) - .5) * 640 * var(--u))); width: 50%; background-size: cover; background-position: center; background-repeat: no-repeat; z-index: 0; transition: opacity .9s var(--ease); }
   .gray::before { left: 0; background-image: var(--imgL, none); background-size: var(--bgS, cover); background-position: var(--bgL, center); }
   .gray::after { right: 0; background-image: var(--imgR, none); background-size: var(--bgS, cover); background-position: var(--bgR, center); }
   .gray.no-left::before, .gray.no-right::after { opacity: 0; }
@@ -234,9 +235,9 @@
 </section>
 
 <section class="rest">
-  <div class="t18" id="about" style="left:calc(20 * var(--u));top:calc(52 * var(--u));width:calc(440 * var(--u));opacity:.4;line-height:1">About Dirty Hands</div>
+  <div class="t18" id="about" style="left:calc(20 * var(--u));top:calc(52 * var(--u));width:calc(440 * var(--u));opacity:.4;line-height:1">Clay with something to say</div>
   <p class="t18 lr" style="left:calc(710 * var(--u));top:calc(52 * var(--u));width:calc(440 * var(--u));padding-right:calc(40 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects and wall panels to sculptural forms and interior accents that enhance spaces and set their emotional tone.</p>
-  <div class="ph" style="left:calc(641.5 * var(--u));top:calc(272.25 * var(--u));width:calc(117 * var(--u));height:calc(112.5 * var(--u));"></div>
+  <div class="ph" style="left:calc(618 * var(--u));top:calc(272.25 * var(--u));width:calc(164 * var(--u));height:calc(157.5 * var(--u));"></div>
   <div class="stack" style="left:calc(940 * var(--u));top:calc(142 * var(--u));width:calc(440 * var(--u));">
     <p class="t18 lr" style="padding-right:calc(40 * var(--u));">The studio was founded by designers and entrepreneurs Lisa and Karen, who combine professional expertise with artistic intuition to bring unconventional ideas to life. Their approach reimagines ceramics, moving beyond functional plates and pots towards an artistic language that expresses the style, mood, and character of a space.</p>
     <a class="t18 shop" style="display:block;width:max-content;margin-top:calc(40 * var(--u));" href="https://dirtyhands.ru" target="_blank" rel="noopener">Shop now →</a>
@@ -529,6 +530,9 @@
   const PX = 700, PY0 = 34, PY1 = 1132;    // x of the work at three o'clock on the wheel; the y of the wheel's centre inside block 2 while it is held (design px), from the landing down to the last line (1132)
   const PW = 218.5, PH = 216;              // picture size
   const SHADE = [225, 212, 230, 216, 226, 210];
+  // while the cards fly they stand on a sphere (a ring seen from the front, with a little height): each one has an angle around it and a latitude;
+  // the ring makes exactly one turn on the way, so some cards are nearer than the others and some behind. They always face the viewer.
+  const SPH = 540, TH = [0, 1, 2, 3, 4, 5].map(i => i * Math.PI / 3), LA = [0.3, -0.25, 0.3, -0.25, 0.3, -0.25];   // six cards in order around the ring, a little up and down so it reads as a sphere
   const PILE = [[0, 0, 0], [-16, 10, -5], [14, -12, 4], [-10, -16, -3], [18, 12, 6], [-6, 18, -4]];   // where each card lies in the pile, off the centre (design px) and askew (deg), so it reads as pictures thrown on top of each other
   const DUR = 600, GAP = 90, LEAD = 150;   // ms: one speed for every animation (same as --dur in the CSS)
   const INTRO = LEAD + 5 * GAP + DUR;   // ms until the last card has dropped
@@ -1696,30 +1700,37 @@
     if (tableOpen && (backClose || !rowOK)) { if (backClose) closedBack = true; openTable(false); }
     else if (!tableOpen && landed && rowOK && !closedBack) openTable(true);
     if (G) fan[0].style.visibility = landed ? 'visible' : 'hidden';                        // the table's first line: the strip's place from the landing on
-    const gather = ease(clamp(t / 0.4)), open = ease(clamp((t - 0.6) / 0.4));          // first they pile up (photos), then, once they are cut-outs, the pile opens into the wheel
+    const q = clamp(t / 0.7);                                                            // the first 70% of the way: the ring, as before
+    const wIn = ease(clamp(q / 0.2)), wOut = ease(clamp((1 - q) / 0.3)), ring = wIn * wOut;   // every card goes straight to its place on the ring, the ring turns once, then it closes into the pile
+    const open = ease(clamp((t - 0.78) / 0.22));                                         // in the pile they turn into cut-outs, then the pile opens into the wheel
     const ang = cards.map((_, i) => (i - p) * Math.PI / 3);                              // 0 = three o'clock; the next card waits below it and comes up as its paragraph does
-    const RANK = ang.map((a, i) => ang.filter((b, j) => Math.cos(b) < Math.cos(a) || (Math.cos(b) === Math.cos(a) && j > i)).length);   // the nearer to three o'clock, the higher: the first card lies on top of the pile and comes out at three o'clock
+    const SZ = cards.map((_, i) => Math.cos(TH[i] + 2 * Math.PI * q) * Math.cos(LA[i]));   // depth on the ring
+    const KEY = q < 1 ? SZ : ang.map(a => Math.cos(a)), RANK = KEY.map((v, i) => KEY.filter((w, j) => w < v || (w === v && j > i)).length);   // on the ring the nearer cards are in front; in the pile and on the wheel the nearer to three o'clock, the higher (the two orders agree where the ring closes, so nothing jumps)
     const obs = [];
     cards.forEach((c, i) => {
       const d = introDone ? 1 : drop((now - t0 - LEAD - i * GAP) / DUR), h = lerp(20, H0[i], d);
-      const w = lerp(W0, PW, gather), hh = lerp(h, PH, gather);
-      const tx = WX + PILE[i][0] * (1 - open) + R * open * Math.cos(ang[i]), ty = WY + PILE[i][1] * (1 - open) + R * open * Math.sin(ang[i]);   // its place in the pile, then on the wheel
-      const cx = lerp(X0(i) + W0 / 2, tx, gather), cy = lerp(20 + h / 2 + y, ty, gather);  // page coordinates
+      const w = lerp(W0, PW, q), hh = lerp(h, PH, q);
+      const tx = WX + PILE[i][0] * (1 - open) + R * open * Math.cos(ang[i]), ty = WY + PILE[i][1] * (1 - open) + R * open * Math.sin(ang[i]);   // its place in the pile, then on the wheel (page coordinates)
+      const th = TH[i] + 2 * Math.PI * q, cl = Math.cos(LA[i]), sx = Math.sin(th) * cl, sy = Math.sin(LA[i]);   // point on the sphere
+      const cx = lerp(lerp(X0(i) + W0 / 2, PX + SPH * 0.9 * sx, wIn), tx, 1 - wOut);
+      const cy = lerp(lerp(20 + h / 2, V * 0.4 + SPH * 0.55 * sy, wIn) + y, ty, 1 - wOut);   // page coordinates; the ring turns a little above the middle of the screen
       c.style.width = w * U + 'px'; c.style.height = hh * U + 'px';
       // fixed to the screen while the wheel is held, so it never lags behind a fast scroll
       const fixed = y < E + PY1 - PY0;
       c.style.position = fixed ? 'fixed' : 'absolute';
       c.style.left = (cx - w / 2) * U + 'px'; c.style.top = (cy - hh / 2 - (fixed ? y : 0)) * U + 'px';
-      c.classList.toggle('photo', t < 0.5);                                 // photos with their backgrounds on top and while they pile up, cut-outs from there on
+      c.classList.toggle('photo', t < 0.72);                                // photos with their backgrounds on top and on the ring, cut-outs once they lie in the pile
       if (t > 0) {                                                          // (at rest on top the hover owns the transform)
-        const rot = PILE[i][2] * gather * (1 - open);                       // a pile lies a little askew
-        const bend = landed ? 0 : ease(clamp(t / 0.14)) * ease(clamp((1 - t) / 0.2));   // concave all the way: from the first bit of scroll, through the pile, until they settle flat on the wheel
+        const rot = PILE[i][2] * (1 - wOut) * (1 - open);                   // a pile lies a little askew
+        const bend = landed ? 0 : ease(clamp(t / 0.14)) * ease(clamp((1 - t) / 0.2));   // concave all the way: from the first bit of scroll, round the ring, through the pile, until they settle flat on the wheel
+        const Z = SPH * SZ[i] * U * ring, far = Math.max(0, -SZ[i]) * ring;   // on the ring some are nearer and some further away (and darker)
         c.classList.toggle('bent', bend > 0.001);
-        if (bend > 0.001) {                                                 // cut into strips and bent: a picture glued inside a cylinder, turned a little towards the middle of the wheel
-          const turn = 38 * bend * Math.max(-1, Math.min(1, (cx - WX) / R)), wpx = w * U, Rc = wpx / (bend * 1.15);
-          c.style.transform = `perspective(${1100 * U}px) rotate(${rot.toFixed(2)}deg) rotateY(${turn.toFixed(1)}deg)`;
+        if (bend > 0.001) {                                                 // cut into strips and bent: a picture glued inside a cylinder, turned a little towards the middle of the ring, later of the wheel
+          const turn = 38 * (ring * sx + (1 - wOut) * bend * Math.max(-1, Math.min(1, (cx - WX) / R))), wpx = w * U, Rc = wpx / (bend * 1.15);
+          const br = far > 0.01 ? `brightness(${(1 - 0.3 * far).toFixed(3)})` : '';
+          c.style.transform = `perspective(${1100 * U}px) translateZ(${Z.toFixed(1)}px) rotate(${rot.toFixed(2)}deg) rotateY(${turn.toFixed(1)}deg)`;
           c.style.setProperty('--cw', wpx + 'px'); c.style.setProperty('--sw', wpx / HS + 'px');
-          c._hs.forEach((st, j) => { const u = ((j + .5) / HS - .5) * wpx, al = u / Rc; st.style.transform = `translate3d(${(Rc * Math.sin(al) - u).toFixed(2)}px,0,${(-Rc * (1 - Math.cos(al))).toFixed(2)}px) rotateY(${al.toFixed(4)}rad)`; st.style.filter = ''; });
+          c._hs.forEach((st, j) => { const u = ((j + .5) / HS - .5) * wpx, al = u / Rc; st.style.transform = `translate3d(${(Rc * Math.sin(al) - u).toFixed(2)}px,0,${(-Rc * (1 - Math.cos(al))).toFixed(2)}px) rotateY(${al.toFixed(4)}rad)`; st.style.filter = br; });
         } else c.style.transform = rot ? `rotate(${rot.toFixed(2)}deg)` : '';
       }
       c.style.filter = '';
