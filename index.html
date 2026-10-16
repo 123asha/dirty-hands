@@ -132,8 +132,8 @@
   .hc, .bar, .ph, .gray { background-size: cover; background-position: center; background-repeat: no-repeat; }
   /* the people on the background: two halves; when Lisa's block comes up the left photo melts into the plain grey of the block */
   .gray::before, .gray::after { content: ''; position: absolute; top: 0; bottom: 0; width: 50%; background-size: cover; background-position: center; z-index: 0; transition: opacity .9s var(--ease); }
-  .gray::before { left: 0; background-image: var(--imgL, none); }
-  .gray::after { right: 0; background-image: var(--imgR, none); }
+  .gray::before { left: 0; background-image: var(--imgL, none); background-size: var(--bgS, cover); background-position: var(--bgL, center); }
+  .gray::after { right: 0; background-image: var(--imgR, none); background-size: var(--bgS, cover); background-position: var(--bgR, center); }
   .gray.no-left::before, .gray.no-right::after { opacity: 0; }
   .gray > .card2 { z-index: 1; }
 
@@ -382,8 +382,8 @@
   $('.bar').forEach((b, i) => { b.style.backgroundImage = IMG(i); });
   $('.pic').forEach((e, i) => { e.style.setProperty('--img', IMG([3, 5, 1][i])); });      // the big pictures: the image lives in ::before, inside the frame
   one('.rest > .ph:not(.pic):not(.bar)').style.backgroundImage = IMG(4);
-  one('.gray').style.setProperty('--imgL', `url("https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/Woman_in_a_headwrap_in_Quebec_City.jpg/1280px-Woman_in_a_headwrap_in_Quebec_City.jpg")`);   // photos of people on the background: one for each half, under Lisa and under Karen
-  one('.gray').style.setProperty('--imgR', `url("https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Woman%2C_portrait_Fortepan_11855.jpg/1280px-Woman%2C_portrait_Fortepan_11855.jpg")`);
+  one('.gray').style.setProperty('--imgL', 'url("photos/lisa-karen.jpg")');   // Karen and Lisa (dirtyhands.ru/about): one photo across both halves, Karen on the left, Lisa on the right
+  one('.gray').style.setProperty('--imgR', 'url("photos/lisa-karen.jpg")');
 
   // ---- shader on one picture: the image lies on a slightly domed, glazed surface that turns in space as you scroll, with light and a highlight (a feeling of volume inside the frame)
   function shaderPicture(el, src) {
@@ -505,6 +505,9 @@
     splitLines();
     alignShop();
     bigrows.forEach(b => b.style.setProperty('--dx', (0.4 * (700 - (b.offsetLeft + b.offsetWidth / 2) / U)).toFixed(2)));   // every word starts 60% of the way to its place, so the words never sit on top of each other
+    // the photo of Karen and Lisa covers the whole grey block, split between its two halves so it reads as one picture
+    { const gr = one('.gray'), w = gr.offsetWidth, h = innerHeight, sc = Math.max(w / 1680, h / 850), iw = 1680 * sc, ih = 850 * sc, ox = (w - iw) / 2, oy = (h - ih) * 0.15;   // kept near the top, so the faces stay in the frame
+      gr.style.setProperty('--bgS', `${iw}px ${ih}px`); gr.style.setProperty('--bgL', `${ox}px ${oy}px`); gr.style.setProperty('--bgR', `${ox - w / 2}px ${oy}px`); }
     // the title stays pinned to the bottom until the first line of the table text comes up to its top edge, then it leaves with the page
     const firstRow = Math.min(...[...document.querySelectorAll('.s2 .rt')].map(e => +e.dataset.y));
     ttlBox.style.height = (one('.s2').offsetTop / U + firstRow + 182.6) * U + 'px';
@@ -1490,7 +1493,7 @@
       if (!el._on && top < V * 0.97) { el._on = true; el._tl && el._tl.timeScale(CARD_SPEED).play(); } else if (el._on && top >= V) { el._on = false; el._tl && el._tl.timeScale(CARD_SPEED * 2).reverse(); }
     });
     // the photos on the background follow the cards: with Lisa the left one melts into grey; when Karen comes, it is the right one that goes grey and the left one is back
-    { const gr = one('.gray'); gr.classList.toggle('no-left', !!lisa._on && !karen._on); gr.classList.toggle('no-right', !!karen._on); }
+    // (the halves of the photo no longer melt into grey: for now the cards simply scroll over the photo)
 
     // partners: the row level with the sticky labels is black
     let best = 0, bd = Infinity;
