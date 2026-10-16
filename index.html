@@ -53,8 +53,7 @@
   .shop:hover { text-decoration: underline; text-underline-offset: .2em; }
   .bigrow { display: flex; justify-content: space-between; align-items: flex-start; width: max-content; padding-right: calc(3 * var(--u)); }
   .bigrow .name2 { position: static; }
-  .bigrow { transform: translateX(calc(var(--dx, 0) * var(--u))); transition: transform .9s var(--ease); }     /* --dx: from the page centre to the word's own place (set in measure) */
-  .bigrow.spread { transform: none; }
+  .bigrow { will-change: transform; }   /* moved by the scroll (tick): from --dx towards the middle to its own place */     /* --dx: from the page centre to the word's own place (set in measure) */
   /* Story: a grey year at the top right of the word, it follows the paragraph that is in the middle of the screen */
   .tagged { width: max-content; padding-right: calc(3 * var(--u)); }
   .tagged .big2 { position: static; }
@@ -1539,7 +1538,7 @@
       const x0 = X(f, 0, -1), x1 = X(f, 0, 1), rx = (x1 - x0) / 2, ry = rx * TILT;
       lip.setAttribute('d', `M${q(x0)} ${q(f.top)}a${q(rx)} ${q(ry)} 0 1 0 ${q(2 * rx)} 0a${q(rx)} ${q(ry)} 0 1 0 ${q(-2 * rx)} 0`);
       const [hx, hy, hc] = f.hole, ht = (hc - f.top) / (f.bot - f.top), hcx = 100 + f.lean * (1 - ht) + (prof(f.rR, ht) - prof(f.rL, ht)) / 2;
-      hole.setAttribute('d', hx > 1 ? `M${q(hcx - hx)} ${q(hc)}a${q(hx)} ${q(hy)} 0 1 0 ${q(2 * hx)} 0a${q(hx)} ${q(hy)} 0 1 0 ${q(-2 * hx)} 0` : '');   // the hole goes through the side: it is seen face on
+      hole.setAttribute('d', hx > 6 ? `M${q(hcx - hx)} ${q(hc)}a${q(hx)} ${q(hy)} 0 1 0 ${q(2 * hx)} 0a${q(hx)} ${q(hy)} 0 1 0 ${q(-2 * hx)} 0` : '');   // the hole goes through the side: it is seen face on
       const [h, t1, t2] = f.ear, ear = side => { const xa = X(f, t1, side), xb = X(f, t2, side), ya = Y(f, t1), yb = Y(f, t2); return h > 1 ? `M${q(xa)} ${q(ya)}C${q(xa + side * h)} ${q(ya - 6)} ${q(xb + side * h)} ${q(yb + 6)} ${q(xb)} ${q(yb)}` : ''; };
       earL.setAttribute('d', ear(-1)); earR.setAttribute('d', ear(1));
     }
@@ -1694,7 +1693,8 @@
     storyPinned.forEach(el => { el.style.transform = hold ? `translateY(${hold * U}px)` : ''; });
     // About / Cases / Shop: they come in on the centre and, once the list has reached the middle of the screen, take their places on their own
     const listMid = bigrows[0].getBoundingClientRect().top / U + 122;
-    if (listMid <= V * 0.75) bigrows.forEach(b => b.classList.add('spread')); else if (listMid > V * 0.75 + 80) bigrows.forEach(b => b.classList.remove('spread'));
+    const slideP = ease(clamp((V * 1.05 - listMid) / (V * 0.55)));            // the words slide out to their places as you scroll: from near the middle when the list comes in, in place by the time it is just above the middle
+    bigrows.forEach(b => { b.style.transform = `translateX(${(+b.style.getPropertyValue('--dx') * (1 - slideP) * U).toFixed(1)}px)`; });
     nav.style.opacity = clamp((scrollMax() - scrollY) / (innerHeight * 0.5));
     contact.style.opacity = nav.style.opacity;                              // fades out together with the menu at the end of the page
     contact.classList.toggle('on', V / 2 + 12 - y <= 20);    // the menu has reached the top: Contact comes in
