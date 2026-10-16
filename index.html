@@ -470,7 +470,7 @@
 
 
   const X0 = i => 20 + 230.17 * i, W0 = 210.2, H0 = [262.7, 210, 262.7, 210, 262.7, 262.7];
-  const PX = 700, PY0 = 34, PY1 = 808;    // picture centre x; its y inside block 2 while it is held mid-screen (design px). PH = 12 ruled bands; PY1 = last line (916) minus half of it
+  const PX = 700, PY0 = 34, PY1 = 916;    // picture centre x; its y inside block 2 while it is held (design px). PH = 12 ruled bands; PY1 = the last line (916): the picture rides down until that line is at its middle
   const PW = 218.5, PH = 216, EX3 = 1260;  // picture size; extra scroll while the gray block is pinned
   const SHADE = [225, 212, 230, 216, 226, 210];
   // while the cards fly they stand on a sphere (a ring seen from the front, with a little height): each one has an angle around it and a latitude;
@@ -505,6 +505,9 @@
     splitLines();
     alignShop();
     bigrows.forEach(b => b.style.setProperty('--dx', (0.4 * (700 - (b.offsetLeft + b.offsetWidth / 2) / U)).toFixed(2)));   // every word starts 60% of the way to its place, so the words never sit on top of each other
+    // the title stays pinned to the bottom until the first line of the table text comes up to its top edge, then it leaves with the page
+    const firstRow = Math.min(...[...document.querySelectorAll('.s2 .rt')].map(e => +e.dataset.y));
+    ttlBox.style.height = (one('.s2').offsetTop / U + firstRow + 182.6) * U + 'px';
   }
 
   // ---- motion (GSAP + ScrollTrigger): the ruled lines draw first, then the text comes in line by line from under its mask; scrolling back plays it in reverse
