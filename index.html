@@ -193,16 +193,12 @@
     <span class="n num" style="left:calc(20 * var(--u));top:calc(412 * var(--u))">04</span>
     <span class="n num" style="left:calc(20 * var(--u));top:calc(484 * var(--u))">05</span>
     <span class="n num" style="left:calc(20 * var(--u));top:calc(556 * var(--u))">06</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(628 * var(--u))">07</span>
-    <span class="n num" style="left:calc(20 * var(--u));top:calc(700 * var(--u))">08</span>
-    <p class="rt" data-x="710" data-y="196" style="left:calc(710 * var(--u));top:calc(196 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
-    <p class="rt" data-x="710" data-y="268" style="left:calc(710 * var(--u));top:calc(268 * var(--u))">Mirrors bring light and balance to your space with expressive sculptural forms.</p>
-    <p class="rt" data-x="710" data-y="340" style="left:calc(710 * var(--u));top:calc(340 * var(--u))">Compact side tables combine everyday function with distinctive design.</p>
-    <p class="rt" data-x="710" data-y="412" style="left:calc(710 * var(--u));top:calc(412 * var(--u))">Open shelving turns storage into a thoughtful display for books, art, and objects.</p>
-    <p class="rt" data-x="710" data-y="484" style="left:calc(710 * var(--u));top:calc(484 * var(--u))">Expressive sculptural forms bring a distinct presence to their surroundings.</p>
-    <p class="rt" data-x="710" data-y="556" style="left:calc(710 * var(--u));top:calc(556 * var(--u))">Architectural lines and expressive forms bring urban character to your space.</p>
-    <p class="rt" data-x="710" data-y="628" style="left:calc(710 * var(--u));top:calc(628 * var(--u))">Distinctive vessels hold flowers or stand beautifully as objects on their own.</p>
-    <p class="rt" data-x="710" data-y="700" style="left:calc(710 * var(--u));top:calc(700 * var(--u))">A warm glow and thoughtful form bring an intimate touch to your space.</p>
+    <p class="rt" data-x="710" data-y="196" style="left:calc(710 * var(--u));top:calc(196 * var(--u))">DirtyHands art ceramics studio</p>
+    <p class="rt" data-x="710" data-y="268" style="left:calc(710 * var(--u));top:calc(268 * var(--u))">Custom ceramic objects and interior design pieces — from intimate pieces to large-scale works.</p>
+    <p class="rt" data-x="710" data-y="340" style="left:calc(710 * var(--u));top:calc(340 * var(--u))">We create expressive ceramics and offer master classes for those who appreciate form, texture, and character.</p>
+    <p class="rt" data-x="710" data-y="412" style="left:calc(710 * var(--u));top:calc(412 * var(--u))">We create signature pieces — from tabletop art objects and panels to three-dimensional decorative forms and interior accents that enhance space and set the emotional tone of any interior.</p>
+    <p class="rt" data-x="710" data-y="484" style="left:calc(710 * var(--u));top:calc(484 * var(--u))">The studio was founded by designers and entrepreneurs Lisa and Karen, who combine their professional vision and artistic flair to realize unconventional ideas.</p>
+    <p class="rt" data-x="710" data-y="556" style="left:calc(710 * var(--u));top:calc(556 * var(--u))">Their approach is a reimagining of ceramics: from practical plates and pots to a highly artistic language that speaks to the style, mood, and character of a space.</p>
   </div>
 </section>
 
@@ -504,6 +500,8 @@
     root.style.setProperty('--W', w + 'px');
     U = w / 1400; V = innerHeight / U;
     splitLines();
+    // the paragraphs of the table follow one another down the ruled lines, one empty line between them, however many lines each one takes
+    { let y0 = 196; texts.forEach((p, j) => { p.dataset.y = y0; p.style.top = y0 * U + 'px'; if (nums[j]) nums[j].style.top = y0 * U + 'px'; y0 += (lines[j].length + 1) * LH; }); }
     alignShop();
     bigrows.forEach(b => b.style.setProperty('--dx', (0.4 * (700 - (b.offsetLeft + b.offsetWidth / 2) / U)).toFixed(2)));   // every word starts 60% of the way to its place, so the words never sit on top of each other
     // the photo of Karen and Lisa covers the whole grey block, split between its two halves so it reads as one picture
@@ -566,6 +564,8 @@
   function alignShop() {
     const shop = one('.stack .shop'), pic = one('.rest > .ph:not(.pic):not(.bar)'), rest = one('.rest');
     if (!shop || !pic) return;
+    const p1 = one('.rest > p.lr'), stack = one('.stack');                     // the second paragraph steps in right where the first one ends, however many lines it has
+    if (p1 && stack) stack.style.top = p1.offsetTop + p1.offsetHeight + 'px';
     const mk = document.createElement('span'); mk.style.cssText = 'display:inline-block;width:0;height:0';
     (shop.querySelector('.mi') || shop).appendChild(mk);
     const base = (mk.getBoundingClientRect().bottom - rest.getBoundingClientRect().top) / U; mk.remove();
