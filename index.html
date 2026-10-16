@@ -24,7 +24,7 @@
   .s2 { height: calc(1168 * var(--u)); margin-bottom: calc(348 * var(--u)); }
   .s2-in { position: relative; height: 100%; }
   .s3 { z-index: 3; }
-  .gray { position: relative; margin: 0; height: calc(1250 * var(--u)); overflow: hidden; }   /* a block that scrolls with the page, with no grey fill of its own: first the photo of Karen and Lisa (it moves slower, parallax), then their two cards come up over it one after the other */
+  .gray { position: relative; margin: 0; height: calc(980 * var(--u)); overflow: hidden; }   /* a block that scrolls with the page, with no grey fill of its own: first the photo of Karen and Lisa (it moves slower, parallax), then their two cards come up over it one after the other */
   .rest { height: calc(6245 * var(--u)); }
   /* vertical spacing, one rule for the page below (design px, from the visible bottom of one thing to the visible top of the next):
      20 inside a block (a number to its picture), 40 from a text to its link, 120 between the items of one section (case to case), 200 between sections */
@@ -44,7 +44,7 @@
   .row p { width: calc(250 * var(--u)); }
   .card2 .row { gap: 0 !important; }
   .card2 .row .n { flex: none; width: calc(34 * var(--u)); }   /* the Lisa and Karen cards are one column wide: the text stands right by its number */
-  .card2 .row p { width: calc(176 * var(--u)); }
+  .card2 .row p { width: calc(231 * var(--u)); }   /* 20 of free space on the right of the text */
   .n { width: calc(40 * var(--u)); opacity: .3; font-size: var(--t18); line-height: .91; flex: none; }
   .rules { pointer-events: none; }
   .rules i { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--rule); }
@@ -75,11 +75,12 @@
   .midstrip { position: fixed; left: calc(20 * var(--u)); right: calc(20 * var(--u)); top: 50vh; height: 0; border-top: 1px solid var(--rule); z-index: 4; pointer-events: none; opacity: 0; }
   .midstrip.off { opacity: 0; }   /* the strip IS the first line of the table: at the landing it is swapped for the table's own line 0, which sits exactly on it */
   /* a small caption above the line in the middle of the first screen; when the menu rising from below reaches its level, it goes up with the menu and stays up there until the title melts into the background */
-  .tagline { position: fixed; left: calc(700 * var(--u)); translate: -50% 0; top: calc(50vh + 12 * var(--u)); white-space: nowrap; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; z-index: 101; pointer-events: none; opacity: 0; }   /* the label of the row, centred on the page, on the menu's line under the middle line */
+  .tagline { position: fixed; left: calc(480 * var(--u)); top: calc(50vh + 12 * var(--u)); white-space: nowrap; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; z-index: 101; pointer-events: none; opacity: 0; }   /* the label of the row, centred on the page, on the menu's line under the middle line */
   /* hero cards: fly from the top row into the second block */
   .hc .hs { display: none; position: absolute; top: 0; height: 100%; overflow: hidden; left: calc(var(--j) * var(--sw) - 1px); width: calc(var(--sw) + 3px); backface-visibility: visible; }   /* the strips overlap a little so no light seams show between them */
   .hc .hs i { position: absolute; top: 0; height: 100%; left: calc(-1 * var(--j) * var(--sw) + 1px); width: var(--cw); background-size: cover; background-position: center; background-repeat: no-repeat; }
-  .hc .hc-alt { position: absolute; inset: 0; background: center / cover no-repeat; opacity: 0; transition: opacity .45s var(--ease); pointer-events: none; }
+  .hc .hc-altimg { position: absolute; background-repeat: no-repeat; }
+  .hc .hc-alt { position: absolute; inset: 0; overflow: hidden; opacity: 0; transition: opacity .45s var(--ease); pointer-events: none; }
   .hc.hov .hc-alt, .hc.photo .hc-alt { opacity: 1; }   /* on top the works are shown in their photos; in the table they are cut out */
   .hc .hs b { position: absolute; top: 0; height: 100%; left: calc(-1 * var(--j) * var(--sw) + 1px); width: var(--cw); background: center / cover no-repeat; opacity: 0; transition: opacity .4s var(--ease); }
   .hc .hs i { transition: opacity .4s var(--ease); }
@@ -114,7 +115,7 @@
   /* partners: labels stick, the active row turns black */
   /* partners: gray text that fills with black (left to right) when its row is level with the labels */
   .partner .pf { display: inline-block; will-change: transform; overflow: hidden; padding: .06em .14em .14em; margin: -.06em -.14em -.14em; vertical-align: top; }   /* the mask the letters come down from, as in the headings */
-  .partner .pf .c { display: inline-block; white-space: pre; color: transparent; background: linear-gradient(90deg, #000 44%, transparent 52%) 100% 0 / 300% 100% no-repeat, linear-gradient(#999, #999) 0 0 / 100% 100% no-repeat; -webkit-background-clip: text; background-clip: text; transition: background-position .5s var(--ease) calc(var(--i, 0) * 45ms); transform: translateY(-115%); }   /* each letter fills with black in its turn, with a soft edge, one after another */
+  .partner .pf .c { display: inline-block; white-space: pre; color: transparent; background: linear-gradient(90deg, #000 44%, transparent 52%) 100% 0 / 300% 100% no-repeat, linear-gradient(#999, #999) 0 0 / 100% 100% no-repeat; -webkit-background-clip: text; background-clip: text; transition: background-position .5s var(--ease) calc(var(--i, 0) * 45ms); transform: translateY(115%); }   /* each letter fills with black in its turn, with a soft edge, one after another */
   .partner.on .pf .c { background-position: 0 0, 0 0; }
   .plab-in { position: sticky; top: 50vh; height: calc(20 * var(--u)); }
   .plab-in > p, .plab-in > .quote { position: absolute; top: 0; }
@@ -153,7 +154,7 @@
   .gray::after { right: 0; background-image: var(--imgR, none); background-size: var(--bgS, cover); background-position: var(--bgR, center); }
   .gray.no-left::before, .gray.no-right::after { opacity: 0; }
   .gray > .card2 { z-index: 1; }
-  .card2 > .cmark { left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
+  .card2 > .cmark { left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3; mix-blend-mode: difference; }   /* above the text, blended by difference: where the mark crosses the text, the text turns white */
 
   /* the two views: Story as a horizontal timeline, and a case opened over the page */
   .ov { position: fixed; inset: 0; z-index: 400; visibility: hidden; pointer-events: none; }
@@ -194,6 +195,7 @@
   /* while a view is open the pointer is a "Close" label */
   .close-cursor { position: fixed; left: 0; top: 0; z-index: 1000; pointer-events: none; display: flex; gap: .35em; align-items: center; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; opacity: 0; transition: opacity .25s ease-out; }
   html.ov-open, html.ov-open * { cursor: none !important; }
+  [data-year] { cursor: none; }   /* over the Story paragraphs the pointer itself says More, as it says Close over an open view */
 </style>
 </head>
 <body>
@@ -234,8 +236,8 @@
 
 <section class="s3">
   <div class="gray">
-    <div class="card2" id="lisa" style="left:calc(20 * var(--u));top:100vh;width:calc(210 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(210 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(210 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(210 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, one of the two founders of DirtyHands.</p></div><div class="row" style="left:0;top:calc(108 * var(--u));width:calc(210 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Pairs professional design with artistic intuition to bring unconventional ideas to life.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(210 * var(--u))"></div></div>
-    <div class="card2" id="karen" style="left:calc(710 * var(--u));top:100vh;width:calc(210 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(210 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(210 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(210 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, co-founder of DirtyHands together with Karen.</p></div><div class="row" style="left:0;top:calc(108 * var(--u));width:calc(210 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Sees ceramics beyond plates and pots, as objects that shape the mood and character of a room.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Lisa</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(210 * var(--u))"></div></div>
+    <div class="card2" id="lisa" style="left:calc(20 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, one of the two founders of DirtyHands.</p></div><div class="row" style="left:0;top:calc(108 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Pairs professional design with artistic intuition to bring unconventional ideas to life.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
+    <div class="card2" id="karen" style="left:calc(710 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, co-founder of DirtyHands together with Karen.</p></div><div class="row" style="left:0;top:calc(108 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Sees ceramics beyond plates and pots, as objects that shape the mood and character of a room.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Lisa</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
   </div>
 </section>
 
@@ -256,7 +258,7 @@
   <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(743.2 * var(--u));width:calc(674 * var(--u));"><span class="pf">Novikov</span></p>
   <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(870.4 * var(--u));width:calc(674 * var(--u));"><span class="pf">Club Brera</span></p>
   <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(997.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">AVA</span></p>
-  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(1124.8 * var(--u));width:calc(674 * var(--u));"><span class="pf">Rodina Moskva</span></p>
+  <p class="t name2 partner" style="display:none;left:calc(706 * var(--u));top:calc(1124.8 * var(--u));width:calc(674 * var(--u));"><span class="pf">Rodina Moskva</span></p>
 
   <div class="ph pic" style="left:calc(20 * var(--u));top:calc(1460 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
   <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(1423 * var(--u))">01</span>
@@ -270,10 +272,10 @@
   <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(2731 * var(--u))">03</span>
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(2768 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
   <p class="t18" style="left:calc(710 * var(--u));top:calc(2768 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
-  <div class="ph pic" style="left:calc(710 * var(--u));top:calc(3461 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
-  <div class="rules cap rtl" data-n="4" data-step="19" style="left:calc(480 * var(--u));top:calc(3461 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(480 * var(--u));top:calc(3461 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u));text-align:right">Artful wall compositions bring depth, texture, and character to your space.</p>
-  <span class="n" style="left:calc(710 * var(--u));top:calc(3424 * var(--u))">04</span>
+  <div class="ph pic" style="left:calc(940 * var(--u));top:calc(3461 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
+  <div class="rules cap rtl" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(3461 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(3461 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u));text-align:right">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <span class="n" style="left:calc(940 * var(--u));top:calc(3424 * var(--u))">04</span>
   <div class="ph pic" style="left:calc(20 * var(--u));top:calc(4076 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
   <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(4039 * var(--u))">05</span>
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(4076 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
@@ -294,8 +296,7 @@
   <p class="t18" data-year="2021" style="left:calc(710 * var(--u));top:calc(5631 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
   <p class="t18" data-year="2022" style="left:calc(710 * var(--u));top:calc(5751 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
   <p class="t18" data-year="2023" style="left:calc(710 * var(--u));top:calc(5871 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <p class="t18" data-year="2024" style="left:calc(710 * var(--u));top:calc(5991 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <a class="t18 more" style="left:calc(710 * var(--u));top:calc(6089 * var(--u));" href="#story">More →</a>
+  <a class="t18 more" style="display:none;left:calc(710 * var(--u));top:calc(5969 * var(--u));" href="#story">More →</a>
   <div class="dot" style="left:calc(613 * var(--u));top:calc(5377.5 * var(--u));"></div>
   <div class="dot" style="left:calc(613 * var(--u));top:calc(5452.5 * var(--u));"></div>
   <div class="ph bar" style="--i:0;left:calc(20.00 * var(--u));top:calc(6185 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
@@ -321,7 +322,7 @@
 <div class="ov" id="storyView" aria-hidden="true">
   <div class="ov-scrim"></div>
   <div class="t big2 sv-title">Story</div>
-    <div class="sv-items"><div class="sv-item" style="left:calc(20 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2019</span><p class="t18 sv-lead" data-i="0"></p><p class="t18 sv-more" data-more="It began with one wheel, a borrowed kiln and a shared studio. The first pieces were plates for friends, uneven and honest, and that honesty became the signature."></p></div><div class="sv-item" style="left:calc(250 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2020</span><p class="t18 sv-lead" data-i="1"></p><p class="t18 sv-more" data-more="A second room, a second kiln. The studio started to work with interiors: tables, wall panels and the quiet objects that sit between furniture and art."></p></div><div class="sv-item" style="left:calc(480 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2021</span><p class="t18 sv-lead" data-i="2"></p><p class="t18 sv-more" data-more="The first restaurant commissions arrived. A hundred identical plates are never identical when each one is made by hand, and that turned out to be the point."></p></div><div class="sv-item" style="left:calc(710 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2022</span><p class="t18 sv-lead" data-i="3"></p><p class="t18 sv-more" data-more="Glazes took over the shelves. Months of tests gave the palette that the studio is known for today: warm, matte, slightly irregular, never flat."></p></div><div class="sv-item" style="left:calc(940 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2023</span><p class="t18 sv-lead" data-i="4"></p><p class="t18 sv-more" data-more="The shop opened, and with it the idea that every object should be able to live in someone's home, not only in a showroom."></p></div><div class="sv-item" style="left:calc(1170 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2024</span><p class="t18 sv-lead" data-i="5"></p><p class="t18 sv-more" data-more="Today the studio works with private clients and hotels. The wheel is still the same one, and so is the way the first plate was made."></p></div></div>
+    <div class="sv-items"><div class="sv-item" style="left:calc(20 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2019</span><p class="t18 sv-lead" data-i="0"></p><p class="t18 sv-more" data-more="It began with one wheel, a borrowed kiln and a shared studio. The first pieces were plates for friends, uneven and honest, and that honesty became the signature."></p></div><div class="sv-item" style="left:calc(250 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2020</span><p class="t18 sv-lead" data-i="1"></p><p class="t18 sv-more" data-more="A second room, a second kiln. The studio started to work with interiors: tables, wall panels and the quiet objects that sit between furniture and art."></p></div><div class="sv-item" style="left:calc(480 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2021</span><p class="t18 sv-lead" data-i="2"></p><p class="t18 sv-more" data-more="The first restaurant commissions arrived. A hundred identical plates are never identical when each one is made by hand, and that turned out to be the point."></p></div><div class="sv-item" style="left:calc(710 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2022</span><p class="t18 sv-lead" data-i="3"></p><p class="t18 sv-more" data-more="Glazes took over the shelves. Months of tests gave the palette that the studio is known for today: warm, matte, slightly irregular, never flat."></p></div><div class="sv-item" style="left:calc(940 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2023</span><p class="t18 sv-lead" data-i="4"></p><p class="t18 sv-more" data-more="The shop opened, and with it the idea that every object should be able to live in someone's home, not only in a showroom."></p></div></div>
 </div>
 <div class="ov" id="catView" aria-hidden="true">
   <div class="ov-scrim"></div>
@@ -340,6 +341,7 @@
   <p class="t18 cd-a"></p>
   <p class="t18 cd-b"></p>
 </div>
+<div class="close-cursor more-cursor" aria-hidden="true">More<svg viewBox="0 0 10 10" width="9" height="9"><path d="M1 5h8M5.5 1.5 9 5 5.5 8.5" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></div>
 <div class="close-cursor" aria-hidden="true">Close<svg viewBox="0 0 10 10" width="9" height="9"><path d="M1.5 1.5 8.5 8.5M8.5 1.5 1.5 8.5" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></div>
 <div class="grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 
@@ -422,10 +424,20 @@
   const HERO = i => `url("${HERO_SRC[i % HERO_SRC.length]}")`;
   const CUTOUT = new Set([0, 1, 2, 3, 4, 5]);                                  // all cut out: no box behind them, and shown whole (contain), never cropped
   const HOVER_SRC = ['photos/int-panel.jpg', 'photos/int-mirror.jpg', 'photos/int-table.jpg', 'photos/cat/sculptures-8.jpg', 'photos/int-urban.jpg', 'photos/int-vase.jpg'];   // the same work in an interior
+  // where the work stands in its interior photo (centre x, centre y, width, height as shares of the photo) and the photo's size in px: the photo is cropped so that the work stands in the middle of the frame, as big as its cut-out is in the card
+  const OBJ = [[.575, .37, .17, .49, 1200, 803], [.455, .29, .34, .27, 900, 1200], [.51, .47, .64, .43, 900, 1200], [.475, .53, .75, .54, 576, 800], [.48, .475, .84, .50, 900, 1200], [.39, .49, .54, .23, 801, 1200]];
+  const CARD_H = [262.7, 210, 262.7, 210, 262.7, 262.7];
+  function frameFor(i, fw, fh) {                                            // size and place of the photo inside a frame of fw x fh
+    const [cx, cy, ow, oh, iw, ih] = OBJ[i], S = Math.min(fw, fh), longest = Math.max(ow * iw, oh * ih);
+    let sc = 0.94 * S / longest; if (iw * sc < fw || ih * sc < fh) sc = Math.max(fw / iw, fh / ih);
+    const w = iw * sc, h = ih * sc;
+    return { w, h, x: Math.max(fw - w, Math.min(0, fw / 2 - cx * w)), y: Math.max(fh - h, Math.min(0, fh / 2 - cy * h)) };
+  }
   const CATS = ['Panels', 'Mirrors', 'Tables', 'Sculptures', 'Urbans', 'Vases'];
   $('.hc').forEach((c, i) => {
     c.style.backgroundImage = HERO(i); if (CUTOUT.has(i)) c.style.backgroundSize = 'contain';
-    const alt = document.createElement('div'); alt.className = 'hc-alt'; alt.style.backgroundImage = `url("${HOVER_SRC[i]}")`;
+    const alt = document.createElement('div'); alt.className = 'hc-alt'; const altImg = document.createElement('div'); altImg.className = 'hc-altimg'; altImg.style.backgroundImage = `url("${HOVER_SRC[i]}")`; alt.append(altImg);
+    { const f = frameFor(i, 210.2, CARD_H[i]); Object.assign(altImg.style, { left: `calc(${f.x.toFixed(2)} * var(--u))`, top: `calc(${f.y.toFixed(2)} * var(--u))`, width: `calc(${f.w.toFixed(2)} * var(--u))`, height: `calc(${f.h.toFixed(2)} * var(--u))`, backgroundSize: '100% 100%' }); }   // fixed size: the card is a window that grows over it, the picture itself is never stretched   // the work stays where its cut-out stands
     const lab = document.createElement('span'); lab.className = 'hc-lab'; lab.textContent = CATS[i];
     c.append(alt, lab);
     c.addEventListener('mouseenter', () => { if (scrollY < 4) { c.classList.add('hov'); bulge(c, 1); } });   // at rest on top: the photo bulges out and the category shows below
@@ -448,7 +460,7 @@
     })();
   }
   const HS = 14;                   // strips a hovered card is cut into for its bulge
-  $('.hc').forEach((c, i) => { c._hs = []; for (let j = 0; j < HS; j++) { const st = document.createElement('div'); st.className = 'hs'; st.style.setProperty('--j', j); const im = document.createElement('i'); im.style.backgroundImage = HERO(i); if (CUTOUT.has(i)) im.style.backgroundSize = 'contain'; const ph = document.createElement('b'); ph.style.backgroundImage = `url("${HOVER_SRC[i]}")`; st.append(ph); st.append(im); c.append(st); c._hs.push(st); } });
+  $('.hc').forEach((c, i) => { c._hs = []; for (let j = 0; j < HS; j++) { const st = document.createElement('div'); st.className = 'hs'; st.style.setProperty('--j', j); const im = document.createElement('i'); im.style.backgroundImage = HERO(i); if (CUTOUT.has(i)) im.style.backgroundSize = 'contain'; const ph = document.createElement('b'); ph.style.backgroundImage = `url("${HOVER_SRC[i]}")`; { const f = frameFor(i, 210.2, CARD_H[i]), px = f.w > 210.2 ? f.x / (210.2 - f.w) * 100 : 50, py = f.h > CARD_H[i] ? f.y / (CARD_H[i] - f.h) * 100 : 50; Object.assign(ph.style, { backgroundSize: `auto ${(f.h / CARD_H[i] * 100).toFixed(2)}%`, backgroundPosition: `${px.toFixed(2)}% ${py.toFixed(2)}%` }); } st.append(ph); st.append(im); c.append(st); c._hs.push(st); } });
   $('.bar').forEach((b, i) => { b.style.backgroundImage = IMG(i); });
   const CASE_IMG = [3, 5, 1, 6, 8];   // the photo of each case
   $('.pic').forEach((e, i) => { e.style.setProperty('--img', IMG(CASE_IMG[i])); });      // the big pictures: the image lives in ::before, inside the frame
@@ -580,7 +592,7 @@
     alignShop();
     bigrows.forEach(b => b.style.setProperty('--dx', (0.4 * (700 - (b.offsetLeft + b.offsetWidth / 2) / U)).toFixed(2)));   // every word starts 60% of the way to its place, so the words never sit on top of each other
     // the photo of Karen and Lisa, split between the two halves of the block so it reads as one picture: the whole photo across the full width, never cropped (both faces stay in)
-    { const gr = one('.gray'), w = gr.offsetWidth, h = gr.offsetHeight + 320 * U, sc = w / 1680, iw = 1680 * sc, ih = 850 * sc, ox = 0, oy = (160 + 700) * U - ih / 2;   // its middle 700 down the block, so it is seen on its own before the cards come
+    { const gr = one('.gray'), w = gr.offsetWidth, h = gr.offsetHeight + 320 * U, sc = w / 1680, iw = 1680 * sc, ih = 850 * sc, ox = 0, oy = (160 + 420) * U - ih / 2;   // its middle 700 down the block, so it is seen on its own before the cards come
       gr.style.setProperty('--bgS', `${iw}px ${ih}px`); gr.style.setProperty('--bgL', `${ox}px ${oy}px`); gr.style.setProperty('--bgR', `${ox - w / 2}px ${oy}px`); }
     // the title stays pinned to the bottom while the whole table goes over it; then it leaves with the page
     ttlBox.style.height = (one('.s2').offsetTop / U + 1168 + 182.6) * U + 'px';   // pinned until the whole table (1168 high) has gone up past its top edge
@@ -632,7 +644,7 @@
     if (!fanTl) return;
     if (on) {
       fanTl.timeScale(1).play();
-      blockTexts.forEach((b, k) => { if (b.seen) { b.dc && b.dc.kill(); b.dc = gsap.delayedCall(.55 + k * .09, () => b.tl.timeScale(1).play()); } });
+      blockTexts.forEach((b, k) => { if (b.seen) { b.dc && b.dc.kill(); b.dc = gsap.delayedCall(.2 + k * .04, () => b.tl.timeScale(1.6).play()); } });
     } else {
       fanTl.timeScale(3.6).reverse();                                                       // the whole table goes away quickly
       blockTexts.forEach(b => { b.dc && b.dc.kill(); b.tl.timeScale(3.6).reverse(); });
@@ -645,7 +657,7 @@
     const shop = one('.stack .shop'), pic = one('.rest > .ph:not(.pic):not(.bar)'), rest = one('.rest');
     if (!shop || !pic) return;
     const p1 = one('.rest > p.lr'), stack = one('.stack');                     // the second paragraph steps in right where the first one ends, however many lines it has
-    if (p1 && stack) stack.style.top = p1.offsetTop + p1.offsetHeight + 'px';
+    if (p1 && stack) stack.style.top = p1.offsetTop + p1.offsetHeight + 20 * U + 'px';   // 20 between the two paragraphs
     const sr = shop.getBoundingClientRect(), mid = ((sr.top + sr.bottom) / 2 - rest.getBoundingClientRect().top) / U;   // the middle of the picture on the middle of "Shop now"
     pic.style.top = (mid - pic.offsetHeight / U / 2) * U + 'px';
   }
@@ -666,10 +678,10 @@
     blockTexts = texts.map((p, j) => {
       const tl = gsap.timeline({ paused: true }), n = nums[j], b = { el: p, tl, seen: false, dc: null }; touched.push(n);
       fadeIn(tl, n, .3, 0, { dur: .8 });
-      riseIn(tl, [...p.querySelectorAll('.li')], { at: 0, each: .09 });
+      riseIn(tl, [...p.querySelectorAll('.li')], { at: 0, each: .05 });
       done.add(p);
       const st = ScrollTrigger.create({ trigger: p, start: 'top 95%',
-        onEnter: () => { b.seen = true; if (tableOpen) { b.dc && b.dc.kill(); b.dc = gsap.delayedCall(.15, () => tl.timeScale(1).play()); } },
+        onEnter: () => { b.seen = true; if (tableOpen) { b.dc && b.dc.kill(); b.dc = gsap.delayedCall(0, () => tl.timeScale(1.6).play()); } },
         onLeaveBack: () => { b.seen = false; b.dc && b.dc.kill(); tl.timeScale(2.2).reverse(); } });
       pairs.push({ st, tl: { progress() {}, kill() { tl.kill(); } } }); return b;
     });
@@ -733,9 +745,10 @@
   // ---- the two views. Story ("More"): the page leaves, only the title stays, the paragraphs line up horizontally, the squares become a timeline.
   // A case (click on a picture): the picture grows above the page, its lines stretch to two columns, two paragraphs come in below as a staircase.
   // In both the pointer turns into "Close"; a click anywhere (or Esc) brings the page back.
-  const htmlEl = document.documentElement, closeCur = one('.close-cursor');
+  const htmlEl = document.documentElement, closeCur = one('.close-cursor:not(.more-cursor)'), moreCur = one('.more-cursor');
   let openView = null;
-  addEventListener('pointermove', e => { if (openView) closeCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`; }, { passive: true });
+  addEventListener('pointermove', e => { if (openView) closeCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`;
+    const onStory = !openView && !!e.target.closest('[data-year]'); moreCur.style.opacity = onStory ? 1 : 0; if (onStory) moreCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`; }, { passive: true });
   addEventListener('keydown', e => { if (e.key === 'Escape' && openView) openView.close(); });
   function lockView(on) { htmlEl.classList.toggle('ov-open', on); htmlEl.style.overflow = on ? 'hidden' : ''; closeCur.style.opacity = on ? 1 : 0; }
   const pageEls = () => [one('.page'), ...$('.hc, .nav, .ct, .tagline, .midstrip, .ttl')];
@@ -794,8 +807,8 @@
   }
   document.addEventListener('click', e => {
     if (SV._noClose || CV._noClose || CATV._noClose) return;
-    const more = e.target.closest('a.more');
-    if (more) { e.preventDefault(); openStory(); return; }
+    const more = e.target.closest('a.more, [data-year]');
+    if (more && !openView) { e.preventDefault(); moreCur.style.opacity = 0; openStory(); return; }
     if (openView && e.target.closest('.ov')) openView.close();
   });
 
@@ -863,6 +876,7 @@
       for (let k = 0; k < KS; k++) {
         const el = document.createElement('div'); el.className = 'cat-strip';
         el.innerHTML = `<i style="left:${1 - k * sj}px;width:${pw}px;height:${ph}px"></i>`; el.firstChild.style.backgroundImage = `url("${src}")`;
+        if (j === 0) { const f = frameFor(ci, pw, ph); Object.assign(el.firstChild.style, { backgroundSize: `${f.w.toFixed(1)}px ${f.h.toFixed(1)}px`, backgroundPosition: `${f.x.toFixed(1)}px ${f.y.toFixed(1)}px` }); }   // the clicked work stands in the middle of its frame, as in the card
         Object.assign(el.style, { left: cx - sj / 2 - 1 + 'px', top: tj + 'px', width: sj + 2 + 'px', height: ph + 'px' });
         g.append(el); p.strips.push({ el, a: (k + .5) * sj - pw / 2, f: 0 });
       } });
@@ -926,7 +940,7 @@
 
   // Clay on the empty background (made separately, see glina.html): the sheet is transparent, hands covered in clay leave prints and smears on it, and the marks sink away by themselves
   function makeClay(opt = {}) {                                         // live: the sheet over the page that follows the hand; with opt.cv: a still sheet (the marks on the Lisa and Karen cards)
-  const live = !opt.cv;
+  const live = !opt.cv, inv = live || !!opt.invert;                  // inv: drawn in inverted colours, to be blended by difference (on the page, and over the text of the cards)
   const cv = opt.cv || document.createElement('canvas'); cv.setAttribute('aria-hidden', 'true');
   if (live) cv.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:450;pointer-events:none;display:block;mix-blend-mode:difference';   // above the page, blended by difference: the clay is drawn in inverted colours, so on white it is dark clay, and whatever it lies on (text, lines) turns to its negative
   if (live) document.body.prepend(cv);
@@ -936,7 +950,7 @@
   const TILE = 64;
   const tiles = new Map();
   const content = new Set();      // tiles that still hold clay and keep fading
-  const HOLD = 3;               // seconds a fresh mark stays before it starts to fade
+  const HOLD = 1.75;              // seconds a fresh mark stays before it starts to fade
   const FADE_STEP = 1 / 20;       // fading runs 20 times a second in small steps, so the marks melt away smoothly
   let lastFade = 0;
   const now = () => performance.now() / 1000;
@@ -1008,9 +1022,9 @@
         let g = (THIN[1] + (THICK[1] - THIN[1]) * m) * dk;
         let b = (THIN[2] + (THICK[2] - THIN[2]) * m) * dk;
         const spec = wet * Math.max(0, s - 1.05) * 0.9 * a;
-        d[p]     = live ? 255 - (r + (255 - r) * spec) : r + (255 - r) * spec;   // the live sheet is drawn inverted (it is blended by difference)
-        d[p + 1] = live ? 255 - (g + (255 - g) * spec) : g + (255 - g) * spec;
-        d[p + 2] = live ? 255 - (b + (255 - b) * spec) : b + (255 - b) * spec;
+        d[p]     = inv ? 255 - (r + (255 - r) * spec) : r + (255 - r) * spec;   // the live sheet is drawn inverted (it is blended by difference)
+        d[p + 1] = inv ? 255 - (g + (255 - g) * spec) : g + (255 - g) * spec;
+        d[p + 2] = inv ? 255 - (b + (255 - b) * spec) : b + (255 - b) * spec;
         d[p + 3] = a * 255;
       }
     }
@@ -1416,7 +1430,7 @@
 
   /* ---------- input ---------- */
   const hands = new Map();
-  const empty = el => !el.closest('a, .pic, .hc, .more, .ov, nav, button, .close-cursor');
+  const empty = el => !el.closest('a, .pic, .hc, .more, [data-year], .ov, nav, button, .close-cursor');
 
   function quick(x, y, R) {                                              // a mark left by a click on a link, a picture or a window: it melts away sooner
     const t = now() - (HOLD - 0.7), x0 = Math.max(0, (x - R) * S | 0), x1 = Math.min(W - 1, (x + R) * S | 0), y0 = Math.max(0, (y - R) * S | 0), y1 = Math.min(H - 1, (y + R) * S | 0);
@@ -1449,7 +1463,7 @@
       const n = Math.max(2, Math.floor(10 / h.fs.length)), len = Math.min(dist, n * 3), st = Math.max(1, Math.ceil(len / 3)), ux = dx / dist, uy = dy / dist;
       for (const f of h.fs) {
         const bx = f.x, by = f.y;
-        for (let k = 1; k <= st; k++) { f.x = bx + ux * len * k / st; f.y = by + uy * len * k / st; smear(f, ux, uy); f.load *= 0.9605; }       // the paint lasts 20% longer
+        for (let k = 1; k <= st; k++) { f.x = bx + ux * len * k / st; f.y = by + uy * len * k / st; smear(f, ux, uy); f.load *= 0.9671; }       // the paint lasts longer (20% more than before)
       }
       h.x += ux * len; h.y += uy * len;
     }
@@ -1478,7 +1492,7 @@
           let v = T[i];
           if (v <= 0) continue;
           if (t - D[i] > HOLD) {
-            v = v * 0.95 - 0.003;
+            v = v * 0.913 - 0.0054;
             T[i] = v > 0.003 ? v : 0;
             changed = true;
           }
@@ -1630,20 +1644,20 @@
   }
 
   // ---- one clay mark on each of the Lisa and Karen cards, made by the same clay as the live marks: a finger print or a longer smear, placed at random, drawn in as the card scrolls up
-  const cardMarks = [lisa, karen].map(card => { const cv = document.createElement('canvas'); cv.className = 'cmark'; card.prepend(cv); return { card, cv, smear: Math.random() < 0.55, w: 0, h: 0, drawn: -1 }; });
+  const cardMarks = [lisa, karen].map((card, idx) => { const cv = document.createElement('canvas'); cv.className = 'cmark'; card.prepend(cv); return { card, cv, idx, smear: Math.random() < 0.55, w: 0, h: 0, drawn: -1 }; });
   setTimeout(() => cardMarks.forEach(m => { if (!m.frames) makeMark(m); }), 2500);   // made once, ahead of time, so the scroll does not stall on it
   function makeMark(m) {
     const w = m.card.offsetWidth, h = m.card.offsetHeight; if (!w || !h) return;
     m.w = w; m.h = h; m.drawn = -1; m.cv.width = w; m.cv.height = h; m.frames = [];
-    const off = document.createElement('canvas'), c = makeClay({ cv: off, w, h });
+    const off = document.createElement('canvas'), c = makeClay({ cv: off, w, h, invert: true });
     const snap = () => { const fc = document.createElement('canvas'); fc.width = w; fc.height = h; c.render(); fc.getContext('2d').drawImage(off, 0, 0); m.frames.push(fc); };
     if (m.smear) {                                                       // a finger put down and dragged on a slant, until the clay runs out; kept as frames, so scrolling draws it stroke by stroke
-      const dir = Math.random() < 0.5 ? 1 : -1, a = (0.35 + Math.random() * 0.35) * (Math.random() < 0.5 ? 1 : -1), dx = Math.cos(a) * dir, dy = Math.sin(a);
-      const len = w * (0.38 + Math.random() * 0.22), sx = dir > 0 ? w * (0.12 + Math.random() * 0.2) : w * (0.68 + Math.random() * 0.2), sy = dy > 0 ? h * (0.15 + Math.random() * 0.2) : h * (0.6 + Math.random() * 0.2);
+      const dir = -1, a = m.idx === 0 ? -(0.28 + Math.random() * 0.14) : -(0.95 + Math.random() * 0.2), dx = Math.cos(a) * dir, dy = Math.sin(a);   // in the bottom right corner, under the text: a short smear going up and to the left
+      const len = w * (0.26 + Math.random() * 0.12), sx = w * (0.8 + Math.random() * 0.08), sy = h * (0.86 + Math.random() * 0.04);
       let f = c.finger(sx, sy, { load: 1.5 }); c.print(f); snap();
       const F = 16; for (let k = 0; k < F; k++) { f = c.autoSmear(f, dx, dy, len / F); snap(); }
     } else {
-      c.variants[Math.random() < 0.5 ? 0 : 11].run(w * (0.2 + Math.random() * 0.6), h * (0.15 + Math.random() * 0.6)); snap();
+      c.variants[Math.random() < 0.5 ? 0 : 11].run(w * (0.68 + Math.random() * 0.14), h * (0.7 + Math.random() * 0.12)); snap();
     }
   }
   function drawMark(m, rev) {
@@ -1660,11 +1674,11 @@
   }
 
   partners.forEach(el => { const pf = el.firstElementChild, t = pf.textContent; pf.innerHTML = [...t].map((ch, i) => `<span class="c" style="--i:${i}">${ch === ' ' ? '&nbsp;' : ch}</span>`).join(''); if (!G) [...pf.children].forEach(c => { c.style.transform = 'none'; }); });
-  function typeName(pf, on) {                                              // letter by letter, as the headings: the letters come down from above one after another, and go back up
+  function typeName(pf, on) {                                              // letter by letter: the letters rise from below one after another, and sink back down
     if (!G) return;
     const L = [...pf.children];
     if (on) gsap.to(L, { yPercent: 0, y: 0, duration: .6, ease: EASE, stagger: .05, overwrite: true });
-    else gsap.to(L, { yPercent: -115, duration: .35, ease: EASE, stagger: { each: .02, from: 'end' }, overwrite: true });
+    else gsap.to(L, { yPercent: 115, duration: .35, ease: EASE, stagger: { each: .02, from: 'end' }, overwrite: true });
   }
   let yS = 0, mv = 0, smoothRaf = 0;
   function tick(now = performance.now()) {
@@ -1687,8 +1701,9 @@
     const release = ttlBox.offsetHeight / U - V + 40;                 // scroll position where the stuck title lets go
     const soak = ease(clamp((y - release) / (V * 0.5)));
     soakDisp.setAttribute('scale', ((soak * 26 * U) || 0).toFixed(1)); soakBlur.setAttribute('stdDeviation', ((soak * 5 * U) || 0).toFixed(2));
-    h1.style.filter = soak > 0.001 ? `blur(${(soak * 18 * U).toFixed(2)}px)` : 'none'; ttlBox.style.opacity = (1 - soak).toFixed(3);   // after the table it sinks into the background: blurred, and the page goes over it
-    ttlBox.style.zIndex = soak > 0.001 ? '0' : '';
+    // once the title is no longer stuck it is not blurred or faded: its letters, from the first one on, climb up one after another in steps, and so on with the scroll
+    h1.style.filter = 'none'; ttlBox.style.opacity = 1; ttlBox.style.zIndex = '';
+    { const r = Math.max(0, y - release), D = 45; (h1._chars || (h1._chars = [...h1.querySelectorAll('.ch')])).forEach((ch, j) => { const e = ease(clamp((r - j * D) / 260)); ch.style.translate = e > 0.001 ? `0 ${(-e * 220 * U).toFixed(1)}px` : ''; }); }
     tagline.style.opacity = (clamp((now - t0 - (INTRO - 300)) / 500) * (1 - soak)).toFixed(3);   // appears with the intro, goes together with the title
     // Story: the year of the paragraph that is nearest to the middle of the screen (hidden when none is close)
     let sIdx = -1, sDist = Infinity;
@@ -1699,6 +1714,10 @@
       if (!year) { storyYear.classList.add('sw'); yrCur = null; yrSlots.forEach(sl => { sl.digit = null; }); }
       else { storyYear.classList.remove('sw'); rollYear(+year); beatSquares(); }
     }
+    // Story: the five paragraphs go round the word on a half circle open to the right: each one sits on the arc as it passes the middle of the screen, where the word stands, and slides back along it above and below
+    { const CX = 400, RAD = 430;
+      storyP.forEach(q => { const r = q.getBoundingClientRect(), dy = (r.top + r.height / 2) / U - V / 2, k = dy / 350, x = CX + RAD - 200 * (1 - 1 / (1 + k * k));   // a soft arc: away from the middle the paragraph leans only a little to the left, never jumps and never fades
+        q.style.transform = `translateX(${((x - 710) * U).toFixed(1)}px)`; q.style.opacity = ''; }); }
     // Story: the word, its year and the two squares stay on the screen while the paragraphs (all in the 4th column) scroll past the middle
     const restTop = one('.rest').offsetTop / U, pinA = restTop + storyMid(0), pinB = restTop + storyMid(storyP.length - 1);
     const hold = Math.min(pinB - pinA, Math.max(0, y - (pinA - V / 2)));
@@ -1780,25 +1799,26 @@
         } else c.style.transform = `${rot ? `rotate(${rot.toFixed(2)}deg) ` : ''}scale(${(c._flow || 1).toFixed(3)})`;
       }
       {                                                                    // one work flows into the next: the one leaving softens, swells a little and fades while the next comes out of the blur, sharp, in the same place
-        const w = ease(clamp((0.62 - Math.abs(sd)) / 0.37)), hide = q < 1 ? 0 : ease(clamp((t - 0.7) / 0.3));   // until the pile has formed they are all there
-        c.style.opacity = lerp(1, w, hide).toFixed(3);
+        // both works are in the blur at once: while one dissolves, the next one comes in (weights add up to one)
+        const uPrev = i === 0 ? 1 : ease(clamp((p - (i - 1) - 0.25) / 0.5)), uNext = i === cards.length - 1 ? 0 : ease(clamp((p - i - 0.25) / 0.5)), w = uPrev * (1 - uNext), hide = t < 0.72 ? 0 : 1;   // until the pile has formed they are all there
+        c.style.opacity = lerp(1, ease(clamp(w * 1.6)), hide).toFixed(3);
         c.style.filter = hide > 0.01 && w < 0.999 ? `blur(${((1 - w) * hide * 18 * U).toFixed(1)}px)` : '';
         c._flow = 1 + (-sd) * 0.09 * hide;
       }
       const g = Math.round(landed ? SHADE[i] : lerp(242, 225, t));
       c.style.backgroundColor = CUTOUT.has(i) ? 'transparent' : `rgb(${g},${g},${g})`;   // cut out: no box behind them, the text runs along their outlines
       c.style.zIndex = t > 0 ? 5 + RANK[i] : 5;                                 // at rest in the top row they are all level
-      if (t > 0.85 && DEPTH(i) < 0.62) obs.push({ cx, top: cy - s2Top - hh / 2, w, h: hh, shape: shapeOf(i) });   // the text runs round the card in the middle (and the one that is leaving)
+      if (t > 0.85 && DEPTH(i) < 0.75) obs.push({ cx, top: cy - s2Top - hh / 2, w, h: hh, shape: shapeOf(i) });   // the text runs round the card in the middle (and the one that is leaving)
     });
 
     // text flows around the wheel (pretext lays the lines out again as it turns): mostly around the work at three o'clock, by its own outline
     flowTable(obs.length ? obs : null);
 
     // the photo block scrolls with the page: the photo inside lags behind (parallax), the two cards run a little ahead of it, Lisa not far below Karen
-    const gp = clamp((y + V - s3Top) / (1250 + V));                     // 0: the block comes in at the bottom, 1: it has gone out at the top
+    const gp = clamp((y + V - s3Top) / (980 + V));                     // 0: the block comes in at the bottom, 1: it has gone out at the top
     one('.gray').style.setProperty('--par', gp.toFixed(4));
-    lisa.style.top = (560 - (gp - 0.5) * 160) * U + 'px';                // (the #lisa card carries Karen's name: it is the first one)
-    karen.style.top = (780 - (gp - 0.5) * 560) * U + 'px';
+    lisa.style.top = (270 - (gp - 0.5) * 160) * U + 'px';                // (the #lisa card carries Karen's name: it is the first one)
+    karen.style.top = (500 - (gp - 0.5) * 560) * U + 'px';
     [[lisa, cardMarks[0]], [karen, cardMarks[1]]].forEach(([el, m]) => {
       const top = s3Top + parseFloat(el.style.top) / U - y;              // on the screen, design px
       drawMark(m, (V * 0.95 - top) / (V * 0.45));                        // the clay mark draws in while the card comes up
