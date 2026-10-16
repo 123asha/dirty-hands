@@ -178,7 +178,7 @@
   #catView .cat-cyl { position: absolute; inset: 0; perspective: calc(2200 * var(--u)); perspective-origin: 50% 45%; transform-origin: 50% 45%; }
   .cat-ph { position: absolute; inset: 0; perspective: inherit; perspective-origin: inherit; will-change: opacity; }   /* one picture: its strips fade together, so where they overlap no darker seam shows */
   .cat-strip { position: absolute; overflow: hidden; backface-visibility: hidden; will-change: transform; }
-  .cat-strip i { position: absolute; top: 0; height: 100%; background: #f2f2f2 center / cover no-repeat; }
+  .cat-strip i { position: absolute; top: 0; background: #f2f2f2 center / cover no-repeat; }
   .cat-strip::after { content: ''; position: absolute; inset: 0; background: #fff; opacity: var(--w, 0); }   /* the strips turning away go paler, as before, without being see-through */
   .cat-title { position: absolute; left: calc(20 * var(--u)); top: calc(20 * var(--u)); overflow: hidden; padding: 0 .05em .08em; }
   .cat-title .c { display: inline-block; white-space: pre; }   /* letter by letter: they come down from above, and go back up when the gallery closes */
@@ -858,10 +858,10 @@
     const photos = [];                                                    // each picture is a group of its strips: the group fades as one, the strips in it stay solid and overlap by a pixel on each side
     const WF = [1, .78, 1.12, .86, 1.04, .8, 1.1, .9, .82, 1.06], HF = [1, .74, .9, 1.06, .8, .96, .7, 1.02, .86, .92], YO = [0, 70, -40, 34, 96, -24, 58, 10, 84, -50];   // uneven sizes and steps, as in the Story
     srcs.forEach((src, j) => { const pw = PWc * WF[j % 10], ph = PHc * HF[j % 10], sj = pw / KS, tj = top + (PHc - ph) / 2 + YO[j % 10] * U;
-      const g = document.createElement('div'); g.className = 'cat-ph'; g.style.zIndex = order[j] === 0 ? 2 : 1; host.append(g); const p = { g, d: order[j], strips: [] }; photos.push(p);   // the clicked one lies on top: the others come out from under it
+      const g = document.createElement('div'); g.className = 'cat-ph'; g.style.zIndex = order[j] === 0 ? 2 : 1; host.append(g); const p = { g, d: order[j], strips: [], ph, tj }; photos.push(p);   // the clicked one lies on top: the others come out from under it
       for (let k = 0; k < KS; k++) {
         const el = document.createElement('div'); el.className = 'cat-strip';
-        el.innerHTML = `<i style="left:${1 - k * sj}px;width:${pw}px"></i>`; el.firstChild.style.backgroundImage = `url("${src}")`;
+        el.innerHTML = `<i style="left:${1 - k * sj}px;width:${pw}px;height:${ph}px"></i>`; el.firstChild.style.backgroundImage = `url("${src}")`;
         Object.assign(el.style, { left: cx - sj / 2 - 1 + 'px', top: tj + 'px', width: sj + 2 + 'px', height: ph + 'px' });
         g.append(el); p.strips.push({ el, a: (k + .5) * sj - pw / 2, f: 0 });
       } });
@@ -877,14 +877,16 @@
       photos.forEach(p => {
         // the others come out from under the clicked one one after another, overlapping in time: sideways round the cylinder to their places, and each from above or below
         const turn = Math.abs(p.d) * 2 - (p.d > 0 ? 2 : 1), e = p.d === 0 ? 1 : ease((st.spread * (srcs.length + 1) - turn) / 3);
-        const at = centre[0] + (centre[p.d] - centre[0]) * e, dy = (1 - e) * PHc * 0.55 * ((Math.abs(p.d) % 2 ? 1 : -1) * (p.d > 0 ? 1 : -1));   // right side: from below, above, below...; left side: from above, below...
+        const at = centre[p.d];                                                       // the others stand in their places already; like the cards on the main page, they open from a thin strip on the middle line
+        const lineY = innerHeight / 2, hh = p.d === 0 ? p.ph : p.ph * e + 14 * U * (1 - e), cy = p.d === 0 ? p.tj + p.ph / 2 : lineY + (p.tj + p.ph / 2 - lineY) * e, dy = 0;
+        p.strips.forEach(s => { s.el.style.top = (cy - hh / 2).toFixed(1) + 'px'; s.el.style.height = hh.toFixed(1) + 'px'; s.el.firstChild.style.top = ((hh - p.ph) / 2).toFixed(1) + 'px'; });
         let most = 0;
         p.strips.forEach(s => {
           const phi = (at + s.a - arcAt(pos)) / R, c = Math.cos(phi);
           s.el.style.transform = `translate3d(0,${dy.toFixed(1)}px,${(-R).toFixed(1)}px) rotateY(${phi.toFixed(4)}rad) translate3d(0,0,${R.toFixed(1)}px)`;
           s.f = c <= 0.02 ? 0 : Math.pow(c, 0.9); if (s.f > most) most = s.f;
         });
-        p.g.style.opacity = (most * e).toFixed(3);                                    // the brightest strip sets the picture's opacity, the others are made paler to their own share of it
+        p.g.style.opacity = most.toFixed(3);                                    // the brightest strip sets the picture's opacity, the others are made paler to their own share of it
         p.strips.forEach(s => { s.el.style.opacity = s.f ? 1 : 0; s.el.style.setProperty('--w', most ? (1 - s.f / most).toFixed(3) : 0); });
       });
     };
