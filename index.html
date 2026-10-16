@@ -179,7 +179,7 @@
   .cat-strip::after { content: ''; position: absolute; inset: 0; background: #fff; opacity: var(--w, 0); }   /* the strips turning away go paler, as before, without being see-through */
   .cat-title { position: absolute; left: calc(20 * var(--u)); top: calc(20 * var(--u)); overflow: hidden; padding: 0 .05em .08em; }
   .cat-title .c { display: inline-block; white-space: pre; }   /* letter by letter: they come down from above, and go back up when the gallery closes */
-  .cat-text { position: absolute; left: 50%; top: calc(45vh + 254 * var(--u)); width: calc(210 * var(--u)); margin-left: calc(-105 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; text-align: center; z-index: 2; }   /* the body text, one column wide, centred under the picture */
+  .cat-text { position: absolute; left: 50%; bottom: calc(20 * var(--u)); width: calc(210 * var(--u)); margin-left: calc(-105 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; text-align: center; z-index: 2; }   /* the body text, one column wide, centred, down at the bottom of the screen 20 above its edge */
   .cat-line { position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); top: 50vh; height: 0; border-top: 1px solid var(--rule); }   /* one horizontal line across the middle, as on the main page */
   .hc.hov { cursor: pointer; }
   .cd-pic { position: absolute; background: var(--gray) center / cover no-repeat; }
