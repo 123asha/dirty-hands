@@ -25,7 +25,7 @@
   .s2-in { position: relative; height: 100%; }
   .s3 { z-index: 3; }
   .gray { position: relative; margin: 0; height: calc(1400 * var(--u)); overflow: hidden; }   /* a square block that scrolls with the page, with no grey fill of its own: the photo of Karen and Lisa lies on the white page and moves slower (parallax) */
-  .rest { height: calc(4937 * var(--u)); }
+  .rest { height: calc(6245 * var(--u)); }
   /* vertical spacing, one rule for the page below (design px, from the visible bottom of one thing to the visible top of the next):
      20 inside a block (a number to its picture), 40 from a text to its link, 120 between the items of one section (case to case), 200 between sections */
   .t { font-weight: 400; white-space: nowrap; }
@@ -76,7 +76,7 @@
   .midstrip { position: fixed; left: calc(20 * var(--u)); right: calc(20 * var(--u)); top: 50vh; height: 0; border-top: 1px solid var(--rule); z-index: 4; pointer-events: none; opacity: 0; }
   .midstrip.off { opacity: 0; }   /* the strip IS the first line of the table: at the landing it is swapped for the table's own line 0, which sits exactly on it */
   /* a small caption above the line in the middle of the first screen; when the menu rising from below reaches its level, it goes up with the menu and stays up there until the title melts into the background */
-  .tagline { position: fixed; left: calc(710 * var(--u)); top: calc(50vh + 12 * var(--u)); white-space: nowrap; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; z-index: 101; pointer-events: none; opacity: 0; }   /* the label of the row: the menu stands next to it, on the same line, under the middle line */
+  .tagline { position: fixed; left: calc(700 * var(--u)); translate: -50% 0; top: calc(50vh + 12 * var(--u)); white-space: nowrap; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; z-index: 101; pointer-events: none; opacity: 0; }   /* the label of the row, centred on the page, on the menu's line under the middle line */
   /* hero cards: fly from the top row into the second block */
   .hc .hs { display: none; position: absolute; top: 0; height: 100%; overflow: hidden; left: calc(var(--j) * var(--sw) - 1px); width: calc(var(--sw) + 3px); backface-visibility: visible; }   /* the strips overlap a little so no light seams show between them */
   .hc .hs i { position: absolute; top: 0; height: 100%; left: calc(-1 * var(--j) * var(--sw) + 1px); width: var(--cw); background-size: cover; background-position: center; background-repeat: no-repeat; }
@@ -101,6 +101,9 @@
   /* line masks: text rises out of its own line */
   .m { display: block; overflow: hidden; padding: 0 .25em .3em .1em; margin: 0 -.25em -.3em -.1em; }   /* room at the sides too: big letters with tight spacing hang over the edge of their box */
   .mi { display: block; white-space: nowrap; }
+  .lt { display: inline-block; white-space: pre; }   /* a letter that rises on its own inside its word's mask */
+  .shop .mi { display: flex; align-items: flex-start; gap: .25em; }   /* "Shop now" with the arrow of Contact in the header, set the same way */
+  .shop .mi svg { flex: none; margin-top: .12em; }
   /* title letters rise one by one from below the screen */
   .ttl .h1 .ch { display: inline-block; white-space: pre; transform: translateY(150%); animation: rise var(--dur) var(--ease) forwards; }
   @keyframes rise { to { transform: none; } }
@@ -231,8 +234,8 @@
 
 <section class="s3">
   <div class="gray">
-    <div class="card2" id="lisa" style="left:calc(480 * var(--u));top:100vh;width:calc(210 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(210 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(210 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(210 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(108 * var(--u));width:calc(210 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(210 * var(--u))"></div></div>
-    <div class="card2" id="karen" style="left:calc(710 * var(--u));top:100vh;width:calc(210 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(210 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(210 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(210 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(108 * var(--u));width:calc(210 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Lisa</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(210 * var(--u))"></div></div>
+    <div class="card2" id="lisa" style="left:calc(20 * var(--u));top:100vh;width:calc(210 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(210 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(210 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(210 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, one of the two founders of DirtyHands.</p></div><div class="row" style="left:0;top:calc(108 * var(--u));width:calc(210 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Pairs professional design with artistic intuition to bring unconventional ideas to life.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(210 * var(--u))"></div></div>
+    <div class="card2" id="karen" style="left:calc(710 * var(--u));top:100vh;width:calc(210 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(210 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(210 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(210 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, co-founder of DirtyHands together with Karen.</p></div><div class="row" style="left:0;top:calc(108 * var(--u));width:calc(210 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Sees ceramics beyond plates and pots, as objects that shape the mood and character of a room.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Lisa</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(210 * var(--u))"></div></div>
   </div>
 </section>
 
@@ -242,7 +245,7 @@
   <div class="ph" style="left:calc(618 * var(--u));top:calc(272.25 * var(--u));width:calc(164 * var(--u));height:calc(157.5 * var(--u));"></div>
   <div class="stack" style="left:calc(940 * var(--u));top:calc(142 * var(--u));width:calc(440 * var(--u));">
     <p class="t18 lr" style="padding-right:calc(40 * var(--u));">The studio was founded by designers and entrepreneurs Lisa and Karen, who combine professional expertise with artistic intuition to bring unconventional ideas to life. Their approach reimagines ceramics, moving beyond functional plates and pots towards an artistic language that expresses the style, mood, and character of a space.</p>
-    <a class="t18 shop" style="display:block;width:max-content;margin-top:calc(40 * var(--u));" href="https://dirtyhands.ru" target="_blank" rel="noopener">Shop now →</a>
+    <a class="t18 shop" style="display:block;width:max-content;margin-top:calc(40 * var(--u));" href="https://dirtyhands.ru" target="_blank" rel="noopener">Shop now<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a>
   </div>
 
   <div class="plab" style="left:0;top:calc(638 * var(--u));width:100%;height:calc(545 * var(--u));"><div class="plab-in">
@@ -262,37 +265,45 @@
   <div class="ph pic" style="left:calc(710 * var(--u));top:calc(2153 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
   <div class="rules cap rtl" data-n="4" data-step="19" style="left:calc(480 * var(--u));top:calc(2153 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
   <p class="t18" style="left:calc(480 * var(--u));top:calc(2153 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u));text-align:right">Artful wall compositions bring depth, texture, and character to your space.</p>
-  <span class="n" style="left:calc(710 * var(--u));top:calc(2116 * var(--u))">01</span>
+  <span class="n" style="left:calc(710 * var(--u));top:calc(2116 * var(--u))">02</span>
   <div class="ph pic" style="left:calc(20 * var(--u));top:calc(2768 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
-  <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(2731 * var(--u))">01</span>
+  <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(2731 * var(--u))">03</span>
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(2768 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
   <p class="t18" style="left:calc(710 * var(--u));top:calc(2768 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <div class="ph pic" style="left:calc(710 * var(--u));top:calc(3461 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
+  <div class="rules cap rtl" data-n="4" data-step="19" style="left:calc(480 * var(--u));top:calc(3461 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
+  <p class="t18" style="left:calc(480 * var(--u));top:calc(3461 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u));text-align:right">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <span class="n" style="left:calc(710 * var(--u));top:calc(3424 * var(--u))">04</span>
+  <div class="ph pic" style="left:calc(20 * var(--u));top:calc(4076 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
+  <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(4039 * var(--u))">05</span>
+  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(4076 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(4076 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
 
-  <svg class="morph" viewBox="0 0 200 300" aria-hidden="true" style="left:calc(570 * var(--u));top:calc(3483 * var(--u));width:calc(260 * var(--u));height:calc(390 * var(--u));"><path class="mb" d=""/><path class="ml" d=""/><path class="mh" d=""/><path class="mx" d=""/><path class="my" d=""/></svg>
-  <i class="hl" style="top:calc(3558 * var(--u))"></i>
-  <i class="hl" style="top:calc(3631.4 * var(--u))"></i>
-  <i class="hl" style="top:calc(3704.9 * var(--u))"></i>
-  <i class="hl" style="top:calc(3778.3 * var(--u))"></i>
-  <div class="bigrow" style="left:calc(20 * var(--u));top:calc(3550.8 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Unconventional</p></div>
-  <div class="bigrow" style="left:calc(940 * var(--u));top:calc(3624.2 * var(--u));height:calc(98 * var(--u));"><p class="t name2">ceramic</p></div>
-  <div class="bigrow" style="left:calc(480 * var(--u));top:calc(3697.7 * var(--u));height:calc(98 * var(--u));"><p class="t name2">forms</p></div>
+  <svg class="morph" viewBox="0 0 200 300" aria-hidden="true" style="left:calc(570 * var(--u));top:calc(4791 * var(--u));width:calc(260 * var(--u));height:calc(390 * var(--u));"><path class="mb" d=""/><path class="ml" d=""/><path class="mh" d=""/><path class="mx" d=""/><path class="my" d=""/></svg>
+  <i class="hl" style="top:calc(4866 * var(--u))"></i>
+  <i class="hl" style="top:calc(4939.4 * var(--u))"></i>
+  <i class="hl" style="top:calc(5012.9 * var(--u))"></i>
+  <i class="hl" style="top:calc(5086.3 * var(--u))"></i>
+  <div class="bigrow" style="left:calc(20 * var(--u));top:calc(4858.8 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Unconventional</p></div>
+  <div class="bigrow" style="left:calc(940 * var(--u));top:calc(4932.2 * var(--u));height:calc(98 * var(--u));"><p class="t name2">ceramic</p></div>
+  <div class="bigrow" style="left:calc(480 * var(--u));top:calc(5005.7 * var(--u));height:calc(98 * var(--u));"><p class="t name2">forms</p></div>
 
-  <div class="tagged" style="left:calc(250 * var(--u));top:calc(4063 * var(--u));"><p class="t big2">Story</p><span class="yr" aria-hidden="true"></span></div>
-  <p class="t18" data-year="2019" style="left:calc(710 * var(--u));top:calc(4083 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <p class="t18" data-year="2020" style="left:calc(710 * var(--u));top:calc(4203 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <p class="t18" data-year="2021" style="left:calc(710 * var(--u));top:calc(4323 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <p class="t18" data-year="2022" style="left:calc(710 * var(--u));top:calc(4443 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <p class="t18" data-year="2023" style="left:calc(710 * var(--u));top:calc(4563 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <p class="t18" data-year="2024" style="left:calc(710 * var(--u));top:calc(4683 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <a class="t18 more" style="left:calc(710 * var(--u));top:calc(4781 * var(--u));" href="#story">More →</a>
-  <div class="dot" style="left:calc(613 * var(--u));top:calc(4069.5 * var(--u));"></div>
-  <div class="dot" style="left:calc(613 * var(--u));top:calc(4144.5 * var(--u));"></div>
-  <div class="ph bar" style="--i:0;left:calc(20.00 * var(--u));top:calc(4877 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:1;left:calc(250.17 * var(--u));top:calc(4877 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:2;left:calc(480.34 * var(--u));top:calc(4877 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:3;left:calc(710.51 * var(--u));top:calc(4877 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:4;left:calc(940.68 * var(--u));top:calc(4877 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:5;left:calc(1170.85 * var(--u));top:calc(4877 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="tagged" style="left:calc(250 * var(--u));top:calc(5371 * var(--u));"><p class="t big2">Story</p><span class="yr" aria-hidden="true"></span></div>
+  <p class="t18" data-year="2019" style="left:calc(710 * var(--u));top:calc(5391 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <p class="t18" data-year="2020" style="left:calc(710 * var(--u));top:calc(5511 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <p class="t18" data-year="2021" style="left:calc(710 * var(--u));top:calc(5631 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <p class="t18" data-year="2022" style="left:calc(710 * var(--u));top:calc(5751 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <p class="t18" data-year="2023" style="left:calc(710 * var(--u));top:calc(5871 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <p class="t18" data-year="2024" style="left:calc(710 * var(--u));top:calc(5991 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <a class="t18 more" style="left:calc(710 * var(--u));top:calc(6089 * var(--u));" href="#story">More →</a>
+  <div class="dot" style="left:calc(613 * var(--u));top:calc(5377.5 * var(--u));"></div>
+  <div class="dot" style="left:calc(613 * var(--u));top:calc(5452.5 * var(--u));"></div>
+  <div class="ph bar" style="--i:0;left:calc(20.00 * var(--u));top:calc(6185 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:1;left:calc(250.17 * var(--u));top:calc(6185 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:2;left:calc(480.34 * var(--u));top:calc(6185 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:3;left:calc(710.51 * var(--u));top:calc(6185 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:4;left:calc(940.68 * var(--u));top:calc(6185 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:5;left:calc(1170.85 * var(--u));top:calc(6185 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
 </section>
 
 <!-- extra scroll: the strip of pictures rises to 20 from the top, then the page starts over -->
@@ -439,7 +450,8 @@
   const HS = 14;                   // strips a hovered card is cut into for its bulge
   $('.hc').forEach((c, i) => { c._hs = []; for (let j = 0; j < HS; j++) { const st = document.createElement('div'); st.className = 'hs'; st.style.setProperty('--j', j); const im = document.createElement('i'); im.style.backgroundImage = HERO(i); if (CUTOUT.has(i)) im.style.backgroundSize = 'contain'; const ph = document.createElement('b'); ph.style.backgroundImage = `url("${HOVER_SRC[i]}")`; st.append(ph); st.append(im); c.append(st); c._hs.push(st); } });
   $('.bar').forEach((b, i) => { b.style.backgroundImage = IMG(i); });
-  $('.pic').forEach((e, i) => { e.style.setProperty('--img', IMG([3, 5, 1][i])); });      // the big pictures: the image lives in ::before, inside the frame
+  const CASE_IMG = [3, 5, 1, 6, 8];   // the photo of each case
+  $('.pic').forEach((e, i) => { e.style.setProperty('--img', IMG(CASE_IMG[i])); });      // the big pictures: the image lives in ::before, inside the frame
   one('.rest > .ph:not(.pic):not(.bar)').style.backgroundImage = IMG(4);
   one('.gray').style.setProperty('--imgL', 'url("photos/lisa-karen.jpg")');   // Karen and Lisa (dirtyhands.ru/about): one photo across both halves, Karen on the left, Lisa on the right
   one('.gray').style.setProperty('--imgR', 'url("photos/lisa-karen.jpg")');
@@ -505,7 +517,7 @@
     };
     return api;
   }
-  const glPics = $('.pic').map((el, i) => shaderPicture(el, CER[[3, 5, 1][i]]));      // the shader on every big picture of the cases
+  const glPics = $('.pic').map((el, i) => shaderPicture(el, CER[CASE_IMG[i]]));      // the shader on every big picture of the cases
   const midStrip = one('.midstrip'), tagline = one('.tagline');
   const cards = $('.hc'), s2 = one('.s2'), s3 = one('.s3'), lisa = one('#lisa'), karen = one('#karen');
   const fan = $('.fan i'), nums = $('.s2 .num'), texts = $('.s2 .rt');
@@ -582,11 +594,17 @@
 
   function splitMask(el) {                          // every rendered line gets its own mask: .m > .mi
     const text = el.dataset.text || (el.dataset.text = el.textContent.trim().replace(/\s+/g, ' '));
-    el.innerHTML = text.split(' ').map(w => `<span>${w}</span>`).join(' ');
+    if (el._icon === undefined) { const ic = el.querySelector(':scope > svg'); el._icon = ic ? ic.outerHTML : ''; }   // an arrow at the end of a link rides on its last line
+    el.innerHTML = text.split(' ').map(w => `<span>${w}</span>`).join(' ') + el._icon;
     const rows = [];
-    [...el.children].forEach(sp => { const top = sp.offsetTop; (rows.length && rows[rows.length - 1].top === top) ? rows[rows.length - 1].w.push(sp.textContent) : rows.push({ top, w: [sp.textContent] }); });
-    el.innerHTML = rows.map(r => `<span class="m"><span class="mi">${r.w.join(' ')} </span></span>`).join('');
+    [...el.children].forEach(sp => { if (sp.tagName === 'svg') return; const top = sp.offsetTop; (rows.length && rows[rows.length - 1].top === top) ? rows[rows.length - 1].w.push(sp.textContent) : rows.push({ top, w: [sp.textContent] }); });
+    el.innerHTML = rows.map((r, i) => `<span class="m"><span class="mi">${r.w.join(' ')}${i === rows.length - 1 ? el._icon : ''} </span></span>`).join('');
     return [...el.querySelectorAll('.mi')];
+  }
+  function splitLetters(el) {                       // one mask for the word, every letter of it on its own inside
+    const text = el.dataset.text || (el.dataset.text = el.textContent.trim());
+    el.innerHTML = `<span class="m"><span class="mi">${[...text].map(ch => `<span class="lt">${ch}</span>`).join('')}</span></span>`;
+    return [...el.querySelectorAll('.lt')];
   }
   const fanIn = (tl, lines, o = {}) => tl.fromTo(lines, { scaleX: 0, rotation: 0, transformOrigin: o.origin || '0 50%' }, { scaleX: 1, rotation: 0, duration: o.dur ?? .95, ease: EASE, stagger: { each: o.each ?? .02 } }, o.at ?? 0);
   const riseIn = (tl, inner, o = {}) => tl.fromTo(inner, { yPercent: 112 }, { yPercent: 0, duration: o.dur ?? 1, ease: EASE, stagger: { each: o.each ?? .08 } }, o.at ?? 0);
@@ -672,14 +690,14 @@
     // Lisa and Karen: the lines, then the text, the name and the lines below (played from tick when the card comes up)
     [lisa, karen].forEach(c => {
       const rl = c.querySelectorAll('.rules'), top = [...rl[0].children], bot = [...rl[1].children];
-      const nn = [...c.querySelectorAll('.row .n')], inner = [...c.querySelectorAll('.row p')].flatMap(splitMask), nm = splitMask(c.querySelector('.name'));
+      const nn = [...c.querySelectorAll('.row .n')], inner = [...c.querySelectorAll('.row p')].flatMap(splitMask), nm = splitLetters(c.querySelector('.name'));
       touched.push(...top, ...bot, ...nn);
       if (c._tl) c._tl.kill();
       const tl = gsap.timeline({ paused: true });
       fanIn(tl, top, { each: .045, at: 0, dur: .9 });                   // the ruled lines fan out one after another, as in the table
       fadeIn(tl, nn, .3, .75, { dur: .5, each: .1 });                     // then the text comes in
       riseIn(tl, inner, { at: .75, each: .07, dur: .8 });
-      riseIn(tl, nm, { at: 1.05, dur: .8 });
+      riseIn(tl, nm, { at: 1.05, each: .06, dur: .8 });                  // the name rises letter by letter
       fanIn(tl, bot, { each: .08, at: 1.05, dur: .8 });
       c._tl = tl; pairs.push({ st: { kill() {}, start: Infinity }, tl });
       if (c._on) tl.progress(1);
@@ -786,6 +804,8 @@
     ['Each piece is built by hand from stoneware and fired twice. The surface stays alive: it keeps the marks of the fingers, the tool and the kiln.', 'Made to order for private interiors and restaurants. The first sketch takes a week, the finished piece about six.'],
     ['The mirror frame is pressed into a single slab, so the glaze gathers in the folds and the light follows the shape of the hand.', 'It comes in three sizes and two glazes, and each one is signed on the back before it leaves the studio.'],
     ['A low side table for the quiet corner of a room: a thick top, a slow curve and a base that is wider than it looks.', 'We fit the height to the sofa it will stand beside, so the table sits exactly where an elbow expects to find it.'],
+    ['A bedroom wall in soft relief: tiles thrown one by one and laid while still damp, so the joints run like lines in a field.', 'The glaze is mixed for the room itself, matched by daylight to the linen and the floor before the first tile is fired.'],
+    ['Shelves with ceramic brackets for a reading room: each bracket is pinched by hand, and no two of them lean the same way.', 'They carry books, cups and the odd small vase, and are hung so the wall shows between them as much as the objects do.'],
   ];
   function openCase(i, pic) {
     if (!G || openView) return;
@@ -1748,8 +1768,8 @@
     // the photo block scrolls with the page: the photo inside lags behind (parallax), the two cards run a little ahead of it, Lisa not far below Karen
     const gp = clamp((y + V - s3Top) / (1400 + V));                     // 0: the block comes in at the bottom, 1: it has gone out at the top
     one('.gray').style.setProperty('--par', gp.toFixed(4));
-    lisa.style.top = (330 - (gp - 0.5) * 260) * U + 'px';                // (the #lisa card carries Karen's name: it is the first one)
-    karen.style.top = (470 - (gp - 0.5) * 340) * U + 'px';
+    lisa.style.top = (330 - (gp - 0.5) * 160) * U + 'px';                // (the #lisa card carries Karen's name: it is the first one)
+    karen.style.top = (470 - (gp - 0.5) * 560) * U + 'px';
     [[lisa, cardMarks[0]], [karen, cardMarks[1]]].forEach(([el, m]) => {
       const top = s3Top + parseFloat(el.style.top) / U - y;              // on the screen, design px
       drawMark(m, (V * 0.95 - top) / (V * 0.45));                        // the clay mark draws in while the card comes up
