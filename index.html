@@ -94,7 +94,7 @@
   /* big title: sticks to the bottom of the screen through blocks 1-2, then rests above the gray block */
   .ttl { position: absolute; left: 0; top: 0; width: 100%; height: calc(100vh + 1559.3 * var(--u)); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; z-index: 100; mix-blend-mode: difference; }  /* above everything; inverts wherever it crosses text or blocks */
   .ttl .h1 { color: #fff; pointer-events: auto; position: sticky; bottom: calc(21.7 * var(--u)); height: calc(182.6 * var(--u)); margin: 0 calc(20 * var(--u)); text-align: center; white-space: nowrap; }
-  .rt { width: calc(210 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; }
+  .rt { width: calc(230 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; }
   .rt .ln { display: block; white-space: nowrap; overflow: hidden; padding-bottom: .2em; margin-bottom: -.2em; transition: transform .42s var(--ease); }   /* the line mask; the line itself glides aside when the picture comes close */
   .rt .li { display: block; }
   /* line masks: text rises out of its own line */
@@ -144,7 +144,7 @@
   /* photos (test images from a free stock) fill their blocks */
   .hc, .bar, .ph, .gray { background-size: cover; background-position: center; background-repeat: no-repeat; }
   /* the people on the background: two halves; when Lisa's block comes up the left photo melts into the plain grey of the block */
-  .gray::before, .gray::after { content: ''; position: absolute; top: calc(-160 * var(--u)); bottom: calc(-160 * var(--u)); transform: translateY(calc((var(--par, .5) - .5) * 300 * var(--u))); width: 50%; background-size: cover; background-position: center; z-index: 0; transition: opacity .9s var(--ease); }
+  .gray::before, .gray::after { content: ''; position: absolute; top: calc(-160 * var(--u)); bottom: calc(-160 * var(--u)); transform: translateY(calc((var(--par, .5) - .5) * 300 * var(--u))); width: 50%; background-size: cover; background-position: center; background-repeat: no-repeat; z-index: 0; transition: opacity .9s var(--ease); }
   .gray::before { left: 0; background-image: var(--imgL, none); background-size: var(--bgS, cover); background-position: var(--bgL, center); }
   .gray::after { right: 0; background-image: var(--imgR, none); background-size: var(--bgS, cover); background-position: var(--bgR, center); }
   .gray.no-left::before, .gray.no-right::after { opacity: 0; }
@@ -173,11 +173,13 @@
   .cd-s { flex: none; height: calc(300 * var(--u)); background: var(--gray) center / cover no-repeat; }
   .cd-end { position: absolute; left: 0; width: 1px; height: 1px; }
   #catView .cat-cyl { position: absolute; inset: 0; perspective: calc(2200 * var(--u)); perspective-origin: 50% 45%; transform-origin: 50% 45%; }
-  .cat-strip { position: absolute; overflow: hidden; backface-visibility: hidden; will-change: transform, opacity; }
+  .cat-ph { position: absolute; inset: 0; perspective: inherit; perspective-origin: inherit; will-change: opacity; }   /* one picture: its strips fade together, so where they overlap no darker seam shows */
+  .cat-strip { position: absolute; overflow: hidden; backface-visibility: hidden; will-change: transform; }
   .cat-strip i { position: absolute; top: 0; height: 100%; background: #f2f2f2 center / cover no-repeat; }
+  .cat-strip::after { content: ''; position: absolute; inset: 0; background: #fff; opacity: var(--w, 0); }   /* the strips turning away go paler, as before, without being see-through */
   .cat-title { position: absolute; left: calc(20 * var(--u)); top: calc(20 * var(--u)); overflow: hidden; padding: 0 .05em .08em; }
   .cat-title .c { display: inline-block; white-space: pre; }   /* letter by letter: they come down from above, and go back up when the gallery closes */
-  .cat-text { position: absolute; left: 50%; top: calc(45vh + 254 * var(--u)); width: calc(210 * var(--u)); margin-left: calc(-105 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; z-index: 2; }   /* the body text, one column wide */
+  .cat-text { position: absolute; left: 50%; top: calc(45vh + 254 * var(--u)); width: calc(210 * var(--u)); margin-left: calc(-105 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; text-align: center; z-index: 2; }   /* the body text, one column wide, centred under the picture */
   .cat-line { position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); top: 50vh; height: 0; border-top: 1px solid var(--rule); }   /* one horizontal line across the middle, as on the main page */
   .hc.hov { cursor: pointer; }
   .cd-pic { position: absolute; background: var(--gray) center / cover no-repeat; }
@@ -426,9 +428,9 @@
       if (scrollY >= 4) { c._hbRun = false; return; }
       c._hb = (c._hb || 0) + (c._hbT - (c._hb || 0)) * 0.16; const hb = c._hb;
       if (Math.abs(c._hbT - hb) < 0.003 && c._hbT === 0) { c._hb = 0; c.classList.remove('bent'); c.style.transform = ''; c._hs.forEach(s => { s.style.transform = ''; }); c._hbRun = false; return; }
-      const wpx = c.offsetWidth, A = hb * 1.1, Rc = wpx / Math.max(A, 0.001);
+      const wpx = c.offsetWidth, A = hb * 0.88, Rc = wpx / Math.max(A, 0.001);
       c.classList.add('bent'); c.style.setProperty('--cw', wpx + 'px'); c.style.setProperty('--sw', wpx / HS + 'px');
-      c.style.transform = `perspective(${1100 * U}px) translateZ(${(hb * 40 * U).toFixed(1)}px)`;
+      c.style.transform = `perspective(${1100 * U}px) translateZ(${(hb * 32 * U).toFixed(1)}px)`;
       c._hs.forEach((st, j) => { const u = ((j + .5) / HS - .5) * wpx, al = u / Rc; st.style.transform = `translate3d(${(Rc * Math.sin(al) - u).toFixed(2)}px,0,${(-Rc * (1 - Math.cos(al))).toFixed(2)}px) rotateY(${al.toFixed(4)}rad)`; st.style.filter = ''; });
       requestAnimationFrame(step);
     })();
@@ -563,8 +565,8 @@
     { let y0 = 196; texts.forEach((p, j) => { p.dataset.y = y0; p.dataset.c0 = y0 + lines[j].length * LH / 2; p.style.top = y0 * U + 'px'; if (nums[j]) nums[j].style.top = y0 * U + 'px'; y0 += (lines[j].length + 4) * LH; }); }   // c0: the middle of each paragraph in the plain layout, fixed, so the picture choice does not chase the flowing text
     alignShop();
     bigrows.forEach(b => b.style.setProperty('--dx', (0.4 * (700 - (b.offsetLeft + b.offsetWidth / 2) / U)).toFixed(2)));   // every word starts 60% of the way to its place, so the words never sit on top of each other
-    // the photo of Karen and Lisa covers the whole grey block, split between its two halves so it reads as one picture
-    { const gr = one('.gray'), w = gr.offsetWidth, h = gr.offsetHeight + 320 * U, sc = Math.max(w / 1680, h / 850), iw = 1680 * sc, ih = 850 * sc, ox = (w - iw) / 2, oy = (h - ih) * 0.15;   // kept near the top, so the faces stay in the frame
+    // the photo of Karen and Lisa, split between the two halves of the grey block so it reads as one picture: the whole photo across the full width, never cropped (both faces stay in), centred on the block's height
+    { const gr = one('.gray'), w = gr.offsetWidth, h = gr.offsetHeight + 320 * U, sc = w / 1680, iw = 1680 * sc, ih = 850 * sc, ox = 0, oy = (h - ih) / 2;
       gr.style.setProperty('--bgS', `${iw}px ${ih}px`); gr.style.setProperty('--bgL', `${ox}px ${oy}px`); gr.style.setProperty('--bgR', `${ox - w / 2}px ${oy}px`); }
     // the title stays pinned to the bottom while the whole table goes over it; then it leaves with the page
     ttlBox.style.height = (one('.s2').offsetTop / U + 1168 + 182.6) * U + 'px';   // pinned until the whole table (1168 high) has gone up past its top edge
@@ -832,14 +834,16 @@
     const srcs = [HOVER_SRC[ci], ...Array.from({ length: CAT_N[CAT_KEYS[ci]] }, (_, k) => k + 1).filter(k => CAT_SAME[CAT_KEYS[ci]] !== k).map(k => `photos/cat/${CAT_KEYS[ci]}-${k}.jpg`)];
     const PWc = 360 * U, PHc = 460 * U, SPc = 390 * U, RAD = 900 * U, KS = 16, sw = PWc / KS, cx = CATV.clientWidth / 2, top = innerHeight * 0.45 - PHc / 2;
     const order = srcs.map((_, j) => j === 0 ? 0 : (j % 2 ? 1 : -1) * Math.ceil(j / 2));   // the clicked one in the middle, the others to its right and left in turn
-    const strips = [];
+    const photos = [];                                                    // each picture is a group of its strips: the group fades as one, the strips in it stay solid and overlap by a pixel on each side
     const WF = [1, .78, 1.12, .86, 1.04, .8, 1.1, .9, .82, 1.06], HF = [1, .74, .9, 1.06, .8, .96, .7, 1.02, .86, .92], YO = [0, 70, -40, 34, 96, -24, 58, 10, 84, -50];   // uneven sizes and steps, as in the Story
-    srcs.forEach((src, j) => { const pw = PWc * WF[j % 10], ph = PHc * HF[j % 10], sj = pw / KS, tj = top + (PHc - ph) / 2 + YO[j % 10] * U; for (let k = 0; k < KS; k++) {
-      const el = document.createElement('div'); el.className = 'cat-strip';
-      el.innerHTML = `<i style="left:${-k * sj}px;width:${pw}px"></i>`; el.firstChild.style.backgroundImage = `url("${src}")`;
-      Object.assign(el.style, { left: cx - sj / 2 + 'px', top: tj + 'px', width: sj + 1 + 'px', height: ph + 'px' });
-      host.append(el); strips.push({ el, j, d: order[j], a: (k + .5) * sj - pw / 2 });
-    } });
+    srcs.forEach((src, j) => { const pw = PWc * WF[j % 10], ph = PHc * HF[j % 10], sj = pw / KS, tj = top + (PHc - ph) / 2 + YO[j % 10] * U;
+      const g = document.createElement('div'); g.className = 'cat-ph'; host.append(g); const p = { g, d: order[j], strips: [] }; photos.push(p);
+      for (let k = 0; k < KS; k++) {
+        const el = document.createElement('div'); el.className = 'cat-strip';
+        el.innerHTML = `<i style="left:${1 - k * sj}px;width:${pw}px"></i>`; el.firstChild.style.backgroundImage = `url("${src}")`;
+        Object.assign(el.style, { left: cx - sj / 2 - 1 + 'px', top: tj + 'px', width: sj + 2 + 'px', height: ph + 'px' });
+        g.append(el); p.strips.push({ el, a: (k + .5) * sj - pw / 2, f: 0 });
+      } });
     const wOf = j => PWc * WF[j % 10], GAP = 20, centre = {};                                     // the pictures sit side by side round the cylinder, 20px apart
     const byD = order.map((d, j) => [d, j]).sort((x, y) => x[0] - y[0]); centre[0] = 0;
     for (const [d, j] of byD) if (d > 0) { const pj = byD.find(x => x[0] === d - 1)[1]; centre[d] = centre[d - 1] + wOf(pj) / 2 + GAP + wOf(j) / 2; }
@@ -849,13 +853,19 @@
     const st = { bend: 0, spread: 0 }; let pos = 0, target = 0, run = true, snapT = 0, drag = null;
     const place = () => {
       const R = RAD / Math.max(0.08, st.bend);                                        // flat at first, then it bulges
-      strips.forEach(s => {
-        const phi = (centre[s.d] + s.a - arcAt(pos)) / R, c = Math.cos(phi), show = s.d === 0 ? 1 : clamp(st.spread * (srcs.length - 1) - (Math.abs(s.d) * 2 - (s.d > 0 ? 2 : 1)));
-        s.el.style.transform = `translate3d(0,0,${(-R).toFixed(1)}px) rotateY(${phi.toFixed(4)}rad) translate3d(0,0,${R.toFixed(1)}px)`;
-        s.el.style.opacity = c <= 0.02 ? 0 : (Math.pow(c, 0.9) * show).toFixed(3);
+      photos.forEach(p => {
+        const show = p.d === 0 ? 1 : clamp(st.spread * (srcs.length - 1) - (Math.abs(p.d) * 2 - (p.d > 0 ? 2 : 1)));
+        let most = 0;
+        p.strips.forEach(s => {
+          const phi = (centre[p.d] + s.a - arcAt(pos)) / R, c = Math.cos(phi);
+          s.el.style.transform = `translate3d(0,0,${(-R).toFixed(1)}px) rotateY(${phi.toFixed(4)}rad) translate3d(0,0,${R.toFixed(1)}px)`;
+          s.f = c <= 0.02 ? 0 : Math.pow(c, 0.9); if (s.f > most) most = s.f;
+        });
+        p.g.style.opacity = (most * show).toFixed(3);                                 // the brightest strip sets the picture's opacity, the others are made paler to their own share of it
+        p.strips.forEach(s => { s.el.style.opacity = s.f ? 1 : 0; s.el.style.setProperty('--w', most ? (1 - s.f / most).toFixed(3) : 0); });
       });
     };
-    (function loop() { if (!run) return; pos += (target - pos) * 0.12; place(); requestAnimationFrame(loop); })();
+    (function loop() { if (!run) return; pos += (target - pos) * 0.1; place(); requestAnimationFrame(loop); })();   // the cylinder follows a little behind the hand, so it glides on after the scroll stops
     const lo = Math.min(...order), hi = Math.max(...order), nudge = v => { if (closing) return; target = Math.max(lo - 0.3, Math.min(hi + 0.3, v)); clearTimeout(snapT); snapT = setTimeout(() => { target = Math.max(lo, Math.min(hi, Math.round(target))); }, 140); };
     const onWheel = e => { e.preventDefault(); nudge(target + (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) / SPc * 0.9); };
     const onKey = e => { if (closing) return; if (e.key === 'ArrowRight') target = Math.min(hi, Math.round(target) + 1); else if (e.key === 'ArrowLeft') target = Math.max(lo, Math.round(target) - 1); };
@@ -863,7 +873,7 @@
     const onMove = e => { if (!drag) return; const dx = e.clientX - drag.x; if (Math.abs(dx) > 5) drag.moved = true; if (drag.moved) nudge(drag.t - dx / SPc); };
     const onUp = () => { if (drag && drag.moved) { CATV._noClose = true; setTimeout(() => { CATV._noClose = false; }, 0); } drag = null; };
     CATV.addEventListener('wheel', onWheel, { passive: false }); addEventListener('keydown', onKey); CATV.addEventListener('pointerdown', onDown); addEventListener('pointermove', onMove); addEventListener('pointerup', onUp);
-    const stop = () => { run = false; strips.forEach(x => x.el.remove()); CATV.removeEventListener('wheel', onWheel); removeEventListener('keydown', onKey); CATV.removeEventListener('pointerdown', onDown); removeEventListener('pointermove', onMove); removeEventListener('pointerup', onUp); };
+    const stop = () => { run = false; photos.forEach(p => p.g.remove()); CATV.removeEventListener('wheel', onWheel); removeEventListener('keydown', onKey); CATV.removeEventListener('pointerdown', onDown); removeEventListener('pointermove', onMove); removeEventListener('pointerup', onUp); };
     CATV.classList.add('open'); lockView(true); card.classList.remove('hov'); bulge(card, 0, true);
     card.style.visibility = 'hidden';                                    // the picture leaves the card for the gallery: never two of it at once
     const r = card.getBoundingClientRect(), ox = r.left + r.width / 2 - cx, oy = r.top + r.height / 2 - (top + PHc / 2), sc = r.width / PWc;
@@ -1545,6 +1555,10 @@
     img.src = m[1]; return null;
   }
   setTimeout(() => { for (let i = 0; i < 6; i++) shapeOf(i); }, 1200);   // read every outline ahead, so a picture never arrives without one
+  function shapeUnion(ids) {                                             // the outline of several pictures on top of each other: the widest of them in every row (null while any is unread)
+    const ss = ids.map(shapeOf); if (ss.some(s => !s)) return null; if (ss.length === 1) return ss[0];
+    return ss[0].map((_, r) => ss.reduce((a, s) => s[r][1] < 0 ? a : a[1] < 0 ? s[r] : [Math.min(a[0], s[r][0]), Math.max(a[1], s[r][1])], [-1, -1]));
+  }
   function obstacleRight(y0, y1, ob) {                                   // the right edge of the picture (or of the figure in it) beside the band y0..y1, in design px
     const PADV = 6;
     if (!ob || y1 < ob.top - PADV || y0 > ob.top + ob.h + PADV) return -Infinity;
@@ -1565,11 +1579,11 @@
     if (!PT || !texts.length) return;
     const fs = parseFloat(getComputedStyle(texts[0]).fontSize);
     if (fs !== prepFs) { prepFs = fs; flowSig = ''; preps = texts.map(p => PT.prepareWithSegments(p.dataset.text, `${fs}px "CoFo Sans"`, { letterSpacing: -0.01 * fs })); }
-    const sig = ob ? `${Math.round(ob.top)}|${ob.shape ? ob.shape.length + ':' + ob.shape[10][1] : 0}|${U}` : `-|${U}`;
+    const sig = ob ? `${Math.round(ob.top)}|${ob.key}|${ob.shape ? 's' : 'box'}|${U}` : `-|${U}`;   // which pictures are held, not a sample of one outline row: another picture always lays the text out again
     if (sig === flowSig) return; flowSig = sig;
     let y0 = 196;
     texts.forEach((p, j) => {
-      const L = +p.dataset.x, C = 210, rows = []; let cur = { segmentIndex: 0, graphemeIndex: 0 };   // C: the text column, one grid column
+      const L = +p.dataset.x, C = 230, rows = []; let cur = { segmentIndex: 0, graphemeIndex: 0 };   // C: the text column, one grid column and 20 more
       for (let k = 0; k < 40; k++) {
         const yl = y0 + k * LH, x0 = Math.max(L, obstacleRight(yl, yl + LH, ob) + 24), w = L + C - x0;
         if (w < 70) { rows.push(null); continue; }                                  // no room beside the picture: this ruled line stays empty
@@ -1692,6 +1706,7 @@
     else if (!tableOpen && landed && rowOK && !closedBack) openTable(true);
     if (G) fan[0].style.visibility = landed ? 'visible' : 'hidden';                        // the table's first line: the strip's place from the landing on
     const arc = Math.sin(Math.PI * t);
+    const SZ = cards.map((_, i) => Math.cos(TH[i] + 2 * Math.PI * t) * Math.cos(LA[i])), RANK = SZ.map((v, i) => SZ.filter((w, j) => w < v || (w === v && j < i)).length);   // order front to back by depth on the ring, kept all the way into the landing: no ties, no card jumping forward and back as they gather
     cards.forEach((c, i) => {
       const mid = i - 2.5, d = introDone ? 1 : drop((now - t0 - LEAD - i * GAP) / DUR);
       const h = lerp(20, H0[i], d);
@@ -1736,11 +1751,12 @@
       const g = Math.round(landed ? SHADE[i] : lerp(242, 225, t));
       c.style.backgroundColor = CUTOUT.has(i) ? 'transparent' : `rgb(${g},${g},${g})`;   // the woman is cut out: no box behind her, the text runs along her outline
       c.style.opacity = !landed ? 1 : DRUM ? (Math.abs(i - (k > 0 ? k - 1 + sw : 0)) < 1.45 ? 1 : 0) : (i === k ? sw : (i === k - 1 && sw < 1 ? 1 : 0));   // the pictures take turns in the table
-      c.style.zIndex = ring > 0.001 && !landed ? 5 + Math.round((sz + 1) * 3) : landed && i === k ? 6 : 5;   // nearer cards are in front
+      c.style.zIndex = landed ? (i === k ? 6 : 5) : ring > 0.001 || t > 0.5 ? 5 + RANK[i] : 5;   // nearer cards are in front, and the first picture is the nearest by the time they land; at rest in the top row they are all level
     });
 
     // text flows around the picture held in the table (pretext lays the lines out again as it moves); the first picture, the woman, is flowed around by her own outline
-    flowTable(t > 0.85 ? { cx: PX, top: py - PW / 2, w: PW, h: PW, shape: landed ? shapeOf(sw < 0.5 && k > 0 ? k - 1 : k) : null } : null);
+    const held = k > 0 && sw < 1 ? [k - 1, k] : [k];                   // while one picture takes over from another both are on show: the text keeps clear of the two of them
+    flowTable(t > 0.85 ? { cx: PX, top: py - PH / 2, w: PW, h: PH, shape: landed ? shapeUnion(held) : null, key: landed ? held.join(',') : '-' } : null);
 
     // the photo block scrolls with the page: the photo inside lags behind (parallax), the two cards run a little ahead of it, Lisa not far below Karen
     const gp = clamp((y + V - s3Top) / (1400 + V));                     // 0: the block comes in at the bottom, 1: it has gone out at the top
