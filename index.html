@@ -86,8 +86,6 @@
   .hc .hc-lab { position: absolute; left: 0; top: calc(100% + 12 * var(--u)); font-size: var(--t18); line-height: .91; letter-spacing: -.01em; white-space: nowrap; opacity: 0; transform: translateY(calc(6 * var(--u))); transition: opacity .35s var(--ease), transform .35s var(--ease); pointer-events: none; }
   .hc.hov .hc-lab { opacity: 1; transform: none; }
   .hc.bent .hc-alt, .hc.bent:not(.hov) .hc-lab { display: none; }
-  .hc.drum .hs { left: 0; width: 100%; top: calc(var(--j) * var(--sh)); height: calc(var(--sh) + 1px); backface-visibility: hidden; }
-  .hc.drum .hs i { left: 0; width: 100%; top: calc(-1 * var(--j) * var(--sh)); height: var(--ch); }
   .hc.bent { background: none !important; transform-style: preserve-3d; }   /* flying in the ring, the card is cut into strips and bent: a picture glued inside a cylinder */
   .hc.bent .hs { display: block; }
   .hc { position: absolute; background: #f2f2f2; transform-origin: 50% 50%; z-index: 5; will-change: transform, width, height, left, top; }
@@ -435,7 +433,7 @@
       requestAnimationFrame(step);
     })();
   }
-  const HS = 14, DRUM = false;     // the drum of pictures in the table is switched off for now (flip to true to bring it back)
+  const HS = 14;                   // strips a hovered card is cut into for its bulge
   $('.hc').forEach((c, i) => { c._hs = []; for (let j = 0; j < HS; j++) { const st = document.createElement('div'); st.className = 'hs'; st.style.setProperty('--j', j); const im = document.createElement('i'); im.style.backgroundImage = HERO(i); if (CUTOUT.has(i)) im.style.backgroundSize = 'contain'; const ph = document.createElement('b'); ph.style.backgroundImage = `url("${HOVER_SRC[i]}")`; st.append(ph); st.append(im); c.append(st); c._hs.push(st); } });
   $('.bar').forEach((b, i) => { b.style.backgroundImage = IMG(i); });
   $('.pic').forEach((e, i) => { e.style.setProperty('--img', IMG([3, 5, 1][i])); });      // the big pictures: the image lives in ::before, inside the frame
@@ -528,12 +526,10 @@
 
 
   const X0 = i => 20 + 230.17 * i, W0 = 210.2, H0 = [262.7, 210, 262.7, 210, 262.7, 262.7];
-  const PX = 700, PY0 = 34, PY1 = 1132;    // picture centre x; its y inside block 2 while it is held (design px). PH = 12 ruled bands; PY1 = the last line (1132): the picture rides down until that line is at its middle
+  const PX = 700, PY0 = 34, PY1 = 1132;    // x of the work at three o'clock on the wheel; the y of the wheel's centre inside block 2 while it is held (design px), from the landing down to the last line (1132)
   const PW = 218.5, PH = 216;              // picture size
   const SHADE = [225, 212, 230, 216, 226, 210];
-  // while the cards fly they stand on a sphere (a ring seen from the front, with a little height): each one has an angle around it and a latitude;
-  // the ring makes exactly one turn from take-off to landing, so some cards are nearer than the others and some behind. They always face the viewer.
-  const SPH = 540, TH = [0, 1, 2, 3, 4, 5].map(i => i * Math.PI / 3), LA = [0.3, -0.25, 0.3, -0.25, 0.3, -0.25];   // six cards in order around the ring, a little up and down so it reads as a sphere
+  const PILE = [[0, 0, 0], [-16, 10, -5], [14, -12, 4], [-10, -16, -3], [18, 12, 6], [-6, 18, -4]];   // where each card lies in the pile, off the centre (design px) and askew (deg), so it reads as pictures thrown on top of each other
   const DUR = 600, GAP = 90, LEAD = 150;   // ms: one speed for every animation (same as --dur in the CSS)
   const INTRO = LEAD + 5 * GAP + DUR;   // ms until the last card has dropped
 
@@ -1555,11 +1551,8 @@
     img.src = m[1]; return null;
   }
   setTimeout(() => { for (let i = 0; i < 6; i++) shapeOf(i); }, 1200);   // read every outline ahead, so a picture never arrives without one
-  function shapeUnion(ids) {                                             // the outline of several pictures on top of each other: the widest of them in every row (null while any is unread)
-    const ss = ids.map(shapeOf); if (ss.some(s => !s)) return null; if (ss.length === 1) return ss[0];
-    return ss[0].map((_, r) => ss.reduce((a, s) => s[r][1] < 0 ? a : a[1] < 0 ? s[r] : [Math.min(a[0], s[r][0]), Math.max(a[1], s[r][1])], [-1, -1]));
-  }
-  function obstacleRight(y0, y1, ob) {                                   // the right edge of the picture (or of the figure in it) beside the band y0..y1, in design px
+  function obstacleRight(y0, y1, ob) {                                   // the right edge of the picture (or of the figure in it) beside the band y0..y1, in design px; for several pictures the furthest right of them
+    if (Array.isArray(ob)) return ob.reduce((r, o) => Math.max(r, obstacleRight(y0, y1, o)), -Infinity);
     const PADV = 6;
     if (!ob || y1 < ob.top - PADV || y0 > ob.top + ob.h + PADV) return -Infinity;
     if (!ob.shape) return ob.cx + ob.w / 2;
@@ -1579,7 +1572,7 @@
     if (!PT || !texts.length) return;
     const fs = parseFloat(getComputedStyle(texts[0]).fontSize);
     if (fs !== prepFs) { prepFs = fs; flowSig = ''; preps = texts.map(p => PT.prepareWithSegments(p.dataset.text, `${fs}px "CoFo Sans"`, { letterSpacing: -0.01 * fs })); }
-    const sig = ob ? `${Math.round(ob.top)}|${ob.key}|${ob.shape ? 's' : 'box'}|${U}` : `-|${U}`;   // which pictures are held, not a sample of one outline row: another picture always lays the text out again
+    const sig = ob ? ob.map(o => `${Math.round(o.cx)},${Math.round(o.top)},${o.shape ? 's' : 'box'}`).join('|') + `|${U}` : `-|${U}`;   // where every picture is, and whether its outline is read yet
     if (sig === flowSig) return; flowSig = sig;
     let y0 = 196;
     texts.forEach((p, j) => {
@@ -1683,17 +1676,15 @@
     navTarget = slide > 0 && gapTo > 0 ? gapTo * slide : 0;                    // Shop goes first and drags the others after it: Cases a little later, About last
     if (!navRun) { navRun = true; requestAnimationFrame(navStep); }
 
-    // 1 → 2: cards drop in, then gather into one picture in block 2
+    // 1 → 2: from the first bit of scroll the cards slide together into one pile, turn into cut-outs there, and the pile opens into a wheel that stays on the screen
     const E = s2Top + PY0 - V / 2;
     const t = ease(y / E), landed = y >= E;
-    // block 2 scrolls under the picture: it stays mid-screen until the block has passed
-    const RISE = 120, rise = RISE * ease(clamp((y - E) / 360));                             // after the landing the picture climbs a little and then stays fixed there
-    const py = Math.min(PY1, Math.max(PY0, y + V / 2 - rise - s2Top));
-    // one picture replaces another while it is held
-    // each paragraph of the table is about one category: the picture held beside the text is the work of the paragraph it is passing (switching halfway between two paragraphs)
-    const pc = texts.map(p => +p.dataset.c0);                         // fixed middles: the flow moves the paragraphs, but must not move the moment the picture changes (that made it flicker)
-    let k = 0; for (let j = 1; j < pc.length; j++) if (py >= (pc[j - 1] + pc[j]) / 2) k = j;
-    k = Math.min(k, 5); const sw = k > 0 ? ease((py - (pc[k - 1] + pc[k]) / 2) / 24) : 1;
+    // block 2 scrolls under the wheel: its centre stays in the middle of the screen until the table's last line has come up to it
+    const py = Math.min(PY1, Math.max(PY0, y + V / 2 - s2Top));
+    // the wheel: six cut-outs on a flat circle, upright like the cabins of a big wheel; the scroll turns it so that the work of the paragraph level with its centre stands at three o'clock, right beside the text
+    const R = Math.max(150, Math.min(250, V / 2 - 60 - PH / 2)), WX = PX - R, WY = Math.min(s2Top + PY1, y + V / 2);   // centre in page coordinates, mid-screen from the start: three o'clock is where the single picture used to be held
+    const pc = texts.map(p => +p.dataset.c0);                         // fixed middles: the flow moves the paragraphs, but must not move the wheel
+    let p = 0; for (let j = 0; j < pc.length - 1; j++) if (py > pc[j]) p = j + Math.min(1, (py - pc[j]) / (pc[j + 1] - pc[j]));   // 0 until the first paragraph, 5 from the last one on, turning with the scroll in between
     midStrip.classList.toggle('off', landed);                                              // gone once the table's first line has taken its place
     midStrip.style.opacity = landed ? '' : clamp((now - t0 - (INTRO - 300)) / 500).toFixed(3);
     // the table is open from the landing of the cards until its last row reaches the middle of the screen
@@ -1705,58 +1696,34 @@
     if (tableOpen && (backClose || !rowOK)) { if (backClose) closedBack = true; openTable(false); }
     else if (!tableOpen && landed && rowOK && !closedBack) openTable(true);
     if (G) fan[0].style.visibility = landed ? 'visible' : 'hidden';                        // the table's first line: the strip's place from the landing on
-    const arc = Math.sin(Math.PI * t);
-    const SZ = cards.map((_, i) => Math.cos(TH[i] + 2 * Math.PI * t) * Math.cos(LA[i])), RANK = SZ.map((v, i) => SZ.filter((w, j) => w < v || (w === v && j < i)).length);   // order front to back by depth on the ring, kept all the way into the landing: no ties, no card jumping forward and back as they gather
+    const gather = ease(clamp(t / 0.4)), open = ease(clamp((t - 0.6) / 0.4));          // first they pile up (photos), then, once they are cut-outs, the pile opens into the wheel
+    const ang = cards.map((_, i) => (i - p) * Math.PI / 3);                              // 0 = three o'clock; the next card waits below it and comes up as its paragraph does
+    const RANK = ang.map((a, i) => ang.filter((b, j) => Math.cos(b) < Math.cos(a) || (Math.cos(b) === Math.cos(a) && j > i)).length);   // the nearer to three o'clock, the higher: the first card lies on top of the pile and comes out at three o'clock
+    const obs = [];
     cards.forEach((c, i) => {
-      const mid = i - 2.5, d = introDone ? 1 : drop((now - t0 - LEAD - i * GAP) / DUR);
-      const h = lerp(20, H0[i], d);
-      const w = lerp(W0, PW, t), hh = lerp(h, PH, t);
-      // from the very first bit of scroll every card goes straight to its own place on the ring (no scatter first); the ring turns once, then it collapses onto the landing point
-      const wIn = ease(clamp(t / 0.14)), wOut = ease(clamp((1 - t) / 0.2)), ring = wIn * wOut;
-      const th = TH[i] + 2 * Math.PI * t, cl = Math.cos(LA[i]), sx = Math.sin(th) * cl, sz = Math.cos(th) * cl, sy = Math.sin(LA[i]);   // point on the sphere
-      const cyC = s2Top + py - y;                                                          // the landing point on the screen (it rises with the scroll until it is at the middle)
-      const cx = lerp(lerp(X0(i) + W0 / 2, PX + SPH * 0.9 * sx, wIn), PX, 1 - wOut);
-      const ringY = V * 0.4;                                                                // the ring turns higher up on the screen, not down by the title
-      const cy = lerp(lerp(20 + h / 2, ringY + SPH * 0.55 * sy, wIn), cyC, 1 - wOut) + y;      // page coordinates, as before
+      const d = introDone ? 1 : drop((now - t0 - LEAD - i * GAP) / DUR), h = lerp(20, H0[i], d);
+      const w = lerp(W0, PW, gather), hh = lerp(h, PH, gather);
+      const tx = WX + PILE[i][0] * (1 - open) + R * open * Math.cos(ang[i]), ty = WY + PILE[i][1] * (1 - open) + R * open * Math.sin(ang[i]);   // its place in the pile, then on the wheel
+      const cx = lerp(X0(i) + W0 / 2, tx, gather), cy = lerp(20 + h / 2 + y, ty, gather);  // page coordinates
       c.style.width = w * U + 'px'; c.style.height = hh * U + 'px';
-      // fixed to the screen until the picture is released, so it never lags behind a fast scroll
-      const fixed = y < E + PY1 - PY0 + RISE;
+      // fixed to the screen while the wheel is held, so it never lags behind a fast scroll
+      const fixed = y < E + PY1 - PY0;
       c.style.position = fixed ? 'fixed' : 'absolute';
       c.style.left = (cx - w / 2) * U + 'px'; c.style.top = (cy - hh / 2 - (fixed ? y : 0)) * U + 'px';
-      // depth: on one plane at the start, some further away and some closer while they fly (arc), one plane again once gathered
-      const Z = SPH * sz * U * ring, far = Math.max(0, -sz) * ring;
-      c.classList.toggle('photo', t < 0.85);                                  // the photo with its background until the cards come down into the table
-      const bend = ring > 0.001 && !landed, drum = DRUM && landed;
-      c.classList.toggle('bent', bend || drum); c.classList.toggle('drum', drum);
-      c.style.transform = drum ? `perspective(${1100 * U}px)` : ring > 0.001 ? `perspective(${1100 * U}px) translateZ(${Z.toFixed(1)}px)${bend ? ` rotateY(${(sx * 38 * ring).toFixed(1)}deg)` : ''}` : '';   // it turns a little towards the middle of the ring
-      const wpx = w * U, A = ring * 1.15, Rc = wpx / Math.max(A, 0.001);
-      if (bend) {
-        c.style.setProperty('--cw', wpx + 'px'); c.style.setProperty('--sw', wpx / HS + 'px');
-        const br = far > 0.01 ? `brightness(${(1 - 0.3 * far).toFixed(3)})` : '';
-        c._hs.forEach((st, j) => { const u = ((j + .5) / HS - .5) * wpx, al = u / Rc; st.style.transform = `translate3d(${(Rc * Math.sin(al) - u).toFixed(2)}px,0,${(-Rc * (1 - Math.cos(al))).toFixed(2)}px) rotateY(${al.toFixed(4)}rad)`; st.style.filter = br; });
+      c.classList.toggle('photo', t < 0.5);                                 // photos with their backgrounds on top and while they pile up, cut-outs from there on
+      if (t > 0) {                                                          // (at rest on top the hover owns the transform)
+        const rot = PILE[i][2] * gather * (1 - open);
+        c.classList.remove('bent'); c.style.transform = rot ? `rotate(${rot.toFixed(2)}deg)` : '';   // a pile lies a little askew
       }
-      if (drum) {                                                                          // landed: the six pictures are pasted one after another on a drum, and the scroll turns it
-        const STEP = 1.05, hpx = hh * U, Rd = hpx / STEP, pp = k > 0 ? k - 1 + sw : 0, psi = (i - pp) * STEP;
-        c.style.setProperty('--sh', hpx / HS + 'px'); c.style.setProperty('--ch', hpx + 'px');
-        c._hs.forEach((st, j) => {
-          const v = ((j + .5) / HS - .5) * hpx, th2 = psi + v / Rd, cs = Math.cos(th2);
-          if (cs < 0.04) { st.style.display = 'none'; return; }
-          st.style.display = 'block';
-          st.style.transform = `translate3d(0,${(Rd * Math.sin(th2) - v).toFixed(2)}px,${(Rd * (cs - 1)).toFixed(2)}px) rotateX(${(-th2).toFixed(4)}rad)`;
-          st.style.filter = `brightness(${(0.72 + 0.28 * cs).toFixed(3)})`;
-        });
-        c.style.filter = '';
-      }
-      c.style.filter = !bend && far > 0.01 ? `brightness(${(1 - 0.3 * far).toFixed(3)}) blur(${(2.4 * far * U).toFixed(2)}px)` : '';   // the further away, the darker (flying cards are bent strips: no blur on them)
+      c.style.filter = '';
       const g = Math.round(landed ? SHADE[i] : lerp(242, 225, t));
-      c.style.backgroundColor = CUTOUT.has(i) ? 'transparent' : `rgb(${g},${g},${g})`;   // the woman is cut out: no box behind her, the text runs along her outline
-      c.style.opacity = !landed ? 1 : DRUM ? (Math.abs(i - (k > 0 ? k - 1 + sw : 0)) < 1.45 ? 1 : 0) : (i === k ? sw : (i === k - 1 && sw < 1 ? 1 : 0));   // the pictures take turns in the table
-      c.style.zIndex = landed ? (i === k ? 6 : 5) : ring > 0.001 || t > 0.5 ? 5 + RANK[i] : 5;   // nearer cards are in front, and the first picture is the nearest by the time they land; at rest in the top row they are all level
+      c.style.backgroundColor = CUTOUT.has(i) ? 'transparent' : `rgb(${g},${g},${g})`;   // cut out: no box behind them, the text runs along their outlines
+      c.style.zIndex = t > 0 ? 5 + RANK[i] : 5;                                 // at rest in the top row they are all level
+      if (t > 0.85) obs.push({ cx, top: cy - s2Top - hh / 2, w, h: hh, shape: shapeOf(i) });
     });
 
-    // text flows around the picture held in the table (pretext lays the lines out again as it moves); the first picture, the woman, is flowed around by her own outline
-    const held = k > 0 && sw < 1 ? [k - 1, k] : [k];                   // while one picture takes over from another both are on show: the text keeps clear of the two of them
-    flowTable(t > 0.85 ? { cx: PX, top: py - PH / 2, w: PW, h: PH, shape: landed ? shapeUnion(held) : null, key: landed ? held.join(',') : '-' } : null);
+    // text flows around the wheel (pretext lays the lines out again as it turns): mostly around the work at three o'clock, by its own outline
+    flowTable(obs.length ? obs : null);
 
     // the photo block scrolls with the page: the photo inside lags behind (parallax), the two cards run a little ahead of it, Lisa not far below Karen
     const gp = clamp((y + V - s3Top) / (1400 + V));                     // 0: the block comes in at the bottom, 1: it has gone out at the top
