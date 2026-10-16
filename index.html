@@ -25,7 +25,7 @@
   .s2-in { position: relative; height: 100%; }
   .s3 { z-index: 3; }
   .gray { position: relative; margin: 0; height: calc(980 * var(--u)); overflow: hidden; }   /* a block that scrolls with the page, with no grey fill of its own: first the photo of Karen and Lisa (it moves slower, parallax), then their two cards come up over it one after the other */
-  .rest { height: calc(6005 * var(--u)); }
+  .rest { height: calc(5312 * var(--u)); }
   /* vertical spacing, one rule for the page below (design px, from the visible bottom of one thing to the visible top of the next):
      20 inside a block (a number to its picture), 40 from a text to its link, 120 between the items of one section (case to case), 200 between sections */
   .t { font-weight: 400; white-space: nowrap; }
@@ -199,7 +199,7 @@
   /* while a view is open the pointer is a "Close" label */
   .close-cursor { position: fixed; left: 0; top: 0; z-index: 1000; pointer-events: none; display: flex; gap: .35em; align-items: center; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; opacity: 0; transition: opacity .25s ease-out; }
   html.ov-open, html.ov-open * { cursor: none !important; }
-  [data-year] { cursor: none; }   /* over the Story paragraphs the pointer itself says More, as it says Close over an open view */
+  html.on-story, html.on-story * { cursor: none !important; }   /* over the Story paragraphs the pointer itself says More, as it says Close over an open view */
 </style>
 </head>
 <body>
@@ -258,9 +258,9 @@
     <p class="t18" style="left:calc(20 * var(--u));opacity:.4">Clients about us</p>
     <div class="quote" style="left:calc(250 * var(--u));width:calc(210 * var(--u));"><div class="rules" data-n="3" data-step="19" style="left:0;top:0;width:100%;height:calc(38 * var(--u));"></div><p class="t18 q" style="line-height:calc(19 * var(--u));"></p></div>
   </div></div>
-  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(616 * var(--u));width:calc(674 * var(--u));"><span class="pf">The Greeks</span></p>
-  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(743.2 * var(--u));width:calc(674 * var(--u));"><span class="pf">Novikov</span></p>
-  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(870.4 * var(--u));width:calc(674 * var(--u));"><span class="pf">Club Brera</span></p>
+  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(646.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">The Greeks</span></p>
+  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(763.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">Novikov</span></p>
+  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(880.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">Club Brera</span></p>
   <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(997.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">AVA</span></p>
   <p class="t name2 partner" style="display:none;left:calc(706 * var(--u));top:calc(1124.8 * var(--u));width:calc(674 * var(--u));"><span class="pf">Rodina Moskva</span></p>
 
@@ -268,41 +268,37 @@
   <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(1183 * var(--u))">01</span>
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(1220 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
   <p class="t18" style="left:calc(710 * var(--u));top:calc(1220 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
-  <div class="ph pic" style="left:calc(480 * var(--u));top:calc(1913 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
-  <div class="rules cap" data-n="4" data-step="19" style="left:calc(940 * var(--u));top:calc(1913 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(940 * var(--u));top:calc(1913 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
-  <span class="n" style="text-align:right;left:calc(873 * var(--u));top:calc(1876 * var(--u))">02</span>
+  <div class="ph pic" style="left:calc(250 * var(--u));top:calc(1913 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
+  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(1913 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(1913 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(1876 * var(--u))">02</span>
   <div class="ph pic" style="left:calc(20 * var(--u));top:calc(2528 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
   <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(2491 * var(--u))">03</span>
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(2528 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
   <p class="t18" style="left:calc(710 * var(--u));top:calc(2528 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
-  <div class="ph pic" style="left:calc(480 * var(--u));top:calc(3221 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
-  <div class="rules cap" data-n="4" data-step="19" style="left:calc(940 * var(--u));top:calc(3221 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(940 * var(--u));top:calc(3221 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
-  <span class="n" style="text-align:right;left:calc(873 * var(--u));top:calc(3184 * var(--u))">04</span>
-  <div class="ph pic" style="left:calc(20 * var(--u));top:calc(3836 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
-  <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(3799 * var(--u))">05</span>
-  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(3836 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(3836 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <div class="ph pic" style="left:calc(250 * var(--u));top:calc(3221 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
+  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(3221 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(3221 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(3184 * var(--u))">04</span>
 
-  <svg class="morph" viewBox="0 0 200 300" aria-hidden="true" style="left:calc(570 * var(--u));top:calc(4551 * var(--u));width:calc(260 * var(--u));height:calc(390 * var(--u));"><path class="mb" d=""/><path class="ml" d=""/><path class="mh" d=""/><path class="mx" d=""/><path class="my" d=""/></svg>
-  <i class="hl" style="top:calc(4626 * var(--u))"></i>
-  <i class="hl" style="top:calc(4699.4 * var(--u))"></i>
-  <i class="hl" style="top:calc(4772.9 * var(--u))"></i>
-  <i class="hl" style="top:calc(4846.3 * var(--u))"></i>
-  <div class="bigrow" style="left:calc(20 * var(--u));top:calc(4618.8 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Unconventional</p></div>
-  <div class="bigrow" style="left:calc(940 * var(--u));top:calc(4692.2 * var(--u));height:calc(98 * var(--u));"><p class="t name2">ceramic</p></div>
-  <div class="bigrow" style="left:calc(480 * var(--u));top:calc(4765.7 * var(--u));height:calc(98 * var(--u));"><p class="t name2">forms</p></div>
+  <svg class="morph" viewBox="0 0 200 300" aria-hidden="true" style="left:calc(570 * var(--u));top:calc(3858 * var(--u));width:calc(260 * var(--u));height:calc(390 * var(--u));"><path class="mb" d=""/><path class="ml" d=""/><path class="mh" d=""/><path class="mx" d=""/><path class="my" d=""/></svg>
+  <i class="hl" style="top:calc(3933 * var(--u))"></i>
+  <i class="hl" style="top:calc(4006.4 * var(--u))"></i>
+  <i class="hl" style="top:calc(4079.9 * var(--u))"></i>
+  <i class="hl" style="top:calc(4153.3 * var(--u))"></i>
+  <div class="bigrow" style="left:calc(20 * var(--u));top:calc(3925.8 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Unconventional</p></div>
+  <div class="bigrow" style="left:calc(940 * var(--u));top:calc(3999.2 * var(--u));height:calc(98 * var(--u));"><p class="t name2">ceramic</p></div>
+  <div class="bigrow" style="left:calc(480 * var(--u));top:calc(4072.7 * var(--u));height:calc(98 * var(--u));"><p class="t name2">forms</p></div>
 
-  <div class="tagged" style="left:calc(250 * var(--u));top:calc(5131 * var(--u));"><p class="t big2">Story</p><span class="yr" aria-hidden="true"></span></div>
-  <p class="t18" data-year="2019" style="left:calc(710 * var(--u));top:calc(5151 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <p class="t18" data-year="2020" style="left:calc(710 * var(--u));top:calc(5271 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <p class="t18" data-year="2021" style="left:calc(710 * var(--u));top:calc(5391 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <p class="t18" data-year="2022" style="left:calc(710 * var(--u));top:calc(5511 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <p class="t18" data-year="2023" style="left:calc(710 * var(--u));top:calc(5631 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
-  <a class="t18 more" style="display:none;left:calc(710 * var(--u));top:calc(5729 * var(--u));" href="#story">More →</a>
-  <div class="dot" style="left:calc(613 * var(--u));top:calc(5137.5 * var(--u));"></div>
-  <div class="dot" style="left:calc(613 * var(--u));top:calc(5212.5 * var(--u));"></div>
+  <div class="tagged" style="left:calc(250 * var(--u));top:calc(4438 * var(--u));"><p class="t big2">Story</p><span class="yr" aria-hidden="true"></span></div>
+  <p class="t18" data-year="2019" style="left:calc(710 * var(--u));top:calc(4458 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <p class="t18" data-year="2020" style="left:calc(710 * var(--u));top:calc(4578 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <p class="t18" data-year="2021" style="left:calc(710 * var(--u));top:calc(4698 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <p class="t18" data-year="2022" style="left:calc(710 * var(--u));top:calc(4818 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <p class="t18" data-year="2023" style="left:calc(710 * var(--u));top:calc(4938 * var(--u));width:calc(210 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects</p>
+  <a class="t18 more" style="display:none;left:calc(710 * var(--u));top:calc(5036 * var(--u));" href="#story">More →</a>
+  <div class="dot" style="left:calc(613 * var(--u));top:calc(4444.5 * var(--u));"></div>
+  <div class="dot" style="left:calc(613 * var(--u));top:calc(4519.5 * var(--u));"></div>
   <div class="ph bar" style="--i:0;left:calc(20.00 * var(--u));top:calc(6185 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
   <div class="ph bar" style="--i:1;left:calc(250.17 * var(--u));top:calc(6185 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
   <div class="ph bar" style="--i:2;left:calc(480.34 * var(--u));top:calc(6185 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
@@ -752,8 +748,9 @@
   // In both the pointer turns into "Close"; a click anywhere (or Esc) brings the page back.
   const htmlEl = document.documentElement, closeCur = one('.close-cursor:not(.more-cursor)'), moreCur = one('.more-cursor');
   let openView = null;
+  const inStory = cy => { const ps = $('[data-year]'), a = ps[0].getBoundingClientRect(), b = ps[ps.length - 1].getBoundingClientRect(); return cy > a.top - 300 * U && cy < b.bottom + 300 * U; };   // the whole Story block: from a little above its first paragraph to a little below its last
   addEventListener('pointermove', e => { if (openView) closeCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`;
-    const onStory = !openView && !!e.target.closest('[data-year]'); moreCur.style.opacity = onStory ? 1 : 0; if (onStory) moreCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`; }, { passive: true });
+    const onStory = !openView && inStory(e.clientY) && !e.target.closest('a, nav, .nav'); htmlEl.classList.toggle('on-story', onStory); moreCur.style.opacity = onStory ? 1 : 0; if (onStory) moreCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`; }, { passive: true });
   addEventListener('keydown', e => { if (e.key === 'Escape' && openView) openView.close(); });
   function lockView(on) { htmlEl.classList.toggle('ov-open', on); htmlEl.style.overflow = on ? 'hidden' : ''; closeCur.style.opacity = on ? 1 : 0; }
   const pageEls = () => [one('.page'), ...$('.hc, .nav, .ct, .tagline, .midstrip, .ttl')];
@@ -812,7 +809,7 @@
   }
   document.addEventListener('click', e => {
     if (SV._noClose || CV._noClose || CATV._noClose) return;
-    const more = e.target.closest('a.more, [data-year]');
+    const more = e.target.closest('a.more') || (!openView && !e.target.closest('a, nav, .nav, .ov') && inStory(e.clientY) ? e.target : null);
     if (more && !openView) { e.preventDefault(); moreCur.style.opacity = 0; openStory(); return; }
     if (openView && e.target.closest('.ov')) openView.close();
   });
@@ -1696,7 +1693,8 @@
     const labY = plab.getBoundingClientRect().top / U, partnerTops = partners.map(p => p.getBoundingClientRect().top / U - (p._pin || 0) - (gsap.getProperty(p, 'y') || 0) / U);
     // the names are the names of the projects: once the last one has come up to the labels they stay where they are while the cases scroll under them (inverted over the photos), and go on up with the last case
     const shownP = partners.filter(p => p.style.display !== 'none'), lastP = partners.indexOf(shownP[shownP.length - 1]);
-    const pinY0 = partnerTops[lastP] + y - (V * 0.5 - 38), pinY1 = picTops[pics.length - 1] + y + pics[pics.length - 1].offsetHeight / U - (V * 0.5 - 38) - 40;
+    const PIN_TOP = V / 2 - ((shownP.length - 1) * 117 + 98) / 2 + (shownP.length - 1) * 117;   // the last name's place when the whole group stands in the middle of the screen: there they stop
+    const pinY0 = partnerTops[lastP] + y - PIN_TOP, pinY1 = picTops[pics.length - 1] + y + pics[pics.length - 1].offsetHeight / U - PIN_TOP - 40;
     const pin = Math.max(0, Math.min(y - pinY0, pinY1 - pinY0)), pinned = y > pinY0 && y < pinY1;
     partners.forEach((p, i) => { p._pin = pin; p.style.translate = pin ? `0 ${(pin * U).toFixed(1)}px` : ''; p.classList.toggle('pinned', pin > 0); partnerTops[i] += pin; });
 
@@ -1842,10 +1840,10 @@
     partnerTops.forEach((top, i) => { const dd = Math.abs(top + 38 - labY); if (dd < bd) { bd = dd; best = i; } });
     let caseNow = -1; if (pinned) { let bc = 0, cd = Infinity; picTops.forEach((t, k) => { const dd = Math.abs(t + pics[k].offsetHeight / U / 2 - V / 2); if (dd < cd) { cd = dd; bc = k; } }); best = partners.indexOf(shownP[Math.min(bc, shownP.length - 1)]); caseNow = bc; }   // in the cases the name of the case on the screen is the one in black
     partners.forEach((el, i) => el.classList.toggle('on', i === best));
-    { const side = y > pinY0 + 160 ? 1 : 0;   // as we come to the cases the names move over to the right edge, the first one pulling the others like a train, and stay there to the end; back again when we scroll back up
+    { const side = y > pinY0 ? 1 : 0;   // as we come to the cases the names move over to the right edge, the first one pulling the others like a train, and stay there to the end; back again when we scroll back up
       if (side !== tick._side) { tick._side = side; shownP.forEach((el, k) => {   // on the right they are a size smaller, like an h3 (70%)
         const L = el.firstElementChild, a = L.firstElementChild.getBoundingClientRect(), b = L.lastElementChild.getBoundingClientRect(), x0 = a.left - gsap.getProperty(el, 'x'), wd = (b.right - a.left) / (parseFloat(getComputedStyle(el).fontSize) / (108 * U));
-        const n = shownP.length, T = V / 2 - 38 - (n - 1 - k) * 127.2, D = V / 2 - ((n - 1) * 89 + 69) / 2 + k * 89;   // on the right the rows close up with the smaller type, the group standing in the middle of the screen
+        const n = shownP.length, T = PIN_TOP - (n - 1 - k) * 117, D = V / 2 - ((n - 1) * 82 + 69) / 2 + k * 82;   // on the right the rows close up with the smaller type, the group standing in the middle of the screen
         gsap.to(el, { x: side ? 1380 * U - x0 - wd * 0.7 : 0, y: side ? (D - T) * U : 0, fontSize: (side ? 75.6 : 108) * U, duration: .9, ease: EASE, delay: k * .07, overwrite: true, onComplete() { if (!side) el.style.fontSize = ''; } }); }); } }
     setQuote(best);
     // names start a bit further apart and close up like train cars as they rise to the labels (the row level with them sits at its own place)
