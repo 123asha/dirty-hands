@@ -21,7 +21,7 @@
   section { position: relative; width: 100%; }
   .hero > *, .s2-in > *, .rest > *, .gray > *, .card2 > *, .list > *, .bigrow > * { position: absolute; }
   .hero { height: calc(115vh + 478 * var(--u)); }   /* a long first scroll, so the cards fly into the table slowly (30% longer than the 100vh + 360 it was) */
-  .s2 { height: calc(1060 * var(--u)); margin-bottom: calc(348 * var(--u)); }
+  .s2 { height: calc(1168 * var(--u)); margin-bottom: calc(348 * var(--u)); }
   .s2-in { position: relative; height: 100%; }
   .s3 { height: calc(100vh + 1260 * var(--u)); z-index: 3; }
   .gray { position: sticky; top: 0; margin: 0; height: 100vh; overflow: hidden; background: var(--gray); }
@@ -40,14 +40,13 @@
   .row { display: flex; gap: calc(31 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; position: absolute; }
   .row p { width: calc(250 * var(--u)); }
   .card2 .row { gap: 0 !important; }
-  .card2 .row .n { flex: none; width: calc(230 * var(--u)); }   /* in the Lisa and Karen cards the text starts at the second column */
-  .card2 .row p { width: calc(210 * var(--u)); }
+  .card2 .row .n { flex: none; width: calc(34 * var(--u)); }   /* the Lisa and Karen cards are one column wide: the text stands right by its number */
+  .card2 .row p { width: calc(176 * var(--u)); }
   .n { width: calc(40 * var(--u)); opacity: .3; font-size: var(--t18); line-height: .91; flex: none; }
   .rules { pointer-events: none; }
   .rules i { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--rule); }
   .rules.cap { z-index: 0; }
   .card2 { background: #fff; }
-  .tick { display: block; height: calc(4 * var(--u)); background: #000; position: absolute; left: 0; top: 0; }
   .shop:hover { text-decoration: underline; text-underline-offset: .2em; }
   .bigrow { display: flex; justify-content: space-between; align-items: flex-start; width: max-content; padding-right: calc(3 * var(--u)); }
   .bigrow .name2 { position: static; }
@@ -79,10 +78,14 @@
   .hc .hs { display: none; position: absolute; top: 0; height: 100%; overflow: hidden; left: calc(var(--j) * var(--sw) - 1px); width: calc(var(--sw) + 3px); backface-visibility: visible; }   /* the strips overlap a little so no light seams show between them */
   .hc .hs i { position: absolute; top: 0; height: 100%; left: calc(-1 * var(--j) * var(--sw) + 1px); width: var(--cw); background-size: cover; background-position: center; background-repeat: no-repeat; }
   .hc .hc-alt { position: absolute; inset: 0; background: center / cover no-repeat; opacity: 0; transition: opacity .45s var(--ease); pointer-events: none; }
-  .hc.hov .hc-alt { opacity: 1; }
+  .hc.hov .hc-alt, .hc.photo .hc-alt { opacity: 1; }   /* on top the works are shown in their photos; in the table they are cut out */
+  .hc .hs b { position: absolute; top: 0; height: 100%; left: calc(-1 * var(--j) * var(--sw) + 1px); width: var(--cw); background: center / cover no-repeat; opacity: 0; transition: opacity .4s var(--ease); }
+  .hc .hs i { transition: opacity .4s var(--ease); }
+  .hc.photo .hs b { opacity: 1; }
+  .hc.photo .hs i { opacity: 0; }
   .hc .hc-lab { position: absolute; left: 0; top: calc(100% + 12 * var(--u)); font-size: var(--t18); line-height: .91; letter-spacing: -.01em; white-space: nowrap; opacity: 0; transform: translateY(calc(6 * var(--u))); transition: opacity .35s var(--ease), transform .35s var(--ease); pointer-events: none; }
   .hc.hov .hc-lab { opacity: 1; transform: none; }
-  .hc.bent .hc-alt, .hc.bent .hc-lab { display: none; }
+  .hc.bent .hc-alt, .hc.bent:not(.hov) .hc-lab { display: none; }
   .hc.drum .hs { left: 0; width: 100%; top: calc(var(--j) * var(--sh)); height: calc(var(--sh) + 1px); backface-visibility: hidden; }
   .hc.drum .hs i { left: 0; width: 100%; top: calc(-1 * var(--j) * var(--sh)); height: var(--ch); }
   .hc.bent { background: none !important; transform-style: preserve-3d; }   /* flying in the ring, the card is cut into strips and bent: a picture glued inside a cylinder */
@@ -141,7 +144,7 @@
   /* photos (test images from a free stock) fill their blocks */
   .hc, .bar, .ph, .gray { background-size: cover; background-position: center; background-repeat: no-repeat; }
   /* the people on the background: two halves; when Lisa's block comes up the left photo melts into the plain grey of the block */
-  .gray::before, .gray::after { content: ''; position: absolute; top: 0; bottom: 0; width: 50%; background-size: cover; background-position: center; z-index: 0; transition: opacity .9s var(--ease); }
+  .gray::before, .gray::after { content: ''; position: absolute; top: 0; bottom: calc(-160 * var(--u)); transform: translateY(calc(var(--par, 0) * -160 * var(--u))); width: 50%; background-size: cover; background-position: center; z-index: 0; transition: opacity .9s var(--ease); }
   .gray::before { left: 0; background-image: var(--imgL, none); background-size: var(--bgS, cover); background-position: var(--bgL, center); }
   .gray::after { right: 0; background-image: var(--imgR, none); background-size: var(--bgS, cover); background-position: var(--bgR, center); }
   .gray.no-left::before, .gray.no-right::after { opacity: 0; }
@@ -174,7 +177,8 @@
   .cat-strip i { position: absolute; top: 0; height: 100%; background: #f2f2f2 center / cover no-repeat; }
   .cat-title { position: absolute; left: calc(20 * var(--u)); top: calc(20 * var(--u)); overflow: hidden; padding: 0 .05em .08em; }
   .cat-title .c { display: inline-block; white-space: pre; }   /* letter by letter: they come down from above, and go back up when the gallery closes */
-  .cat-text { position: absolute; left: 50%; top: calc(45vh + 254 * var(--u)); width: calc(560 * var(--u)); margin-left: calc(-280 * var(--u)); font-size: calc(28 * var(--u)); line-height: 1.12; letter-spacing: -.01em; text-align: center; z-index: 2; }   /* in front of the cylinder, a little larger than the body text */
+  .cat-text { position: absolute; left: 50%; top: calc(45vh + 254 * var(--u)); width: calc(210 * var(--u)); margin-left: calc(-105 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; z-index: 2; }   /* the body text, one column wide */
+  .cat-line { position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); top: 50vh; height: 0; border-top: 1px solid var(--rule); }   /* one horizontal line across the middle, as on the main page */
   .hc.hov { cursor: pointer; }
   .cd-pic { position: absolute; background: var(--gray) center / cover no-repeat; }
   .cd-rules { position: absolute; left: calc(940 * var(--u)); top: calc(20 * var(--u)); width: calc(440 * var(--u)); height: calc(57 * var(--u)); }
@@ -204,7 +208,7 @@
 
 <section class="s2" id="cases">
   <div class="s2-in">
-    <div class="rules fan" data-n="56" data-step="18" style="left:calc(20 * var(--u));top:calc(34 * var(--u));width:calc(1360 * var(--u));height:calc(990 * var(--u));"></div>
+    <div class="rules fan" data-n="62" data-step="18" style="left:calc(20 * var(--u));top:calc(34 * var(--u));width:calc(1360 * var(--u));height:calc(1098 * var(--u));"></div>
     <span class="n num" style="left:calc(20 * var(--u));top:calc(196 * var(--u))">01</span>
     <span class="n num" style="left:calc(20 * var(--u));top:calc(268 * var(--u))">02</span>
     <span class="n num" style="left:calc(20 * var(--u));top:calc(340 * var(--u))">03</span>
@@ -224,8 +228,8 @@
 
 <section class="s3">
   <div class="gray">
-    <div class="card2" id="lisa" style="left:calc(20 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(357 * var(--u));"><span class="tick" style="width:calc(90 * var(--u))"></span><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Lisa</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(321 * var(--u));width:calc(440 * var(--u))"></div></div>
-    <div class="card2" id="karen" style="left:calc(710 * var(--u));top:100vh;width:calc(440 * var(--u));height:calc(357 * var(--u));"><span class="tick" style="width:calc(127 * var(--u))"></span><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(440 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(440 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(72 * var(--u));width:calc(440 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(321 * var(--u));width:calc(440 * var(--u))"></div></div>
+    <div class="card2" id="lisa" style="left:calc(480 * var(--u));top:100vh;width:calc(210 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(210 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(210 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(210 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(108 * var(--u));width:calc(210 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(210 * var(--u))"></div></div>
+    <div class="card2" id="karen" style="left:calc(710 * var(--u));top:100vh;width:calc(210 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(210 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(210 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(210 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div><div class="row" style="left:0;top:calc(108 * var(--u));width:calc(210 * var(--u));gap:calc(60 * var(--u))"><span class="n">01</span><p>Artful wall compositions bring depth, texture, and character to your space.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Lisa</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(210 * var(--u))"></div></div>
   </div>
 </section>
 
@@ -307,6 +311,7 @@
 </div>
 <div class="ov" id="catView" aria-hidden="true">
   <div class="ov-scrim"></div>
+  <i class="cat-line"></i>
   <div class="cat-cyl"></div>
   <div class="t big2 cat-title"></div>
   <p class="cat-text"></p>
@@ -409,13 +414,27 @@
     const alt = document.createElement('div'); alt.className = 'hc-alt'; alt.style.backgroundImage = `url("${HOVER_SRC[i]}")`;
     const lab = document.createElement('span'); lab.className = 'hc-lab'; lab.textContent = CATS[i];
     c.append(alt, lab);
-    c.addEventListener('mouseenter', () => { if (scrollY < 4) c.classList.add('hov'); });   // at rest on top: the cut-out turns into the photo in an interior, the category shows below
-    c.addEventListener('mouseleave', () => c.classList.remove('hov'));
+    c.addEventListener('mouseenter', () => { if (scrollY < 4) { c.classList.add('hov'); bulge(c, 1); } });   // at rest on top: the photo bulges out and the category shows below
+    c.addEventListener('mouseleave', () => { c.classList.remove('hov'); bulge(c, 0); });
     c.addEventListener('click', e => { if (scrollY < 4) { e.stopPropagation(); openCat(i, c); } });   // a click on a category opens its gallery
   });
-  addEventListener('scroll', () => { if (scrollY >= 4) $('.hc.hov').forEach(c => c.classList.remove('hov')); }, { passive: true });
+  addEventListener('scroll', () => { if (scrollY >= 4) $('.hc.hov').forEach(c => { c.classList.remove('hov'); bulge(c, 0, true); }); }, { passive: true });
+  function bulge(c, to, now) {                                           // the hovered photo swells like the side of a pot: the same strips as in the ring, bent outwards
+    c._hbT = to; if (now) { c._hb = 0; c.classList.remove('bent'); c._hs && c._hs.forEach(s => { s.style.transform = ''; }); return; }
+    if (c._hbRun) return; c._hbRun = true;
+    (function step() {
+      if (scrollY >= 4) { c._hbRun = false; return; }
+      c._hb = (c._hb || 0) + (c._hbT - (c._hb || 0)) * 0.16; const hb = c._hb;
+      if (Math.abs(c._hbT - hb) < 0.003 && c._hbT === 0) { c._hb = 0; c.classList.remove('bent'); c.style.transform = ''; c._hs.forEach(s => { s.style.transform = ''; }); c._hbRun = false; return; }
+      const wpx = c.offsetWidth, A = hb * 1.1, Rc = wpx / Math.max(A, 0.001);
+      c.classList.add('bent'); c.style.setProperty('--cw', wpx + 'px'); c.style.setProperty('--sw', wpx / HS + 'px');
+      c.style.transform = `perspective(${1100 * U}px) translateZ(${(hb * 40 * U).toFixed(1)}px)`;
+      c._hs.forEach((st, j) => { const u = ((j + .5) / HS - .5) * wpx, al = u / Rc; st.style.transform = `translate3d(${(Rc * Math.sin(al) - u).toFixed(2)}px,0,${(-Rc * (1 - Math.cos(al))).toFixed(2)}px) rotateY(${al.toFixed(4)}rad)`; st.style.filter = ''; });
+      requestAnimationFrame(step);
+    })();
+  }
   const HS = 14, DRUM = false;     // the drum of pictures in the table is switched off for now (flip to true to bring it back)
-  $('.hc').forEach((c, i) => { c._hs = []; for (let j = 0; j < HS; j++) { const st = document.createElement('div'); st.className = 'hs'; st.style.setProperty('--j', j); const im = document.createElement('i'); im.style.backgroundImage = HERO(i); if (CUTOUT.has(i)) im.style.backgroundSize = 'contain'; st.append(im); c.append(st); c._hs.push(st); } });
+  $('.hc').forEach((c, i) => { c._hs = []; for (let j = 0; j < HS; j++) { const st = document.createElement('div'); st.className = 'hs'; st.style.setProperty('--j', j); const im = document.createElement('i'); im.style.backgroundImage = HERO(i); if (CUTOUT.has(i)) im.style.backgroundSize = 'contain'; const ph = document.createElement('b'); ph.style.backgroundImage = `url("${HOVER_SRC[i]}")`; st.append(ph); st.append(im); c.append(st); c._hs.push(st); } });
   $('.bar').forEach((b, i) => { b.style.backgroundImage = IMG(i); });
   $('.pic').forEach((e, i) => { e.style.setProperty('--img', IMG([3, 5, 1][i])); });      // the big pictures: the image lives in ::before, inside the frame
   one('.rest > .ph:not(.pic):not(.bar)').style.backgroundImage = IMG(4);
@@ -507,7 +526,7 @@
 
 
   const X0 = i => 20 + 230.17 * i, W0 = 210.2, H0 = [262.7, 210, 262.7, 210, 262.7, 262.7];
-  const PX = 700, PY0 = 34, PY1 = 1024;    // picture centre x; its y inside block 2 while it is held (design px). PH = 12 ruled bands; PY1 = the last line (1024): the picture rides down until that line is at its middle
+  const PX = 700, PY0 = 34, PY1 = 1132;    // picture centre x; its y inside block 2 while it is held (design px). PH = 12 ruled bands; PY1 = the last line (1132): the picture rides down until that line is at its middle
   const PW = 218.5, PH = 216, EX3 = 1260;  // picture size; extra scroll while the gray block is pinned
   const SHADE = [225, 212, 230, 216, 226, 210];
   // while the cards fly they stand on a sphere (a ring seen from the front, with a little height): each one has an angle around it and a latitude;
@@ -542,14 +561,14 @@
     splitLines();
     // the paragraphs of the table follow one another down the ruled lines, one empty line between them, however many lines each one takes
     flowSig = '';
-    { let y0 = 196; texts.forEach((p, j) => { p.dataset.y = y0; p.dataset.c0 = y0 + lines[j].length * LH / 2; p.style.top = y0 * U + 'px'; if (nums[j]) nums[j].style.top = y0 * U + 'px'; y0 += (lines[j].length + 3) * LH; }); }   // c0: the middle of each paragraph in the plain layout, fixed, so the picture choice does not chase the flowing text
+    { let y0 = 196; texts.forEach((p, j) => { p.dataset.y = y0; p.dataset.c0 = y0 + lines[j].length * LH / 2; p.style.top = y0 * U + 'px'; if (nums[j]) nums[j].style.top = y0 * U + 'px'; y0 += (lines[j].length + 4) * LH; }); }   // c0: the middle of each paragraph in the plain layout, fixed, so the picture choice does not chase the flowing text
     alignShop();
     bigrows.forEach(b => b.style.setProperty('--dx', (0.4 * (700 - (b.offsetLeft + b.offsetWidth / 2) / U)).toFixed(2)));   // every word starts 60% of the way to its place, so the words never sit on top of each other
     // the photo of Karen and Lisa covers the whole grey block, split between its two halves so it reads as one picture
-    { const gr = one('.gray'), w = gr.offsetWidth, h = innerHeight, sc = Math.max(w / 1680, h / 850), iw = 1680 * sc, ih = 850 * sc, ox = (w - iw) / 2, oy = (h - ih) * 0.15;   // kept near the top, so the faces stay in the frame
+    { const gr = one('.gray'), w = gr.offsetWidth, h = innerHeight + 160 * U, sc = Math.max(w / 1680, h / 850), iw = 1680 * sc, ih = 850 * sc, ox = (w - iw) / 2, oy = (h - ih) * 0.15;   // kept near the top, so the faces stay in the frame
       gr.style.setProperty('--bgS', `${iw}px ${ih}px`); gr.style.setProperty('--bgL', `${ox}px ${oy}px`); gr.style.setProperty('--bgR', `${ox - w / 2}px ${oy}px`); }
     // the title stays pinned to the bottom while the whole table goes over it; then it leaves with the page
-    ttlBox.style.height = (one('.s2').offsetTop / U + 1060 + 182.6) * U + 'px';   // pinned until the whole table (1060 high) has gone up past its top edge
+    ttlBox.style.height = (one('.s2').offsetTop / U + 1168 + 182.6) * U + 'px';   // pinned until the whole table (1168 high) has gone up past its top edge
   }
 
   // ---- motion (GSAP + ScrollTrigger): the ruled lines draw first, then the text comes in line by line from under its mask; scrolling back plays it in reverse
@@ -647,14 +666,13 @@
       });
     });
 
-    // Lisa and Karen: the bar, the lines, then the text, the name and the lines below (played from tick when the card comes up)
+    // Lisa and Karen: the lines, then the text, the name and the lines below (played from tick when the card comes up)
     [lisa, karen].forEach(c => {
-      const rl = c.querySelectorAll('.rules'), top = [...rl[0].children], bot = [...rl[1].children], bar = c.querySelector('.tick');
+      const rl = c.querySelectorAll('.rules'), top = [...rl[0].children], bot = [...rl[1].children];
       const nn = [...c.querySelectorAll('.row .n')], inner = [...c.querySelectorAll('.row p')].flatMap(splitMask), nm = splitMask(c.querySelector('.name'));
-      touched.push(...top, ...bot, bar, ...nn);
+      touched.push(...top, ...bot, ...nn);
       if (c._tl) c._tl.kill();
       const tl = gsap.timeline({ paused: true });
-      tl.fromTo(bar, { scaleX: 0, transformOrigin: '0 50%' }, { scaleX: 1, duration: .6, ease: EASE }, 0);
       fanIn(tl, top, { each: .014, at: .02, dur: .7 });
       fadeIn(tl, nn, .3, .25, { dur: .5, each: .1 });
       riseIn(tl, inner, { at: .2, each: .07, dur: .8 });
@@ -811,7 +829,8 @@
     if (!G || openView) return;
     const host = CATV.querySelector('.cat-cyl'), titleEl = CATV.querySelector('.cat-title'), textEl = CATV.querySelector('.cat-text');
     titleEl.innerHTML = [...CATS[ci]].map(ch => `<span class="c">${ch}</span>`).join(''); textEl.dataset.text = texts[ci] ? texts[ci].dataset.text : ''; textEl.textContent = textEl.dataset.text;
-    const srcs = [HOVER_SRC[ci], ...Array.from({ length: CAT_N[CAT_KEYS[ci]] }, (_, k) => `photos/cat/${CAT_KEYS[ci]}-${k + 1}.jpg`)];
+    const CAT_SAME = { mirrors: 6, sculptures: 8 };                       // gallery photos that are the very photo on the card: not shown twice
+    const srcs = [HOVER_SRC[ci], ...Array.from({ length: CAT_N[CAT_KEYS[ci]] }, (_, k) => k + 1).filter(k => CAT_SAME[CAT_KEYS[ci]] !== k).map(k => `photos/cat/${CAT_KEYS[ci]}-${k}.jpg`)];
     const PWc = 360 * U, PHc = 460 * U, SPc = 390 * U, RAD = 900 * U, KS = 16, sw = PWc / KS, cx = CATV.clientWidth / 2, top = innerHeight * 0.45 - PHc / 2;
     const order = srcs.map((_, j) => j === 0 ? 0 : (j % 2 ? 1 : -1) * Math.ceil(j / 2));   // the clicked one in the middle, the others to its right and left in turn
     const strips = [];
@@ -822,36 +841,48 @@
       Object.assign(el.style, { left: cx - sj / 2 + 'px', top: tj + 'px', width: sj + 1 + 'px', height: ph + 'px' });
       host.append(el); strips.push({ el, j, d: order[j], a: (k + .5) * sj - pw / 2 });
     } });
+    const wOf = j => PWc * WF[j % 10], GAP = 20, centre = {};                                     // the pictures sit side by side round the cylinder, 20px apart
+    const byD = order.map((d, j) => [d, j]).sort((x, y) => x[0] - y[0]); centre[0] = 0;
+    for (const [d, j] of byD) if (d > 0) { const pj = byD.find(x => x[0] === d - 1)[1]; centre[d] = centre[d - 1] + wOf(pj) / 2 + GAP + wOf(j) / 2; }
+    for (const [d, j] of [...byD].reverse()) if (d < 0) { const pj = byD.find(x => x[0] === d + 1)[1]; centre[d] = centre[d + 1] - wOf(pj) / 2 - GAP - wOf(j) / 2; }
+    const arcAt = p => { const a = Math.floor(p), b = Math.ceil(p); const ca = centre[a] ?? centre[Math.max(lo0, Math.min(hi0, a))], cb = centre[b] ?? centre[Math.max(lo0, Math.min(hi0, b))]; return ca + (cb - ca) * (p - a); };
+    const lo0 = Math.min(...order), hi0 = Math.max(...order);
     const st = { bend: 0, spread: 0 }; let pos = 0, target = 0, run = true, snapT = 0, drag = null;
     const place = () => {
       const R = RAD / Math.max(0.08, st.bend);                                        // flat at first, then it bulges
       strips.forEach(s => {
-        const phi = (s.d * SPc + s.a - pos * SPc) / R, c = Math.cos(phi), show = s.d === 0 ? 1 : clamp(st.spread * (srcs.length - 1) - (Math.abs(s.d) * 2 - (s.d > 0 ? 2 : 1)));
+        const phi = (centre[s.d] + s.a - arcAt(pos)) / R, c = Math.cos(phi), show = s.d === 0 ? 1 : clamp(st.spread * (srcs.length - 1) - (Math.abs(s.d) * 2 - (s.d > 0 ? 2 : 1)));
         s.el.style.transform = `translate3d(0,0,${(-R).toFixed(1)}px) rotateY(${phi.toFixed(4)}rad) translate3d(0,0,${R.toFixed(1)}px)`;
         s.el.style.opacity = c <= 0.02 ? 0 : (Math.pow(c, 0.9) * show).toFixed(3);
       });
     };
     (function loop() { if (!run) return; pos += (target - pos) * 0.12; place(); requestAnimationFrame(loop); })();
-    const lo = Math.min(...order), hi = Math.max(...order), nudge = v => { target = Math.max(lo - 0.3, Math.min(hi + 0.3, v)); clearTimeout(snapT); snapT = setTimeout(() => { target = Math.max(lo, Math.min(hi, Math.round(target))); }, 140); };
+    const lo = Math.min(...order), hi = Math.max(...order), nudge = v => { if (closing) return; target = Math.max(lo - 0.3, Math.min(hi + 0.3, v)); clearTimeout(snapT); snapT = setTimeout(() => { target = Math.max(lo, Math.min(hi, Math.round(target))); }, 140); };
     const onWheel = e => { e.preventDefault(); nudge(target + (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) / SPc * 0.9); };
-    const onKey = e => { if (e.key === 'ArrowRight') target = Math.min(hi, Math.round(target) + 1); else if (e.key === 'ArrowLeft') target = Math.max(lo, Math.round(target) - 1); };
+    const onKey = e => { if (closing) return; if (e.key === 'ArrowRight') target = Math.min(hi, Math.round(target) + 1); else if (e.key === 'ArrowLeft') target = Math.max(lo, Math.round(target) - 1); };
     const onDown = e => { drag = { x: e.clientX, t: target, moved: false }; };
     const onMove = e => { if (!drag) return; const dx = e.clientX - drag.x; if (Math.abs(dx) > 5) drag.moved = true; if (drag.moved) nudge(drag.t - dx / SPc); };
     const onUp = () => { if (drag && drag.moved) { CATV._noClose = true; setTimeout(() => { CATV._noClose = false; }, 0); } drag = null; };
     CATV.addEventListener('wheel', onWheel, { passive: false }); addEventListener('keydown', onKey); CATV.addEventListener('pointerdown', onDown); addEventListener('pointermove', onMove); addEventListener('pointerup', onUp);
     const stop = () => { run = false; strips.forEach(x => x.el.remove()); CATV.removeEventListener('wheel', onWheel); removeEventListener('keydown', onKey); CATV.removeEventListener('pointerdown', onDown); removeEventListener('pointermove', onMove); removeEventListener('pointerup', onUp); };
-    CATV.classList.add('open'); lockView(true); card.classList.remove('hov');
+    CATV.classList.add('open'); lockView(true); card.classList.remove('hov'); bulge(card, 0, true);
+    card.style.visibility = 'hidden';                                    // the picture leaves the card for the gallery: never two of it at once
     const r = card.getBoundingClientRect(), ox = r.left + r.width / 2 - cx, oy = r.top + r.height / 2 - (top + PHc / 2), sc = r.width / PWc;
     const inT = splitMask(textEl), letters = [...titleEl.children];
-    const tl = gsap.timeline({ onReverseComplete() { stop(); CATV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); } });
+    const tl = gsap.timeline({ onReverseComplete() { stop(); card.style.visibility = ''; CATV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); } });
     tl.to(pageEls(), { opacity: 0, duration: .45, ease: 'power2.in' }, 0);
     tl.fromTo('#catView .ov-scrim', { opacity: 0 }, { opacity: 1, duration: .45, ease: 'power2.out' }, 0);
+    tl.fromTo('#catView .cat-line', { scaleX: 0, transformOrigin: '50% 50%' }, { scaleX: 1, duration: .9, ease: EASE }, .2);
     tl.fromTo(host, { x: ox, y: oy, scale: sc }, { x: 0, y: 0, scale: 1, duration: .75, ease: 'back.out(1.3)' }, 0);   // the picture comes straight at us from where it was clicked
     tl.fromTo(st, { bend: .35 }, { bend: 1, duration: .75, ease: 'power2.out' }, 0);                                    // already bulging on its way
     tl.to(st, { spread: 1, duration: 1.1, ease: 'power1.out' }, .55);                                            // the others come round beside it
     tl.fromTo(letters, { yPercent: -115 }, { yPercent: 0, duration: .6, ease: EASE, stagger: .04 }, .45);
     riseIn(tl, inT, { at: 1, each: .07, dur: .8 });                                                             // the text in front
-    openView = { close() { tl.timeScale(1.8).reverse(); } };
+    let closing = false;
+    openView = { close() {                                                // first the cylinder turns back to the picture that was clicked, then everything folds back into the card
+      if (closing) return; closing = true; drag = null; clearTimeout(snapT); target = 0;
+      (function wait() { if (Math.abs(pos) > 0.01) return requestAnimationFrame(wait); pos = 0; tl.timeScale(1.8).reverse(); })();
+    } };
     tl.timeScale(1).play();
   }
 
@@ -861,7 +892,7 @@
   function makeClay(opt = {}) {                                         // live: the sheet over the page that follows the hand; with opt.cv: a still sheet (the marks on the Lisa and Karen cards)
   const live = !opt.cv;
   const cv = opt.cv || document.createElement('canvas'); cv.setAttribute('aria-hidden', 'true');
-  if (live) cv.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:300;pointer-events:none;display:block;mix-blend-mode:difference';   // above the page, blended by difference: the clay is drawn in inverted colours, so on white it is dark clay, and whatever it lies on (text, lines) turns to its negative
+  if (live) cv.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:450;pointer-events:none;display:block;mix-blend-mode:difference';   // above the page, blended by difference: the clay is drawn in inverted colours, so on white it is dark clay, and whatever it lies on (text, lines) turns to its negative
   if (live) document.body.prepend(cv);
   const ctx = cv.getContext('2d');
 
@@ -1351,8 +1382,15 @@
   const hands = new Map();
   const empty = el => !el.closest('a, .pic, .hc, .more, .ov, nav, button, .close-cursor');
 
+  function quick(x, y, R) {                                              // a mark left by a click on a link, a picture or a window: it melts away sooner
+    const t = now() - (HOLD - 0.7), x0 = Math.max(0, (x - R) * S | 0), x1 = Math.min(W - 1, (x + R) * S | 0), y0 = Math.max(0, (y - R) * S | 0), y1 = Math.min(H - 1, (y + R) * S | 0);
+    for (let yy = y0; yy <= y1; yy++) for (let xx = x0; xx <= x1; xx++) { const i = yy * W + xx; if (T[i] > 0 && D[i] > t) D[i] = t; }
+  }
   addEventListener('pointerdown', e => {
-    if (e.button || openView || !empty(e.target)) return;
+    if (e.button) return;
+    if (openView || !empty(e.target)) {                                 // any click leaves a print, even on a link; there it does not smear and goes quickly
+      const v = Math.random() < 0.5 ? variants[0] : variants[4]; v.run(e.clientX, e.clientY); quick(e.clientX, e.clientY, 140); return;
+    }
     const fs = (() => { const q = Math.random(); return q < 0.2 ? variants[11] : q < 0.4 ? variants[10] : variants[kept[(Math.random() * kept.length) | 0]]; })().run(e.clientX, e.clientY) || [];
     hands.set(e.pointerId, { fs, sx: e.clientX, sy: e.clientY, x: e.clientX, y: e.clientY, smearing: false });
   });
@@ -1548,7 +1586,7 @@
         ln.style.transform = r && r.x ? `translateX(${(r.x * U).toFixed(1)}px)` : '';
       });
       p.dataset.y = y0; p.style.top = y0 * U + 'px'; if (nums[j]) nums[j].style.top = y0 * U + 'px';
-      y0 += (rows.length + 3) * LH;                                     // three empty ruled lines between paragraphs
+      y0 += (rows.length + 4) * LH;                                     // four empty ruled lines between paragraphs
     });
   }
 
@@ -1671,6 +1709,7 @@
       c.style.left = (cx - w / 2) * U + 'px'; c.style.top = (cy - hh / 2 - (fixed ? y : 0)) * U + 'px';
       // depth: on one plane at the start, some further away and some closer while they fly (arc), one plane again once gathered
       const Z = SPH * sz * U * ring, far = Math.max(0, -sz) * ring;
+      c.classList.toggle('photo', t < 0.85);                                  // the photo with its background until the cards come down into the table
       const bend = ring > 0.001 && !landed, drum = DRUM && landed;
       c.classList.toggle('bent', bend || drum); c.classList.toggle('drum', drum);
       c.style.transform = drum ? `perspective(${1100 * U}px)` : ring > 0.001 ? `perspective(${1100 * U}px) translateZ(${Z.toFixed(1)}px)${bend ? ` rotateY(${(sx * 38 * ring).toFixed(1)}deg)` : ''}` : '';   // it turns a little towards the middle of the ring
@@ -1707,6 +1746,7 @@
     lisa.style.top = lerp(V, -396, clamp(P3 / 0.6)) * U + 'px';
     karen.style.top = lerp(V, -396, clamp((P3 - KD) / 0.6)) * U + 'px';   // Karen follows a bit lower: at first only Lisa is on the screen
     // a card plays its animation when it comes up into the screen, and plays back when it goes below again
+    one('.gray').style.setProperty('--par', clamp(P3).toFixed(4));   // parallax: the photo inside the frame climbs a little slower than the cards
     drawMark(cardMarks[0], (P3 / 0.6 - 0.25) / 0.45); drawMark(cardMarks[1], ((P3 - KD) / 0.6 - 0.25) / 0.45);   // the clay marks draw in while the cards come up
     [[lisa, P3 / 0.6], [karen, (P3 - KD) / 0.6]].forEach(([el, k]) => {
       const top = lerp(V, -396, clamp(k));
