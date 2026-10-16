@@ -24,8 +24,9 @@
   .s2 { height: calc(1168 * var(--u)); margin-bottom: calc(348 * var(--u)); }
   .s2-in { position: relative; height: 100%; }
   .s3 { z-index: 3; }
+  .gray .grain { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  1 1 1 0 -1.2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E"); opacity: .09; mix-blend-mode: multiply; }   /* a very light grain over the photo of Karen and Lisa, under the cards */
   .gray { position: relative; margin: 0; height: calc(980 * var(--u)); overflow: hidden; }   /* a block that scrolls with the page, with no grey fill of its own: first the photo of Karen and Lisa (it moves slower, parallax), then their two cards come up over it one after the other */
-  .rest { height: calc(5352 * var(--u)); }
+  .rest { height: calc(5232 * var(--u)); }
   /* vertical spacing, one rule for the page below (design px, from the visible bottom of one thing to the visible top of the next):
      20 inside a block (a number to its picture), 40 from a text to its link, 120 between the items of one section (case to case), 200 between sections */
   .t { font-weight: 400; white-space: nowrap; }
@@ -38,7 +39,7 @@
   .ph { background: var(--ph); }
   #about { scroll-margin-top: calc(52 * var(--u)); }   /* the About link brings the block up to its own top edge, not the heading flush against the screen's */
   /* menu: rises with the scroll from its place in the hero, then stays 20 from the top (top is set in tick); white + difference, like the title, so it stays readable over blocks */
-  .hero > .nav { position: fixed; top: calc(50vh + 12 * var(--u)); z-index: 101; color: #fff; mix-blend-mode: difference; }
+  .hero > .nav { position: fixed; top: calc(44vh + 12 * var(--u)); z-index: 101; color: #fff; mix-blend-mode: difference; }
   .nav { display: flex; gap: calc(12 * var(--u)); font-size: var(--t18); line-height: .91; letter-spacing: -.01em; }
   .row { display: flex; gap: calc(31 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; position: absolute; }
   .row p { width: calc(250 * var(--u)); }
@@ -67,15 +68,18 @@
   .dot.apart-up { translate: 0 calc(-14 * var(--u)); } .dot.apart-down { translate: 0 calc(14 * var(--u)); }   /* the two squares step away from each other and come back */
   .bigrow .cnt { width: calc(40 * var(--u)); text-align: left; left: 100%; margin-left: calc(6 * var(--u)); top: calc(18 * var(--u)); }   /* counter sits at the top right of the word, as in the design */
   .morph { overflow: visible; pointer-events: none; z-index: 2; mix-blend-mode: difference; transform: translate(calc(30 * var(--u)), calc(-24 * var(--u))) rotate(7deg); filter: url(#pencil); }   /* leaning a little to the right, drawn as if by an unsteady pencil */   /* over the words: where the line crosses a letter, it turns white */
-  .morph path { fill: none; stroke: #fff; stroke-width: 2.6; stroke-linejoin: round; vector-effect: non-scaling-stroke; }   /* a vessel drawn in one thin line, in the middle of the words; it turns from one form into the next */
+  .morph path { fill: none; stroke: #fff; stroke-width: 2.4; stroke-linejoin: round; vector-effect: non-scaling-stroke; }   /* a vessel drawn in one thin line, in the middle of the words; it turns from one form into the next */
   .hl { position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); border-top: 1px solid var(--rule); height: 0; }
   .dot { opacity: .1; position: absolute; width: calc(10 * var(--u)); height: calc(10 * var(--u)); background: #000; }
   .bar { background: #f2f2f2; will-change: transform; }   /* its own layer while it climbs: Safari left thin trails of it behind otherwise */   /* the same strip as the cards at the very top */
   /* the ruled line through the middle of the first screen: the first line of the table. The cards gather onto it, and when they have landed the whole table opens from it */
-  .midstrip { position: fixed; left: calc(20 * var(--u)); right: calc(20 * var(--u)); top: 50vh; height: 0; border-top: 1px solid var(--rule); z-index: 4; pointer-events: none; opacity: 0; }
+  .midstrip { position: fixed; left: calc(20 * var(--u)); right: calc(20 * var(--u)); top: 44vh; height: 0; border-top: 1px solid var(--rule); z-index: 4; pointer-events: none; opacity: 0; }
   .midstrip.off { opacity: 0; }   /* the strip IS the first line of the table: at the landing it is swapped for the table's own line 0, which sits exactly on it */
   /* a small caption above the line in the middle of the first screen; when the menu rising from below reaches its level, it goes up with the menu and stays up there until the title melts into the background */
-  .tagline { position: fixed; left: calc(480 * var(--u)); top: calc(50vh + 12 * var(--u)); white-space: nowrap; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; z-index: 101; pointer-events: none; opacity: 0; }   /* the label of the row, centred on the page, on the menu's line under the middle line */
+  .snd { position: fixed; left: calc(20 * var(--u)); top: calc(44vh + 12 * var(--u)); z-index: 101; display: flex; align-items: center; gap: calc(8 * var(--u)); padding: 0; border: 0; background: none; font: inherit; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; cursor: pointer; }   /* the sound switch: a line that comes alive when the sound is on; first on the middle line, left of it, then up in the top left corner with the menu */
+  .snd svg { width: calc(40 * var(--u)); height: calc(10 * var(--u)); overflow: visible; }
+  .snd[aria-pressed="false"] span { opacity: .5; }
+  .tagline { position: fixed; left: calc(480 * var(--u)); top: calc(44vh + 12 * var(--u)); white-space: nowrap; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; z-index: 101; pointer-events: none; opacity: 0; }   /* the label of the row, centred on the page, on the menu's line under the middle line */
   /* hero cards: fly from the top row into the second block */
   .hc .hs { display: none; position: absolute; top: 0; height: 100%; overflow: hidden; left: calc(var(--j) * var(--sw) - 1px); width: calc(var(--sw) + 3px); backface-visibility: visible; }   /* the strips overlap a little so no light seams show between them */
   .hc .hs i { position: absolute; top: 0; height: 100%; left: calc(-1 * var(--j) * var(--sw) + 1px); width: var(--cw); background-size: cover; background-position: center; background-repeat: no-repeat; }
@@ -213,6 +217,7 @@
 
 <div class="midstrip" aria-hidden="true"></div>
 <div class="tagline">Interior ceramics studio</div>
+<button type="button" class="snd" aria-pressed="false" aria-label="Sound"><svg viewBox="0 0 40 10" aria-hidden="true"><path d="M0 5H40" fill="none" stroke="currentColor" stroke-width="1.1"/></svg><span>Sound</span></button>
 <div class="hc" data-i="0" style="left:calc(20 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
 <div class="hc" data-i="1" style="left:calc(250.17 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
 <div class="hc" data-i="2" style="left:calc(480.34 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
@@ -242,6 +247,7 @@
 
 <section class="s3">
   <div class="gray">
+    <i class="grain" aria-hidden="true"></i>
     <div class="card2" id="lisa" style="left:calc(20 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, one of the two founders of DirtyHands.</p></div><div class="row" style="left:0;top:calc(108 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Pairs professional design with artistic intuition to bring unconventional ideas to life.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
     <div class="card2" id="karen" style="left:calc(710 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, co-founder of DirtyHands together with Karen.</p></div><div class="row" style="left:0;top:calc(108 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Sees ceramics beyond plates and pots, as objects that shape the mood and character of a room.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Lisa</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
   </div>
@@ -267,21 +273,21 @@
   <p class="t name2 partner" style="display:none;left:calc(706 * var(--u));top:calc(1124.8 * var(--u));width:calc(674 * var(--u));"><span class="pf">Rodina Moskva</span></p>
 
   <div class="ph pic" style="left:calc(20 * var(--u));top:calc(1260 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
-  <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(1223 * var(--u))">01</span>
+  <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(1223 * var(--u))">Restaurant</span>
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(1260 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
   <p class="t18" style="left:calc(710 * var(--u));top:calc(1260 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
   <div class="ph pic" style="left:calc(250 * var(--u));top:calc(1953 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(1953 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
   <p class="t18" style="left:calc(710 * var(--u));top:calc(1953 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
-  <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(1916 * var(--u))">02</span>
+  <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(1916 * var(--u))">Restaurant</span>
   <div class="ph pic" style="left:calc(20 * var(--u));top:calc(2568 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
-  <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(2531 * var(--u))">03</span>
+  <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(2531 * var(--u))">Members’ club</span>
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(2568 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
   <p class="t18" style="left:calc(710 * var(--u));top:calc(2568 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
   <div class="ph pic" style="left:calc(250 * var(--u));top:calc(3261 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(3261 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
   <p class="t18" style="left:calc(710 * var(--u));top:calc(3261 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
-  <span class="n" style="text-align:right;left:calc(643 * var(--u));top:calc(3224 * var(--u))">04</span>
+  <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(3224 * var(--u))">Private residence</span>
 
   <svg class="morph" viewBox="0 0 200 300" aria-hidden="true" style="left:calc(610 * var(--u));top:calc(3853 * var(--u));width:calc(320 * var(--u));height:calc(480 * var(--u));"><path class="mb" d=""/><path class="ml" d=""/><path class="mh" d=""/><path class="mx" d=""/><path class="my" d=""/></svg>
   <i class="hl" style="top:calc(3973 * var(--u))"></i>
@@ -294,21 +300,21 @@
 
   <div class="tagged" style="left:calc(250 * var(--u));top:calc(4478 * var(--u));"><p class="t big2">Story</p><span class="yr" aria-hidden="true"></span></div>
   <p class="t18" data-year="2019" style="left:calc(710 * var(--u));top:calc(4498 * var(--u));width:calc(210 * var(--u));">It began with one wheel, a borrowed kiln and a shared studio.</p>
-  <p class="t18" data-year="2020" style="left:calc(710 * var(--u));top:calc(4618 * var(--u));width:calc(210 * var(--u));">A second room, a second kiln, and the first interiors.</p>
-  <p class="t18" data-year="2021" style="left:calc(710 * var(--u));top:calc(4738 * var(--u));width:calc(210 * var(--u));">The first restaurant commissions: a hundred plates, none the same.</p>
-  <p class="t18" data-year="2022" style="left:calc(710 * var(--u));top:calc(4858 * var(--u));width:calc(210 * var(--u));">Glazes took over the shelves: warm, matte, never flat.</p>
-  <p class="t18" data-year="2023" style="left:calc(710 * var(--u));top:calc(4978 * var(--u));width:calc(210 * var(--u));">The shop opened, so every piece can live in someone's home.</p>
+  <p class="t18" data-year="2020" style="left:calc(710 * var(--u));top:calc(4588 * var(--u));width:calc(210 * var(--u));">A second room, a second kiln, and the first interiors.</p>
+  <p class="t18" data-year="2021" style="left:calc(710 * var(--u));top:calc(4678 * var(--u));width:calc(210 * var(--u));">The first restaurant commissions: a hundred plates, none the same.</p>
+  <p class="t18" data-year="2022" style="left:calc(710 * var(--u));top:calc(4768 * var(--u));width:calc(210 * var(--u));">Glazes took over the shelves: warm, matte, never flat.</p>
+  <p class="t18" data-year="2023" style="left:calc(710 * var(--u));top:calc(4858 * var(--u));width:calc(210 * var(--u));">The shop opened, so every piece can live in someone's home.</p>
   <a class="t18 more" style="display:none;left:calc(710 * var(--u));top:calc(5076 * var(--u));" href="#story">More →</a>
   <div class="dot" style="left:calc(613 * var(--u));top:calc(4484.5 * var(--u));"></div>
   <div class="dot" style="display:none;left:calc(613 * var(--u));top:calc(4559.5 * var(--u));"></div>
-  <a class="t18 credit" style="left:50%;translate:-50% 0;top:calc(5190 * var(--u));white-space:nowrap;" href="https://skip.design" target="_blank" rel="noopener">Made by Skip Design<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a>
-  <p class="t18 credit" style="left:0;top:calc(5209 * var(--u));width:100%;text-align:center;">With love for Dirty Hands ♥</p>
-  <div class="ph bar" style="--i:0;left:calc(20.00 * var(--u));top:calc(5292 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:1;left:calc(250.17 * var(--u));top:calc(5292 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:2;left:calc(480.34 * var(--u));top:calc(5292 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:3;left:calc(710.51 * var(--u));top:calc(5292 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:4;left:calc(940.68 * var(--u));top:calc(5292 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:5;left:calc(1170.85 * var(--u));top:calc(5292 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <a class="t18 credit" style="left:50%;translate:-50% 0;top:calc(5070 * var(--u));white-space:nowrap;" href="https://skip.design" target="_blank" rel="noopener">Made by Skip Design<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a>
+  <p class="t18 credit" style="left:0;top:calc(5089 * var(--u));width:100%;text-align:center;">With love for Dirty Hands ♥</p>
+  <div class="ph bar" style="--i:0;left:calc(20.00 * var(--u));top:calc(5172 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:1;left:calc(250.17 * var(--u));top:calc(5172 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:2;left:calc(480.34 * var(--u));top:calc(5172 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:3;left:calc(710.51 * var(--u));top:calc(5172 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:4;left:calc(940.68 * var(--u));top:calc(5172 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:5;left:calc(1170.85 * var(--u));top:calc(5172 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
 </section>
 
 <!-- extra scroll: the strip of pictures rises to 20 from the top, then the page starts over -->
@@ -316,7 +322,7 @@
 
 </main>
 <div class="ct"><a class="ctl" href="mailto:">Contact<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a></div>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="pencil" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="3" result="w"/><feDisplacementMap in="SourceGraphic" in2="w" scale="5" xChannelSelector="R" yChannelSelector="G" result="d"/><feTurbulence type="fractalNoise" baseFrequency="1.3" numOctaves="2" seed="5" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 2.6 -.95" result="gm"/><feComposite in="d" in2="gm" operator="in"/></filter><filter id="soak" x="-4%" y="-25%" width="108%" height="150%"><feTurbulence type="fractalNoise" baseFrequency=".011 .028" numOctaves="3" seed="7" result="n"/><feDisplacementMap id="soakDisp" in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G" result="d"/><feGaussianBlur id="soakBlur" in="d" stdDeviation="0"/></filter></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="pencil" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="3" result="w"/><feDisplacementMap in="SourceGraphic" in2="w" scale="5" xChannelSelector="R" yChannelSelector="G" result="d"/><feTurbulence type="fractalNoise" baseFrequency="1.3" numOctaves="2" seed="5" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 5 -1.1" result="gm"/><feComposite in="d" in2="gm" operator="in"/></filter><filter id="soak" x="-4%" y="-25%" width="108%" height="150%"><feTurbulence type="fractalNoise" baseFrequency=".011 .028" numOctaves="3" seed="7" result="n"/><feDisplacementMap id="soakDisp" in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G" result="d"/><feGaussianBlur id="soakBlur" in="d" stdDeviation="0"/></filter></svg>
 <div class="tools" role="group" aria-label="Imprint tool" hidden>
   <button type="button" data-tool="cap" aria-pressed="false">Круглый штамп</button>
   <button type="button" data-tool="fork" aria-pressed="false">Параллельные бороздки</button>
@@ -326,7 +332,7 @@
 <div class="ov" id="storyView" aria-hidden="true">
   <div class="ov-scrim"></div>
   <div class="t big2 sv-title">Story</div>
-    <div class="sv-items"><div class="sv-item" style="left:calc(20 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2019</span><p class="t18 sv-lead" data-i="0"></p><p class="t18 sv-more" data-more="It began with one wheel, a borrowed kiln and a shared studio. The first pieces were plates for friends, uneven and honest, and that honesty became the signature."></p></div><div class="sv-item" style="left:calc(250 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2020</span><p class="t18 sv-lead" data-i="1"></p><p class="t18 sv-more" data-more="A second room, a second kiln. The studio started to work with interiors: tables, wall panels and the quiet objects that sit between furniture and art."></p></div><div class="sv-item" style="left:calc(480 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2021</span><p class="t18 sv-lead" data-i="2"></p><p class="t18 sv-more" data-more="The first restaurant commissions arrived. A hundred identical plates are never identical when each one is made by hand, and that turned out to be the point."></p></div><div class="sv-item" style="left:calc(710 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2022</span><p class="t18 sv-lead" data-i="3"></p><p class="t18 sv-more" data-more="Glazes took over the shelves. Months of tests gave the palette that the studio is known for today: warm, matte, slightly irregular, never flat."></p></div><div class="sv-item" style="left:calc(940 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2023</span><p class="t18 sv-lead" data-i="4"></p><p class="t18 sv-more" data-more="The shop opened, and with it the idea that every object should be able to live in someone's home, not only in a showroom."></p></div></div>
+    <div class="sv-items"><div class="sv-item" style="left:calc(20 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2019</span><p class="t18 sv-lead" data-i="0"></p><p class="t18 sv-more" data-more="The first pieces were plates for friends, uneven and honest, and that honesty became the signature."></p></div><div class="sv-item" style="left:calc(250 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2020</span><p class="t18 sv-lead" data-i="1"></p><p class="t18 sv-more" data-more="The studio started to work with interiors: tables, wall panels and the quiet objects that sit between furniture and art."></p></div><div class="sv-item" style="left:calc(480 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2021</span><p class="t18 sv-lead" data-i="2"></p><p class="t18 sv-more" data-more="Each one is made by hand, so a hundred identical plates are never identical, and that turned out to be the point."></p></div><div class="sv-item" style="left:calc(710 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2022</span><p class="t18 sv-lead" data-i="3"></p><p class="t18 sv-more" data-more="Months of tests gave the palette that the studio is known for today: warm, matte, slightly irregular."></p></div><div class="sv-item" style="left:calc(940 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2023</span><p class="t18 sv-lead" data-i="4"></p><p class="t18 sv-more" data-more="With it came the idea that every object should be able to live in a home, not only in a showroom."></p></div></div>
 </div>
 <div class="ov" id="catView" aria-hidden="true">
   <div class="ov-scrim"></div>
@@ -538,7 +544,7 @@
   const cards = $('.hc'), s2 = one('.s2'), s3 = one('.s3'), lisa = one('#lisa'), karen = one('#karen');
   const fan = $('.fan i'), nums = $('.s2 .num'), texts = $('.s2 .rt');
   const pics = $('.pic'), partners = $('.partner'), plab = one('.plab-in');
-  partners.forEach((el, i) => el.addEventListener('click', () => { const pc = pics[i]; if (!pc) return; scrollTo({ top: pc.getBoundingClientRect().top + scrollY - (innerHeight - pc.offsetHeight) / 2, behavior: 'smooth' }); }));   // a name is an anchor: it takes you to its case
+  partners.forEach((el, i) => el.addEventListener('click', () => { const pc = pics[i]; if (!pc) return; const to = pc.getBoundingClientRect().top + scrollY - (innerHeight - pc.offsetHeight) / 2, sc = { v: scrollY }; gsap.to(sc, { v: to, duration: Math.min(1.8, 0.9 + Math.abs(to - scrollY) / innerHeight * 0.25), ease: 'power3.inOut', overwrite: true, onUpdate() { scrollTo(0, sc.v); } }); }));   // a slow, soft glide rather than the browser's own jump   // a name is an anchor: it takes you to its case
 
   // "Clients about us": the quote on the left (two lines between ruled lines, one column wide) changes with the client that is level with the labels
   // (placeholder quotes: to be replaced with the real ones)
@@ -558,6 +564,9 @@
 
 
   const X0 = i => 20 + 230.17 * i, W0 = 210.2, H0 = [262.7, 210, 262.7, 210, 262.7, 262.7];
+  // the panel: where the tattooed relief stands in its interior photo was found by matching the cut-out against the photo (centre .5625/.361 of it, .205 x .451 of its size); in the pile the cut-out lies contained in 218.5 x 216, its own edges at 214..824 x 37..911 of 1000, so the photo is scaled and placed to put the relief exactly there
+  const TOP_FR = {}, PILE_FR = { 0: (() => { const s = 216 / 1000, ox = (218.5 - 216) / 2 + 214 * s, oy = 37 * s, oh = 874 * s, h = oh / .451, w = h * 1200 / 803; return { x: ox - (.5625 - .205 / 2) * w, y: oy - (.361 - .451 / 2) * h, w, h }; })() };
+  const MIDF = 0.44;                       // where the ruled line of the first screen stands, as a share of the screen height (the cards land on it, the menu starts under it)
   const PX = 700, PY0 = 34, PY1 = 1132;    // x of the work at three o'clock on the wheel; the y of the wheel's centre inside block 2 while it is held (design px), from the landing down to the last line (1132)
   const PW = 218.5, PH = 216;              // picture size
   const SHADE = [225, 212, 230, 216, 226, 210];
@@ -700,8 +709,8 @@
       const tl = gsap.timeline({ paused: true }); capTl.push(tl); pairs.push({ st: { kill() {}, start: Infinity }, tl });   // played from the tick, together with the client's name lighting up
       (tl => {
         n && fadeIn(tl, n, .3, 0);
-        riseIn(tl, inner, { at: 0, each: .1 });                                              // first the words ...
-        fanIn(tl, lines, { origin: rtl ? '100% 50%' : '0 50%', each: .09, at: '>-0.55' });   // ... then the lines draw
+        fanIn(tl, lines, { origin: rtl ? '100% 50%' : '0 50%', each: .04, at: 0, dur: .38 }); // first the lines draw, quickly ...
+        riseIn(tl, inner, { at: '>-0.1', each: .06, dur: .6 });                                            // ... and only when they are done the words rise onto them
       })(tl);
     });
 
@@ -751,13 +760,47 @@
   // ---- the two views. Story ("More"): the page leaves, only the title stays, the paragraphs line up horizontally, the squares become a timeline.
   // A case (click on a picture): the picture grows above the page, its lines stretch to two columns, two paragraphs come in below as a staircase.
   // In both the pointer turns into "Close"; a click anywhere (or Esc) brings the page back.
+  // ---- sound: a long, slow museum hum made in the browser (no files): a few soft low tones that breathe, a little air, and a long room around them. Off until the switch is pressed; inside a view (a category, a case, the Story) it goes muffled, as if behind a wall
+  const sndBtn = one('.snd'); let actx = null, sMaster = null, sLp = null, sOn = false;
+  function startSound() {
+    const C = actx = new (window.AudioContext || window.webkitAudioContext)();
+    sMaster = C.createGain(); sMaster.gain.value = 0; sLp = C.createBiquadFilter(); sLp.type = 'lowpass'; sLp.frequency.value = 1600; sLp.Q.value = .4;
+    const dry = C.createGain(), wet = C.createGain(), rv = C.createConvolver(); dry.gain.value = .55; wet.gain.value = .8;
+    const len = C.sampleRate * 5, ir = C.createBuffer(2, len, C.sampleRate);           // a long, dark room
+    for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2); }
+    rv.buffer = ir; const bus = C.createGain(); bus.connect(dry); bus.connect(rv); rv.connect(wet); dry.connect(sLp); wet.connect(sLp); sLp.connect(sMaster); sMaster.connect(C.destination);
+    [[55, 'sine', .22], [82.4, 'sine', .12], [110, 'triangle', .07], [164.8, 'sine', .04], [220.6, 'sine', .025]].forEach(([f, type, g], i) => {   // A, E, A, E, A: an open, quiet chord
+      const o = C.createOscillator(), og = C.createGain(), lfo = C.createOscillator(), lg = C.createGain();
+      o.type = type; o.frequency.value = f; o.detune.value = (i % 2 ? 4 : -3); og.gain.value = g;
+      lfo.frequency.value = .03 + i * .017; lg.gain.value = g * .6; lfo.connect(lg); lg.connect(og.gain);   // every tone swells and fades on its own slow breath
+      o.connect(og); og.connect(bus); o.start(); lfo.start();
+    });
+    const nb = C.createBuffer(1, C.sampleRate * 2, C.sampleRate), nd = nb.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
+    const ns = C.createBufferSource(), bp = C.createBiquadFilter(), ng = C.createGain(); ns.buffer = nb; ns.loop = true; bp.type = 'bandpass'; bp.frequency.value = 420; bp.Q.value = .7; ng.gain.value = .018;   // the air of a big hall
+    ns.connect(bp); bp.connect(ng); ng.connect(bus); ns.start();
+  }
+  function setSound(on) {
+    sOn = on; sndBtn.setAttribute('aria-pressed', on); if (on && !actx) startSound(); if (!actx) return;
+    if (actx.state === 'suspended') actx.resume();
+    const t = actx.currentTime; sMaster.gain.cancelScheduledValues(t); sMaster.gain.setValueAtTime(sMaster.gain.value, t); sMaster.gain.linearRampToValueAtTime(on ? .5 : 0, t + (on ? 2.5 : .8));
+    if (on) waveLoop();
+  }
+  function muffle(on) { if (!sLp) return; const t = actx.currentTime; sLp.frequency.cancelScheduledValues(t); sLp.frequency.setValueAtTime(sLp.frequency.value, t); sLp.frequency.exponentialRampToValueAtTime(on ? 380 : 1600, t + 1.2); }
+  const wave = sndBtn.querySelector('path');
+  function waveLoop(now = performance.now()) {                            // the line moves like a slow wave while the sound plays and lies flat again when it stops
+    let d = 'M0 5'; const amp = sOn ? 2.6 : 0; for (let x = 2; x <= 40; x += 2) d += `L${x} ${(5 + amp * Math.sin(x / 40 * Math.PI * 3 - now / 420) * Math.sin(x / 40 * Math.PI)).toFixed(2)}`;
+    wave.setAttribute('d', d); if (sOn) requestAnimationFrame(waveLoop);
+  }
+  sndBtn.addEventListener('click', e => { e.stopPropagation(); sndBtn._touched = true; setSound(!sOn); });
+  addEventListener('pointerdown', e => { if (!sndBtn._touched && !sOn && !sndBtn.contains(e.target)) { sndBtn._touched = true; setSound(true); } }, { capture: true });   // the first click anywhere starts the sound (the browser allows sound only after a click); after that only the switch turns it off and on
+
   const htmlEl = document.documentElement, closeCur = one('.close-cursor:not(.more-cursor)'), moreCur = one('.more-cursor');
   let openView = null;
   const inStory = cy => { const ps = $('[data-year]'), a = ps[0].getBoundingClientRect(), b = ps[ps.length - 1].getBoundingClientRect(); return cy > a.top - 40 * U && cy < b.bottom + 40 * U; };   // the whole Story block: from a little above its first paragraph to a little below its last
   addEventListener('pointermove', e => { if (openView) closeCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`;
     const onStory = !openView && inStory(e.clientY) && !e.target.closest('a, nav, .nav'); htmlEl.classList.toggle('on-story', onStory); moreCur.style.opacity = onStory ? 1 : 0; if (onStory) moreCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`; }, { passive: true });
   addEventListener('keydown', e => { if (e.key === 'Escape' && openView) openView.close(); });
-  function lockView(on) { htmlEl.classList.toggle('ov-open', on); htmlEl.style.overflow = on ? 'hidden' : ''; closeCur.style.opacity = on ? 1 : 0; }
+  function lockView(on) { muffle(on); htmlEl.classList.toggle('ov-open', on); htmlEl.style.overflow = on ? 'hidden' : ''; closeCur.style.opacity = on ? 1 : 0; }
   const pageEls = () => [one('.page'), ...$('.hc, .nav, .ct, .tagline, .midstrip, .ttl')];
 
   const SV = one('#storyView');
@@ -766,9 +809,9 @@
     const word = one('.tagged .big2'), r0 = word.getBoundingClientRect();
     const srcItems = $('#storyView .sv-item'), title = one('.sv-title');
     const data = srcItems.map((it, i) => ({ year: it.querySelector('.sv-year').textContent, lead: storyP[i].dataset.text, more: it.querySelector('.sv-more').dataset.more }));
-    SV.classList.add('open'); lockView(true);
+    SV.classList.add('open'); lockView(true); one('.tagged').style.visibility = 'hidden';   // only one Story word on the screen: the view's copy takes over from it
     gsap.set(title, { x: 0, y: 0 }); const r1 = title.getBoundingClientRect();
-    const tl = gsap.timeline({ onReverseComplete() { SV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); } });
+    const tl = gsap.timeline({ onReverseComplete() { one('.tagged').style.visibility = ''; SV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); } });
     tl.to(pageEls(), { opacity: 0, y: -24, duration: .5, ease: 'power2.in' }, 0);
     tl.fromTo('#storyView .ov-scrim', { opacity: 0 }, { opacity: 1, duration: .45, ease: 'power2.out' }, 0.05);
     tl.fromTo(title, { x: r0.left - r1.left, y: r0.top - r1.top }, { x: 0, y: 0, duration: .95, ease: EASE }, 0.15);                 // the Story word stays: it only moves to its new place
@@ -1681,10 +1724,10 @@
     // the width of the page changes when the scrollbar appears or goes (no resize event for that): re-measure so everything stays on the grid
     if (root.clientWidth !== lastW) { measure(); clearTimeout(rebuild); rebuild = setTimeout(buildMotion, 200); }
     // reads
-    const y = scrollY / U, s2Top = s2.offsetTop / U, s3Top = s3.offsetTop / U;
+    const y = scrollY / U, s2Top = s2.offsetTop / U, s3Top = s3.offsetTop / U, MID = V * MIDF, restTop0 = one('.rest').offsetTop / U;   // MID: the line across the first screen stands a little above the middle
     const s2View = s2.getBoundingClientRect().top / U;
     const picTops = pics.map(p => p.getBoundingClientRect().top / U);
-    const labY = plab.getBoundingClientRect().top / U, partnerTops = partners.map(p => p.getBoundingClientRect().top / U - (p._pin || 0) - (gsap.getProperty(p, 'y') || 0) / U);
+    const labY = plab.getBoundingClientRect().top / U, partnerTops = partners.map(p => restTop0 + (p._d ?? (p._d = parseFloat(p.style.top.match(/calc\(([\d.]+)/)[1]))) - y);   // where each name stands in the layout (not where it is drawn: held and moved ones would feed back into this)
     // the names are the names of the projects: once the last one has come up to the labels they stay where they are while the cases scroll under them (inverted over the photos), and go on up with the last case
     const shownP = partners.filter(p => p.style.display !== 'none'), lastP = partners.indexOf(shownP[shownP.length - 1]);
     const PIN_TOP = V / 2 - ((shownP.length - 1) * 117 + 98) / 2 + (shownP.length - 1) * 117;   // the last name's place when the whole group stands in the middle of the screen: there they stop
@@ -1695,11 +1738,12 @@
       p.classList.toggle('pinned', pin > 0); });
 
     // menu sticks 20 from the top: it starts 236 above the bottom of the first screen and rises with the scroll
-    nav.style.top = Math.max(20, V / 2 + 12 - y) * U + 'px';                     // the row stands just under the middle line and rises with the scroll
+    nav.style.top = Math.max(20, MID + 12 - y) * U + 'px';                     // the row stands just under the middle line and rises with the scroll
     // the label of the row stays on the menu's line: it goes up with the menu and stays up there until the title melts away
     {
-      const capH = tagline.offsetHeight / U, navTop = Math.max(20, V / 2 + 12 - y);
+      const capH = tagline.offsetHeight / U, navTop = Math.max(20, MID + 12 - y);
       tagline.style.top = (navTop + (nav.offsetHeight / U - capH) / 2) * U + 'px';             // always on the menu's line
+      sndBtn.style.top = (navTop + (nav.offsetHeight / U - sndBtn.offsetHeight / U) / 2) * U + 'px';   // the sound switch rides on the same line, at the left edge
     }
     // the title soaks into the background once it is released and led away: the edges bleed like water in clay, and by the gray block it has dried into nothing
     const release = ttlBox.offsetHeight / U - V + 40;                 // scroll position where the stuck title lets go
@@ -1729,7 +1773,7 @@
     bigrows.forEach(b => { b.style.transform = `translateX(${(+b.style.getPropertyValue('--dx') * (1 - slideP) * U).toFixed(1)}px)`; });
     nav.style.opacity = clamp((scrollMax() - scrollY) / (innerHeight * 0.5));
     contact.style.opacity = nav.style.opacity;                              // fades out together with the menu at the end of the page
-    contact.classList.toggle('on', V / 2 + 12 - y <= 20);    // the menu has reached the top: Contact comes in
+    contact.classList.toggle('on', MID + 12 - y <= 20);    // the menu has reached the top: Contact comes in
     // once stuck, the menu slides along with the scroll towards Contact until 40 are left between them
     const stickY = V / 2 - 8, slide = clamp((y - stickY) / 600);
     const gapTo = contactLink.getBoundingClientRect().left - 40 * U - (nav.offsetLeft + nav.offsetWidth);
@@ -1742,12 +1786,12 @@
     mv += (clamp(lag / 30) - mv) * 0.25; if (mv < 0.01 && lag < 0.25) mv = 0;
     const yc = yS;
     // 1 → 2: from the first bit of scroll the cards slide together into one pile, turn into cut-outs there, and the pile opens into a wheel that stays on the screen
-    const E = s2Top + PY0 - V / 2;
+    const E = s2Top + PY0 - MID;
     const t = ease(yc / E), landed = yc >= E;
     // block 2 scrolls under the wheel: its centre stays in the middle of the screen until the table's last line has come up to it
-    const py = Math.min(PY1, Math.max(PY0, yc + V / 2 - s2Top));
+    const py = Math.min(PY1, Math.max(PY0, yc + MID - s2Top));
     // the wheel: six cut-outs on a flat circle, upright like the cabins of a big wheel; the scroll turns it so that the work of the paragraph level with its centre stands at three o'clock, right beside the text
-    const R = Math.max(150, Math.min(250, V / 2 - 60 - PH / 2)), WX = PX - R, WY = Math.min(s2Top + PY1, yc + V / 2);   // centre in page coordinates, mid-screen from the start: three o'clock is where the single picture used to be held
+    const R = Math.max(150, Math.min(250, V / 2 - 60 - PH / 2)), WX = PX - R, WY = Math.min(s2Top + PY1, yc + MID);   // centre in page coordinates, mid-screen from the start: three o'clock is where the single picture used to be held
     const pc = texts.map(p => +p.dataset.c0);                         // fixed middles: the flow moves the paragraphs, but must not move the wheel
     let p = 0; for (let j = 0; j < pc.length - 1; j++) if (py > pc[j]) p = j + Math.min(1, (py - pc[j]) / (pc[j + 1] - pc[j]));   // 0 until the first paragraph, 5 from the last one on, turning with the scroll in between
     midStrip.classList.toggle('off', landed);                                              // gone once the table's first line has taken its place
@@ -1780,6 +1824,11 @@
       const cx = lerp(lerp(X0(i) + W0 / 2, PX + SPH * 0.9 * sx, wIn), tx, 1 - wOut);
       const cy = lerp(lerp(20 + h / 2, V * 0.4 + SPH * 0.55 * sy, wIn) + yc, ty, 1 - wOut);   // page coordinates; the ring turns a little above the middle of the screen
       c.style.width = w * U + 'px'; c.style.height = hh * U + 'px';
+      if (PILE_FR[i]) {                                                   // the photo glides from its framing in the top row to the one where the work lies exactly over its own cut-out in the pile: when the photo goes, only the background seems to vanish
+        const A = TOP_FR[i] || (TOP_FR[i] = frameFor(i, 210.2, CARD_H[i])), B = PILE_FR[i], e = ease(q), fx = lerp(A.x, B.x, e), fy = lerp(A.y, B.y, e), fw = lerp(A.w, B.w, e), fh = lerp(A.h, B.h, e);
+        const im = c.querySelector('.hc-altimg'); Object.assign(im.style, { left: fx * U + 'px', top: fy * U + 'px', width: fw * U + 'px', height: fh * U + 'px' });
+        c._hs.forEach(st => { const b = st.firstElementChild; b.style.backgroundSize = `${(fw * U).toFixed(1)}px ${(fh * U).toFixed(1)}px`; b.style.backgroundPosition = `${(fx * U).toFixed(1)}px ${(fy * U).toFixed(1)}px`; });
+      }
       // fixed to the screen while the wheel is held, so it never lags behind a fast scroll
       const fixed = yc < E + PY1 - PY0;
       c.style.position = fixed ? 'fixed' : 'absolute';
@@ -1831,14 +1880,20 @@
     // partners: the row level with the sticky labels is black
     let best = 0, bd = Infinity;
     partnerTops.forEach((top, i) => { const dd = Math.abs(top + 38 - labY); if (dd < bd) { bd = dd; best = i; } });
-    let caseNow = -1, caseLit = -1; if (y > pinY0) { let bc = 0, cd = Infinity; picTops.forEach((t, k) => { const dd = Math.abs(t + pics[k].offsetHeight / U / 2 - V / 2); if (dd < cd) { cd = dd; bc = k; } }); best = cd < V * 0.45 ? partners.indexOf(shownP[Math.min(bc, shownP.length - 1)]) : -1; caseNow = bc; if (best >= 0) caseLit = bc; }
-    capTl.forEach((tl, k) => { if (k === caseLit && !tl._on) { tl._on = true; tl.timeScale(1).play(); } else if (tl._on && picTops[k] > V) { tl._on = false; tl.timeScale(2.2).reverse(); } });   // a case's caption comes in at the same moment as its client's name turns black   // on the right all the names are grey, only the case we are in is black   // in the cases the name of the case on the screen is the one in black
+    let caseNow = -1, caseLit = -1; if (y > pinY0) { let bc = 0, cd = Infinity; picTops.forEach((t, k) => { const dd = Math.abs(t + pics[k].offsetHeight / U / 2 - V / 2); if (dd < cd) { cd = dd; bc = k; } }); const nm = shownP[Math.min(bc, shownP.length - 1)], nr = nm.getBoundingClientRect(), nMid = (nr.top + nr.height / 2) / U, level = nMid > picTops[bc] && nMid < picTops[bc] + pics[bc].offsetHeight / U;   // the case and its client's name are level: the name is between the top and the bottom of the picture
+      best = level ? partners.indexOf(nm) : -1; caseNow = bc; if (best >= 0) caseLit = bc; }
+    capTl.forEach((tl, k) => { if (k === caseLit && !tl._on) { tl._on = true; tl.timeScale(1).play(); } else if (tl._on && k !== caseLit) { const r = shownP[Math.min(k, shownP.length - 1)].getBoundingClientRect(); if (picTops[k] > (r.top + r.height / 2) / U) { tl._on = false; tl.timeScale(2.2).reverse(); } } });   // scrolled back so that the picture is below its name again: the caption goes   // a case's caption comes in at the same moment as its client's name turns black   // on the right all the names are grey, only the case we are in is black   // in the cases the name of the case on the screen is the one in black
     partners.forEach((el, i) => el.classList.toggle('on', i === best));
-    { const side = y > pinY0 ? 1 : 0;   // as we come to the cases the names move over to the right edge, the first one pulling the others like a train, and stay there to the end; back again when we scroll back up
-      if (side !== tick._side) { tick._side = side; plab.style.opacity = side ? 0 : 1; /* the clients' words go when the names move over to the right */ shownP.forEach((el, k) => {   // on the right they are a size smaller, like an h3 (70%)
-        const L = el.firstElementChild, a = L.firstElementChild.getBoundingClientRect(), b = L.lastElementChild.getBoundingClientRect(), x0 = a.left - gsap.getProperty(el, 'x'), wd = (b.right - a.left) / (parseFloat(getComputedStyle(el).fontSize) / (108 * U));
-        const n = shownP.length, T = PIN_TOP - (n - 1 - k) * 117, D = V / 2 - ((n - 1) * 82 + 69) / 2 + k * 82;   // on the right the rows close up with the smaller type, the group standing in the middle of the screen
-        gsap.to(el, { x: side ? 1380 * U - x0 - wd * 0.7 : 0, y: side ? (D - T) * U : 0, fontSize: (side ? 75.6 : 108) * U, duration: .9, ease: EASE, delay: k * .07, overwrite: true, onComplete() { if (!side) el.style.fontSize = ''; } }); }); } }
+    { // as we come to the cases (a little after the names have stopped) they move over to the right edge with the scroll itself, the first one pulling the others like a train; on the right they are a size smaller, like an h3 (70%), and the rows close up round the middle of the screen; scrolling back takes them back the same way
+      const S0 = pinY0 + 140, n = shownP.length;
+      plab.style.opacity = (1 - clamp((y - S0) / 120)).toFixed(3);    // the clients' words go as the names move over
+      shownP.forEach((el, k) => {
+        const e = ease(clamp((y - S0 - k * 45) / 300));
+        if (e === 0 || el._w == null) { const L = el.firstElementChild, a = L.firstElementChild.getBoundingClientRect(), b = L.lastElementChild.getBoundingClientRect(); if (e === 0) { el._x0 = a.left / U; el._w = (b.right - a.left) / U; } }   // measured while it stands in its own place
+        const T = PIN_TOP - (n - 1 - k) * 117, D = V / 2 - ((n - 1) * 82 + 69) / 2 + k * 82, fs = 108 + (75.6 - 108) * e;
+        if (e === 0) { if (el._shifted) { el._shifted = false; gsap.set(el, { x: 0, y: 0 }); el.style.fontSize = ''; } return; }
+        el._shifted = true; gsap.set(el, { x: (1380 - el._x0 - el._w * fs / 108) * e * U, y: (D - T) * e * U }); el.style.fontSize = fs * U + 'px';
+      }); }
     if (best >= 0) setQuote(best);
     // names start a bit further apart and close up like train cars as they rise to the labels (the row level with them sits at its own place)
     partners.forEach((el, i) => { const pf = el.firstElementChild, onScreen = partnerTops[i] < V * 0.9; if (onScreen !== !!pf._in) { pf._in = onScreen; typeName(pf, onScreen); } });   // the names come in one letter at a time when their row comes up, and go back the same way
@@ -1874,7 +1929,7 @@
     const nv = document.createElement('nav'); nv.className = 'nav endnav'; nv.innerHTML = nav.innerHTML; nv.style.left = nav.style.left;
     nv.querySelectorAll('a').forEach(a => { a.style.animation = 'none'; a.style.transform = 'none'; a.style.opacity = '1'; });
     document.body.append(ttl, nv);
-    nv.style.top = innerHeight / 2 + 12 * U + 'px';
+    nv.style.top = innerHeight * MIDF + 12 * U + 'px';
     const below = 270 * U, tt = (now, d0, d) => 1 - ease(clamp((now - t1 - d0) / d));       // 1 = still below the screen, 0 = in place
     (function f(now) {
       let busy = false;
