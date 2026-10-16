@@ -20,7 +20,7 @@
   .page { position: relative; width: 100%; overflow: clip; }
   section { position: relative; width: 100%; }
   .hero > *, .s2-in > *, .rest > *, .gray > *, .card2 > *, .list > *, .bigrow > * { position: absolute; }
-  .hero { height: calc(100vh + 360 * var(--u)); }   /* the extra 360 make the first scroll (the cards flying into the table) slower */
+  .hero { height: calc(115vh + 478 * var(--u)); }   /* a long first scroll, so the cards fly into the table slowly (30% longer than the 100vh + 360 it was) */
   .s2 { height: calc(952 * var(--u)); margin-bottom: calc(348 * var(--u)); }
   .s2-in { position: relative; height: 100%; }
   .s3 { height: calc(100vh + 1260 * var(--u)); z-index: 3; }
@@ -64,15 +64,15 @@
   .bigrow .cnt { width: calc(40 * var(--u)); text-align: left; left: 100%; margin-left: calc(6 * var(--u)); top: calc(18 * var(--u)); }   /* counter sits at the top right of the word, as in the design */
   .hl { position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); border-top: 1px solid var(--rule); height: 0; }
   .dot { opacity: .1; position: absolute; width: calc(10 * var(--u)); height: calc(10 * var(--u)); background: #000; }
-  .bar { background: #f2f2f2; }   /* the same strip as the cards at the very top */
+  .bar { background: #f2f2f2; will-change: transform; }   /* its own layer while it climbs: Safari left thin trails of it behind otherwise */   /* the same strip as the cards at the very top */
   /* the ruled line through the middle of the first screen: the first line of the table. The cards gather onto it, and when they have landed the whole table opens from it */
   .midstrip { position: fixed; left: calc(20 * var(--u)); right: calc(20 * var(--u)); top: 50vh; height: 0; border-top: 1px solid var(--rule); z-index: 4; pointer-events: none; opacity: 0; }
   .midstrip.off { opacity: 0; }   /* the strip IS the first line of the table: at the landing it is swapped for the table's own line 0, which sits exactly on it */
   /* a small caption above the line in the middle of the first screen; when the menu rising from below reaches its level, it goes up with the menu and stays up there until the title melts into the background */
   .tagline { position: fixed; left: calc(710 * var(--u)); top: calc(50vh + 12 * var(--u)); white-space: nowrap; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; z-index: 101; pointer-events: none; opacity: 0; }   /* the label of the row: the menu stands next to it, on the same line, under the middle line */
   /* hero cards: fly from the top row into the second block */
-  .hc .hs { display: none; position: absolute; top: 0; height: 100%; overflow: hidden; left: calc(var(--j) * var(--sw)); width: calc(var(--sw) + 1px); backface-visibility: visible; }
-  .hc .hs i { position: absolute; top: 0; height: 100%; left: calc(-1 * var(--j) * var(--sw)); width: var(--cw); background-size: cover; background-position: center; background-repeat: no-repeat; }
+  .hc .hs { display: none; position: absolute; top: 0; height: 100%; overflow: hidden; left: calc(var(--j) * var(--sw) - 1px); width: calc(var(--sw) + 3px); backface-visibility: visible; }   /* the strips overlap a little so no light seams show between them */
+  .hc .hs i { position: absolute; top: 0; height: 100%; left: calc(-1 * var(--j) * var(--sw) + 1px); width: var(--cw); background-size: cover; background-position: center; background-repeat: no-repeat; }
   .hc.drum .hs { left: 0; width: 100%; top: calc(var(--j) * var(--sh)); height: calc(var(--sh) + 1px); backface-visibility: hidden; }
   .hc.drum .hs i { left: 0; width: 100%; top: calc(-1 * var(--j) * var(--sh)); height: var(--ch); }
   .hc.bent { background: none !important; transform-style: preserve-3d; }   /* flying in the ring, the card is cut into strips and bent: a picture glued inside a cylinder */
@@ -1328,8 +1328,11 @@
     }
   }
 
+  let shown = true;
   function tick() {
     pump();
+    const any = content.size > 0 || tiles.size > 0;                // with no clay on it the blended layer is taken out of the page, so it costs nothing and cannot smear what moves under it
+    if (any !== shown) { shown = any; cv.style.display = any ? 'block' : 'none'; }
     const t = now(), tw = Math.ceil(W / TILE);
     if (t - lastFade >= FADE_STEP) { lastFade = t; fade(t); }
     for (const [idx, until] of tiles) {
