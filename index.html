@@ -1712,8 +1712,15 @@
       c.style.left = (cx - w / 2) * U + 'px'; c.style.top = (cy - hh / 2 - (fixed ? y : 0)) * U + 'px';
       c.classList.toggle('photo', t < 0.5);                                 // photos with their backgrounds on top and while they pile up, cut-outs from there on
       if (t > 0) {                                                          // (at rest on top the hover owns the transform)
-        const rot = PILE[i][2] * gather * (1 - open);
-        c.classList.remove('bent'); c.style.transform = rot ? `rotate(${rot.toFixed(2)}deg)` : '';   // a pile lies a little askew
+        const rot = PILE[i][2] * gather * (1 - open);                       // a pile lies a little askew
+        const bend = landed ? 0 : ease(clamp(t / 0.14)) * ease(clamp((1 - t) / 0.2));   // concave all the way: from the first bit of scroll, through the pile, until they settle flat on the wheel
+        c.classList.toggle('bent', bend > 0.001);
+        if (bend > 0.001) {                                                 // cut into strips and bent: a picture glued inside a cylinder, turned a little towards the middle of the wheel
+          const turn = 38 * bend * Math.max(-1, Math.min(1, (cx - WX) / R)), wpx = w * U, Rc = wpx / (bend * 1.15);
+          c.style.transform = `perspective(${1100 * U}px) rotate(${rot.toFixed(2)}deg) rotateY(${turn.toFixed(1)}deg)`;
+          c.style.setProperty('--cw', wpx + 'px'); c.style.setProperty('--sw', wpx / HS + 'px');
+          c._hs.forEach((st, j) => { const u = ((j + .5) / HS - .5) * wpx, al = u / Rc; st.style.transform = `translate3d(${(Rc * Math.sin(al) - u).toFixed(2)}px,0,${(-Rc * (1 - Math.cos(al))).toFixed(2)}px) rotateY(${al.toFixed(4)}rad)`; st.style.filter = ''; });
+        } else c.style.transform = rot ? `rotate(${rot.toFixed(2)}deg)` : '';
       }
       c.style.filter = '';
       const g = Math.round(landed ? SHADE[i] : lerp(242, 225, t));
