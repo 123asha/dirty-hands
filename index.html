@@ -65,8 +65,8 @@
   .dot { transition: translate .3s var(--ease); }
   .dot.apart-up { translate: 0 calc(-14 * var(--u)); } .dot.apart-down { translate: 0 calc(14 * var(--u)); }   /* the two squares step away from each other and come back */
   .bigrow .cnt { width: calc(40 * var(--u)); text-align: left; left: 100%; margin-left: calc(6 * var(--u)); top: calc(18 * var(--u)); }   /* counter sits at the top right of the word, as in the design */
-  .morph { overflow: visible; pointer-events: none; }
-  .morph path { fill: none; stroke: #000; stroke-width: 1.1; stroke-linejoin: round; vector-effect: non-scaling-stroke; }   /* a vessel drawn in one thin line, in the middle of the words; it turns from one form into the next */
+  .morph { overflow: visible; pointer-events: none; z-index: 2; mix-blend-mode: difference; }   /* over the words: where the line crosses a letter, it turns white */
+  .morph path { fill: none; stroke: #fff; stroke-width: 1.1; stroke-linejoin: round; vector-effect: non-scaling-stroke; }   /* a vessel drawn in one thin line, in the middle of the words; it turns from one form into the next */
   .hl { position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); border-top: 1px solid var(--rule); height: 0; }
   .dot { opacity: .1; position: absolute; width: calc(10 * var(--u)); height: calc(10 * var(--u)); background: #000; }
   .bar { background: #f2f2f2; will-change: transform; }   /* its own layer while it climbs: Safari left thin trails of it behind otherwise */   /* the same strip as the cards at the very top */
@@ -91,7 +91,7 @@
   /* big title: sticks to the bottom of the screen through blocks 1-2, then rests above the gray block */
   .ttl { position: absolute; left: 0; top: 0; width: 100%; height: calc(100vh + 1559.3 * var(--u)); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; z-index: 100; mix-blend-mode: difference; }  /* above everything; inverts wherever it crosses text or blocks */
   .ttl .h1 { color: #fff; pointer-events: auto; position: sticky; bottom: calc(21.7 * var(--u)); height: calc(182.6 * var(--u)); margin: 0 calc(20 * var(--u)); text-align: center; white-space: nowrap; }
-  .rt { width: calc(330 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; }
+  .rt { width: calc(210 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; }
   .rt .ln { display: block; white-space: nowrap; overflow: hidden; padding-bottom: .2em; margin-bottom: -.2em; transition: transform .42s var(--ease); }   /* the line mask; the line itself glides aside when the picture comes close */
   .rt .li { display: block; }
   /* line masks: text rises out of its own line */
@@ -169,6 +169,13 @@
   .cd-track { display: flex; gap: calc(20 * var(--u)); padding-left: calc(20 * var(--u)); width: max-content; will-change: transform; }
   .cd-s { flex: none; height: calc(300 * var(--u)); background: var(--gray) center / cover no-repeat; }
   .cd-end { position: absolute; left: 0; width: 1px; height: 1px; }
+  #catView .cat-cyl { position: absolute; inset: 0; perspective: calc(2200 * var(--u)); perspective-origin: 50% 45%; transform-origin: 50% 45%; }
+  .cat-strip { position: absolute; overflow: hidden; backface-visibility: hidden; will-change: transform, opacity; }
+  .cat-strip i { position: absolute; top: 0; height: 100%; background: #f2f2f2 center / cover no-repeat; }
+  .cat-title { position: absolute; left: calc(20 * var(--u)); top: calc(20 * var(--u)); overflow: hidden; padding: 0 .05em .08em; }
+  .cat-title .c { display: inline-block; white-space: pre; }   /* letter by letter: they come down from above, and go back up when the gallery closes */
+  .cat-text { position: absolute; left: 50%; top: calc(45vh + 254 * var(--u)); width: calc(560 * var(--u)); margin-left: calc(-280 * var(--u)); font-size: calc(28 * var(--u)); line-height: 1.12; letter-spacing: -.01em; text-align: center; z-index: 2; }   /* in front of the cylinder, a little larger than the body text */
+  .hc.hov { cursor: pointer; }
   .cd-pic { position: absolute; background: var(--gray) center / cover no-repeat; }
   .cd-rules { position: absolute; left: calc(940 * var(--u)); top: calc(20 * var(--u)); width: calc(440 * var(--u)); height: calc(57 * var(--u)); }
   .cd-cap { position: absolute; left: calc(940 * var(--u)); top: calc(20 * var(--u)); width: calc(440 * var(--u)); }
@@ -254,12 +261,12 @@
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(2704 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
   <p class="t18" style="left:calc(710 * var(--u));top:calc(2704 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
 
-  <svg class="morph" viewBox="0 0 200 300" aria-hidden="true" style="left:calc(570 * var(--u));top:calc(3330 * var(--u));width:calc(260 * var(--u));height:calc(390 * var(--u));"><path class="mb" d=""/><path class="ml" d=""/></svg>
+  <svg class="morph" viewBox="0 0 200 300" aria-hidden="true" style="left:calc(570 * var(--u));top:calc(3330 * var(--u));width:calc(260 * var(--u));height:calc(390 * var(--u));"><path class="mb" d=""/><path class="ml" d=""/><path class="mh" d=""/><path class="mx" d=""/><path class="my" d=""/></svg>
   <i class="hl" style="top:calc(3405 * var(--u))"></i>
   <i class="hl" style="top:calc(3478.4 * var(--u))"></i>
   <i class="hl" style="top:calc(3551.9 * var(--u))"></i>
   <i class="hl" style="top:calc(3625.3 * var(--u))"></i>
-  <div class="bigrow" style="left:calc(250 * var(--u));top:calc(3393.3 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Unconventional</p></div>
+  <div class="bigrow" style="left:calc(20 * var(--u));top:calc(3393.3 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Unconventional</p></div>
   <div class="bigrow" style="left:calc(940 * var(--u));top:calc(3466.8 * var(--u));height:calc(98 * var(--u));"><p class="t name2">ceramic</p></div>
   <div class="bigrow" style="left:calc(480 * var(--u));top:calc(3540.2 * var(--u));height:calc(98 * var(--u));"><p class="t name2">forms</p></div>
 
@@ -297,6 +304,12 @@
   <div class="ov-scrim"></div>
   <div class="t big2 sv-title">Story</div>
     <div class="sv-items"><div class="sv-item" style="left:calc(20 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2019</span><p class="t18 sv-lead" data-i="0"></p><p class="t18 sv-more" data-more="It began with one wheel, a borrowed kiln and a shared studio. The first pieces were plates for friends, uneven and honest, and that honesty became the signature."></p></div><div class="sv-item" style="left:calc(250 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2020</span><p class="t18 sv-lead" data-i="1"></p><p class="t18 sv-more" data-more="A second room, a second kiln. The studio started to work with interiors: tables, wall panels and the quiet objects that sit between furniture and art."></p></div><div class="sv-item" style="left:calc(480 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2021</span><p class="t18 sv-lead" data-i="2"></p><p class="t18 sv-more" data-more="The first restaurant commissions arrived. A hundred identical plates are never identical when each one is made by hand, and that turned out to be the point."></p></div><div class="sv-item" style="left:calc(710 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2022</span><p class="t18 sv-lead" data-i="3"></p><p class="t18 sv-more" data-more="Glazes took over the shelves. Months of tests gave the palette that the studio is known for today: warm, matte, slightly irregular, never flat."></p></div><div class="sv-item" style="left:calc(940 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2023</span><p class="t18 sv-lead" data-i="4"></p><p class="t18 sv-more" data-more="The shop opened, and with it the idea that every object should be able to live in someone's home, not only in a showroom."></p></div><div class="sv-item" style="left:calc(1170 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2024</span><p class="t18 sv-lead" data-i="5"></p><p class="t18 sv-more" data-more="Today the studio works with private clients and hotels. The wheel is still the same one, and so is the way the first plate was made."></p></div></div>
+</div>
+<div class="ov" id="catView" aria-hidden="true">
+  <div class="ov-scrim"></div>
+  <div class="cat-cyl"></div>
+  <div class="t big2 cat-title"></div>
+  <p class="cat-text"></p>
 </div>
 <div class="ov" id="caseView" aria-hidden="true">
   <div class="ov-scrim"></div>
@@ -389,7 +402,7 @@
   const HERO_SRC = ['photos/tattoo-relief.webp', 'photos/mirror-beetles.webp', 'photos/table-cubeball.webp', 'photos/bust.webp', 'photos/urban-angel.webp', 'photos/vase-brutskin.webp'];   // panel, mirror, table, sculpture, urban, vase
   const HERO = i => `url("${HERO_SRC[i % HERO_SRC.length]}")`;
   const CUTOUT = new Set([0, 1, 2, 3, 4, 5]);                                  // all cut out: no box behind them, and shown whole (contain), never cropped
-  const HOVER_SRC = ['photos/int-panel.jpg', 'photos/int-mirror.jpg', 'photos/int-table.jpg', 'photos/red-vase.jpg', 'photos/int-urban.jpg', 'photos/int-vase.jpg'];   // the same work in an interior
+  const HOVER_SRC = ['photos/int-panel.jpg', 'photos/int-mirror.jpg', 'photos/int-table.jpg', 'photos/cat/sculptures-8.jpg', 'photos/int-urban.jpg', 'photos/int-vase.jpg'];   // the same work in an interior
   const CATS = ['Panels', 'Mirrors', 'Tables', 'Sculptures', 'Urbans', 'Vases'];
   $('.hc').forEach((c, i) => {
     c.style.backgroundImage = HERO(i); if (CUTOUT.has(i)) c.style.backgroundSize = 'contain';
@@ -398,6 +411,7 @@
     c.append(alt, lab);
     c.addEventListener('mouseenter', () => { if (scrollY < 4) c.classList.add('hov'); });   // at rest on top: the cut-out turns into the photo in an interior, the category shows below
     c.addEventListener('mouseleave', () => c.classList.remove('hov'));
+    c.addEventListener('click', e => { if (scrollY < 4) { e.stopPropagation(); openCat(i, c); } });   // a click on a category opens its gallery
   });
   addEventListener('scroll', () => { if (scrollY >= 4) $('.hc.hov').forEach(c => c.classList.remove('hov')); }, { passive: true });
   const HS = 14, DRUM = false;     // the drum of pictures in the table is switched off for now (flip to true to bring it back)
@@ -528,15 +542,14 @@
     splitLines();
     // the paragraphs of the table follow one another down the ruled lines, one empty line between them, however many lines each one takes
     flowSig = '';
-    { let y0 = 196; texts.forEach((p, j) => { p.dataset.y = y0; p.style.top = y0 * U + 'px'; if (nums[j]) nums[j].style.top = y0 * U + 'px'; y0 += (lines[j].length + 1) * LH; }); }
+    { let y0 = 196; texts.forEach((p, j) => { p.dataset.y = y0; p.style.top = y0 * U + 'px'; if (nums[j]) nums[j].style.top = y0 * U + 'px'; y0 += (lines[j].length + 2) * LH; }); }
     alignShop();
     bigrows.forEach(b => b.style.setProperty('--dx', (0.4 * (700 - (b.offsetLeft + b.offsetWidth / 2) / U)).toFixed(2)));   // every word starts 60% of the way to its place, so the words never sit on top of each other
     // the photo of Karen and Lisa covers the whole grey block, split between its two halves so it reads as one picture
     { const gr = one('.gray'), w = gr.offsetWidth, h = innerHeight, sc = Math.max(w / 1680, h / 850), iw = 1680 * sc, ih = 850 * sc, ox = (w - iw) / 2, oy = (h - ih) * 0.15;   // kept near the top, so the faces stay in the frame
       gr.style.setProperty('--bgS', `${iw}px ${ih}px`); gr.style.setProperty('--bgL', `${ox}px ${oy}px`); gr.style.setProperty('--bgR', `${ox - w / 2}px ${oy}px`); }
-    // the title stays pinned to the bottom while the table goes over it, until the last line of the table text comes up to its top edge; then it leaves with the page
-    const lastRow = Math.max(...[...document.querySelectorAll('.s2 .rt')].map(e => +e.dataset.y));
-    ttlBox.style.height = (one('.s2').offsetTop / U + lastRow + 182.6) * U + 'px';
+    // the title stays pinned to the bottom while the whole table goes over it; then it leaves with the page
+    ttlBox.style.height = (one('.s2').offsetTop / U + 952 + 182.6) * U + 'px';   // pinned until the whole table (952 high) has gone up past its top edge
   }
 
   // ---- motion (GSAP + ScrollTrigger): the ruled lines draw first, then the text comes in line by line from under its mask; scrolling back plays it in reverse
@@ -741,7 +754,7 @@
     tl.timeScale(1).play();
   }
   document.addEventListener('click', e => {
-    if (SV._noClose || CV._noClose) return;
+    if (SV._noClose || CV._noClose || CATV._noClose) return;
     const more = e.target.closest('a.more');
     if (more) { e.preventDefault(); openStory(); return; }
     if (openView && e.target.closest('.ov')) openView.close();
@@ -792,6 +805,56 @@
     openView = { close() { tl.timeScale(1.7).reverse(); } };
     tl.timeScale(1).play();
   }
+  // ---- a category: its short text in front, its works on a cylinder behind; the picture that was clicked bulges first, the others come round the cylinder beside it
+  const CATV = one('#catView'), CAT_KEYS = ['panels', 'mirrors', 'tables', 'sculptures', 'urbans', 'vases'], CAT_N = {"panels": 9, "mirrors": 8, "tables": 9, "sculptures": 9, "urbans": 9, "vases": 9};
+  function openCat(ci, card) {
+    if (!G || openView) return;
+    const host = CATV.querySelector('.cat-cyl'), titleEl = CATV.querySelector('.cat-title'), textEl = CATV.querySelector('.cat-text');
+    titleEl.innerHTML = [...CATS[ci]].map(ch => `<span class="c">${ch}</span>`).join(''); textEl.dataset.text = texts[ci] ? texts[ci].dataset.text : ''; textEl.textContent = textEl.dataset.text;
+    const srcs = [HOVER_SRC[ci], ...Array.from({ length: CAT_N[CAT_KEYS[ci]] }, (_, k) => `photos/cat/${CAT_KEYS[ci]}-${k + 1}.jpg`)];
+    const PWc = 360 * U, PHc = 460 * U, SPc = 390 * U, RAD = 900 * U, KS = 16, sw = PWc / KS, cx = CATV.clientWidth / 2, top = innerHeight * 0.45 - PHc / 2;
+    const order = srcs.map((_, j) => j === 0 ? 0 : (j % 2 ? 1 : -1) * Math.ceil(j / 2));   // the clicked one in the middle, the others to its right and left in turn
+    const strips = [];
+    const WF = [1, .78, 1.12, .86, 1.04, .8, 1.1, .9, .82, 1.06], HF = [1, .74, .9, 1.06, .8, .96, .7, 1.02, .86, .92], YO = [0, 70, -40, 34, 96, -24, 58, 10, 84, -50];   // uneven sizes and steps, as in the Story
+    srcs.forEach((src, j) => { const pw = PWc * WF[j % 10], ph = PHc * HF[j % 10], sj = pw / KS, tj = top + (PHc - ph) / 2 + YO[j % 10] * U; for (let k = 0; k < KS; k++) {
+      const el = document.createElement('div'); el.className = 'cat-strip';
+      el.innerHTML = `<i style="left:${-k * sj}px;width:${pw}px"></i>`; el.firstChild.style.backgroundImage = `url("${src}")`;
+      Object.assign(el.style, { left: cx - sj / 2 + 'px', top: tj + 'px', width: sj + 1 + 'px', height: ph + 'px' });
+      host.append(el); strips.push({ el, j, d: order[j], a: (k + .5) * sj - pw / 2 });
+    } });
+    const st = { bend: 0, spread: 0 }; let pos = 0, target = 0, run = true, snapT = 0, drag = null;
+    const place = () => {
+      const R = RAD / Math.max(0.08, st.bend);                                        // flat at first, then it bulges
+      strips.forEach(s => {
+        const phi = (s.d * SPc + s.a - pos * SPc) / R, c = Math.cos(phi), show = s.d === 0 ? 1 : clamp(st.spread * (srcs.length - 1) - (Math.abs(s.d) * 2 - (s.d > 0 ? 2 : 1)));
+        s.el.style.transform = `translate3d(0,0,${(-R).toFixed(1)}px) rotateY(${phi.toFixed(4)}rad) translate3d(0,0,${R.toFixed(1)}px)`;
+        s.el.style.opacity = c <= 0.02 ? 0 : (Math.pow(c, 0.9) * show).toFixed(3);
+      });
+    };
+    (function loop() { if (!run) return; pos += (target - pos) * 0.12; place(); requestAnimationFrame(loop); })();
+    const lo = Math.min(...order), hi = Math.max(...order), nudge = v => { target = Math.max(lo - 0.3, Math.min(hi + 0.3, v)); clearTimeout(snapT); snapT = setTimeout(() => { target = Math.max(lo, Math.min(hi, Math.round(target))); }, 140); };
+    const onWheel = e => { e.preventDefault(); nudge(target + (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) / SPc * 0.9); };
+    const onKey = e => { if (e.key === 'ArrowRight') target = Math.min(hi, Math.round(target) + 1); else if (e.key === 'ArrowLeft') target = Math.max(lo, Math.round(target) - 1); };
+    const onDown = e => { drag = { x: e.clientX, t: target, moved: false }; };
+    const onMove = e => { if (!drag) return; const dx = e.clientX - drag.x; if (Math.abs(dx) > 5) drag.moved = true; if (drag.moved) nudge(drag.t - dx / SPc); };
+    const onUp = () => { if (drag && drag.moved) { CATV._noClose = true; setTimeout(() => { CATV._noClose = false; }, 0); } drag = null; };
+    CATV.addEventListener('wheel', onWheel, { passive: false }); addEventListener('keydown', onKey); CATV.addEventListener('pointerdown', onDown); addEventListener('pointermove', onMove); addEventListener('pointerup', onUp);
+    const stop = () => { run = false; strips.forEach(x => x.el.remove()); CATV.removeEventListener('wheel', onWheel); removeEventListener('keydown', onKey); CATV.removeEventListener('pointerdown', onDown); removeEventListener('pointermove', onMove); removeEventListener('pointerup', onUp); };
+    CATV.classList.add('open'); lockView(true); card.classList.remove('hov');
+    const r = card.getBoundingClientRect(), ox = r.left + r.width / 2 - cx, oy = r.top + r.height / 2 - (top + PHc / 2), sc = r.width / PWc;
+    const inT = splitMask(textEl), letters = [...titleEl.children];
+    const tl = gsap.timeline({ onReverseComplete() { stop(); CATV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); } });
+    tl.to(pageEls(), { opacity: 0, duration: .45, ease: 'power2.in' }, 0);
+    tl.fromTo('#catView .ov-scrim', { opacity: 0 }, { opacity: 1, duration: .45, ease: 'power2.out' }, 0);
+    tl.fromTo(host, { x: ox, y: oy, scale: sc }, { x: 0, y: 0, scale: 1, duration: .75, ease: 'back.out(1.3)' }, 0);   // the picture comes straight at us from where it was clicked
+    tl.fromTo(st, { bend: .35 }, { bend: 1, duration: .75, ease: 'power2.out' }, 0);                                    // already bulging on its way
+    tl.to(st, { spread: 1, duration: 1.1, ease: 'power1.out' }, .55);                                            // the others come round beside it
+    tl.fromTo(letters, { yPercent: -115 }, { yPercent: 0, duration: .6, ease: EASE, stagger: .04 }, .45);
+    riseIn(tl, inT, { at: 1, each: .07, dur: .8 });                                                             // the text in front
+    openView = { close() { tl.timeScale(1.8).reverse(); } };
+    tl.timeScale(1).play();
+  }
+
   $('.pic').forEach((pic, i) => pic.addEventListener('click', e => { e.stopPropagation(); openCase(i, pic); }));
 
   // Clay on the empty background (made separately, see glina.html): the sheet is transparent, hands covered in clay leave prints and smears on it, and the marks sink away by themselves
@@ -1379,36 +1442,38 @@
   requestAnimationFrame(tick);
   }
   makeClay();
-  // ---- the line drawing in the middle of "Unconventional ceramic forms": a lumpy jar becomes a bottle, then a low bowl, and back
+  // ---- the line drawing in the middle of "Unconventional ceramic forms": odd vessels that turn into one another — a lumpy jar, a leaning bottle with ears, a vessel with a hole through it, a twisted tower
   (function morph() {
     const svg = one('.morph'); if (!svg) return;
-    const body = svg.querySelector('.mb'), lip = svg.querySelector('.ml');
+    const [body, lip, hole, earL, earR] = ['.mb', '.ml', '.mh', '.mx', '.my'].map(q => svg.querySelector(q));
+    const J = [50, 64, 80, 89, 93, 94, 91, 85, 75, 62, 50];
     const FORMS = [
-      { top: 34, bot: 286, r: [50, 64, 80, 89, 93, 94, 91, 85, 75, 62, 50], amp: 6, freq: 7 },     // the jar from the sketch: soft lumps all the way down
-      { top: 24, bot: 290, r: [16, 16, 19, 36, 66, 84, 90, 87, 76, 58, 42], amp: 2.2, freq: 5 },  // a bottle: narrow neck, round belly
-      { top: 128, bot: 282, r: [90, 95, 94, 89, 81, 71, 61, 52, 44, 38, 34], amp: 3.5, freq: 6 }  // a low bowl
+      { top: 34, bot: 286, rL: J, rR: J, lean: 0, amp: 6, freq: 7, hole: [0, 0, 160], ear: [0, .4, .6] },                                                       // the jar from the sketch
+      { top: 20, bot: 290, rL: [14, 14, 16, 28, 52, 70, 80, 82, 76, 60, 44], rR: [14, 15, 22, 44, 74, 92, 98, 96, 86, 66, 48], lean: 40, amp: 2, freq: 5, hole: [0, 0, 170], ear: [38, .42, .66] },   // leaning bottle with ears
+      { top: 66, bot: 272, rL: [40, 70, 92, 100, 102, 102, 100, 94, 82, 66, 50], rR: [44, 74, 94, 102, 104, 102, 98, 90, 78, 62, 46], lean: 0, amp: 3, freq: 6, hole: [30, 40, 176], ear: [0, .4, .6] },   // a vessel with a hole through it
+      { top: 16, bot: 292, rL: [30, 36, 28, 42, 30, 46, 32, 48, 36, 50, 54], rR: [30, 26, 40, 28, 46, 30, 48, 34, 52, 40, 54], lean: -28, amp: 1, freq: 3, hole: [0, 0, 150], ear: [30, .2, .36] }      // a twisted tower
     ];
-    const N = 40, lerp2 = (a, b, t) => a + (b - a) * t, ease3 = t => t * t * (3 - 2 * t);
-    const prof = (f, t) => { const x = t * (f.r.length - 1), i = Math.min(f.r.length - 2, Math.floor(x)); return lerp2(f.r[i], f.r[i + 1], x - i); };
-    const pt = (f, t, side) => { const y = lerp2(f.top, f.bot, t), lump = f.amp * Math.sin(t * f.freq * Math.PI + (side > 0 ? 0.9 : 0)) * Math.sin(t * Math.PI); return [100 + side * (prof(f, t) + lump), y]; };
-    function shape(a, b, k) {                                            // both forms sampled at the same points, mixed
-      const P = (t, side) => { const p = pt(a, t, side), q = pt(b, t, side); return [lerp2(p[0], q[0], k), lerp2(p[1], q[1], k)]; };
-      const left = [], right = [];
-      for (let i = 0; i <= N; i++) { const t = i / N; left.push(P(t, -1)); right.push(P(t, 1)); }
-      const pts = [...left, ...right.reverse()];
-      let d = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
-      for (let i = 1; i < pts.length - 1; i++) { const m = [(pts[i][0] + pts[i + 1][0]) / 2, (pts[i][1] + pts[i + 1][1]) / 2]; d += `Q${pts[i][0].toFixed(1)} ${pts[i][1].toFixed(1)} ${m[0].toFixed(1)} ${m[1].toFixed(1)}`; }
+    const N = 44, L = (a, b, t) => a + (b - a) * t, E3 = t => t * t * (3 - 2 * t);
+    const prof = (r, t) => { const x = t * (r.length - 1), i = Math.min(r.length - 2, Math.floor(x)); return L(r[i], r[i + 1], x - i); };
+    const mix = (a, b, k) => ({ top: L(a.top, b.top, k), bot: L(a.bot, b.bot, k), lean: L(a.lean, b.lean, k), amp: L(a.amp, b.amp, k), freq: L(a.freq, b.freq, k),
+      rL: a.rL.map((v, i) => L(v, b.rL[i], k)), rR: a.rR.map((v, i) => L(v, b.rR[i], k)), hole: a.hole.map((v, i) => L(v, b.hole[i], k)), ear: a.ear.map((v, i) => L(v, b.ear[i], k)) });
+    const X = (f, t, side) => { const lump = f.amp * Math.sin(t * f.freq * Math.PI + (side > 0 ? 0.9 : 0)) * Math.sin(t * Math.PI); return 100 + f.lean * (1 - t) + side * (prof(side > 0 ? f.rR : f.rL, t) + lump); };
+    const Y = (f, t) => L(f.top, f.bot, t), q = v => v.toFixed(1);
+    function draw(f) {
+      const pts = []; for (let i = 0; i <= N; i++) pts.push([X(f, i / N, -1), Y(f, i / N)]); for (let i = N; i >= 0; i--) pts.push([X(f, i / N, 1), Y(f, i / N)]);
+      let d = `M${q(pts[0][0])} ${q(pts[0][1])}`; for (let i = 1; i < pts.length - 1; i++) d += `Q${q(pts[i][0])} ${q(pts[i][1])} ${q((pts[i][0] + pts[i + 1][0]) / 2)} ${q((pts[i][1] + pts[i + 1][1]) / 2)}`;
       body.setAttribute('d', d);
-      const rx = lerp2(prof(a, 0), prof(b, 0), k), ry = rx * 0.24, y0 = lerp2(a.top, b.top, k);                        // the opening: an ellipse on top
-      lip.setAttribute('d', `M${100 - rx} ${y0}a${rx} ${ry} 0 1 0 ${2 * rx} 0a${rx} ${ry} 0 1 0 ${-2 * rx} 0`);
+      const x0 = X(f, 0, -1), x1 = X(f, 0, 1), rx = (x1 - x0) / 2, ry = rx * 0.24;
+      lip.setAttribute('d', `M${q(x0)} ${q(f.top)}a${q(rx)} ${q(ry)} 0 1 0 ${q(2 * rx)} 0a${q(rx)} ${q(ry)} 0 1 0 ${q(-2 * rx)} 0`);
+      const [hx, hy, hc] = f.hole, ht = (hc - f.top) / (f.bot - f.top), hcx = 100 + f.lean * (1 - ht) + (prof(f.rR, ht) - prof(f.rL, ht)) / 2;
+      hole.setAttribute('d', hx > 1 ? `M${q(hcx - hx)} ${q(hc)}a${q(hx)} ${q(hy)} 0 1 0 ${q(2 * hx)} 0a${q(hx)} ${q(hy)} 0 1 0 ${q(-2 * hx)} 0` : '');
+      const [h, t1, t2] = f.ear, ear = side => { const xa = X(f, t1, side), xb = X(f, t2, side), ya = Y(f, t1), yb = Y(f, t2); return h > 1 ? `M${q(xa)} ${q(ya)}C${q(xa + side * h)} ${q(ya - 6)} ${q(xb + side * h)} ${q(yb + 6)} ${q(xb)} ${q(yb)}` : ''; };
+      earL.setAttribute('d', ear(-1)); earR.setAttribute('d', ear(1));
     }
-    const HOLD = 1400, MOVE = 1600;
+    const HOLD = 1300, MOVE = 1700, CYCLE = HOLD + MOVE;
     let seen = false; new IntersectionObserver(es => { seen = es[0].isIntersecting; }).observe(svg);
     (function loop(now) {
-      if (seen || !body.getAttribute('d')) {
-        const t = now % ((HOLD + MOVE) * FORMS.length), i = Math.floor(t / (HOLD + MOVE)), local = t - i * (HOLD + MOVE);
-        shape(FORMS[i], FORMS[(i + 1) % FORMS.length], ease3(Math.max(0, (local - HOLD) / MOVE)));
-      }
+      if (seen || !body.getAttribute('d')) { const t = now % (CYCLE * FORMS.length), i = Math.floor(t / CYCLE), k = E3(Math.max(0, (t - i * CYCLE - HOLD) / MOVE)); draw(mix(FORMS[i], FORMS[(i + 1) % FORMS.length], k)); }
       requestAnimationFrame(loop);
     })(performance.now());
   })();
@@ -1464,7 +1529,7 @@
     if (sig === flowSig) return; flowSig = sig;
     let y0 = 196;
     texts.forEach((p, j) => {
-      const L = +p.dataset.x, C = 330, rows = []; let cur = { segmentIndex: 0, graphemeIndex: 0 };   // C: the text column, narrower than two grid columns, so the lines stay easy to read
+      const L = +p.dataset.x, C = 210, rows = []; let cur = { segmentIndex: 0, graphemeIndex: 0 };   // C: the text column, one grid column
       for (let k = 0; k < 40; k++) {
         const yl = y0 + k * LH, x0 = Math.max(L, obstacleRight(yl, yl + LH, ob) + 24), w = L + C - x0;
         if (w < 70) { rows.push(null); continue; }                                  // no room beside the picture: this ruled line stays empty
@@ -1482,7 +1547,7 @@
         ln.style.transform = r && r.x ? `translateX(${(r.x * U).toFixed(1)}px)` : '';
       });
       p.dataset.y = y0; p.style.top = y0 * U + 'px'; if (nums[j]) nums[j].style.top = y0 * U + 'px';
-      y0 += (rows.length + 1) * LH;
+      y0 += (rows.length + 2) * LH;                                     // two empty ruled lines between paragraphs
     });
   }
 
