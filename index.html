@@ -21,7 +21,7 @@
   section { position: relative; width: 100%; }
   .hero > *, .s2-in > *, .rest > *, .gray > *, .card2 > *, .list > *, .bigrow > * { position: absolute; }
   .hero { height: calc(115vh + 478 * var(--u)); }   /* a long first scroll, so the cards fly into the table slowly (30% longer than the 100vh + 360 it was) */
-  .s2 { height: calc(952 * var(--u)); margin-bottom: calc(348 * var(--u)); }
+  .s2 { height: calc(1060 * var(--u)); margin-bottom: calc(348 * var(--u)); }
   .s2-in { position: relative; height: 100%; }
   .s3 { height: calc(100vh + 1260 * var(--u)); z-index: 3; }
   .gray { position: sticky; top: 0; margin: 0; height: 100vh; overflow: hidden; background: var(--gray); }
@@ -204,7 +204,7 @@
 
 <section class="s2" id="cases">
   <div class="s2-in">
-    <div class="rules fan" data-n="50" data-step="18" style="left:calc(20 * var(--u));top:calc(34 * var(--u));width:calc(1360 * var(--u));height:calc(882 * var(--u));"></div>
+    <div class="rules fan" data-n="56" data-step="18" style="left:calc(20 * var(--u));top:calc(34 * var(--u));width:calc(1360 * var(--u));height:calc(990 * var(--u));"></div>
     <span class="n num" style="left:calc(20 * var(--u));top:calc(196 * var(--u))">01</span>
     <span class="n num" style="left:calc(20 * var(--u));top:calc(268 * var(--u))">02</span>
     <span class="n num" style="left:calc(20 * var(--u));top:calc(340 * var(--u))">03</span>
@@ -507,7 +507,7 @@
 
 
   const X0 = i => 20 + 230.17 * i, W0 = 210.2, H0 = [262.7, 210, 262.7, 210, 262.7, 262.7];
-  const PX = 700, PY0 = 34, PY1 = 916;    // picture centre x; its y inside block 2 while it is held (design px). PH = 12 ruled bands; PY1 = the last line (916): the picture rides down until that line is at its middle
+  const PX = 700, PY0 = 34, PY1 = 1024;    // picture centre x; its y inside block 2 while it is held (design px). PH = 12 ruled bands; PY1 = the last line (1024): the picture rides down until that line is at its middle
   const PW = 218.5, PH = 216, EX3 = 1260;  // picture size; extra scroll while the gray block is pinned
   const SHADE = [225, 212, 230, 216, 226, 210];
   // while the cards fly they stand on a sphere (a ring seen from the front, with a little height): each one has an angle around it and a latitude;
@@ -542,14 +542,14 @@
     splitLines();
     // the paragraphs of the table follow one another down the ruled lines, one empty line between them, however many lines each one takes
     flowSig = '';
-    { let y0 = 196; texts.forEach((p, j) => { p.dataset.y = y0; p.style.top = y0 * U + 'px'; if (nums[j]) nums[j].style.top = y0 * U + 'px'; y0 += (lines[j].length + 2) * LH; }); }
+    { let y0 = 196; texts.forEach((p, j) => { p.dataset.y = y0; p.dataset.c0 = y0 + lines[j].length * LH / 2; p.style.top = y0 * U + 'px'; if (nums[j]) nums[j].style.top = y0 * U + 'px'; y0 += (lines[j].length + 3) * LH; }); }   // c0: the middle of each paragraph in the plain layout, fixed, so the picture choice does not chase the flowing text
     alignShop();
     bigrows.forEach(b => b.style.setProperty('--dx', (0.4 * (700 - (b.offsetLeft + b.offsetWidth / 2) / U)).toFixed(2)));   // every word starts 60% of the way to its place, so the words never sit on top of each other
     // the photo of Karen and Lisa covers the whole grey block, split between its two halves so it reads as one picture
     { const gr = one('.gray'), w = gr.offsetWidth, h = innerHeight, sc = Math.max(w / 1680, h / 850), iw = 1680 * sc, ih = 850 * sc, ox = (w - iw) / 2, oy = (h - ih) * 0.15;   // kept near the top, so the faces stay in the frame
       gr.style.setProperty('--bgS', `${iw}px ${ih}px`); gr.style.setProperty('--bgL', `${ox}px ${oy}px`); gr.style.setProperty('--bgR', `${ox - w / 2}px ${oy}px`); }
     // the title stays pinned to the bottom while the whole table goes over it; then it leaves with the page
-    ttlBox.style.height = (one('.s2').offsetTop / U + 952 + 182.6) * U + 'px';   // pinned until the whole table (952 high) has gone up past its top edge
+    ttlBox.style.height = (one('.s2').offsetTop / U + 1060 + 182.6) * U + 'px';   // pinned until the whole table (1060 high) has gone up past its top edge
   }
 
   // ---- motion (GSAP + ScrollTrigger): the ruled lines draw first, then the text comes in line by line from under its mask; scrolling back plays it in reverse
@@ -1505,6 +1505,7 @@
     };
     img.src = m[1]; return null;
   }
+  setTimeout(() => { for (let i = 0; i < 6; i++) shapeOf(i); }, 1200);   // read every outline ahead, so a picture never arrives without one
   function obstacleRight(y0, y1, ob) {                                   // the right edge of the picture (or of the figure in it) beside the band y0..y1, in design px
     const PADV = 6;
     if (!ob || y1 < ob.top - PADV || y0 > ob.top + ob.h + PADV) return -Infinity;
@@ -1547,7 +1548,7 @@
         ln.style.transform = r && r.x ? `translateX(${(r.x * U).toFixed(1)}px)` : '';
       });
       p.dataset.y = y0; p.style.top = y0 * U + 'px'; if (nums[j]) nums[j].style.top = y0 * U + 'px';
-      y0 += (rows.length + 2) * LH;                                     // two empty ruled lines between paragraphs
+      y0 += (rows.length + 3) * LH;                                     // three empty ruled lines between paragraphs
     });
   }
 
@@ -1637,7 +1638,7 @@
     const py = Math.min(PY1, Math.max(PY0, y + V / 2 - rise - s2Top));
     // one picture replaces another while it is held
     // each paragraph of the table is about one category: the picture held beside the text is the work of the paragraph it is passing (switching halfway between two paragraphs)
-    const pc = texts.map(p => +p.dataset.y + (p.querySelectorAll('.ln:not([style*="display: none"])').length * LH) / 2);
+    const pc = texts.map(p => +p.dataset.c0);                         // fixed middles: the flow moves the paragraphs, but must not move the moment the picture changes (that made it flicker)
     let k = 0; for (let j = 1; j < pc.length; j++) if (py >= (pc[j - 1] + pc[j]) / 2) k = j;
     k = Math.min(k, 5); const sw = k > 0 ? ease((py - (pc[k - 1] + pc[k]) / 2) / 24) : 1;
     midStrip.classList.toggle('off', landed);                                              // gone once the table's first line has taken its place
