@@ -113,7 +113,7 @@
   @media (prefers-reduced-motion: reduce) { .ttl .h1 .ch, .nav a { animation: none; transform: none; opacity: 1; } }
   /* partners: labels stick, the active row turns black */
   /* partners: gray text that fills with black (left to right) when its row is level with the labels */
-  .partner .pf { display: inline-block; will-change: transform; padding: 0 .14em; margin: 0 -.14em; color: transparent; background: linear-gradient(90deg, #000 44%, transparent 52%) 100% 0 / 300% 100% no-repeat, linear-gradient(#999, #999) 0 0 / 100% 100% no-repeat; -webkit-background-clip: text; background-clip: text; transition: background-position var(--dur) var(--ease); }   /* the fill runs in like paint: a soft edge, not a hard wipe */
+  .partner .pf { clip-path: inset(-12% 106% -25% -6%); display: inline-block; will-change: transform; padding: 0 .14em; margin: 0 -.14em; color: transparent; background: linear-gradient(90deg, #000 44%, transparent 52%) 100% 0 / 300% 100% no-repeat, linear-gradient(#999, #999) 0 0 / 100% 100% no-repeat; -webkit-background-clip: text; background-clip: text; transition: background-position var(--dur) var(--ease); }   /* the fill runs in like paint: a soft edge, not a hard wipe */
   .partner.on .pf { background-position: 0 0, 0 0; }
   .plab-in { position: sticky; top: 50vh; height: calc(20 * var(--u)); }
   .plab-in > p, .plab-in > .quote { position: absolute; top: 0; }
@@ -1655,6 +1655,17 @@
     }
   }
 
+  function typeName(pf, on) {                                              // letter by letter: the clip opens exactly to the right edge of each next letter
+    if (!G) { pf.style.clipPath = 'none'; return; }
+    const tn = pf.firstChild, w = pf.getBoundingClientRect().width, n = tn.length, edges = [], r = document.createRange();
+    for (let k = 1; k <= n; k++) { r.setStart(tn, 0); r.setEnd(tn, k); edges.push(r.getBoundingClientRect().right - pf.getBoundingClientRect().left); }
+    const inset = e => `inset(-12% ${Math.max(-w * 0.06, w - e)}px -25% -6%)`;
+    const full = 'inset(-12% -6% -25% -6%)';
+    if (pf._tl) pf._tl.kill();
+    const tl = pf._tl = gsap.timeline();
+    if (on) { for (let k = 0; k < n; k++) tl.set(pf, { clipPath: k === n - 1 ? full : inset(edges[k]) }, k * 0.07); }
+    else { for (let k = n - 2; k >= -1; k--) tl.set(pf, { clipPath: k < 0 ? inset(0) : inset(edges[k]) }, (n - 2 - k) * 0.025); }
+  }
   function tick(now = performance.now()) {
     // the width of the page changes when the scrollbar appears or goes (no resize event for that): re-measure so everything stays on the grid
     if (root.clientWidth !== lastW) { measure(); clearTimeout(rebuild); rebuild = setTimeout(buildMotion, 200); }
@@ -1771,8 +1782,8 @@
     // the photo block scrolls with the page: the photo inside lags behind (parallax), the two cards run a little ahead of it, Lisa not far below Karen
     const gp = clamp((y + V - s3Top) / (1800 + V));                     // 0: the block comes in at the bottom, 1: it has gone out at the top
     one('.gray').style.setProperty('--par', gp.toFixed(4));
-    lisa.style.top = (1150 - (gp - 0.5) * 160) * U + 'px';                // (the #lisa card carries Karen's name: it is the first one)
-    karen.style.top = (1350 - (gp - 0.5) * 560) * U + 'px';
+    lisa.style.top = (560 - (gp - 0.5) * 160) * U + 'px';                // (the #lisa card carries Karen's name: it is the first one)
+    karen.style.top = (780 - (gp - 0.5) * 560) * U + 'px';
     [[lisa, cardMarks[0]], [karen, cardMarks[1]]].forEach(([el, m]) => {
       const top = s3Top + parseFloat(el.style.top) / U - y;              // on the screen, design px
       drawMark(m, (V * 0.95 - top) / (V * 0.45));                        // the clay mark draws in while the card comes up
@@ -1787,6 +1798,7 @@
     partners.forEach((el, i) => el.classList.toggle('on', i === best));
     setQuote(best);
     // names start a bit further apart and close up like train cars as they rise to the labels (the row level with them sits at its own place)
+    partners.forEach((el, i) => { const pf = el.firstElementChild, onScreen = partnerTops[i] < V * 0.9; if (onScreen !== !!pf._in) { pf._in = onScreen; typeName(pf, onScreen); } });   // the names come in one letter at a time when their row comes up, and go back the same way
     partners.forEach((el, i) => { el.firstElementChild.style.transform = `translateY(${PGAP * ease((partnerTops[i] - (V * 0.5 - 38)) / (V * 0.6)) * U}px)`; });
 
 
