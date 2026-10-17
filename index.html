@@ -79,7 +79,7 @@
   .snd { position: fixed; left: calc(20 * var(--u)); top: calc(44vh + 12 * var(--u)); z-index: 101; display: flex; align-items: center; gap: calc(8 * var(--u)); padding: 0; border: 0; background: none; font: inherit; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; cursor: pointer; }   /* the sound switch: a line that comes alive when the sound is on; first on the middle line, left of it, then up in the top left corner with the menu */
   .snd svg { width: calc(24 * var(--u)); height: calc(10 * var(--u)); overflow: visible; }
   .snd[aria-pressed="false"] span { opacity: .5; }
-  .tagline { position: fixed; left: calc(480 * var(--u)); top: calc(44vh + 12 * var(--u)); white-space: nowrap; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; z-index: 101; pointer-events: none; opacity: 0; }   /* the label of the row, centred on the page, on the menu's line under the middle line */
+  .tagline { position: fixed; left: 50%; translate: -50% 0; top: calc(44vh + 12 * var(--u)); white-space: nowrap; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; z-index: 101; pointer-events: none; opacity: 0; }   /* the label of the row, centred on the page, on the menu's line under the middle line */
   /* hero cards: fly from the top row into the second block */
   .hc .hs { display: none; position: absolute; top: 0; height: 100%; overflow: hidden; left: calc(var(--j) * var(--sw) - 1px); width: calc(var(--sw) + 3px); backface-visibility: visible; }   /* the strips overlap a little so no light seams show between them */
   .hc .hs i { position: absolute; top: 0; height: 100%; left: calc(-1 * var(--j) * var(--sw) + 1px); width: var(--cw); background-size: cover; background-position: center; background-repeat: no-repeat; }
@@ -248,8 +248,8 @@
 <section class="s3">
   <div class="gray">
     <i class="grain" aria-hidden="true"></i>
-    <div class="card2" id="lisa" style="left:calc(20 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, one of the two founders of DirtyHands.</p></div><div class="row" style="left:0;top:calc(108 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Pairs professional design with artistic intuition to bring unconventional ideas to life.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
-    <div class="card2" id="karen" style="left:calc(710 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, co-founder of DirtyHands together with Karen.</p></div><div class="row" style="left:0;top:calc(108 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Sees ceramics beyond plates and pots, as objects that shape the mood and character of a room.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Lisa</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
+    <div class="card2" id="lisa" style="left:calc(20 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, one of the two founders of DirtyHands.</p></div><div class="row" style="left:0;top:calc(90 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Pairs professional design with artistic intuition to bring unconventional ideas to life.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
+    <div class="card2" id="karen" style="left:calc(710 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, co-founder of DirtyHands together with Karen.</p></div><div class="row" style="left:0;top:calc(90 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Sees ceramics beyond plates and pots, as objects that shape the mood and character of a room.</p></div></div><p class="t name" style="left:0;top:calc(256 * var(--u))">Lisa</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
   </div>
 </section>
 
@@ -472,7 +472,7 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
   }
   const HS = 14;                   // strips a hovered card is cut into for its bulge
   $('.hc').forEach((c, i) => { c._hs = []; for (let j = 0; j < HS; j++) { const st = document.createElement('div'); st.className = 'hs'; st.style.setProperty('--j', j); const im = document.createElement('i'); im.style.backgroundImage = HERO(i); if (CUTOUT.has(i)) im.style.backgroundSize = 'contain'; const ph = document.createElement('b'); ph.style.backgroundImage = `url("${HOVER_SRC[i]}")`; { const f = frameFor(i, 210.2, CARD_H[i]), px = f.w > 210.2 ? f.x / (210.2 - f.w) * 100 : 50, py = f.h > CARD_H[i] ? f.y / (CARD_H[i] - f.h) * 100 : 50; Object.assign(ph.style, { backgroundSize: `auto ${(f.h / CARD_H[i] * 100).toFixed(2)}%`, backgroundPosition: `${px.toFixed(2)}% ${py.toFixed(2)}%` }); } st.append(ph); st.append(im); c.append(st); c._hs.push(st); } });
-  $('.bar').forEach((b, i) => { b.style.backgroundImage = IMG(i); });
+  $('.bar').forEach((b, i) => { const f = frameFor(i, 210.2, CARD_H[i]); Object.assign(b.style, { backgroundImage: `url("${HOVER_SRC[i]}")`, backgroundSize: `calc(${f.w.toFixed(1)} * var(--u)) calc(${f.h.toFixed(1)} * var(--u))`, backgroundPosition: `calc(${f.x.toFixed(1)} * var(--u)) calc(${f.y.toFixed(1)} * var(--u))` }); });   // each end strip is the top edge of its card's photo, framed the same: when the page starts over, the card simply grows down out of it
   const CASE_IMG = [3, 5, 1, 6, 8];   // the photo of each case
   $('.pic').forEach((e, i) => { e.style.setProperty('--img', IMG(CASE_IMG[i])); });      // the big pictures: the image lives in ::before, inside the frame
   one('.rest > .ph:not(.pic):not(.bar)').style.backgroundImage = IMG(4);
@@ -658,10 +658,8 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
     tableOpen = on;
     if (!fanTl) return;
     if (on) {
-      fanTl.timeScale(1).play();
-      blockTexts.forEach((b, k) => { if (b.seen) { b.dc && b.dc.kill(); b.dc = gsap.delayedCall(.2 + k * .04, () => b.tl.timeScale(1.6).play()); } });
+      blockTexts.forEach((b, k) => { if (b.seen) { b.dc && b.dc.kill(); b.dc = gsap.delayedCall(.2 + k * .16, () => b.tl.timeScale(1.6).play());   /* the paragraphs come one after another, top to bottom */ } });
     } else {
-      fanTl.timeScale(3.6).reverse();                                                       // the whole table goes away quickly
       blockTexts.forEach(b => { b.dc && b.dc.kill(); b.tl.timeScale(3.6).reverse(); });
     }
   }
@@ -767,7 +765,7 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
   // ---- the two views. Story ("More"): the page leaves, only the title stays, the paragraphs line up horizontally, the squares become a timeline.
   // A case (click on a picture): the picture grows above the page, its lines stretch to two columns, two paragraphs come in below as a staircase.
   // In both the pointer turns into "Close"; a click anywhere (or Esc) brings the page back.
-  // ---- sound: a quiet museum background made in the browser (no files): one held low note, a little air, and a long room around them. Off until the switch is pressed; inside a view (a category, a case, the Story) it goes muffled, as if behind a wall
+  // ---- sound: very light museum music made in the browser (no files): a quiet low note held underneath, sparse soft notes above it, a little air, and a long room around them. Off until the switch is pressed; inside a view (a category, a case, the Story) it goes muffled, as if behind a wall
   const sndBtn = one('.snd'); let actx = null, sMaster = null, sLp = null, sOn = false;
   function startSound() {
     const C = actx = new (window.AudioContext || window.webkitAudioContext)();
@@ -777,8 +775,16 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
     for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2); }
     rv.buffer = ir; const bus = C.createGain(); bus.connect(dry); bus.connect(rv); rv.connect(wet); dry.connect(sLp); wet.connect(sLp); sLp.connect(sMaster); sMaster.connect(C.destination);
     // one quiet note held under everything, like the hum of a big hall: a low D with its octave and a faint fifth, all pure tones, breathing very slowly
-    [[73.42, .2, .021], [146.83, .07, .016], [220, .022, .011]].forEach(([f, g, b]) => { const o = C.createOscillator(), og = C.createGain(), lfo = C.createOscillator(), lg = C.createGain();
+    [[73.42, .11, .021], [146.83, .035, .016], [220, .012, .011]].forEach(([f, g, b]) => { const o = C.createOscillator(), og = C.createGain(), lfo = C.createOscillator(), lg = C.createGain();
       o.type = 'sine'; o.frequency.value = f; og.gain.value = g; lfo.frequency.value = b; lg.gain.value = g * .3; lfo.connect(lg); lg.connect(og.gain); o.connect(og); og.connect(bus); o.start(); lfo.start(); });
+    // over it, very sparse and simple music: one soft note at a time from a calm pentatonic, walking a step or two up or down, sometimes resting, each note fading slowly into the room
+    const hzm = m => 440 * Math.pow(2, (m - 69) / 12), NOTES = [62, 64, 66, 69, 71, 74, 76]; let ni = 3;
+    (function note() { if (sOn && C.state === 'running' && Math.random() > .18) {
+        ni = Math.max(0, Math.min(NOTES.length - 1, ni + [-2, -1, -1, 1, 1, 2][Math.floor(Math.random() * 6)]));
+        const t = C.currentTime, f = hzm(NOTES[ni]);
+        [[1, .05], [2, .012]].forEach(([h, g]) => { const o = C.createOscillator(), e = C.createGain(); o.type = 'sine'; o.frequency.value = f * h;
+          e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(g, t + .06); e.gain.exponentialRampToValueAtTime(.0001, t + 3.5); o.connect(e); e.connect(bus); o.start(t); o.stop(t + 3.6); }); }
+      setTimeout(note, 1800 + Math.random() * 1800); })();
     const nb = C.createBuffer(1, C.sampleRate * 2, C.sampleRate), nd = nb.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
     const ns = C.createBufferSource(), bp = C.createBiquadFilter(), ng = C.createGain(); ns.buffer = nb; ns.loop = true; bp.type = 'bandpass'; bp.frequency.value = 420; bp.Q.value = .7; ng.gain.value = .018;   // the air of a big hall
     ns.connect(bp); bp.connect(ng); ng.connect(bus); ns.start();
@@ -1723,7 +1729,7 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
     if (on) gsap.to(L, { yPercent: 0, y: 0, duration: .6, ease: EASE, stagger: .05, overwrite: true });
     else gsap.to(L, { yPercent: 115, duration: .35, ease: EASE, stagger: { each: .02, from: 'end' }, overwrite: true });
   }
-  let yS = 0, mv = 0, smoothRaf = 0;
+  let yS = 0, mv = 0, smoothRaf = 0, rA = 1;
   function tick(now = performance.now()) {
     // the width of the page changes when the scrollbar appears or goes (no resize event for that): re-measure so everything stays on the grid
     if (root.clientWidth !== lastW) { measure(); clearTimeout(rebuild); rebuild = setTimeout(buildMotion, 200); }
@@ -1809,9 +1815,11 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
     if (yc >= E + 70 || yc < E) closedBack = false;
     if (tableOpen && (backClose || !rowOK)) { if (backClose) closedBack = true; openTable(false); }
     else if (!tableOpen && landed && rowOK && !closedBack) openTable(true);
-    if (G) fan[0].style.visibility = landed ? 'visible' : 'hidden';                        // the table's first line: the strip's place from the landing on
+    if (G) fan[0].style.visibility = landed ? 'visible' : 'hidden';
+    if (fanTl) fanTl.progress(clamp((yc - E) / 260));   // the table's lines unfold with the scroll going down and fold back with it going up                        // the table's first line: the strip's place from the landing on
     const q = clamp(t / 0.7);                                                            // the first 70% of the way: the ring, as before
-    const wIn = ease(clamp(q / 0.2)), wOut = ease(clamp((1 - q) / 0.3)), ring = wIn * wOut;   // every card goes straight to its place on the ring, the ring turns once, then it closes into the pile
+    { const want = dir < -0.3 ? 0 : dir > 0.3 ? 1 : rA; rA += (want - rA) * 0.15; if (Math.abs(want - rA) > 0.005 && !smoothRaf) smoothRaf = requestAnimationFrame(() => { smoothRaf = 0; tick(); }); else if (Math.abs(want - rA) <= 0.005) rA = want; }   // scrolling back up the cards skip the ring: they simply rise to the top row and open there
+    const wIn = ease(clamp(q / 0.2)) * rA, wOut = ease(clamp((1 - q) / 0.3)), ring = wIn * wOut;   // every card goes straight to its place on the ring, the ring turns once, then it closes into the pile
     const open = 0;                                                                      // the pile stays a pile (it no longer opens into a wheel): the cut-outs lie in the middle and are turned over like cards as you scroll
     const ang = cards.map((_, i) => (i - p) * Math.PI / 3);                              // 0 = three o'clock; the next card waits below it and comes up as its paragraph does
     const SZ = cards.map((_, i) => Math.cos(TH[i] + 2 * Math.PI * q) * Math.cos(LA[i]));   // depth on the ring
@@ -1839,6 +1847,8 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
       c.style.position = fixed ? 'fixed' : 'absolute';
       c.style.left = (cx - w / 2) * U + 'px'; c.style.top = (cy - hh / 2 - (fixed ? yc : 0)) * U + 'px';
       c.classList.toggle('photo', t < 0.72);                                // photos with their backgrounds on top and on the ring, cut-outs once they lie in the pile
+      if (t === 0 && c._lt > 0 && !c.classList.contains('hov')) { c.style.transform = ''; c._hs.forEach(st => { st.style.transform = ''; }); }   // back on top in one jump (the page starting over, a fast scroll up): nothing of the pile's transform stays
+      c._lt = t;
       if (t > 0) {                                                          // (at rest on top the hover owns the transform)
         const rot = PILE[i][2] * (1 - wOut) * settle - leave * 16;          // a pile lies a little askew; a card thrown off turns as it goes
         const bend = landed ? 0 : ease(clamp(t / 0.14)) * ease(clamp((1 - t) / 0.2)) * mv;   // concave all the way: from the first bit of scroll, round the ring, through the pile, until they settle flat on the wheel
@@ -1919,7 +1929,7 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
   const scrollMax = () => document.documentElement.scrollHeight - innerHeight;
   let looping = false;
   function restart() {
-    scrollTo(0, 0);
+    scrollTo(0, 0); yS = 0; mv = 0; rA = 1; prevY = 0;   // no inertia carried over from the bottom of the page: the cards are at the top at once
     document.querySelectorAll('.ttl .h1 .ch, .nav a').forEach(el => { el.style.animation = 'none'; el.style.transform = 'none'; el.style.opacity = '1'; });   // already pulled up by the steps
     navCur.fill(0); navTarget = 0; navLinks.forEach(a => { a.style.translate = ''; });   // the menu starts again from its own place
     t0 = performance.now(); introDone = false;
