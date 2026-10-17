@@ -766,7 +766,7 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
   // A case (click on a picture): the picture grows above the page, its lines stretch to two columns, two paragraphs come in below as a staircase.
   // In both the pointer turns into "Close"; a click anywhere (or Esc) brings the page back.
   // ---- sound: very light museum music made in the browser (no files): a quiet low note held underneath, sparse soft notes above it, a little air, and a long room around them. Off until the switch is pressed; inside a view (a category, a case, the Story) it goes muffled, as if behind a wall
-  const sndBtn = one('.snd'); let actx = null, sMaster = null, sLp = null, sOn = false;
+  const sndBtn = one('.snd'); let actx = null, sMaster = null, sLp = null, sOn = false, sInside = false, sInG = null;
   function startSound() {
     const C = actx = new (window.AudioContext || window.webkitAudioContext)();
     sMaster = C.createGain(); sMaster.gain.value = 0; sLp = C.createBiquadFilter(); sLp.type = 'lowpass'; sLp.frequency.value = 1400; sLp.Q.value = .4;
@@ -781,10 +781,11 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
     const hzm = m => 440 * Math.pow(2, (m - 69) / 12), NOTES = [62, 64, 66, 69, 71, 74, 76]; let ni = 3;
     (function note() { if (sOn && C.state === 'running' && Math.random() > .18) {
         ni = Math.max(0, Math.min(NOTES.length - 1, ni + [-2, -1, -1, 1, 1, 2][Math.floor(Math.random() * 6)]));
-        const t = C.currentTime, f = hzm(NOTES[ni]);
-        [[1, .05], [2, .012]].forEach(([h, g]) => { const o = C.createOscillator(), e = C.createGain(); o.type = 'sine'; o.frequency.value = f * h;
-          e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(g, t + .06); e.gain.exponentialRampToValueAtTime(.0001, t + 3.5); o.connect(e); e.connect(bus); o.start(t); o.stop(t + 3.6); }); }
-      setTimeout(note, 1800 + Math.random() * 1800); })();
+        const t = C.currentTime, f = hzm(NOTES[ni] - (sInside ? 12 : 0)), len = sInside ? 6 : 3.5;   // inside a view the notes go an octave lower, slower and longer, like another, closer room
+        [[1, .05], [sInside ? 1.5 : 2, .012]].forEach(([h, g]) => { const o = C.createOscillator(), e = C.createGain(); o.type = 'sine'; o.frequency.value = f * h;
+          e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(g, t + .06); e.gain.exponentialRampToValueAtTime(.0001, t + len); o.connect(e); e.connect(bus); o.start(t); o.stop(t + len + .1); }); }
+      setTimeout(note, (1800 + Math.random() * 1800) * (sInside ? 1.7 : 1)); })();
+    { const o = C.createOscillator(), o2 = C.createOscillator(); sInG = C.createGain(); sInG.gain.value = 0; o.frequency.value = 110; o2.frequency.value = 165; o2.detune.value = 3; o.connect(sInG); o2.connect(sInG); sInG.connect(bus); o.start(); o2.start(); }   // a warm open fifth that swells in only while a view is open
     const nb = C.createBuffer(1, C.sampleRate * 2, C.sampleRate), nd = nb.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
     const ns = C.createBufferSource(), bp = C.createBiquadFilter(), ng = C.createGain(); ns.buffer = nb; ns.loop = true; bp.type = 'bandpass'; bp.frequency.value = 420; bp.Q.value = .7; ng.gain.value = .018;   // the air of a big hall
     ns.connect(bp); bp.connect(ng); ng.connect(bus); ns.start();
@@ -795,7 +796,8 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
     const t = actx.currentTime; sMaster.gain.cancelScheduledValues(t); sMaster.gain.setValueAtTime(sMaster.gain.value, t); sMaster.gain.linearRampToValueAtTime(on ? .4 : 0, t + (on ? 3 : .8));
     if (on) waveLoop();
   }
-  function muffle(on) { if (!sLp) return; const t = actx.currentTime; sLp.frequency.cancelScheduledValues(t); sLp.frequency.setValueAtTime(sLp.frequency.value, t); sLp.frequency.exponentialRampToValueAtTime(on ? 380 : 1400, t + 1.2); }
+  function muffle(on) { sInside = on; if (!sLp) return; const t = actx.currentTime; sLp.frequency.cancelScheduledValues(t); sLp.frequency.setValueAtTime(sLp.frequency.value, t); sLp.frequency.exponentialRampToValueAtTime(on ? 700 : 1400, t + 1.2);
+    sInG.gain.cancelScheduledValues(t); sInG.gain.setValueAtTime(sInG.gain.value, t); sInG.gain.linearRampToValueAtTime(on ? .03 : 0, t + 1.8); }   // inside: softer and closer, an octave lower, with a warm fifth under it
   const wave = sndBtn.querySelector('path');
   function waveLoop(now = performance.now()) {                            // the line moves like a slow wave while the sound plays and lies flat again when it stops
     let d = 'M0 5'; const amp = sOn ? 2.6 : 0; for (let x = 2; x <= 24; x += 2) d += `L${x} ${(5 + amp * Math.sin(x / 24 * Math.PI * 2 - now / 420) * Math.sin(x / 24 * Math.PI)).toFixed(2)}`;
