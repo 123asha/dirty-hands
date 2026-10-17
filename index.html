@@ -77,7 +77,7 @@
   .midstrip.off { opacity: 0; }   /* the strip IS the first line of the table: at the landing it is swapped for the table's own line 0, which sits exactly on it */
   /* a small caption above the line in the middle of the first screen; when the menu rising from below reaches its level, it goes up with the menu and stays up there until the title melts into the background */
   .snd { position: fixed; left: calc(20 * var(--u)); top: calc(44vh + 12 * var(--u)); z-index: 101; display: flex; align-items: center; gap: calc(8 * var(--u)); padding: 0; border: 0; background: none; font: inherit; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; cursor: pointer; }   /* the sound switch: a line that comes alive when the sound is on; first on the middle line, left of it, then up in the top left corner with the menu */
-  .snd svg { width: calc(40 * var(--u)); height: calc(10 * var(--u)); overflow: visible; }
+  .snd svg { width: calc(24 * var(--u)); height: calc(10 * var(--u)); overflow: visible; }
   .snd[aria-pressed="false"] span { opacity: .5; }
   .tagline { position: fixed; left: calc(480 * var(--u)); top: calc(44vh + 12 * var(--u)); white-space: nowrap; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; z-index: 101; pointer-events: none; opacity: 0; }   /* the label of the row, centred on the page, on the menu's line under the middle line */
   /* hero cards: fly from the top row into the second block */
@@ -217,7 +217,7 @@
 
 <div class="midstrip" aria-hidden="true"></div>
 <div class="tagline">Interior ceramics studio</div>
-<button type="button" class="snd" aria-pressed="false" aria-label="Sound"><svg viewBox="0 0 40 10" aria-hidden="true"><path d="M0 5H40" fill="none" stroke="currentColor" stroke-width="1.1"/></svg><span>Sound</span></button>
+<button type="button" class="snd" aria-pressed="false" aria-label="Sound"><svg viewBox="0 0 24 10" aria-hidden="true"><path d="M0 5H24" fill="none" stroke="currentColor" stroke-width="1.1"/></svg><span>Sound</span></button>
 <div class="hc" data-i="0" style="left:calc(20 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
 <div class="hc" data-i="1" style="left:calc(250.17 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
 <div class="hc" data-i="2" style="left:calc(480.34 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
@@ -356,6 +356,7 @@
 <div class="grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 
 <script>
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scrollTo(0, 0);   // the page always starts from the top: the intro is built for it
 (() => {
   const root = document.documentElement, $ = (q) => [...document.querySelectorAll(q)], one = (q) => document.querySelector(q);
 
@@ -616,7 +617,7 @@
   const G = !reduce && window.gsap && window.ScrollTrigger;
   if (G) gsap.registerPlugin(ScrollTrigger);
   const EASE = 'power3.out';
-  let capTl = [], pairs = [], touched = [], fanTl = null, blockTexts = [], tableOpen = false;
+  let storyWordTl = null, capTl = [], pairs = [], touched = [], fanTl = null, blockTexts = [], tableOpen = false;
 
   function splitMask(el) {                          // every rendered line gets its own mask: .m > .mi
     const text = el.dataset.text || (el.dataset.text = el.textContent.trim().replace(/\s+/g, ' '));
@@ -667,6 +668,10 @@
 
 
   // the small picture stands level with "Shop now": its middle on the middle of the link (the link follows the length of the paragraph)
+  function stackStory() {                          // the Story theses stand one under another with the same gap between them, however many lines each one has
+    let top = parseFloat(storyP[0].style.top.match(/calc\(([\d.]+)/)[1]);
+    storyP.forEach(q => { q.style.top = `calc(${top.toFixed(1)} * var(--u))`; top += q.offsetHeight / U + 38; });
+  }
   function alignShop() {
     const shop = one('.stack .shop'), pic = one('.rest > .ph:not(.pic):not(.bar)'), rest = one('.rest');
     if (!shop || !pic) return;
@@ -736,7 +741,7 @@
 
     // all other text: line by line, one paragraph after another
     const items = [];
-    $('.rest p.t18, .rest a.t18, .rest #about, .tagged .big2').forEach(el => {
+    $('.rest p.t18, .rest a.t18, .rest #about').forEach(el => {
       if (done.has(el) || el.closest('.plab-in') || el.closest('.bigrow')) return;
       if (el.hasAttribute('data-year')) {                                              // Story: the lines come up as the paragraph climbs the screen
         done.add(el); const tl = gsap.timeline(); riseIn(tl, splitMask(el), { each: .22, dur: 1 });
@@ -749,8 +754,10 @@
       const tl = gsap.timeline({ paused: true }), to = +getComputedStyle(el).opacity; touched.push(el); fadeIn(tl, el, to, 0, { dur: .9 }); items.push({ el, tl });
     });
     stag(items, { gap: .16 });
+    { const w = one('.tagged .big2'), tl = gsap.timeline({ paused: true }); riseIn(tl, splitMask(w), { each: .09 });   // the Story word: its own trigger on the first paragraph (the word itself is moved while it is held, which would throw its trigger off)
+      storyWordTl = tl; pairs.push({ st: { kill() {}, start: Infinity }, tl }); }   // played from the tick by where the first thesis is, so a view opening and closing (which jumps the scroll) can never leave it hidden
 
-    alignShop();
+    alignShop(); stackStory();
     if (quoteIdx >= 0) { const k = quoteIdx; quoteIdx = -1; setQuote(k, true); }
     ScrollTrigger.refresh();
     pairs.forEach(({ st, tl }) => { if (scrollY >= st.start && scrollY > 0) tl.progress(1); });     // what is already above the screen stays shown
@@ -760,21 +767,18 @@
   // ---- the two views. Story ("More"): the page leaves, only the title stays, the paragraphs line up horizontally, the squares become a timeline.
   // A case (click on a picture): the picture grows above the page, its lines stretch to two columns, two paragraphs come in below as a staircase.
   // In both the pointer turns into "Close"; a click anywhere (or Esc) brings the page back.
-  // ---- sound: a long, slow museum hum made in the browser (no files): a few soft low tones that breathe, a little air, and a long room around them. Off until the switch is pressed; inside a view (a category, a case, the Story) it goes muffled, as if behind a wall
+  // ---- sound: a quiet museum background made in the browser (no files): one held low note, a little air, and a long room around them. Off until the switch is pressed; inside a view (a category, a case, the Story) it goes muffled, as if behind a wall
   const sndBtn = one('.snd'); let actx = null, sMaster = null, sLp = null, sOn = false;
   function startSound() {
     const C = actx = new (window.AudioContext || window.webkitAudioContext)();
-    sMaster = C.createGain(); sMaster.gain.value = 0; sLp = C.createBiquadFilter(); sLp.type = 'lowpass'; sLp.frequency.value = 1600; sLp.Q.value = .4;
+    sMaster = C.createGain(); sMaster.gain.value = 0; sLp = C.createBiquadFilter(); sLp.type = 'lowpass'; sLp.frequency.value = 1400; sLp.Q.value = .4;
     const dry = C.createGain(), wet = C.createGain(), rv = C.createConvolver(); dry.gain.value = .55; wet.gain.value = .8;
     const len = C.sampleRate * 5, ir = C.createBuffer(2, len, C.sampleRate);           // a long, dark room
     for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2); }
     rv.buffer = ir; const bus = C.createGain(); bus.connect(dry); bus.connect(rv); rv.connect(wet); dry.connect(sLp); wet.connect(sLp); sLp.connect(sMaster); sMaster.connect(C.destination);
-    [[55, 'sine', .22], [82.4, 'sine', .12], [110, 'triangle', .07], [164.8, 'sine', .04], [220.6, 'sine', .025]].forEach(([f, type, g], i) => {   // A, E, A, E, A: an open, quiet chord
-      const o = C.createOscillator(), og = C.createGain(), lfo = C.createOscillator(), lg = C.createGain();
-      o.type = type; o.frequency.value = f; o.detune.value = (i % 2 ? 4 : -3); og.gain.value = g;
-      lfo.frequency.value = .03 + i * .017; lg.gain.value = g * .6; lfo.connect(lg); lg.connect(og.gain);   // every tone swells and fades on its own slow breath
-      o.connect(og); og.connect(bus); o.start(); lfo.start();
-    });
+    // one quiet note held under everything, like the hum of a big hall: a low D with its octave and a faint fifth, all pure tones, breathing very slowly
+    [[73.42, .2, .021], [146.83, .07, .016], [220, .022, .011]].forEach(([f, g, b]) => { const o = C.createOscillator(), og = C.createGain(), lfo = C.createOscillator(), lg = C.createGain();
+      o.type = 'sine'; o.frequency.value = f; og.gain.value = g; lfo.frequency.value = b; lg.gain.value = g * .3; lfo.connect(lg); lg.connect(og.gain); o.connect(og); og.connect(bus); o.start(); lfo.start(); });
     const nb = C.createBuffer(1, C.sampleRate * 2, C.sampleRate), nd = nb.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
     const ns = C.createBufferSource(), bp = C.createBiquadFilter(), ng = C.createGain(); ns.buffer = nb; ns.loop = true; bp.type = 'bandpass'; bp.frequency.value = 420; bp.Q.value = .7; ng.gain.value = .018;   // the air of a big hall
     ns.connect(bp); bp.connect(ng); ng.connect(bus); ns.start();
@@ -782,13 +786,13 @@
   function setSound(on) {
     sOn = on; sndBtn.setAttribute('aria-pressed', on); if (on && !actx) startSound(); if (!actx) return;
     if (actx.state === 'suspended') actx.resume();
-    const t = actx.currentTime; sMaster.gain.cancelScheduledValues(t); sMaster.gain.setValueAtTime(sMaster.gain.value, t); sMaster.gain.linearRampToValueAtTime(on ? .5 : 0, t + (on ? 2.5 : .8));
+    const t = actx.currentTime; sMaster.gain.cancelScheduledValues(t); sMaster.gain.setValueAtTime(sMaster.gain.value, t); sMaster.gain.linearRampToValueAtTime(on ? .4 : 0, t + (on ? 3 : .8));
     if (on) waveLoop();
   }
-  function muffle(on) { if (!sLp) return; const t = actx.currentTime; sLp.frequency.cancelScheduledValues(t); sLp.frequency.setValueAtTime(sLp.frequency.value, t); sLp.frequency.exponentialRampToValueAtTime(on ? 380 : 1600, t + 1.2); }
+  function muffle(on) { if (!sLp) return; const t = actx.currentTime; sLp.frequency.cancelScheduledValues(t); sLp.frequency.setValueAtTime(sLp.frequency.value, t); sLp.frequency.exponentialRampToValueAtTime(on ? 380 : 1400, t + 1.2); }
   const wave = sndBtn.querySelector('path');
   function waveLoop(now = performance.now()) {                            // the line moves like a slow wave while the sound plays and lies flat again when it stops
-    let d = 'M0 5'; const amp = sOn ? 2.6 : 0; for (let x = 2; x <= 40; x += 2) d += `L${x} ${(5 + amp * Math.sin(x / 40 * Math.PI * 3 - now / 420) * Math.sin(x / 40 * Math.PI)).toFixed(2)}`;
+    let d = 'M0 5'; const amp = sOn ? 2.6 : 0; for (let x = 2; x <= 24; x += 2) d += `L${x} ${(5 + amp * Math.sin(x / 24 * Math.PI * 2 - now / 420) * Math.sin(x / 24 * Math.PI)).toFixed(2)}`;
     wave.setAttribute('d', d); if (sOn) requestAnimationFrame(waveLoop);
   }
   sndBtn.addEventListener('click', e => { e.stopPropagation(); sndBtn._touched = true; setSound(!sOn); });
@@ -811,7 +815,7 @@
     const data = srcItems.map((it, i) => ({ year: it.querySelector('.sv-year').textContent, lead: storyP[i].dataset.text, more: it.querySelector('.sv-more').dataset.more }));
     SV.classList.add('open'); lockView(true); one('.tagged').style.visibility = 'hidden';   // only one Story word on the screen: the view's copy takes over from it
     gsap.set(title, { x: 0, y: 0 }); const r1 = title.getBoundingClientRect();
-    const tl = gsap.timeline({ onReverseComplete() { one('.tagged').style.visibility = ''; SV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); } });
+    const tl = gsap.timeline({ onReverseComplete() { one('.tagged').style.visibility = ''; SV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); tick(); } });
     tl.to(pageEls(), { opacity: 0, y: -24, duration: .5, ease: 'power2.in' }, 0);
     tl.fromTo('#storyView .ov-scrim', { opacity: 0 }, { opacity: 1, duration: .45, ease: 'power2.out' }, 0.05);
     tl.fromTo(title, { x: r0.left - r1.left, y: r0.top - r1.top }, { x: 0, y: 0, duration: .95, ease: EASE }, 0.15);                 // the Story word stays: it only moves to its new place
@@ -851,7 +855,7 @@
     const onUp = () => { if (drag && drag.moved) { SV._noClose = true; setTimeout(() => { SV._noClose = false; }, 0); } drag = null; };
     SV.addEventListener('wheel', onWheel, { passive: false }); addEventListener('keydown', onKey); SV.addEventListener('pointerdown', onDown); addEventListener('pointermove', onMove); addEventListener('pointerup', onUp);
     const stopCarousel = () => { run = false; strips.forEach(x => x.el.remove()); SV.removeEventListener('wheel', onWheel); removeEventListener('keydown', onKey); SV.removeEventListener('pointerdown', onDown); removeEventListener('pointermove', onMove); removeEventListener('pointerup', onUp); };
-    tl.eventCallback('onReverseComplete', () => { stopCarousel(); SV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); });
+    tl.eventCallback('onReverseComplete', () => { stopCarousel(); one('.tagged').style.visibility = ''; SV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); tick(); });
     openView = { close() { tl.timeScale(1.7).reverse(); } };
     tl.timeScale(1).play();
   }
@@ -897,7 +901,7 @@
     const stopSlider = () => { CV.removeEventListener('wheel', onSw); removeEventListener('keydown', onSk); CV.removeEventListener('pointerdown', onSd); removeEventListener('pointermove', onSm); removeEventListener('pointerup', onSu); gsap.killTweensOf(track); gsap.set(track, { x: 0 }); track.innerHTML = ''; };
     CV.classList.add('open'); lockView(true);
     const inCap = splitMask(capEl), inA = splitMask(aEl), inB = splitMask(bEl);
-    const tl = gsap.timeline({ onReverseComplete() { stopSlider(); CV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); } });
+    const tl = gsap.timeline({ onReverseComplete() { stopSlider(); CV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); tick(); } });
     tl.to(pageEls(), { opacity: 0.12, duration: .5, ease: 'power2.out' }, 0);                                  // the page stays, faintly, under the picture
     tl.fromTo('#caseView .ov-scrim', { opacity: 0 }, { opacity: .86, duration: .5, ease: 'power2.out' }, 0);
     tl.fromTo(cdPic, { left: r.left, top: r.top, width: r.width, height: r.height }, { left: 20 * U, top: picTop, width: 890 * U, height: picH, duration: 1, ease: 'power3.inOut' }, 0.05);
@@ -968,7 +972,7 @@
     card.style.visibility = 'hidden';                                    // the picture leaves the card for the gallery: never two of it at once
     const r = card.getBoundingClientRect(), ox = r.left + r.width / 2 - cx, oy = r.top + r.height / 2 - (top + PHc / 2), sc = r.width / PWc;
     const inT = splitMask(textEl), letters = [...titleEl.children];
-    const tl = gsap.timeline({ onReverseComplete() { stop(); card.style.visibility = ''; CATV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); } });
+    const tl = gsap.timeline({ onReverseComplete() { stop(); card.style.visibility = ''; CATV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); tick(); } });
     tl.to(pageEls(), { opacity: 0, duration: .45, ease: 'power2.in' }, 0);
     tl.fromTo('#catView .ov-scrim', { opacity: 0 }, { opacity: 1, duration: .45, ease: 'power2.out' }, 0);
     tl.fromTo('#catView .cat-line', { scaleX: 0, transformOrigin: '50% 50%' }, { scaleX: 1, duration: .9, ease: EASE }, .2);
@@ -1763,6 +1767,7 @@
       else { storyYear.classList.remove('sw'); rollYear(+year); beatSquares(); }
     }
     // Story: the five paragraphs go round the word on a half circle open to the right: each one sits on the arc as it passes the middle of the screen, where the word stands, and slides back along it above and below
+    if (storyWordTl && !openView) { const on = storyP[0].getBoundingClientRect().top / U < V * 0.95; if (on !== !!storyWordTl._on) { storyWordTl._on = on; on ? storyWordTl.timeScale(1).play() : storyWordTl.timeScale(2.2).reverse(); } }
     // Story: the word, its year and the two squares stay on the screen while the paragraphs (all in the 4th column) scroll past the middle
     const restTop = one('.rest').offsetTop / U, pinA = restTop + storyMid(0), pinB = restTop + storyMid(storyP.length - 1);
     const hold = Math.min(pinB - pinA, Math.max(0, y - (pinA - V / 2)));
@@ -1880,15 +1885,16 @@
     // partners: the row level with the sticky labels is black
     let best = 0, bd = Infinity;
     partnerTops.forEach((top, i) => { const dd = Math.abs(top + 38 - labY); if (dd < bd) { bd = dd; best = i; } });
-    let caseNow = -1, caseLit = -1; if (y > pinY0) { let bc = 0, cd = Infinity; picTops.forEach((t, k) => { const dd = Math.abs(t + pics[k].offsetHeight / U / 2 - V / 2); if (dd < cd) { cd = dd; bc = k; } }); const nm = shownP[Math.min(bc, shownP.length - 1)], nr = nm.getBoundingClientRect(), nMid = (nr.top + nr.height / 2) / U, level = nMid > picTops[bc] && nMid < picTops[bc] + pics[bc].offsetHeight / U;   // the case and its client's name are level: the name is between the top and the bottom of the picture
-      best = level ? partners.indexOf(nm) : -1; caseNow = bc; if (best >= 0) caseLit = bc; }
+    let caseNow = -1, caseLit = -1; if (y > pinY0) { let bc = 0, cd = Infinity; picTops.forEach((t, k) => { const dd = Math.abs(t + pics[k].offsetHeight / U / 2 - V / 2); if (dd < cd) { cd = dd; bc = k; } }); const nm = shownP[Math.min(bc, shownP.length - 1)], nr = nm.getBoundingClientRect(), nMid = (nr.top + nr.height / 2) / U, level = nMid > picTops[bc] - 160 && nMid < picTops[bc] + pics[bc].offsetHeight / U;   // the case and its client's name are level: the name is between the top and the bottom of the picture
+      const moved = clamp((y - (pinY0 + 100) - (shownP.length - 1) * 40) / 260) > .6;   // not before the names have made room on the right: the caption would run into them
+      best = level && moved ? partners.indexOf(nm) : -1; caseNow = bc; if (best >= 0) caseLit = bc; }
     capTl.forEach((tl, k) => { if (k === caseLit && !tl._on) { tl._on = true; tl.timeScale(1).play(); } else if (tl._on && k !== caseLit) { const r = shownP[Math.min(k, shownP.length - 1)].getBoundingClientRect(); if (picTops[k] > (r.top + r.height / 2) / U) { tl._on = false; tl.timeScale(2.2).reverse(); } } });   // scrolled back so that the picture is below its name again: the caption goes   // a case's caption comes in at the same moment as its client's name turns black   // on the right all the names are grey, only the case we are in is black   // in the cases the name of the case on the screen is the one in black
     partners.forEach((el, i) => el.classList.toggle('on', i === best));
     { // as we come to the cases (a little after the names have stopped) they move over to the right edge with the scroll itself, the first one pulling the others like a train; on the right they are a size smaller, like an h3 (70%), and the rows close up round the middle of the screen; scrolling back takes them back the same way
-      const S0 = pinY0 + 140, n = shownP.length;
+      const S0 = pinY0 + 100, n = shownP.length;
       plab.style.opacity = (1 - clamp((y - S0) / 120)).toFixed(3);    // the clients' words go as the names move over
       shownP.forEach((el, k) => {
-        const e = ease(clamp((y - S0 - k * 45) / 300));
+        const e = ease(clamp((y - S0 - k * 40) / 260));
         if (e === 0 || el._w == null) { const L = el.firstElementChild, a = L.firstElementChild.getBoundingClientRect(), b = L.lastElementChild.getBoundingClientRect(); if (e === 0) { el._x0 = a.left / U; el._w = (b.right - a.left) / U; } }   // measured while it stands in its own place
         const T = PIN_TOP - (n - 1 - k) * 117, D = V / 2 - ((n - 1) * 82 + 69) / 2 + k * 82, fs = 108 + (75.6 - 108) * e;
         if (e === 0) { if (el._shifted) { el._shifted = false; gsap.set(el, { x: 0, y: 0 }); el.style.fontSize = ''; } return; }
@@ -1923,6 +1929,7 @@
   const endBars = $('.bar');
   function converge(done) {                       // the steps pull into one line at the top on their own, left to right, and drag the title and the menu up behind them
     document.documentElement.style.overflow = 'hidden';
+    const under = [...$('.rest > :not(.bar)'), nav, contact, sndBtn, tagline]; gsap.to(under, { opacity: 0, duration: .45, ease: 'power2.out' });   // only the strips, the title and the menu stay: the rest of the page is gone before they reach the top
     const rise = endBars.map(b => b.getBoundingClientRect().top - 20 * U), t1 = performance.now(), dur = DUR + 100, gap = 70;
     const ttl = document.createElement('div'); ttl.className = 't h1 endttl'; ttl.innerHTML = h1.innerHTML;
     ttl.querySelectorAll('.ch').forEach(c => { c.style.animation = 'none'; c.style.transform = 'none'; });
@@ -1938,7 +1945,7 @@
       ttl.style.transform = `translateY(${a * below}px)`; nv.style.transform = `translateY(${b2 * below}px)`;
       if (a > 0 || b2 > 0) busy = true;
       if (busy) requestAnimationFrame(f);
-      else { document.documentElement.style.overflow = ''; done(); ttl.remove(); nv.remove(); endBars.forEach(b => { b.style.transform = ''; b._ty = 0; }); }
+      else { document.documentElement.style.overflow = ''; done(); gsap.set(under, { clearProps: 'opacity' }); ttl.remove(); nv.remove(); endBars.forEach(b => { b.style.transform = ''; b._ty = 0; }); }
     })(t1);
   }
   addEventListener('scroll', () => {
