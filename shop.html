@@ -28,7 +28,7 @@
   /* the middle of the board: ordering and working together; the works pass right through it and the text flows round them (laid out line by line with pretext, as the table on the main page) */
   .mid { position: fixed; left: 50%; top: 50%; translate: -50% 0; width: calc(440 * var(--u)); z-index: 4; text-align: center; pointer-events: none; }
   .mid a { pointer-events: auto; }
-  .otl .hl { overflow: hidden; } .otl .hw { display: inline-block; animation: rise .9s var(--ease) both; } .otl .hl + .hl .hw { animation-delay: .08s; }
+  .otl .hl { overflow-x: visible; overflow-y: clip; }   /* the mask the words rise out of cuts only above and below: a word stepping aside is never clipped */ .otl .hw { display: inline-block; animation: rise .9s var(--ease) both; } .otl .hl + .hl .hw { animation-delay: .08s; }
   .otl .ln { font-family: "CoFo Cinema", "CoFo Sans", sans-serif; font-size: calc(72 * var(--u)); line-height: calc(66 * var(--u)); letter-spacing: -.01em; }
   .otl { position: fixed; left: 50%; translate: -50% 0; width: calc(440 * var(--u)); margin: 0; z-index: 6; text-align: center; font-family: "CoFo Cinema", "CoFo Sans", sans-serif; font-size: calc(72 * var(--u)); line-height: .91; letter-spacing: -.01em; text-transform: uppercase; color: #fff; mix-blend-mode: difference; pointer-events: none; font-family: "CoFo Cinema", "CoFo Sans", sans-serif; font-weight: 400; font-size: calc(72 * var(--u)); line-height: .91; letter-spacing: -.01em; text-transform: uppercase; }   /* the title over the works, turning white where it crosses them */
   .flow { position: relative; text-align: left; }
