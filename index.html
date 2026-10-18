@@ -68,7 +68,7 @@
   .dot.apart-up { translate: 0 calc(-14 * var(--u)); } .dot.apart-down { translate: 0 calc(14 * var(--u)); }   /* the two squares step away from each other and come back */
   .bigrow .cnt { width: calc(40 * var(--u)); text-align: left; left: 100%; margin-left: calc(6 * var(--u)); top: calc(18 * var(--u)); }   /* counter sits at the top right of the word, as in the design */
   .morph { overflow: visible; pointer-events: none; z-index: 2; mix-blend-mode: difference; transform: translate(calc(30 * var(--u)), calc(-24 * var(--u))) rotate(7deg); filter: url(#pencil); }   /* leaning a little to the right, drawn as if by an unsteady pencil */   /* over the words: where the line crosses a letter, it turns white */
-  .morph path { fill: none; stroke: #fff; stroke-width: 2.4; stroke-linejoin: round; vector-effect: non-scaling-stroke; }   /* a vessel drawn in one thin line, in the middle of the words; it turns from one form into the next */
+  .morph path { fill: none; stroke: #fff; stroke-width: 1.6; stroke-linejoin: round; vector-effect: non-scaling-stroke; }   /* a vessel drawn in one thin line, in the middle of the words; it turns from one form into the next */
   .hl { position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); border-top: 1px solid var(--rule); height: 0; }
   .dot { opacity: .1; position: absolute; width: calc(10 * var(--u)); height: calc(10 * var(--u)); background: #000; }
   .bar { background: #f2f2f2; will-change: transform; }   /* its own layer while it climbs: Safari left thin trails of it behind otherwise */   /* the same strip as the cards at the very top */
@@ -214,7 +214,7 @@
 <main class="page">
 
 <section class="hero">
-  <nav class="nav" style="left:calc(941 * var(--u))"><a href="#about">About</a><a href="#cases">Cases</a><a href="shop.html">Shop</a></nav>
+  <nav class="nav" style="left:calc(941 * var(--u))"><a href="#about">About</a><a href="#cases">Cases</a><a href="shop.html">Order</a></nav>
 </section>
 
 <div class="midstrip" aria-hidden="true"></div>
@@ -324,7 +324,7 @@
 
 </main>
 <div class="ct"><a class="ctl" href="mailto:order@dirtyhands.ru">Contact<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a></div>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="pencil" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="3" result="w"/><feDisplacementMap in="SourceGraphic" in2="w" scale="5" xChannelSelector="R" yChannelSelector="G" result="d"/><feTurbulence type="fractalNoise" baseFrequency="1.3" numOctaves="2" seed="5" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 5 -1.1" result="gm"/><feComposite in="d" in2="gm" operator="in"/></filter><filter id="soak" x="-4%" y="-25%" width="108%" height="150%"><feTurbulence type="fractalNoise" baseFrequency=".011 .028" numOctaves="3" seed="7" result="n"/><feDisplacementMap id="soakDisp" in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G" result="d"/><feGaussianBlur id="soakBlur" in="d" stdDeviation="0"/></filter></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="pencil" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="3" result="w"/><feDisplacementMap in="SourceGraphic" in2="w" scale="3" xChannelSelector="R" yChannelSelector="G" result="d"/><feTurbulence type="fractalNoise" baseFrequency="1.3" numOctaves="2" seed="5" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 5 -1.1" result="gm"/><feComposite in="d" in2="gm" operator="in"/></filter><filter id="soak" x="-4%" y="-25%" width="108%" height="150%"><feTurbulence type="fractalNoise" baseFrequency=".011 .028" numOctaves="3" seed="7" result="n"/><feDisplacementMap id="soakDisp" in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G" result="d"/><feGaussianBlur id="soakBlur" in="d" stdDeviation="0"/></filter></svg>
 <div class="tools" role="group" aria-label="Imprint tool" hidden>
   <button type="button" data-tool="cap" aria-pressed="false">Круглый штамп</button>
   <button type="button" data-tool="fork" aria-pressed="false">Параллельные бороздки</button>
@@ -507,8 +507,8 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
         vec2 qn = q / vec2(asp, 1.);
         vec3 n = normalize(R * normalize(vec3(2. * DOME * qn.x / asp, 2. * DOME * qn.y, 1.)));
         vec3 L = normalize(vec3(-.35, .55, .75));
-        float diff = .70 + .42 * max(dot(n, L), 0.);
-        float spec = pow(max(dot(n, normalize(L + vec3(0., 0., 1.))), 0.), 36.) * .42;     // the gloss of the glaze
+        float diff = .78 + .26 * max(dot(n, L), 0.);
+        float spec = pow(max(dot(n, normalize(L + vec3(0., 0., 1.))), 0.), 36.) * .2;      // the gloss of the glaze, kept soft
         vec2 cover = asp > imgAspect ? vec2(1., imgAspect / asp) : vec2(asp / imgAspect, 1.);
         vec2 uv = qn * .5 * .84 * cover + .5;
         vec4 c = texture2D(tex, vec2(uv.x, 1. - uv.y));
@@ -778,9 +778,15 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
     const len = C.sampleRate * 5, ir = C.createBuffer(2, len, C.sampleRate);           // a long, dark room
     for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2); }
     rv.buffer = ir; const bus = C.createGain(); bus.connect(dry); bus.connect(rv); rv.connect(wet); dry.connect(sLp); wet.connect(sLp); sLp.connect(sMaster); sMaster.connect(C.destination);
-    // a light, open major chord (C major with its seventh and ninth, spread wide), clear and calm, like the bright rooms of a museum on a hill; steady, hardly moving
-    [[130.81, .05, .011], [196, .03, .009], [329.63, .022, .013], [493.88, .012, .007], [587.33, .008, .015]].forEach(([f, g, b]) => { const o = C.createOscillator(), og = C.createGain(), lfo = C.createOscillator(), lg = C.createGain();
-      o.type = 'sine'; o.frequency.value = f; og.gain.value = g; lfo.frequency.value = b; lg.gain.value = g * .08; lfo.connect(lg); lg.connect(og.gain); o.connect(og); og.connect(bus); o.start(); lfo.start(); });
+    // minimal and ambient: a barely there bed (F and C, held), and over it a soft mallet circling the notes of a chord, four at a time, while the chord turns slowly (F, A minor, C, D minor); quiet and steady, like a pattern repeated by hand
+    [[87.31, .03], [130.81, .016]].forEach(([f, g]) => { const o = C.createOscillator(), og = C.createGain(); o.type = 'sine'; o.frequency.value = f; og.gain.value = g; o.connect(og); og.connect(bus); o.start(); });
+    const hz0 = m => 440 * Math.pow(2, (m - 69) / 12), CH = [[65, 69, 72, 76], [64, 69, 72, 76], [64, 67, 72, 76], [65, 69, 74, 77]], PAT = [0, 2, 1, 3, 2, 1];
+    let step = 0;
+    (function mallet() { const inside = false, dur = 1.15;   // inside a view the same music plays on, only filtered; slow and sparse
+      if (sOn && C.state === 'running' && Math.random() < .6) { const ch = CH[Math.floor(step / 12) % CH.length], m = ch[PAT[step % PAT.length]] - (inside ? 12 : 0), t = C.currentTime, accent = step % 6 === 0 ? 1 : .7;
+        [[1, .045 * accent], [4, .006 * accent], [2.76, .004 * accent]].forEach(([h, g]) => { const o = C.createOscillator(), e = C.createGain(); o.type = 'sine'; o.frequency.value = hz0(m) * h;
+          e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(g, t + .008); e.gain.exponentialRampToValueAtTime(.0001, t + (h === 1 ? 1.6 : .4)); o.connect(e); e.connect(bus); o.start(t); o.stop(t + 1.7); }); }   // a struck tone: quick attack, a short bright overtone, a longer soft body
+      step++; setTimeout(mallet, dur * 1000); })();
     const hzm = m => 440 * Math.pow(2, (m - 69) / 12);
     { const l = C.createOscillator(); sWob = C.createGain(); sWob.gain.value = 0; l.frequency.value = .07; l.connect(sWob); sWob.connect(sLp.frequency); l.start(); }   // inside a view the muffled room drifts very slowly
     // inside a view the chord moves to F major with its seventh and ninth, softer and closer: the same bright museum, one room further in
@@ -789,7 +795,7 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
     const nb = C.createBuffer(1, C.sampleRate * 2, C.sampleRate), nd = nb.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
     const ns = C.createBufferSource(), bp = C.createBiquadFilter(), ng = C.createGain(); ns.buffer = nb; ns.loop = true; bp.type = 'bandpass'; bp.frequency.value = 260; bp.Q.value = .5; ng.gain.value = .03;   // the air of a big hall
     ns.connect(bp); bp.connect(ng); ng.connect(bus); ns.start();
-    { const sw = C.createBufferSource(); sw.buffer = nb; sw.loop = true; sBp = C.createBiquadFilter(); sBp.type = 'bandpass'; sBp.Q.value = 1.4; sBp.frequency.value = 600; sSw = C.createGain(); sSw.gain.value = 0; sw.connect(sBp); sBp.connect(sSw); sSw.connect(sMaster); sSw.connect(rv); sw.start(); }   // the air that moves when something is swiped
+    { const sw = C.createBufferSource(); sw.buffer = nb; sw.loop = true; sBp = C.createBiquadFilter(); sBp.type = 'lowpass'; sBp.Q.value = .7; sBp.frequency.value = 300; sSw = C.createGain(); sSw.gain.value = 0; sw.connect(sBp); sBp.connect(sSw); sSw.connect(sMaster); sSw.connect(rv); sw.start(); }   // the air that moves when something is swiped: low, through a soft low-pass, never hissing
   }
   function setSound(on) {
     sOn = on; sndBtn.setAttribute('aria-pressed', on); if (on && !actx) startSound(); if (!actx) return;
@@ -797,14 +803,14 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
     const t = actx.currentTime; sMaster.gain.cancelScheduledValues(t); sMaster.gain.setValueAtTime(sMaster.gain.value, t); sMaster.gain.linearRampToValueAtTime(on ? .7 : 0, t + (on ? 3 : .8));
     if (on) waveLoop();
   }
-  function soundNudge(v) {                                               // a swipe or a drag in a slider: a breath of air, louder and brighter the faster it goes, and the muffled room opens for a moment
+  function soundNudge(v) {                                               // a swipe or a drag: a soft breath of air, low and quiet, a little fuller the faster it goes
     if (!sSw || !sOn) return; const k = Math.min(1, Math.abs(v)), t = actx.currentTime;
-    sSw.gain.cancelScheduledValues(t); sSw.gain.setValueAtTime(sSw.gain.value, t); sSw.gain.linearRampToValueAtTime(Math.max(sSw.gain.value, .05 + .22 * k), t + .06); sSw.gain.setTargetAtTime(0, t + .12, .35);
-    sBp.frequency.cancelScheduledValues(t); sBp.frequency.setValueAtTime(sBp.frequency.value, t); sBp.frequency.linearRampToValueAtTime(500 + 1800 * k, t + .08); sBp.frequency.setTargetAtTime(600, t + .15, .5);
+    sSw.gain.cancelScheduledValues(t); sSw.gain.setValueAtTime(sSw.gain.value, t); sSw.gain.linearRampToValueAtTime(Math.max(sSw.gain.value, .015 + .05 * k), t + .12); sSw.gain.setTargetAtTime(0, t + .2, .5);
+    sBp.frequency.cancelScheduledValues(t); sBp.frequency.setValueAtTime(sBp.frequency.value, t); sBp.frequency.linearRampToValueAtTime(260 + 520 * k, t + .15); sBp.frequency.setTargetAtTime(300, t + .25, .6);
   }
-  function muffle(on) { sInside = on; if (!sLp) return; const t = actx.currentTime; sLp.frequency.cancelScheduledValues(t); sLp.frequency.setValueAtTime(sLp.frequency.value, t); sLp.frequency.exponentialRampToValueAtTime(on ? 700 : 2600, t + 1.5); sLp.Q.cancelScheduledValues(t); sLp.Q.setValueAtTime(sLp.Q.value, t); sLp.Q.linearRampToValueAtTime(.5, t + 1.5);
-    sWob.gain.cancelScheduledValues(t); sWob.gain.setValueAtTime(sWob.gain.value, t); sWob.gain.linearRampToValueAtTime(on ? 60 : 0, t + 1.5);
-    sInG.gain.cancelScheduledValues(t); sInG.gain.setValueAtTime(sInG.gain.value, t); sInG.gain.linearRampToValueAtTime(on ? 1 : 0, t + 2); }   // inside: softer and closer, an octave lower, with a warm fifth under it
+  function muffle(on) { sInside = on; if (!sLp) return; const t = actx.currentTime; sLp.frequency.cancelScheduledValues(t); sLp.frequency.setValueAtTime(sLp.frequency.value, t); sLp.frequency.exponentialRampToValueAtTime(on ? 340 : 2600, t + 1.2); sLp.Q.cancelScheduledValues(t); sLp.Q.setValueAtTime(sLp.Q.value, t); sLp.Q.linearRampToValueAtTime(on ? 1.6 : .5, t + 1.2);
+    sWob.gain.cancelScheduledValues(t); sWob.gain.setValueAtTime(sWob.gain.value, t); sWob.gain.linearRampToValueAtTime(0, t + 1.5);
+    sInG.gain.cancelScheduledValues(t); sInG.gain.setValueAtTime(sInG.gain.value, t); sInG.gain.linearRampToValueAtTime(0, t + 2); }   // inside: softer and closer, an octave lower, with a warm fifth under it
   const wave = sndBtn.querySelector('path');
   function waveLoop(now = performance.now()) {                            // the line moves like a slow wave while the sound plays and lies flat again when it stops
     let d = 'M0 5'; const amp = sOn ? 2.6 : 0; for (let x = 2; x <= 24; x += 2) d += `L${x} ${(5 + amp * Math.sin(x / 24 * Math.PI * 2 - now / 420) * Math.sin(x / 24 * Math.PI)).toFixed(2)}`;
@@ -1009,7 +1015,7 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
     card.style.visibility = 'hidden';                                    // the picture leaves the card for the gallery: never two of it at once
     const r = card.getBoundingClientRect(), ox = r.left + r.width / 2 - cx, oy = r.top + r.height / 2 - (top + PHc / 2), sc = r.width / PWc;
     const inT = splitMask(textEl), letters = [...titleEl.children], ico = CATV.querySelector('.cat-ico');
-    ico.innerHTML = `<svg viewBox="0 0 52 52"><path pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" d="${CAT_ICO[ci]}"/></svg>`; ico.firstChild.firstChild.style.strokeWidth = (52 / (innerHeight * .7)).toFixed(4);   // one screen pixel wide
+    ico.innerHTML = `<svg viewBox="0 0 52 52"><path pathLength="1" stroke-dasharray="1.04 1" stroke-dashoffset="1" d="${CAT_ICO[ci]}"/></svg>`; ico.firstChild.firstChild.style.strokeWidth = (52 / (innerHeight * .7)).toFixed(4);   // one screen pixel wide
     const tl = gsap.timeline({ onReverseComplete() { stop(); card.style.visibility = ''; CATV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); tick(); } });
     tl.to(pageEls(), { opacity: 0, duration: .45, ease: 'power2.in' }, 0);
     tl.fromTo('#catView .ov-scrim', { opacity: 0 }, { opacity: 1, duration: .45, ease: 'power2.out' }, 0);
@@ -1523,23 +1529,10 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
   const hands = new Map();
   const empty = el => !el.closest('a, .pic, .hc, .more, [data-year], .partner, .ov, nav, button, .close-cursor');
 
-  function quick(x, y, R) {                                              // a mark left by a click on a link, a picture or a window: it melts away sooner
-    const t = now() - (HOLD - 0.7), x0 = Math.max(0, (x - R) * S | 0), x1 = Math.min(W - 1, (x + R) * S | 0), y0 = Math.max(0, (y - R) * S | 0), y1 = Math.min(H - 1, (y + R) * S | 0);
-    for (let yy = y0; yy <= y1; yy++) for (let xx = x0; xx <= x1; xx++) { const i = yy * W + xx; if (T[i] > 0 && D[i] > t) D[i] = t; }
-  }
-  // never more than three fingers in one place: clicks close together while the marks are fresh share that budget, and once it is spent a click only presses the clay already there
-  const recent = [];
-  const room = (x, y) => { const t = now(); for (let i = recent.length - 1; i >= 0; i--) if (t - recent[i].t > HOLD + 1) recent.splice(i, 1);
-    return 3 - recent.reduce((n, r) => n + (Math.hypot(r.x - x, r.y - y) < 170 ? r.n : 0), 0); };
+  // a click leaves no print; only a drag draws: a finger goes down unseen and smears the clay as it moves
   addEventListener('pointerdown', e => {
-    if (e.button) return;
-    const left = room(e.clientX, e.clientY), keep = n => recent.push({ x: e.clientX, y: e.clientY, t: now(), n });
-    if (openView || !empty(e.target)) {                                 // any click leaves a print, even on a link; there it does not smear and goes quickly
-      if (left >= 1) { const one = Math.random() < 0.5; (one ? variants[0] : variants[4]).run(e.clientX, e.clientY); keep(one ? 1 : 0); }
-      quick(e.clientX, e.clientY, 140); return;
-    }
-    let v; if (left >= 2) { const q = Math.random(); v = q < 0.2 ? variants[11] : q < 0.4 ? variants[10] : variants[kept[(Math.random() * kept.length) | 0]]; } else if (left === 1) v = Math.random() < .5 ? variants[0] : variants[4]; else v = variants[4];
-    const fs = v.run(e.clientX, e.clientY) || []; keep(v === variants[10] ? 2 : v === variants[11] ? fs.length : v === variants[0] ? 1 : 0);
+    if (e.button || openView || !empty(e.target)) return;
+    const fs = [finger(e.clientX, e.clientY, { load: rnd(1.2, 1.6) })];
     hands.set(e.pointerId, { fs, sx: e.clientX, sy: e.clientY, x: e.clientX, y: e.clientY, smearing: false });
   });
 
