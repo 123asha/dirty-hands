@@ -379,15 +379,27 @@ window.preDone = new Promise(done => {
   const pre = document.querySelector('.pre'); if (!pre || typeof makeClay !== 'function') { if (pre) pre.remove(); return done(); }
   window.scrollLocked = true;   // no scrolling under the sheet (a lock that leaves the scrollbar alone, so nothing shifts when it lifts)
   const S = 0.5, cv = pre.querySelector('canvas'), w = Math.round(innerWidth * S), h = Math.round(innerHeight * S), c = makeClay({ cv, w, h });   // made at half size and stretched: soft clay loses nothing, and it is ready six times sooner
-  const a = (Math.random() - .5) * 0.12, dx = Math.cos(a), dy = Math.sin(a), L = 400, x0 = (innerWidth - L) / 2;   // one finger drawn about 400px across the middle of the sheet
-  let f = c.finger(x0 * S, h * (0.5 + (Math.random() - .5) * .06), { size: 1.5 * S, load: 1.8 }); c.print(f); c.autoSmear(f, dx, dy, L * S, 0.994); c.render();   // the whole stroke is made at once, under the sheet ...
-  const t1 = performance.now(), DUR = 750, soft = 60;   // ... and a soft edge uncovers it from left to right, so every frame is light and the stroke runs smoothly
-  const reveal = p => { const m = `linear-gradient(90deg, #000 ${(p - soft).toFixed(1)}px, transparent ${p.toFixed(1)}px)`; cv.style.webkitMaskImage = m; cv.style.maskImage = m; };
-  reveal(0);
-  (function step(now) { const k = Math.min(1, (now - t1) / DUR), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;   // slow in, slow out
-    reveal(x0 - 40 + e * (L + 80 + soft));
+  // a finger writes D and H in clay across the middle of the sheet, stroke by stroke, lifting between them (sizes in css px)
+  const LH = Math.min(170, innerHeight * .22), BW = LH * .62, GAP = LH * .42, x0 = (innerWidth - (BW * 2 + GAP)) / 2, yT = innerHeight / 2 - LH / 2, yB = yT + LH;
+  const line = (ax, ay, bx, by) => { const n = Math.max(2, Math.ceil(Math.hypot(bx - ax, by - ay) / 10)); return Array.from({ length: n + 1 }, (_, i) => [ax + (bx - ax) * i / n, ay + (by - ay) * i / n]); };
+  const bowl = (cx, cy, rx, ry) => Array.from({ length: 25 }, (_, i) => { const t = -Math.PI / 2 + Math.PI * i / 24; return [cx + Math.cos(t) * rx, cy + Math.sin(t) * ry]; });
+  const hx = x0 + BW + GAP, strokes = [line(x0, yT, x0, yB), [[x0, yT], ...bowl(x0 + BW * .12, yT + LH / 2, BW * .88, LH / 2)], line(hx, yT, hx, yB), line(hx + BW, yT, hx + BW, yB), line(hx, yT + LH * .52, hx + BW, yT + LH * .52)];   // D: stem, then the bowl; H: two stems and the bar
+  const lens = strokes.map(p => p.slice(1).reduce((a, q, i) => a + Math.hypot(q[0] - p[i][0], q[1] - p[i][1]), 0)), total = lens.reduce((a, b) => a + b, 0);
+  let si = 0, pi = 0, f = null, done_ = 0;   // where the finger is: stroke, point, and how much of the way is written
+  const advance = to => {                    // smear on along the strokes until 'to' css px of the way are written
+    while (si < strokes.length && done_ < to) {
+      const P = strokes[si];
+      if (pi === 0) { f = c.finger(P[0][0] * S, P[0][1] * S, { size: 1.1 * S, load: 1.8, ang: 0 }); c.print(f); pi = 1; }   // the finger comes down
+      const [ax, ay] = P[pi - 1], [bx, by] = P[pi], d = Math.hypot(bx - ax, by - ay);
+      if (d > 0) { f.x = ax * S; f.y = ay * S; f = c.autoSmear(f, (bx - ax) / d, (by - ay) / d, Math.max(2, d * S), 0.996); }
+      done_ += d; pi++; if (pi >= P.length) { si++; pi = 0; }   // the end of a stroke: it lifts
+    }
+  };
+  const t1 = performance.now(), DUR = 1500;
+  (function step(now) { const k = Math.min(1, (now - t1) / DUR), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;   // slow in, slow out
+    advance(e * total + (k >= 1 ? 1 : 0)); c.render();
     if (k < 1) return requestAnimationFrame(step);
-    setTimeout(() => { pre.style.transition = 'opacity .6s cubic-bezier(.4, 0, .2, 1)'; pre.style.opacity = 0; done(); setTimeout(() => pre.remove(), 650); }, 150); })(t1);
+    setTimeout(() => { pre.style.transition = 'opacity .6s cubic-bezier(.4, 0, .2, 1)'; pre.style.opacity = 0; done(); setTimeout(() => pre.remove(), 650); }, 250); })(t1);
 });
 </script>
 <script src="sound.js"></script>
