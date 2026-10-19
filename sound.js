@@ -1,7 +1,7 @@
 // Dirty Hands: the sound of the pages, made in the browser (no files). Needs a <button class="snd"> with an svg path inside; starts on the first click anywhere.
 // Globals for the page: sndBtn, setSound(on), muffle(on) (a view is open: the filter goes down), soundNudge(k) (a rustle of air, 0..1).
 // ---- sound: a very light, calm museum background made in the browser (no files): a soft D major chord held and breathing, a little air, and a long room around it. Off until the switch is pressed; inside a view (a category, a case, the Story) it goes muffled, as if behind a wall
-const sndBtn = document.querySelector('.snd'); let sPan = null, sGust = 0, sLeafBuf = null, sLeafOut = null, actx = null, sMaster = null, sLp = null, sOn = false, sInside = false, sInG = null, sWob = null, sSw = null, sBp = null;
+const sndBtn = document.querySelector('.snd'); let sBake = null, sPan = null, sGust = 0, sLeafBuf = null, sLeafOut = null, actx = null, sMaster = null, sLp = null, sOn = false, sInside = false, sInG = null, sWob = null, sSw = null, sBp = null;
 function startSound() {
   const C = actx = new (window.AudioContext || window.webkitAudioContext)();
   sMaster = C.createGain(); sMaster.gain.value = 0; sLp = C.createBiquadFilter(); sLp.type = 'lowpass'; sLp.frequency.value = 2600; sLp.Q.value = .4;
@@ -50,19 +50,21 @@ function startSound() {
     (function gust() { const t = C.currentTime, calm = Math.random() < .25, k = calm ? Math.random() * .2 : .25 + Math.random() * .75, tc = .5 + Math.random() * 1.1;   // now and then it drops almost to nothing
       sGust = k; wg.gain.setTargetAtTime(.012 + .075 * k, t, tc); body.frequency.setTargetAtTime(320 + 520 * k + Math.random() * 120, t, tc * 1.2); wh.frequency.setTargetAtTime(900 + 900 * k, t, tc);
       if (pan) pan.pan.setTargetAtTime((Math.random() - .5) * .8, t, 2); setTimeout(gust, (1 + Math.random() * 2.2) * 1000); })(); }
-  // clay after the kiln: the glaze pings as it cools and crazes (thin high ticks, now and then a few in a row), and once in a while the clay cracks, dry and short, with a dull knock under it
-  (function ping() { const t = C.currentTime, n = Math.random() < .3 ? 2 + Math.floor(Math.random() * 3) : 1;
-    for (let i = 0; i < n; i++) { const at = t + i * (.06 + Math.random() * .25), f = 2600 + Math.random() * 4200, o = C.createOscillator(), o2 = C.createOscillator(), e = C.createGain(), pn = C.createStereoPanner ? C.createStereoPanner() : null, g = .006 + Math.random() * .012;
-      o.type = 'sine'; o.frequency.value = f; o2.type = 'sine'; o2.frequency.value = f * 2.76;   // a tiny bell: the tone and a glassy overtone
-      e.gain.setValueAtTime(0, at); e.gain.linearRampToValueAtTime(g, at + .001); e.gain.exponentialRampToValueAtTime(.0001, at + .05 + Math.random() * .12);
-      o.connect(e); o2.connect(e); if (pn) { pn.pan.value = (Math.random() - .5) * 1.4; e.connect(pn); pn.connect(bus); } else e.connect(bus); o.start(at); o2.start(at); o.stop(at + .2); o2.stop(at + .2); }
-    setTimeout(ping, (2 + Math.random() * 6) * 1000); })();
+  // clay after the kiln: once in a while it cracks, dry and short, with a dull knock under it
+  // (no glaze pings: no bell-like sounds at all)
   (function crack() { const t = C.currentTime + .05, src = C.createBufferSource(), lp = C.createBiquadFilter(), e = C.createGain(), th = C.createOscillator(), te = C.createGain();
     src.buffer = nb; lp.type = 'bandpass'; lp.frequency.value = 900 + Math.random() * 1400; lp.Q.value = .7;
     e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(.09, t + .003); e.gain.exponentialRampToValueAtTime(.0001, t + .09 + Math.random() * .08);
     th.type = 'sine'; th.frequency.setValueAtTime(140, t); th.frequency.exponentialRampToValueAtTime(70, t + .06); te.gain.setValueAtTime(0, t); te.gain.linearRampToValueAtTime(.05, t + .004); te.gain.exponentialRampToValueAtTime(.0001, t + .08);
     src.connect(lp); lp.connect(e); e.connect(bus); th.connect(te); te.connect(bus); src.start(t, Math.random() * 3, .2); th.start(t); th.stop(t + .1);
     setTimeout(crack, (12 + Math.random() * 16) * 1000); })();
+  // clay baking in the kiln: a faint hot hiss and a thick scatter of tiny dry pops, like slip drying and sizzling on a hot surface; it swells and settles slowly, under everything else
+  { const hs = C.createBufferSource(); hs.buffer = nb; hs.loop = true; const hp = C.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 3500; const hg = C.createGain(); hg.gain.value = .004;
+    const lf = C.createOscillator(), lg = C.createGain(); lf.frequency.value = .07; lg.gain.value = .003; lf.connect(lg); lg.connect(hg.gain); lf.start();   // the heat breathes
+    hs.connect(hp); hp.connect(hg); hg.connect(bus); hs.start(); sBake = lf; }
+  (function bake() { const t = C.currentTime, heat = .55 + .45 * Math.sin(t * .44) * Math.sin(t * .13), n = Math.random() < heat ? 1 + Math.floor(Math.random() * 3 * heat) : 0;
+    for (let i = 0; i < n; i++) pop(t + Math.random() * .04, .004 + Math.random() * .01 * heat);
+    setTimeout(bake, 25 + Math.random() * 45); })();
   // dry leaves: short crackly grains of bright noise, scattered left and right
   sLeafBuf = C.createBuffer(1, C.sampleRate * .5, C.sampleRate); { const d = sLeafBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (Math.random() < .3 ? 1 : .35); }   // uneven: the clicks of leaves, not a smooth hiss
   sLeafOut = C.createGain(); sLeafOut.gain.value = 1; sLeafOut.connect(bus);
@@ -70,12 +72,23 @@ function startSound() {
   { const sw = C.createBufferSource(); sw.buffer = nb; sw.loop = true; sBp = C.createBiquadFilter(); sBp.type = 'bandpass'; sBp.Q.value = 1.6; sBp.frequency.value = 450; sSw = C.createGain(); sSw.gain.value = 0; sPan = C.createStereoPanner ? C.createStereoPanner() : null;
     sw.connect(sBp); sBp.connect(sSw); if (sPan) { sSw.connect(sPan); sPan.connect(sMaster); sPan.connect(rv); } else { sSw.connect(sMaster); sSw.connect(rv); } sw.start(); }   // a gust of wind when something is swiped: a band of soft noise that rises and falls, never a hiss
 }
+function pop(t, g) {                                                     // one tiny pop of baking clay: a couple of milliseconds of very bright crackle
+  if (!actx || !sLeafBuf) return; const C = actx, src = C.createBufferSource(), bp = C.createBiquadFilter(), e = C.createGain(), pn = C.createStereoPanner ? C.createStereoPanner() : null, len = .002 + Math.random() * .006;
+  src.buffer = sLeafBuf; bp.type = 'bandpass'; bp.frequency.value = 3000 + Math.random() * 6000; bp.Q.value = 1.5;
+  e.gain.setValueAtTime(g, t); e.gain.exponentialRampToValueAtTime(.0001, t + len);
+  src.connect(bp); bp.connect(e); if (pn) { pn.pan.value = (Math.random() - .5) * 1.2; e.connect(pn); pn.connect(sLeafOut); } else e.connect(sLeafOut);
+  src.start(t, Math.random() * .4, len + .005); }
 function leaf(t, g) {                                                    // one leaf: a few milliseconds of bright crackle through a band that differs every time
   if (!actx || !sLeafBuf) return; const C = actx, src = C.createBufferSource(), hp = C.createBiquadFilter(), bp = C.createBiquadFilter(), e = C.createGain(), pn = C.createStereoPanner ? C.createStereoPanner() : null, len = .015 + Math.random() * .07;
   src.buffer = sLeafBuf; hp.type = 'highpass'; hp.frequency.value = 1400; bp.type = 'bandpass'; bp.frequency.value = 2200 + Math.random() * 4500; bp.Q.value = .8 + Math.random() * 1.5;
   e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(g * (.4 + Math.random() * .6), t + .002 + Math.random() * .006); e.gain.exponentialRampToValueAtTime(.0001, t + len);
   src.connect(hp); hp.connect(bp); bp.connect(e); if (pn) { pn.pan.value = (Math.random() - .5) * 1.6; e.connect(pn); pn.connect(sLeafOut); } else e.connect(sLeafOut);
   src.start(t, Math.random() * .4, len + .01); }
+function placeSound() {                                                 // a work set down on a shelf: a soft, dull ceramic knock, a low body and a short dry click, no ring
+  if (!actx || !sOn) return; const C = actx, t = C.currentTime + .01, o = C.createOscillator(), e = C.createGain(), src = C.createBufferSource(), bp = C.createBiquadFilter(), ce = C.createGain();
+  o.type = 'sine'; o.frequency.setValueAtTime(190 + Math.random() * 60, t); o.frequency.exponentialRampToValueAtTime(110, t + .07); e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(.09, t + .004); e.gain.exponentialRampToValueAtTime(.0001, t + .12);
+  src.buffer = sLeafBuf; bp.type = 'bandpass'; bp.frequency.value = 1400 + Math.random() * 600; bp.Q.value = 1.2; ce.gain.setValueAtTime(.05, t); ce.gain.exponentialRampToValueAtTime(.0001, t + .03);
+  o.connect(e); e.connect(sMaster); src.connect(bp); bp.connect(ce); ce.connect(sMaster); o.start(t); o.stop(t + .15); src.start(t, Math.random() * .4, .04); }
 function setSound(on) {
   sOn = on; sndBtn.setAttribute('aria-pressed', on); if (on && !actx) startSound(); if (!actx) return;
   if (actx.state === 'suspended') actx.resume();

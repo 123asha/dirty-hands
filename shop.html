@@ -172,6 +172,7 @@
       if (f.tx != null) {   // to its shelf: an arc over, shrinking to the height of a band, a small bounce as it lands, and there it stays
         const k = Math.min(1, (now - f.t0) / 750), e = 1 - Math.pow(1 - k, 3), land = Math.max(0, (now - f.t0 - 750) / 450), bob = land < 1 ? Math.sin(land * Math.PI * 2) * (1 - land) * 6 * U : 0;
         f.x = f.x0 + (f.tx - f.x0) * e; f.y = f.y0 + (f.ty - f.y0) * e - Math.sin(k * Math.PI) * 90 * U - bob; f.sz = S + (f.ts - S) * e; f.r = (1 - e) * f.vr * 18 + f.rr * e;
+        if (k >= 1 && !f.placed) { f.placed = true; if (typeof placeSound === 'function') placeSound(); }   // set down: a soft knock
         if (k >= 1) {   // standing on its shelf: a silhouette passing close shoves it aside, and it springs back to its place
           let px = 0, py = 0; its.forEach(it => { if (!it.box) return; const dx = f.tx - it.x, dy = f.ty - it.y, d = Math.hypot(dx, dy) || 1, reach = it.box.S * .5 + f.ts * .5; if (d < reach) { const m = (reach - d); px += dx / d * m; py += dy / d * m * .5; } });
           f.ox = (f.ox || 0) + (px - (f.ox || 0)) * .18; f.oy = (f.oy || 0) + (py - (f.oy || 0)) * .18; f.x += f.ox; f.y += Math.min(0, f.oy); f.r += f.ox * .25;
