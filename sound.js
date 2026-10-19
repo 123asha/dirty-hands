@@ -10,12 +10,12 @@ function startSound() {
   for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2); }
   rv.buffer = ir; const bus = C.createGain(); bus.connect(dry); bus.connect(rv); rv.connect(wet); dry.connect(sLp); wet.connect(sLp); sLp.connect(sMaster); sMaster.connect(C.destination);
   // minimal and ambient: a barely there bed (F and C, held), and over it a soft mallet circling the notes of a chord, four at a time, while the chord turns slowly (F, A minor, C, D minor); quiet and steady, like a pattern repeated by hand
-  [].forEach(([f, g]) => { const o = C.createOscillator(), og = C.createGain(); o.type = 'sine'; o.frequency.value = f; og.gain.value = g; o.connect(og); og.connect(bus); o.start(); });
+  [[87.31, .018], [130.81, .012], [174.61, .007]].forEach(([f, g]) => { const o = C.createOscillator(), og = C.createGain(); o.type = 'sine'; o.frequency.value = f; og.gain.value = g; o.connect(og); og.connect(bus); o.start(); });
   const hz0 = m => 440 * Math.pow(2, (m - 69) / 12), CH = [[65, 69, 72, 76], [64, 69, 72, 76], [64, 67, 72, 76], [65, 69, 74, 77]], PAT = [0, 2, 1, 3, 2, 1];
   let step = 0;
-  (function mallet() { const inside = false, dur = 1.15;   // inside a view the same music plays on, only filtered; slow and sparse
-    if (false) { const ch = CH[Math.floor(step / 12) % CH.length], m = ch[PAT[step % PAT.length]] - (inside ? 12 : 0), t = C.currentTime, accent = step % 6 === 0 ? 1 : .7;
-      [[1, .045 * accent], [4, .006 * accent], [2.76, .004 * accent]].forEach(([h, g]) => { const o = C.createOscillator(), e = C.createGain(); o.type = 'sine'; o.frequency.value = hz0(m) * h;
+  (function mallet() { const inside = false, dur = 1.6;   // inside a view the same music plays on, only filtered; slow and sparse
+    if (step % 4 !== 3) { const ch = CH[Math.floor(step / 12) % CH.length], m = ch[PAT[step % PAT.length]] - (inside ? 12 : 0), t = C.currentTime, accent = step % 6 === 0 ? 1 : .7;
+      [[1, .03 * accent], [4, .004 * accent], [2.76, .003 * accent]].forEach(([h, g]) => { const o = C.createOscillator(), e = C.createGain(); o.type = 'sine'; o.frequency.value = hz0(m) * h;
         e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(g, t + .008); e.gain.exponentialRampToValueAtTime(.0001, t + (h === 1 ? 1.6 : .4)); o.connect(e); e.connect(bus); o.start(t); o.stop(t + 1.7); }); }   // a struck tone: quick attack, a short bright overtone, a longer soft body
     step++; setTimeout(mallet, dur * 1000); })();
   const hzm = m => 440 * Math.pow(2, (m - 69) / 12);
@@ -26,12 +26,15 @@ function startSound() {
   const nb = C.createBuffer(1, C.sampleRate * 2, C.sampleRate), nd = nb.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
   const ns = C.createBufferSource(), bp = C.createBiquadFilter(), ng = C.createGain(); ns.buffer = nb; ns.loop = true; bp.type = 'bandpass'; bp.frequency.value = 260; bp.Q.value = .5; ng.gain.value = .05;   // the air of a big hall
   ns.connect(bp); bp.connect(ng); ng.connect(bus); ns.start();
+  { const w = C.createBufferSource(); w.buffer = nb; w.loop = true; w.playbackRate.value = .5; const wf = C.createBiquadFilter(); wf.type = 'bandpass'; wf.Q.value = 1.1; wf.frequency.value = 420; const wg = C.createGain(); wg.gain.value = .045;
+    const g1 = C.createOscillator(), g1g = C.createGain(), g2 = C.createOscillator(), g2g = C.createGain(); g1.frequency.value = .045; g1g.gain.value = .03; g2.frequency.value = .11; g2g.gain.value = 260;   // slow gusts: the wind swells and falls, and its pitch moves with it
+    g1.connect(g1g); g1g.connect(wg.gain); g2.connect(g2g); g2g.connect(wf.frequency); w.connect(wf); wf.connect(wg); wg.connect(bus); w.start(); g1.start(); g2.start(); }   // wind outside the hall
   { const sw = C.createBufferSource(); sw.buffer = nb; sw.loop = true; sBp = C.createBiquadFilter(); sBp.type = 'lowpass'; sBp.Q.value = .7; sBp.frequency.value = 300; sSw = C.createGain(); sSw.gain.value = 0; sw.connect(sBp); sBp.connect(sSw); sSw.connect(sMaster); sSw.connect(rv); sw.start(); }   // the air that moves when something is swiped: low, through a soft low-pass, never hissing
 }
 function setSound(on) {
   sOn = on; sndBtn.setAttribute('aria-pressed', on); if (on && !actx) startSound(); if (!actx) return;
   if (actx.state === 'suspended') actx.resume();
-  const t = actx.currentTime; sMaster.gain.cancelScheduledValues(t); sMaster.gain.setValueAtTime(sMaster.gain.value, t); sMaster.gain.linearRampToValueAtTime(on ? 1 : 0, t + (on ? 3 : .8));
+  const t = actx.currentTime; sMaster.gain.cancelScheduledValues(t); sMaster.gain.setValueAtTime(sMaster.gain.value, t); sMaster.gain.linearRampToValueAtTime(on ? 1.7 : 0, t + (on ? 3 : .8));   // 70% louder than it was
   if (on) waveLoop();
 }
 function soundNudge(v) {                                               // a swipe or a drag: a soft breath of air, low and quiet, a little fuller the faster it goes
