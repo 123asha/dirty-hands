@@ -192,8 +192,9 @@
   #caseView { overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; }
   #caseView .ov-scrim { position: fixed; }
   .cd-slider { position: absolute; left: 0; width: 100%; overflow: hidden; cursor: grab; touch-action: pan-y; }
-  .cd-track { display: flex; gap: calc(20 * var(--u)); padding-left: calc(20 * var(--u)); width: max-content; will-change: transform; }
-  .cd-s { flex: none; height: calc(300 * var(--u)); background: var(--gray) center / cover no-repeat; }
+  .cd-track { display: flex; align-items: flex-start; gap: calc(10 * var(--u)); padding-left: calc(20 * var(--u)); width: max-content; will-change: transform; }
+  .cd-s { flex: none; height: calc(70 * var(--u)); background: var(--gray) center / cover no-repeat; cursor: pointer; }
+  .cd-alt { position: absolute; inset: 0; background: center / cover no-repeat; opacity: 0; transition: opacity .35s var(--ease); pointer-events: none; } .cd-alt.on { opacity: 1; }   /* the preview pointed at, over the big picture */
   .cd-end { position: absolute; left: 0; width: 1px; height: 1px; }
   #catView .cat-cyl { position: absolute; inset: 0; perspective: calc(2200 * var(--u)); perspective-origin: 50% 45%; transform-origin: 50% 45%; }
   .cat-ph { position: absolute; inset: 0; perspective: inherit; perspective-origin: inherit; will-change: opacity; }   /* one picture: its strips fade together, so where they overlap no darker seam shows */
@@ -942,10 +943,14 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     Object.assign(cdPic.style, { backgroundImage: img, left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
     aEl.style.left = 940 * U + 'px'; aEl.style.top = picTop + 140 * U + 'px'; bEl.style.left = 1170 * U + 'px'; bEl.style.top = picTop + 218 * U + 'px';   // the two paragraphs to the right of the picture, under its caption, as a staircase
     // more photos of the work below: a slider that is moved by the wheel (sideways), by dragging and by the arrow keys
-    const slider = one('.cd-slider'), track = one('.cd-track'), endEl = one('.cd-end'), SW_ = [400, 300, 460, 340, 420, 320, 380];
-    track.innerHTML = SW_.map(() => '<div class="cd-s"></div>').join(''); [...track.children].forEach((el, k) => { el.style.width = SW_[k] * U + 'px'; el.style.backgroundImage = IMG(i * 2 + 3 + k); });
+    const slider = one('.cd-slider'), track = one('.cd-track'), endEl = one('.cd-end'), SW_ = [88, 88, 88, 88, 88, 88, 88];   // small previews under the picture, bottom left
+    track.innerHTML = SW_.map(() => '<div class="cd-s"></div>').join(''); [...track.children].forEach((el, k) => { el.style.width = SW_[k] * U + 'px'; el.style.height = [74, 58, 86, 64, 80, 54, 70][k] * U + 'px'; el.style.backgroundImage = IMG(i * 2 + 3 + k); });   // level at the top, a jagged edge at the bottom, as the cards on the main page
     const sTop = belowTop;   // right under the picture: the paragraphs now stand beside it
-    slider.style.top = sTop + 'px'; endEl.style.top = sTop + 300 * U + 60 * U + 'px'; CV.scrollTop = 0;
+    slider.style.top = sTop + 'px'; endEl.style.top = sTop + 86 * U + 60 * U + 'px'; CV.scrollTop = 0;
+    // pointing at a preview shows it in the big picture; moving off brings the case's own photo back
+    const alt = cdPic.querySelector('.cd-alt') || cdPic.appendChild(Object.assign(document.createElement('i'), { className: 'cd-alt' }));
+    [...track.children].forEach(el => el.addEventListener('pointerenter', () => { alt.style.backgroundImage = el.style.backgroundImage; alt.classList.add('on'); soundNudge(.2); }));
+    track.addEventListener('pointerleave', () => alt.classList.remove('on'));
     let sx = 0, dragS = null; const maxX = () => Math.min(0, innerWidth - track.scrollWidth - 20 * U);
     const goX = v => { soundNudge((v - sx) / (300 * U)); sx = Math.max(maxX(), Math.min(0, v)); gsap.to(track, { x: sx, duration: .6, ease: 'power3.out', overwrite: true }); };
     const onSw = e => { if (!e.target.closest('.cd-slider')) return; if (Math.abs(e.deltaX) > Math.abs(e.deltaY) * 0.6 || e.shiftKey) { e.preventDefault(); goX(sx - (e.deltaX || e.deltaY)); } };
@@ -961,7 +966,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       [...track.children].forEach(el => { const r = el.getBoundingClientRect(), dx = r.left + r.width / 2 - mid, a = Math.max(-1.2, Math.min(1.2, dx / RD)) * bendAmt;
         if (bendAmt > .003) { el._bent = true; el.style.transform = `perspective(${(1400 * U).toFixed(0)}px) translateZ(${(-RD * (1 - Math.cos(a))).toFixed(1)}px) rotateY(${(-a).toFixed(4)}rad)`; } else if (el._bent) { el._bent = false; el.style.transform = ''; } });
       requestAnimationFrame(bendLoop); })();
-    const stopSlider = () => { bendRun = false; CV.removeEventListener('wheel', onSw); removeEventListener('keydown', onSk); CV.removeEventListener('pointerdown', onSd); removeEventListener('pointermove', onSm); removeEventListener('pointerup', onSu); gsap.killTweensOf(track); gsap.set(track, { x: 0 }); track.innerHTML = ''; };
+    const stopSlider = () => { bendRun = false; CV.removeEventListener('wheel', onSw); removeEventListener('keydown', onSk); CV.removeEventListener('pointerdown', onSd); removeEventListener('pointermove', onSm); removeEventListener('pointerup', onSu); gsap.killTweensOf(track); gsap.set(track, { x: 0 }); track.innerHTML = ''; alt.classList.remove('on'); };
     CV.classList.add('open'); lockView(true);
     const held = partners.filter(p => p.style.position === 'fixed' && p === partners[i]).map(p => ({ p, par: p.parentNode, next: p.nextSibling }));   // the client names held on the right stay in sight over the case: lifted out of the faded page for as long as it is open
     held.forEach(({ p }) => { document.body.append(p); p.style.zIndex = 401; });
