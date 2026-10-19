@@ -35,6 +35,19 @@ function startSound() {
     (function gust() { const t = C.currentTime, calm = Math.random() < .25, k = calm ? Math.random() * .2 : .25 + Math.random() * .75, tc = .5 + Math.random() * 1.1;   // now and then it drops almost to nothing
       sGust = k; wg.gain.setTargetAtTime(.012 + .075 * k, t, tc); body.frequency.setTargetAtTime(320 + 520 * k + Math.random() * 120, t, tc * 1.2); wh.frequency.setTargetAtTime(900 + 900 * k, t, tc);
       if (pan) pan.pan.setTargetAtTime((Math.random() - .5) * .8, t, 2); setTimeout(gust, (1 + Math.random() * 2.2) * 1000); })(); }
+  // clay after the kiln: the glaze pings as it cools and crazes (thin high ticks, now and then a few in a row), and once in a while the clay cracks, dry and short, with a dull knock under it
+  (function ping() { const t = C.currentTime, n = Math.random() < .3 ? 2 + Math.floor(Math.random() * 3) : 1;
+    for (let i = 0; i < n; i++) { const at = t + i * (.06 + Math.random() * .25), f = 2600 + Math.random() * 4200, o = C.createOscillator(), o2 = C.createOscillator(), e = C.createGain(), pn = C.createStereoPanner ? C.createStereoPanner() : null, g = .006 + Math.random() * .012;
+      o.type = 'sine'; o.frequency.value = f; o2.type = 'sine'; o2.frequency.value = f * 2.76;   // a tiny bell: the tone and a glassy overtone
+      e.gain.setValueAtTime(0, at); e.gain.linearRampToValueAtTime(g, at + .001); e.gain.exponentialRampToValueAtTime(.0001, at + .05 + Math.random() * .12);
+      o.connect(e); o2.connect(e); if (pn) { pn.pan.value = (Math.random() - .5) * 1.4; e.connect(pn); pn.connect(bus); } else e.connect(bus); o.start(at); o2.start(at); o.stop(at + .2); o2.stop(at + .2); }
+    setTimeout(ping, (2 + Math.random() * 6) * 1000); })();
+  (function crack() { const t = C.currentTime + .05, src = C.createBufferSource(), lp = C.createBiquadFilter(), e = C.createGain(), th = C.createOscillator(), te = C.createGain();
+    src.buffer = nb; lp.type = 'bandpass'; lp.frequency.value = 900 + Math.random() * 1400; lp.Q.value = .7;
+    e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(.09, t + .003); e.gain.exponentialRampToValueAtTime(.0001, t + .09 + Math.random() * .08);
+    th.type = 'sine'; th.frequency.setValueAtTime(140, t); th.frequency.exponentialRampToValueAtTime(70, t + .06); te.gain.setValueAtTime(0, t); te.gain.linearRampToValueAtTime(.05, t + .004); te.gain.exponentialRampToValueAtTime(.0001, t + .08);
+    src.connect(lp); lp.connect(e); e.connect(bus); th.connect(te); te.connect(bus); src.start(t, Math.random() * 3, .2); th.start(t); th.stop(t + .1);
+    setTimeout(crack, (12 + Math.random() * 16) * 1000); })();
   // dry leaves: short crackly grains of bright noise, scattered left and right
   sLeafBuf = C.createBuffer(1, C.sampleRate * .5, C.sampleRate); { const d = sLeafBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (Math.random() < .3 ? 1 : .35); }   // uneven: the clicks of leaves, not a smooth hiss
   sLeafOut = C.createGain(); sLeafOut.gain.value = 1; sLeafOut.connect(bus);
