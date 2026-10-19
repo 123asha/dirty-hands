@@ -64,7 +64,7 @@
   <a class="ct" href="mailto:order@dirtyhands.ru">Contact<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a>
 </div>
 <div class="board"></div>
-<div class="otl closed" aria-label="Order and cooperation"><div class="hl"><span class="hw" style="left:calc(250 * var(--u))">Order</span></div><div class="hl"><span class="hw" style="left:calc(710 * var(--u))">and</span></div><div class="hl"><span class="hw" style="left:calc(480 * var(--u))">cooperation</span></div></div>
+<div class="otl closed" aria-label="Order and cooperation"><div class="hl"><span class="hw" style="left:calc(480 * var(--u))">Order</span></div><div class="hl"><span class="hw" style="left:calc(710 * var(--u))">and</span></div><div class="hl"><span class="hw" style="left:calc(480 * var(--u))">cooperation</span></div></div>
 <div class="mid">
   <h1 aria-hidden="true" style="visibility:hidden;height:calc(222 * var(--u))"></h1>
   <div class="flow">
@@ -155,9 +155,16 @@
       it.el.style.width = it.el.style.height = S + 'px'; it.el.style.transform = `translate(${(it.x - S / 2).toFixed(1)}px,${(it.y - S / 2).toFixed(1)}px) rotate(${rot.toFixed(2)}deg) scale(${(e * (1 - k * .06)).toFixed(3)})`; it.el.style.opacity = e > 0 ? 1 : 0;
       it.box = e > .02 ? { cx: it.x, cy: it.y, S: S * e * (1 - k * .06) } : null;
     });
-    for (let i = falling.length - 1; i >= 0; i--) { const f = falling[i]; f.vy += .55; f.x += f.vx; f.y += f.vy; f.r += f.vr;   // it drops, turning a little
-      f.el.style.width = f.el.style.height = S + 'px'; f.el.style.transform = `translate(${(f.x - S / 2).toFixed(1)}px,${(f.y - S / 2).toFixed(1)}px) rotate(${f.r.toFixed(1)}deg)`; f.el.style.opacity = 1; f.box = { cx: f.x, cy: f.y, S };
-      if (f.y - S > innerHeight) { f.el.remove(); falling.splice(i, 1); } }
+    falling.forEach(f => {   // it drops, turning, bounces off the bottom (and the sides), each time lower, and stays: on the floor or on whatever already lies there
+      if (f.rest) { f.r += (f.rr - f.r) * .2; } else {
+        f.vy += .6; f.x += f.vx; f.y += f.vy; f.r += f.vr;
+        const R = S * .42; if (f.x < R) { f.x = R; f.vx = Math.abs(f.vx) * .6; } if (f.x > innerWidth - R) { f.x = innerWidth - R; f.vx = -Math.abs(f.vx) * .6; }
+        let floor = innerHeight - S * .45; falling.forEach(o => { if (o !== f && o.rest && Math.abs(o.x - f.x) < S * .7) floor = Math.min(floor, o.y - S * .62); });
+        if (f.y > floor) { f.y = floor; if (Math.abs(f.vy) < 2.2) { f.rest = true; f.vy = 0; f.rr = Math.round(f.r / 90) * 90 * .15 + (Math.random() - .5) * 14; } else { f.vy = -f.vy * .42; f.vx = f.vx * .75 + (Math.random() - .5) * 2; f.vr = -f.vr * .6 + (Math.random() - .5) * 6; soundNudge && soundNudge(.3); } }
+      }
+      f.el.style.width = f.el.style.height = S + 'px'; f.el.style.transform = `translate(${(f.x - S / 2).toFixed(1)}px,${(f.y - S / 2).toFixed(1)}px) rotate(${f.r.toFixed(1)}deg)`; f.el.style.opacity = f.gone ? 0 : 1; f.box = f.gone ? null : { cx: f.x, cy: f.y, S };
+    });
+    while (falling.filter(f => !f.gone).length > 24) { const old = falling.find(f => !f.gone); old.gone = true; setTimeout(() => { old.el.remove(); falling.splice(falling.indexOf(old), 1); }, 500); }   // the pile keeps at most 24: the oldest fades away
     flow();
     requestAnimationFrame(loop);
   })(t0);
