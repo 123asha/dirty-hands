@@ -59,12 +59,12 @@ function startSound() {
     src.connect(lp); lp.connect(e); e.connect(bus); th.connect(te); te.connect(bus); src.start(t, Math.random() * 3, .2); th.start(t); th.stop(t + .1);
     setTimeout(crack, (12 + Math.random() * 16) * 1000); })();
   // clay baking in the kiln: a faint hot hiss and a thick scatter of tiny dry pops, like slip drying and sizzling on a hot surface; it swells and settles slowly, under everything else
-  { const hs = C.createBufferSource(); hs.buffer = nb; hs.loop = true; const hp = C.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 3500; const hg = C.createGain(); hg.gain.value = .004;
-    const lf = C.createOscillator(), lg = C.createGain(); lf.frequency.value = .07; lg.gain.value = .003; lf.connect(lg); lg.connect(hg.gain); lf.start();   // the heat breathes
+  { const hs = C.createBufferSource(); hs.buffer = nb; hs.loop = true; const hp = C.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 3500; const hg = C.createGain(); hg.gain.value = .0016;
+    const lf = C.createOscillator(), lg = C.createGain(); lf.frequency.value = .07; lg.gain.value = .0012; lf.connect(lg); lg.connect(hg.gain); lf.start();   // the heat breathes
     hs.connect(hp); hp.connect(hg); hg.connect(bus); hs.start(); sBake = lf; }
-  (function bake() { const t = C.currentTime, heat = .55 + .45 * Math.sin(t * .44) * Math.sin(t * .13), n = Math.random() < heat ? 1 + Math.floor(Math.random() * 3 * heat) : 0;
-    for (let i = 0; i < n; i++) pop(t + Math.random() * .04, .004 + Math.random() * .01 * heat);
-    setTimeout(bake, 25 + Math.random() * 45); })();
+  (function bake() { const t = C.currentTime, heat = .55 + .45 * Math.sin(t * .44) * Math.sin(t * .13), n = Math.random() < heat * .6 ? 1 + Math.floor(Math.random() * 2 * heat) : 0;
+    for (let i = 0; i < n; i++) pop(t + Math.random() * .04, .0015 + Math.random() * .004 * heat);   // very light, far in the background
+    setTimeout(bake, 40 + Math.random() * 70); })();
   // dry leaves: short crackly grains of bright noise, scattered left and right
   sLeafBuf = C.createBuffer(1, C.sampleRate * .5, C.sampleRate); { const d = sLeafBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (Math.random() < .3 ? 1 : .35); }   // uneven: the clicks of leaves, not a smooth hiss
   sLeafOut = C.createGain(); sLeafOut.gain.value = 1; sLeafOut.connect(bus);
