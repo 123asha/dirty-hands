@@ -38,6 +38,7 @@
   .name2 { font-size: calc(108 * var(--u)); line-height: .91; letter-spacing: -.01em; }
   .t18 { font-size: var(--t18); line-height: 1.08; letter-spacing: -.01em; }
   .ph { background: var(--ph); }
+  .hc.snap .hc-alt, .hc.snap .hs b, .hc.snap .hs i { transition: none !important; }   /* at the restart the photo is there at once */
   .pre { position: fixed; inset: 0; z-index: 3000; background: #fff; } .pre canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }   /* the preloader sheet */
   .ph-line { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
   .ph-line path { fill: none; stroke: #000; stroke-width: 6.5; stroke-linejoin: round; stroke-dasharray: 1.02 1; stroke-dashoffset: 1; }   /* 6.5 of the drawing's 1080 is about one screen pixel on the small picture */
@@ -1412,7 +1413,9 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     document.querySelectorAll('.hero > .nav a').forEach(a => { a.style.animation = 'none'; a.style.transform = ''; a.style.opacity = ''; void a.offsetWidth; a.style.animation = ''; });   // the menu comes in again in its own place, word by word, as when the page loads
     navCur.fill(0); navTarget = 0; navLinks.forEach(a => { a.style.translate = ''; });   // the menu starts again from its own place
     t0 = performance.now(); introDone = false;
+    cards.forEach(c => c.classList.add('snap', 'photo'));   // the photo is on the card at once, exactly as it was on the strip: no fade from the cut-out to the photo
     tick();                                          // lay everything out for scroll 0 right now, so the swap with the copies shows no gap
+    setTimeout(() => cards.forEach(c => c.classList.remove('snap')), 400);
     requestAnimationFrame(intro);
   }
   const endBars = $('.bar');
