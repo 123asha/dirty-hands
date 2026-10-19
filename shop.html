@@ -154,7 +154,7 @@
       const bi = (Math.random() * bands.length) | 0, b = bands[bi], x = 20 * U + half + Math.random() * (1360 * U - ts);
       if (x + half > b.word[0] && x - half < b.word[1]) continue;
       if (falling.some(f => f.tx != null && f.band === bi && Math.abs((f.dx ?? f.tx) - x) < ts + 14 * U)) continue;
-      return { tx: wrapX(x, -shelfOff[bi]), band: bi, ty: b.bot - half - 1, ts, rr: (Math.random() - .5) * 6 };   // where it will stand when the shelf is back at rest
+      return { tx: wrapX(x, -shelfOff[bi]), band: bi, ty: b.bot - half - 1, ts, rr: 0 };   // it stands straight   // where it will stand when the shelf is back at rest
     }
     return {};
   }
@@ -177,11 +177,11 @@
       if (f.tx != null) {   // to its shelf: an arc over, shrinking to the height of a band, a small bounce as it lands, and there it stays, going round with its shelf
         const k = Math.min(1, (now - f.t0) / 750), e = 1 - Math.pow(1 - k, 3), land = Math.max(0, (now - f.t0 - 750) / 450), bob = land < 1 ? Math.sin(land * Math.PI * 2) * (1 - land) * 6 * U : 0;
         const dx = wrapX(f.tx, shelfOff[f.band]); f.dx = dx; const th = (dx - innerWidth / 2) / (680 * U) * Math.PI / 2, cyl = Math.max(0, Math.cos(th));   // where it is on the turning shelf, and how far round the drum
-        f.x = f.x0 + (dx - f.x0) * e; f.y = f.y0 + (f.ty - f.y0) * e - Math.sin(k * Math.PI) * 90 * U - bob; f.sz = S + (f.ts - S) * e; f.r = (1 - e) * f.vr * 18 + f.rr * e; f.th = th * e; f.cyl = 1 - e + cyl * e;
+        f.x = f.x0 + (dx - f.x0) * e; f.y = f.y0 + (f.ty - f.y0) * e - Math.sin(k * Math.PI) * 90 * U - bob; f.sz = S + (f.ts - S) * e; f.r = (1 - e) * f.vr * 18 + f.rr * e; f.th = 0; f.cyl = 1 - e + cyl * e;   // upright all the way round: only fading at the edges
         if (k >= 1 && !f.placed) { f.placed = true; if (typeof placeSound === 'function') placeSound(); }   // set down: a soft knock
         if (k >= 1) {   // standing on its shelf: a silhouette passing close shoves it aside, and it springs back to its place
           let px = 0, py = 0; its.forEach(it => { if (!it.box) return; const ddx = dx - it.x, dy = f.ty - it.y, d = Math.hypot(ddx, dy) || 1, reach = it.box.S * .5 + f.ts * .5; if (d < reach) { const m = (reach - d); px += ddx / d * m; py += dy / d * m * .5; } });
-          f.ox = (f.ox || 0) + (px - (f.ox || 0)) * .18; f.oy = (f.oy || 0) + (py - (f.oy || 0)) * .18; f.x += f.ox; f.y += Math.min(0, f.oy); f.r += f.ox * .25;
+          f.ox = (f.ox || 0) + (px - (f.ox || 0)) * .18; f.oy = (f.oy || 0) + (py - (f.oy || 0)) * .18; f.x += f.ox; f.y += Math.min(0, f.oy);
         }
       } else { f.vy += .55; f.x += f.vx; f.y += f.vy; f.r += f.vr; f.sz = S; }   // no room left on the shelves: it simply falls away
       f.el.style.width = f.el.style.height = f.sz + 'px'; f.el.style.transform = `translate(${(f.x - f.sz / 2).toFixed(1)}px,${(f.y - f.sz / 2).toFixed(1)}px) perspective(${(500 * U).toFixed(0)}px) rotateY(${(f.th || 0).toFixed(3)}rad) rotate(${f.r.toFixed(1)}deg)`; f.el.style.opacity = f.tx != null ? Math.min(1, (f.cyl ?? 1) * 1.6).toFixed(3) : 1;   // round the drum it turns away and fades at the edges f.box = f.tx != null ? null : { cx: f.x, cy: f.y, S: f.sz };
