@@ -17,7 +17,7 @@ let lastFade = 0;
 const now = () => performance.now() / 1000;
 
 // Clay slip: thin film is a dusty terracotta, thick lumps go dark and earthy.
-const THIN = [104, 102, 100], THICK = [26, 26, 28];   // dark charcoal clay, dry and matte, like on the hands in the reference photo
+const THIN = [84, 82, 80], THICK = [22, 22, 24];   /* a thicker slip: even its thin film is dense */   // dark charcoal clay, dry and matte, like on the hands in the reference photo
 const Lx = -0.6, Ly = -0.8;
 
 /* ---------- noise ---------- */
@@ -332,7 +332,7 @@ function finger(x, y, opts = {}) {
   const size = (opts.size || rnd(0.92, 1.12)) * 1.3;                 // bigger marks
   return Object.assign({
     x, y, rx: 23 * size, ry: 30 * size,
-    ang: rnd(-0.6, 0.6), load: rnd(1.1, 1.5), dry: rnd(0.12, 0.26),
+    ang: rnd(-0.6, 0.6), load: rnd(1.35, 1.75), dry: rnd(0.08, 0.2),
     pattern: irnd(0, 2), phase: Math.random() * 6.28,
     ox: rnd(-0.2, 0.2), oy: rnd(-0.15, 0.25), k: Math.random() * 100, cut: null
   }, opts);
@@ -350,7 +350,7 @@ function autoSmear(f, dx, dy, len, decay = 0.985) {
 /* ---------- ten variants ---------- */
 const variants = [
   { name: 'Жирный отпечаток', run(x, y) {
-      const f = finger(x, y, { load: rnd(1.3, 1.7), fill: 0.4 });
+      const f = finger(x, y, { load: rnd(1.6, 2.0), fill: 0.5 });
       print(f);
       if (Math.random() < 0.5) specks(x, y, f.rx, irnd(1, 4));
       return [f];
@@ -507,9 +507,9 @@ addEventListener('pointerdown', e => {
     return;
   }
   let fs;
-  if (left <= 0) fs = [finger(e.clientX, e.clientY, { load: rnd(1.2, 1.6) })];   // the budget is spent: no new print, but a drag still smears
-  else { let v; if (left >= 2) { const q = Math.random(); v = q < 0.2 ? variants[11] : q < 0.4 ? variants[10] : variants[kept[(Math.random() * kept.length) | 0]]; } else v = Math.random() < .5 ? variants[0] : variants[4];
-    fs = v.run(e.clientX, e.clientY) || []; keep(v === variants[10] ? 2 : v === variants[11] ? Math.max(1, fs.length) : 1); }
+  if (left <= 0) fs = [finger(e.clientX, e.clientY, { load: rnd(1.45, 1.85) })];   // the budget is spent: no new print, but a drag still smears
+  else { const v = variants[kept[(Math.random() * kept.length) | 0]];   // one finger or a lump: small and middle-sized marks only, never the big several-finger blots
+    fs = v.run(e.clientX, e.clientY) || []; keep(1); }
   hands.set(e.pointerId, { fs, sx: e.clientX, sy: e.clientY, x: e.clientX, y: e.clientY, smearing: false });
 });
 

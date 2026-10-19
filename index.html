@@ -426,7 +426,8 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
 
   // ⌘G (Ctrl+G) turns the layout grid on and leaves it on; press again to hide it
   const grid = one('.grid');
-  addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.code === 'KeyG') { e.preventDefault(); if (!e.repeat) grid.classList.toggle('on'); } });
+  try { if (sessionStorage.getItem('grid') === '1') grid.classList.add('on'); } catch (e) {}   // the grid stays on or off from page to page
+  addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.code === 'KeyG') { e.preventDefault(); if (!e.repeat) { const on = grid.classList.toggle('on'); try { sessionStorage.setItem('grid', on ? '1' : '0'); } catch (er) {} } } });
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clamp = t => t < 0 ? 0 : t > 1 ? 1 : t;
