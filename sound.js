@@ -1,7 +1,7 @@
 // Dirty Hands: the sound of the pages, made in the browser (no files). Needs a <button class="snd"> with an svg path inside; starts on the first click anywhere.
 // Globals for the page: sndBtn, setSound(on), muffle(on) (a view is open: the filter goes down), soundNudge(k) (a rustle of air, 0..1).
 // ---- sound: a very light, calm museum background made in the browser (no files): a soft D major chord held and breathing, a little air, and a long room around it. Off until the switch is pressed; inside a view (a category, a case, the Story) it goes muffled, as if behind a wall
-const sndBtn = document.querySelector('.snd'); let sPan = null, actx = null, sMaster = null, sLp = null, sOn = false, sInside = false, sInG = null, sWob = null, sSw = null, sBp = null;
+const sndBtn = document.querySelector('.snd'); let sPan = null, sGust = 0, sLeafBuf = null, sLeafOut = null, actx = null, sMaster = null, sLp = null, sOn = false, sInside = false, sInG = null, sWob = null, sSw = null, sBp = null;
 function startSound() {
   const C = actx = new (window.AudioContext || window.webkitAudioContext)();
   sMaster = C.createGain(); sMaster.gain.value = 0; sLp = C.createBiquadFilter(); sLp.type = 'lowpass'; sLp.frequency.value = 2600; sLp.Q.value = .4;
@@ -26,27 +26,41 @@ function startSound() {
   // pink noise (softer than white, the colour of real wind), four seconds long so the loop is never heard
   const nb = C.createBuffer(2, C.sampleRate * 4, C.sampleRate); for (let ch = 0; ch < 2; ch++) { const d = nb.getChannelData(ch); let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
     for (let i = 0; i < d.length; i++) { const w = Math.random() * 2 - 1; b0 = .99886 * b0 + w * .0555179; b1 = .99332 * b1 + w * .0750759; b2 = .969 * b2 + w * .153852; b3 = .8665 * b3 + w * .3104856; b4 = .55 * b4 + w * .5329522; b5 = -.7616 * b5 - w * .016898; d[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * .5362) * .11; b6 = w * .115926; } }
-  // wind outside: no steady hum, only slow gusts that swell and fall, a soft body and a faint whistle over it, drifting from side to side
-  { const w = C.createBufferSource(); w.buffer = nb; w.loop = true; const body = C.createBiquadFilter(); body.type = 'bandpass'; body.Q.value = .8; body.frequency.value = 520;
-    const wh = C.createBiquadFilter(); wh.type = 'bandpass'; wh.Q.value = 7; wh.frequency.value = 1300; const whg = C.createGain(); whg.gain.value = .25;
-    const wg = C.createGain(); wg.gain.value = .05; const pan = C.createStereoPanner ? C.createStereoPanner() : C.createGain();
-    const gust = (f, depth, to) => { const o = C.createOscillator(), g = C.createGain(); o.frequency.value = f; g.gain.value = depth; o.connect(g); g.connect(to); o.start(); };
-    gust(.031, .03, wg.gain); gust(.083, .018, wg.gain); gust(.047, 240, body.frequency); gust(.061, 380, wh.frequency); if (pan.pan) gust(.019, .6, pan.pan);   // gusts: unrelated slow swings, so they never repeat in step
-    w.connect(body); body.connect(wg); w.connect(wh); wh.connect(whg); whg.connect(wg); wg.connect(pan); pan.connect(bus); w.start(); }
+  // autumn outside: wind in gusts that never repeat (every second or three it picks a new strength and pitch and drifts to them), and dry leaves rustling, more of them the harder it blows
+  { const w = C.createBufferSource(); w.buffer = nb; w.loop = true; const body = C.createBiquadFilter(); body.type = 'bandpass'; body.Q.value = .9; body.frequency.value = 480;
+    const wh = C.createBiquadFilter(); wh.type = 'bandpass'; wh.Q.value = 9; wh.frequency.value = 1200; const whg = C.createGain(); whg.gain.value = .12;
+    const wg = C.createGain(); wg.gain.value = .03; const pan = C.createStereoPanner ? C.createStereoPanner() : null;
+    w.connect(body); body.connect(wg); w.connect(wh); wh.connect(whg); whg.connect(wg); if (pan) { wg.connect(pan); pan.connect(bus); } else wg.connect(bus); w.start();
+    sGust = .3;
+    (function gust() { const t = C.currentTime, calm = Math.random() < .25, k = calm ? Math.random() * .2 : .25 + Math.random() * .75, tc = .5 + Math.random() * 1.1;   // now and then it drops almost to nothing
+      sGust = k; wg.gain.setTargetAtTime(.012 + .075 * k, t, tc); body.frequency.setTargetAtTime(320 + 520 * k + Math.random() * 120, t, tc * 1.2); wh.frequency.setTargetAtTime(900 + 900 * k, t, tc);
+      if (pan) pan.pan.setTargetAtTime((Math.random() - .5) * .8, t, 2); setTimeout(gust, (1 + Math.random() * 2.2) * 1000); })(); }
+  // dry leaves: short crackly grains of bright noise, scattered left and right
+  sLeafBuf = C.createBuffer(1, C.sampleRate * .5, C.sampleRate); { const d = sLeafBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (Math.random() < .3 ? 1 : .35); }   // uneven: the clicks of leaves, not a smooth hiss
+  sLeafOut = C.createGain(); sLeafOut.gain.value = 1; sLeafOut.connect(bus);
+  (function rustle() { const n = Math.random() < sGust * .9 ? 1 + Math.floor(sGust * 5 * Math.random()) : 0; for (let i = 0; i < n; i++) leaf(C.currentTime + Math.random() * .09, .02 + .05 * sGust); setTimeout(rustle, 70 + Math.random() * 90); })();
   { const sw = C.createBufferSource(); sw.buffer = nb; sw.loop = true; sBp = C.createBiquadFilter(); sBp.type = 'bandpass'; sBp.Q.value = 1.6; sBp.frequency.value = 450; sSw = C.createGain(); sSw.gain.value = 0; sPan = C.createStereoPanner ? C.createStereoPanner() : null;
     sw.connect(sBp); sBp.connect(sSw); if (sPan) { sSw.connect(sPan); sPan.connect(sMaster); sPan.connect(rv); } else { sSw.connect(sMaster); sSw.connect(rv); } sw.start(); }   // a gust of wind when something is swiped: a band of soft noise that rises and falls, never a hiss
 }
+function leaf(t, g) {                                                    // one leaf: a few milliseconds of bright crackle through a band that differs every time
+  if (!actx || !sLeafBuf) return; const C = actx, src = C.createBufferSource(), hp = C.createBiquadFilter(), bp = C.createBiquadFilter(), e = C.createGain(), pn = C.createStereoPanner ? C.createStereoPanner() : null, len = .015 + Math.random() * .07;
+  src.buffer = sLeafBuf; hp.type = 'highpass'; hp.frequency.value = 1400; bp.type = 'bandpass'; bp.frequency.value = 2200 + Math.random() * 4500; bp.Q.value = .8 + Math.random() * 1.5;
+  e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(g * (.4 + Math.random() * .6), t + .002 + Math.random() * .006); e.gain.exponentialRampToValueAtTime(.0001, t + len);
+  src.connect(hp); hp.connect(bp); bp.connect(e); if (pn) { pn.pan.value = (Math.random() - .5) * 1.6; e.connect(pn); pn.connect(sLeafOut); } else e.connect(sLeafOut);
+  src.start(t, Math.random() * .4, len + .01); }
 function setSound(on) {
   sOn = on; sndBtn.setAttribute('aria-pressed', on); if (on && !actx) startSound(); if (!actx) return;
   if (actx.state === 'suspended') actx.resume();
   const t = actx.currentTime; sMaster.gain.cancelScheduledValues(t); sMaster.gain.setValueAtTime(sMaster.gain.value, t); sMaster.gain.linearRampToValueAtTime(on ? 1.7 : 0, t + (on ? 3 : .8));   // 70% louder than it was
   if (on) waveLoop();
 }
-function soundNudge(v) {                                               // a swipe or a drag: a gust of wind, rising and falling, fuller and higher the faster it goes, from one side or the other
+function soundNudge(v) {                                               // a swipe or a drag: a gust of wind with leaves in it, rising and falling, fuller and higher the faster it goes, from one side or the other
   if (!sSw || !sOn) return; const k = Math.min(1, Math.abs(v)), t = actx.currentTime;
   sSw.gain.cancelScheduledValues(t); sSw.gain.setValueAtTime(sSw.gain.value, t); sSw.gain.linearRampToValueAtTime(Math.max(sSw.gain.value, .05 + .16 * k), t + .18); sSw.gain.setTargetAtTime(0, t + .25, .45);
   sBp.frequency.cancelScheduledValues(t); sBp.frequency.setValueAtTime(sBp.frequency.value, t); sBp.frequency.linearRampToValueAtTime(420 + 900 * k, t + .22); sBp.frequency.setTargetAtTime(380, t + .3, .7);
   if (sPan) { sPan.pan.cancelScheduledValues(t); sPan.pan.setValueAtTime(sPan.pan.value, t); sPan.pan.linearRampToValueAtTime((Math.random() - .5) * .9, t + .3); }
+  if (t - (soundNudge._l || 0) < .15) return; soundNudge._l = t;   // a scroll sends many events: one handful of leaves at most every 150 ms
+  const n = 3 + Math.round(9 * k); for (let i = 0; i < n; i++) leaf(t + .03 + Math.random() * (.2 + .3 * k), .04 + .06 * k);   // and a handful of leaves stirred by it
 }
 function muffle(on) { sInside = on; if (!sLp) return; const t = actx.currentTime; sLp.frequency.cancelScheduledValues(t); sLp.frequency.setValueAtTime(sLp.frequency.value, t); sLp.frequency.exponentialRampToValueAtTime(on ? 340 : 2600, t + 1.2); sLp.Q.cancelScheduledValues(t); sLp.Q.setValueAtTime(sLp.Q.value, t); sLp.Q.linearRampToValueAtTime(on ? 1.6 : .5, t + 1.2);
   sWob.gain.cancelScheduledValues(t); sWob.gain.setValueAtTime(sWob.gain.value, t); sWob.gain.linearRampToValueAtTime(0, t + 1.5);
