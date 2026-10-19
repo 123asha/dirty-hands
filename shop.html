@@ -155,8 +155,9 @@
     return {};
   }
   addEventListener('pointerdown', e => { if (e.button || e.target.closest('a, button') || !its.length || !mouse.seen) return;
+    const spot = shelfSpot(); if (spot.tx == null) return;   // the shelves are full: nothing more drops
     const head = its.shift(), el = head.el.cloneNode(true); el.classList.remove('sil'); el.classList.add('drop'); board.append(el);   // the work itself, in colour, falls from where its silhouette was
-    falling.push(Object.assign({ el, src: head.src, x: head.x, y: head.y, x0: head.x, y0: head.y, t0: performance.now(), r: 0, vx: (Math.random() - .5) * 2, vy: -3, vr: (Math.random() - .5) * 4 }, shelfSpot()));
+    falling.push(Object.assign({ el, src: head.src, x: head.x, y: head.y, x0: head.x, y0: head.y, t0: performance.now(), r: 0, vx: (Math.random() - .5) * 2, vy: -3, vr: (Math.random() - .5) * 4 }, spot));
     head.x = its.length ? its[its.length - 1].x : mouse.x; head.y = its.length ? its[its.length - 1].y : mouse.y; its.push(head); soundNudge && soundNudge(.6); });   // and the silhouette goes to the end of the trail
   (function loop(now) {
     const S = SZ * U;
