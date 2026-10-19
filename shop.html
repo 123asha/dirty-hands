@@ -142,9 +142,21 @@
   const SZ = 110, t0 = performance.now(), mouse = { x: innerWidth / 2, y: innerHeight * .75, seen: false }, falling = [];
   its.forEach(it => { it.x = mouse.x; it.y = mouse.y; it.el.classList.add('sil'); });
   addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; if (!mouse.seen) { mouse.seen = true; mouse.t = performance.now(); its.forEach(it => { it.x = e.clientX; it.y = e.clientY; }); } }, { passive: true });
+  // a free place on one of the title's shelves (its ruled lines): not on a word, not on a work already standing there
+  function shelfSpot() {
+    const bands = [...otl.querySelectorAll('.hl')].map(h => { const r = h.getBoundingClientRect(), w = h.querySelector('.hw').getBoundingClientRect(); return { top: r.top, bot: r.bottom, word: [w.left - 24 * U, w.right + 24 * U] }; });
+    const ts = 66 * U, half = ts / 2;
+    for (let tries = 0; tries < 80; tries++) {
+      const b = bands[(Math.random() * bands.length) | 0], x = 20 * U + half + Math.random() * (1360 * U - ts);
+      if (x + half > b.word[0] && x - half < b.word[1]) continue;
+      if (falling.some(f => f.tx != null && Math.abs(f.ty - (b.bot - half)) < 2 && Math.abs(f.tx - x) < ts + 14 * U)) continue;
+      return { tx: x, ty: b.bot - half - 1, ts, rr: (Math.random() - .5) * 6 };
+    }
+    return {};
+  }
   addEventListener('pointerdown', e => { if (e.button || e.target.closest('a, button') || !its.length || !mouse.seen) return;
     const head = its.shift(), el = head.el.cloneNode(true); el.classList.remove('sil'); el.classList.add('drop'); board.append(el);   // the work itself, in colour, falls from where its silhouette was
-    falling.push({ el, src: head.src, x: head.x, y: head.y, vx: (Math.random() - .5) * 2, vy: -3 - Math.random() * 2, r: 0, vr: (Math.random() - .5) * 4 });
+    falling.push(Object.assign({ el, src: head.src, x: head.x, y: head.y, x0: head.x, y0: head.y, t0: performance.now(), r: 0, vx: (Math.random() - .5) * 2, vy: -3, vr: (Math.random() - .5) * 4 }, shelfSpot()));
     head.x = its.length ? its[its.length - 1].x : mouse.x; head.y = its.length ? its[its.length - 1].y : mouse.y; its.push(head); soundNudge && soundNudge(.6); });   // and the silhouette goes to the end of the trail
   (function loop(now) {
     const S = SZ * U;
@@ -155,9 +167,13 @@
       it.el.style.width = it.el.style.height = S + 'px'; it.el.style.transform = `translate(${(it.x - S / 2).toFixed(1)}px,${(it.y - S / 2).toFixed(1)}px) rotate(${rot.toFixed(2)}deg) scale(${(e * (1 - k * .06)).toFixed(3)})`; it.el.style.opacity = e > 0 ? 1 : 0;
       it.box = e > .02 ? { cx: it.x, cy: it.y, S: S * e * (1 - k * .06) } : null;
     });
-    for (let i = falling.length - 1; i >= 0; i--) { const f = falling[i]; f.vy += .55; f.x += f.vx; f.y += f.vy; f.r += f.vr;   // it drops, turning a little, and goes out at the bottom
-      f.el.style.width = f.el.style.height = S + 'px'; f.el.style.transform = `translate(${(f.x - S / 2).toFixed(1)}px,${(f.y - S / 2).toFixed(1)}px) rotate(${f.r.toFixed(1)}deg)`; f.el.style.opacity = 1; f.box = { cx: f.x, cy: f.y, S };
-      if (f.y - S > innerHeight) { f.el.remove(); falling.splice(i, 1); } }
+    for (let i = falling.length - 1; i >= 0; i--) { const f = falling[i];
+      if (f.tx != null) {   // to its shelf: an arc over, shrinking to the height of a band, a small bounce as it lands, and there it stays
+        const k = Math.min(1, (now - f.t0) / 750), e = 1 - Math.pow(1 - k, 3), land = Math.max(0, (now - f.t0 - 750) / 450), bob = land < 1 ? Math.sin(land * Math.PI * 2) * (1 - land) * 6 * U : 0;
+        f.x = f.x0 + (f.tx - f.x0) * e; f.y = f.y0 + (f.ty - f.y0) * e - Math.sin(k * Math.PI) * 90 * U - bob; f.sz = S + (f.ts - S) * e; f.r = (1 - e) * f.vr * 18 + f.rr * e;
+      } else { f.vy += .55; f.x += f.vx; f.y += f.vy; f.r += f.vr; f.sz = S; }   // no room left on the shelves: it simply falls away
+      f.el.style.width = f.el.style.height = f.sz + 'px'; f.el.style.transform = `translate(${(f.x - f.sz / 2).toFixed(1)}px,${(f.y - f.sz / 2).toFixed(1)}px) rotate(${f.r.toFixed(1)}deg)`; f.el.style.opacity = 1; f.box = f.tx != null ? null : { cx: f.x, cy: f.y, S: f.sz };
+      if (f.tx == null && f.y - S > innerHeight) { f.el.remove(); falling.splice(i, 1); } }
     flow();
     requestAnimationFrame(loop);
   })(t0);
