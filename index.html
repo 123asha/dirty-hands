@@ -378,14 +378,16 @@
 window.preDone = new Promise(done => {
   const pre = document.querySelector('.pre'); if (!pre || typeof makeClay !== 'function') { if (pre) pre.remove(); return done(); }
   window.scrollLocked = true;   // no scrolling under the sheet (a lock that leaves the scrollbar alone, so nothing shifts when it lifts)
-  const cv = pre.querySelector('canvas'), w = innerWidth, h = innerHeight, c = makeClay({ cv, w, h });
-  const a = (Math.random() - .5) * 0.12, dx = Math.cos(a), dy = Math.sin(a), len = w + 200;
-  let f = c.finger(-80, h * (0.5 + (Math.random() - .5) * .08), { size: Math.max(1.4, w / 950), load: 1.8 }); c.print(f); c.render();
-  const t1 = performance.now(), DUR = 650; let made = 0;
-  (function step(now) { const k = Math.min(1, (now - t1) / DUR), want = (1 - Math.pow(1 - k, 2.2)) * len;
-    if (want > made) { f = c.autoSmear(f, dx, dy, want - made, 0.9993); made = want; c.render(); }
+  const S = 0.5, cv = pre.querySelector('canvas'), w = Math.round(innerWidth * S), h = Math.round(innerHeight * S), c = makeClay({ cv, w, h });   // made at half size and stretched: soft clay loses nothing, and it is ready six times sooner
+  const a = (Math.random() - .5) * 0.12, dx = Math.cos(a), dy = Math.sin(a), L = 400, x0 = (innerWidth - L) / 2;   // one finger drawn about 400px across the middle of the sheet
+  let f = c.finger(x0 * S, h * (0.5 + (Math.random() - .5) * .06), { size: 1.5 * S, load: 1.8 }); c.print(f); c.autoSmear(f, dx, dy, L * S, 0.994); c.render();   // the whole stroke is made at once, under the sheet ...
+  const t1 = performance.now(), DUR = 750, soft = 60;   // ... and a soft edge uncovers it from left to right, so every frame is light and the stroke runs smoothly
+  const reveal = p => { const m = `linear-gradient(90deg, #000 ${(p - soft).toFixed(1)}px, transparent ${p.toFixed(1)}px)`; cv.style.webkitMaskImage = m; cv.style.maskImage = m; };
+  reveal(0);
+  (function step(now) { const k = Math.min(1, (now - t1) / DUR), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;   // slow in, slow out
+    reveal(x0 - 40 + e * (L + 80 + soft));
     if (k < 1) return requestAnimationFrame(step);
-    setTimeout(() => { pre.style.transition = 'opacity .45s ease'; pre.style.opacity = 0; done(); setTimeout(() => pre.remove(), 480); }, 120); })(t1);
+    setTimeout(() => { pre.style.transition = 'opacity .6s cubic-bezier(.4, 0, .2, 1)'; pre.style.opacity = 0; done(); setTimeout(() => pre.remove(), 650); }, 150); })(t1);
 });
 </script>
 <script src="sound.js"></script>

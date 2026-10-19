@@ -1,7 +1,7 @@
 // Dirty Hands: the sound of the pages, made in the browser (no files). Needs a <button class="snd"> with an svg path inside; starts on the first click anywhere.
 // Globals for the page: sndBtn, setSound(on), muffle(on) (a view is open: the filter goes down), soundNudge(k) (a rustle of air, 0..1).
 // ---- sound: a very light, calm museum background made in the browser (no files): a soft D major chord held and breathing, a little air, and a long room around it. Off until the switch is pressed; inside a view (a category, a case, the Story) it goes muffled, as if behind a wall
-const sndBtn = document.querySelector('.snd'); let actx = null, sMaster = null, sLp = null, sOn = false, sInside = false, sInG = null, sWob = null, sSw = null, sBp = null;
+const sndBtn = document.querySelector('.snd'); let sPan = null, actx = null, sMaster = null, sLp = null, sOn = false, sInside = false, sInG = null, sWob = null, sSw = null, sBp = null;
 function startSound() {
   const C = actx = new (window.AudioContext || window.webkitAudioContext)();
   sMaster = C.createGain(); sMaster.gain.value = 0; sLp = C.createBiquadFilter(); sLp.type = 'lowpass'; sLp.frequency.value = 2600; sLp.Q.value = .4;
@@ -23,13 +23,18 @@ function startSound() {
   // inside a view the chord moves to F major with its seventh and ninth, softer and closer: the same bright museum, one room further in
   { sInG = C.createGain(); sInG.gain.value = 0; const padLp = C.createBiquadFilter(); padLp.type = 'lowpass'; padLp.frequency.value = 800; padLp.Q.value = .5; padLp.connect(sInG); sInG.connect(sMaster); sInG.connect(rv);
     [[41, .05], [53, .03], [57, .022], [64, .014], [67, .008]].forEach(([m, g], k) => { const o = C.createOscillator(), og = C.createGain(), l = C.createOscillator(), lg = C.createGain(); o.type = 'sine'; o.frequency.value = hzm(m); og.gain.value = g; l.frequency.value = .02 + k * .007; lg.gain.value = g * .08; l.connect(lg); lg.connect(og.gain); o.connect(og); og.connect(padLp); o.start(); l.start(); }); }
-  const nb = C.createBuffer(1, C.sampleRate * 2, C.sampleRate), nd = nb.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
-  const ns = C.createBufferSource(), bp = C.createBiquadFilter(), ng = C.createGain(); ns.buffer = nb; ns.loop = true; bp.type = 'bandpass'; bp.frequency.value = 260; bp.Q.value = .5; ng.gain.value = .05;   // the air of a big hall
-  ns.connect(bp); bp.connect(ng); ng.connect(bus); ns.start();
-  { const w = C.createBufferSource(); w.buffer = nb; w.loop = true; w.playbackRate.value = .5; const wf = C.createBiquadFilter(); wf.type = 'bandpass'; wf.Q.value = 1.1; wf.frequency.value = 420; const wg = C.createGain(); wg.gain.value = .045;
-    const g1 = C.createOscillator(), g1g = C.createGain(), g2 = C.createOscillator(), g2g = C.createGain(); g1.frequency.value = .045; g1g.gain.value = .03; g2.frequency.value = .11; g2g.gain.value = 260;   // slow gusts: the wind swells and falls, and its pitch moves with it
-    g1.connect(g1g); g1g.connect(wg.gain); g2.connect(g2g); g2g.connect(wf.frequency); w.connect(wf); wf.connect(wg); wg.connect(bus); w.start(); g1.start(); g2.start(); }   // wind outside the hall
-  { const sw = C.createBufferSource(); sw.buffer = nb; sw.loop = true; sBp = C.createBiquadFilter(); sBp.type = 'lowpass'; sBp.Q.value = .7; sBp.frequency.value = 300; sSw = C.createGain(); sSw.gain.value = 0; sw.connect(sBp); sBp.connect(sSw); sSw.connect(sMaster); sSw.connect(rv); sw.start(); }   // the air that moves when something is swiped: low, through a soft low-pass, never hissing
+  // pink noise (softer than white, the colour of real wind), four seconds long so the loop is never heard
+  const nb = C.createBuffer(2, C.sampleRate * 4, C.sampleRate); for (let ch = 0; ch < 2; ch++) { const d = nb.getChannelData(ch); let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+    for (let i = 0; i < d.length; i++) { const w = Math.random() * 2 - 1; b0 = .99886 * b0 + w * .0555179; b1 = .99332 * b1 + w * .0750759; b2 = .969 * b2 + w * .153852; b3 = .8665 * b3 + w * .3104856; b4 = .55 * b4 + w * .5329522; b5 = -.7616 * b5 - w * .016898; d[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * .5362) * .11; b6 = w * .115926; } }
+  // wind outside: no steady hum, only slow gusts that swell and fall, a soft body and a faint whistle over it, drifting from side to side
+  { const w = C.createBufferSource(); w.buffer = nb; w.loop = true; const body = C.createBiquadFilter(); body.type = 'bandpass'; body.Q.value = .8; body.frequency.value = 520;
+    const wh = C.createBiquadFilter(); wh.type = 'bandpass'; wh.Q.value = 7; wh.frequency.value = 1300; const whg = C.createGain(); whg.gain.value = .25;
+    const wg = C.createGain(); wg.gain.value = .05; const pan = C.createStereoPanner ? C.createStereoPanner() : C.createGain();
+    const gust = (f, depth, to) => { const o = C.createOscillator(), g = C.createGain(); o.frequency.value = f; g.gain.value = depth; o.connect(g); g.connect(to); o.start(); };
+    gust(.031, .03, wg.gain); gust(.083, .018, wg.gain); gust(.047, 240, body.frequency); gust(.061, 380, wh.frequency); if (pan.pan) gust(.019, .6, pan.pan);   // gusts: unrelated slow swings, so they never repeat in step
+    w.connect(body); body.connect(wg); w.connect(wh); wh.connect(whg); whg.connect(wg); wg.connect(pan); pan.connect(bus); w.start(); }
+  { const sw = C.createBufferSource(); sw.buffer = nb; sw.loop = true; sBp = C.createBiquadFilter(); sBp.type = 'bandpass'; sBp.Q.value = 1.6; sBp.frequency.value = 450; sSw = C.createGain(); sSw.gain.value = 0; sPan = C.createStereoPanner ? C.createStereoPanner() : null;
+    sw.connect(sBp); sBp.connect(sSw); if (sPan) { sSw.connect(sPan); sPan.connect(sMaster); sPan.connect(rv); } else { sSw.connect(sMaster); sSw.connect(rv); } sw.start(); }   // a gust of wind when something is swiped: a band of soft noise that rises and falls, never a hiss
 }
 function setSound(on) {
   sOn = on; sndBtn.setAttribute('aria-pressed', on); if (on && !actx) startSound(); if (!actx) return;
@@ -37,10 +42,11 @@ function setSound(on) {
   const t = actx.currentTime; sMaster.gain.cancelScheduledValues(t); sMaster.gain.setValueAtTime(sMaster.gain.value, t); sMaster.gain.linearRampToValueAtTime(on ? 1.7 : 0, t + (on ? 3 : .8));   // 70% louder than it was
   if (on) waveLoop();
 }
-function soundNudge(v) {                                               // a swipe or a drag: a soft breath of air, low and quiet, a little fuller the faster it goes
+function soundNudge(v) {                                               // a swipe or a drag: a gust of wind, rising and falling, fuller and higher the faster it goes, from one side or the other
   if (!sSw || !sOn) return; const k = Math.min(1, Math.abs(v)), t = actx.currentTime;
-  sSw.gain.cancelScheduledValues(t); sSw.gain.setValueAtTime(sSw.gain.value, t); sSw.gain.linearRampToValueAtTime(Math.max(sSw.gain.value, .03 + .11 * k), t + .08); sSw.gain.setTargetAtTime(0, t + .14, .35);
-  sBp.frequency.cancelScheduledValues(t); sBp.frequency.setValueAtTime(sBp.frequency.value, t); sBp.frequency.linearRampToValueAtTime(260 + 520 * k, t + .15); sBp.frequency.setTargetAtTime(300, t + .25, .6);
+  sSw.gain.cancelScheduledValues(t); sSw.gain.setValueAtTime(sSw.gain.value, t); sSw.gain.linearRampToValueAtTime(Math.max(sSw.gain.value, .05 + .16 * k), t + .18); sSw.gain.setTargetAtTime(0, t + .25, .45);
+  sBp.frequency.cancelScheduledValues(t); sBp.frequency.setValueAtTime(sBp.frequency.value, t); sBp.frequency.linearRampToValueAtTime(420 + 900 * k, t + .22); sBp.frequency.setTargetAtTime(380, t + .3, .7);
+  if (sPan) { sPan.pan.cancelScheduledValues(t); sPan.pan.setValueAtTime(sPan.pan.value, t); sPan.pan.linearRampToValueAtTime((Math.random() - .5) * .9, t + .3); }
 }
 function muffle(on) { sInside = on; if (!sLp) return; const t = actx.currentTime; sLp.frequency.cancelScheduledValues(t); sLp.frequency.setValueAtTime(sLp.frequency.value, t); sLp.frequency.exponentialRampToValueAtTime(on ? 340 : 2600, t + 1.2); sLp.Q.cancelScheduledValues(t); sLp.Q.setValueAtTime(sLp.Q.value, t); sLp.Q.linearRampToValueAtTime(on ? 1.6 : .5, t + 1.2);
   sWob.gain.cancelScheduledValues(t); sWob.gain.setValueAtTime(sWob.gain.value, t); sWob.gain.linearRampToValueAtTime(0, t + 1.5);
