@@ -60,6 +60,7 @@
   .tagged .big2 { position: static; }
   .tagged .yr { position: absolute; top: 0; right: 0; width: max-content; display: flex; justify-content: flex-end; white-space: nowrap; text-align: right; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; opacity: .3; transition: opacity .2s ease-out; }
   .tagged .yr.sw { opacity: 0; }
+  .tagged .yr { display: none; }   /* the media have no years to count */
   .tagged .yr { line-height: 1.15; }
   .yr .dg { display: inline-block; position: relative; overflow: hidden; height: 1.15em; width: .6em; vertical-align: top; }
   .yr .dstrip { display: block; will-change: transform; }
@@ -169,7 +170,7 @@
   .ov.open { visibility: visible; pointer-events: auto; }
   .ov-scrim { position: absolute; inset: 0; background: #fff; opacity: 0; }
   .sv-title { position: absolute; left: calc(20 * var(--u)); top: calc(20 * var(--u)); }
-  .sv-items { position: absolute; left: 0; top: calc(50vh + 64 * var(--u)); width: 100%; perspective: calc(2500 * var(--u)); perspective-origin: 50% calc(-300 * var(--u)); }
+  .sv-items { position: absolute; left: 0; top: calc(50vh - 10 * var(--u)); width: 100%; perspective: calc(2500 * var(--u)); perspective-origin: 50% calc(-300 * var(--u)); }
   .sv-item { display: none; position: absolute; top: 0; width: calc(210 * var(--u)); text-align: left; will-change: transform, opacity; }   /* the years sit on a sphere: the one in the middle faces us, the others turn away, shrink and fade */
   .sv-strip { position: absolute; top: calc(-12 * var(--u)); height: calc(420 * var(--u)); overflow: hidden; backface-visibility: hidden; }
   .sv-in { position: absolute; top: calc(12 * var(--u)); width: calc(210 * var(--u)); text-align: left; }
@@ -178,7 +179,7 @@
   .sv-dot { position: absolute; left: 0; top: calc(-5 * var(--u)); width: calc(10 * var(--u)); height: calc(10 * var(--u)); background: #000; opacity: .35; display: block; }
   .sv-year { position: absolute; left: 0; top: calc(22 * var(--u)); font-size: var(--t18); line-height: .91; letter-spacing: -.01em; opacity: .4; }
   .sv-lead { position: absolute; left: 0; top: calc(56 * var(--u)); width: 100%; }
-  .sv-more { position: absolute; left: 0; top: calc(150 * var(--u)); width: 100%; opacity: .6; }
+  .sv-more { position: absolute; left: 0; top: calc(116 * var(--u)); width: max-content; opacity: .6; text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; pointer-events: auto; }
   #caseView { overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; }
   #caseView .ov-scrim { position: fixed; }
   .cd-slider { position: absolute; left: 0; width: 100%; overflow: hidden; cursor: grab; touch-action: pan-y; }
@@ -188,7 +189,7 @@
   #catView .cat-cyl { position: absolute; inset: 0; perspective: calc(2200 * var(--u)); perspective-origin: 50% 45%; transform-origin: 50% 45%; }
   .cat-ph { position: absolute; inset: 0; perspective: inherit; perspective-origin: inherit; will-change: opacity; }   /* one picture: its strips fade together, so where they overlap no darker seam shows */
   .cat-strip { position: absolute; overflow: hidden; backface-visibility: hidden; will-change: transform; }
-  .cat-strip i { position: absolute; top: 0; background: #f2f2f2 center / cover no-repeat; }
+  .cat-strip i { position: absolute; top: 0; background: transparent center / contain no-repeat; }   /* each work whole in its frame, never cut (the one that was clicked keeps the framing of its card) */
   .cat-strip::after { content: ''; position: absolute; inset: 0; background: #fff; opacity: var(--w, 0); }   /* the strips turning away go paler, as before, without being see-through */
   .cat-title { position: absolute; left: calc(20 * var(--u)); top: calc(20 * var(--u)); overflow: hidden; padding: 0 .05em .08em; }
   .cat-title .c { display: inline-block; white-space: pre; }   /* letter by letter: they come down from above, and go back up when the gallery closes */
@@ -300,12 +301,12 @@
   <div class="bigrow" style="left:calc(940 * var(--u));top:calc(4159.2 * var(--u));height:calc(98 * var(--u));"><p class="t name2">ceramic</p></div>
   <div class="bigrow" style="left:calc(480 * var(--u));top:calc(4232.7 * var(--u));height:calc(98 * var(--u));"><p class="t name2">forms</p></div>
 
-  <div class="tagged" style="left:calc(250 * var(--u));top:calc(4598 * var(--u));"><p class="t big2">Story</p><span class="yr" aria-hidden="true"></span></div>
-  <p class="t18" data-year="2019" style="left:calc(710 * var(--u));top:calc(4618 * var(--u));width:calc(210 * var(--u));">It began with one wheel, a borrowed kiln and a shared studio.</p>
-  <p class="t18" data-year="2020" style="left:calc(710 * var(--u));top:calc(4708 * var(--u));width:calc(210 * var(--u));">A second room, a second kiln, and the first interiors.</p>
-  <p class="t18" data-year="2021" style="left:calc(710 * var(--u));top:calc(4798 * var(--u));width:calc(210 * var(--u));">The first restaurant commissions: a hundred plates, none the same.</p>
-  <p class="t18" data-year="2022" style="left:calc(710 * var(--u));top:calc(4888 * var(--u));width:calc(210 * var(--u));">Glazes took over the shelves: warm, matte, never flat.</p>
-  <p class="t18" data-year="2023" style="left:calc(710 * var(--u));top:calc(4978 * var(--u));width:calc(210 * var(--u));">The shop opened, so every piece can live in someone's home.</p>
+  <div class="tagged" style="left:calc(250 * var(--u));top:calc(4598 * var(--u));"><p class="t big2">Media</p><span class="yr" aria-hidden="true"></span></div>
+  <p class="t18" data-year="2019" style="left:calc(710 * var(--u));top:calc(4618 * var(--u));width:calc(210 * var(--u));">MyDecor: Clay tables by DirtyHands studio</p>
+  <p class="t18" data-year="2020" style="left:calc(710 * var(--u));top:calc(4708 * var(--u));width:calc(210 * var(--u));">TopDesignMag: Art ceramics studio DirtyHands presented tables made of elements</p>
+  <p class="t18" data-year="2021" style="left:calc(710 * var(--u));top:calc(4798 * var(--u));width:calc(210 * var(--u));">Interior+Design: DirtyHands ceramic tables</p>
+  <p class="t18" data-year="2022" style="left:calc(710 * var(--u));top:calc(4888 * var(--u));width:calc(210 * var(--u));">Design Mate: DirtyHands Studio created tables inspired by the elements of nature</p>
+  <p class="t18" data-year="2023" style="left:calc(710 * var(--u));top:calc(4978 * var(--u));width:calc(210 * var(--u));">Elle Decoration: New life for an old professor's apartment with windows overlooking Moscow State University</p>
   <a class="t18 more" style="display:none;left:calc(710 * var(--u));top:calc(5196 * var(--u));" href="#story">More →</a>
   <div class="dot" style="left:calc(613 * var(--u));top:calc(4604.5 * var(--u));"></div>
   <div class="dot" style="display:none;left:calc(613 * var(--u));top:calc(4679.5 * var(--u));"></div>
@@ -333,8 +334,8 @@
 </div>
 <div class="ov" id="storyView" aria-hidden="true">
   <div class="ov-scrim"></div>
-  <div class="t big2 sv-title">Story</div>
-    <div class="sv-items"><div class="sv-item" style="left:calc(20 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2019</span><p class="t18 sv-lead" data-i="0"></p><p class="t18 sv-more" data-more="The first pieces were plates for friends, uneven and honest, and that honesty became the signature."></p></div><div class="sv-item" style="left:calc(250 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2020</span><p class="t18 sv-lead" data-i="1"></p><p class="t18 sv-more" data-more="The studio started to work with interiors: tables, wall panels and the quiet objects that sit between furniture and art."></p></div><div class="sv-item" style="left:calc(480 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2021</span><p class="t18 sv-lead" data-i="2"></p><p class="t18 sv-more" data-more="Each one is made by hand, so a hundred identical plates are never identical, and that turned out to be the point."></p></div><div class="sv-item" style="left:calc(710 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2022</span><p class="t18 sv-lead" data-i="3"></p><p class="t18 sv-more" data-more="Months of tests gave the palette that the studio is known for today: warm, matte, slightly irregular."></p></div><div class="sv-item" style="left:calc(940 * var(--u))"><i class="sv-dot"></i><span class="sv-year">2023</span><p class="t18 sv-lead" data-i="4"></p><p class="t18 sv-more" data-more="With it came the idea that every object should be able to live in a home, not only in a showroom."></p></div></div>
+  <div class="t big2 sv-title">Media</div>
+    <div class="sv-items"></div>
 </div>
 <div class="ov" id="catView" aria-hidden="true">
   <div class="ov-scrim"></div>
@@ -357,6 +358,8 @@
 <div class="close-cursor" aria-hidden="true">Close<svg viewBox="0 0 10 10" width="9" height="9"><path d="M1.5 1.5 8.5 8.5M8.5 1.5 1.5 8.5" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></div>
 <div class="grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 
+<script src="clay.js"></script>
+<script src="sound.js"></script>
 <script>
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scrollTo(0, 0);   // the page always starts from the top: the intro is built for it
 (() => {
@@ -769,55 +772,7 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
   // ---- the two views. Story ("More"): the page leaves, only the title stays, the paragraphs line up horizontally, the squares become a timeline.
   // A case (click on a picture): the picture grows above the page, its lines stretch to two columns, two paragraphs come in below as a staircase.
   // In both the pointer turns into "Close"; a click anywhere (or Esc) brings the page back.
-  // ---- sound: a very light, calm museum background made in the browser (no files): a soft D major chord held and breathing, a little air, and a long room around it. Off until the switch is pressed; inside a view (a category, a case, the Story) it goes muffled, as if behind a wall
-  const sndBtn = one('.snd'); let actx = null, sMaster = null, sLp = null, sOn = false, sInside = false, sInG = null, sWob = null, sSw = null, sBp = null;
-  function startSound() {
-    const C = actx = new (window.AudioContext || window.webkitAudioContext)();
-    sMaster = C.createGain(); sMaster.gain.value = 0; sLp = C.createBiquadFilter(); sLp.type = 'lowpass'; sLp.frequency.value = 2600; sLp.Q.value = .4;
-    const dry = C.createGain(), wet = C.createGain(), rv = C.createConvolver(); dry.gain.value = .55; wet.gain.value = .8;
-    const len = C.sampleRate * 5, ir = C.createBuffer(2, len, C.sampleRate);           // a long, dark room
-    for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2); }
-    rv.buffer = ir; const bus = C.createGain(); bus.connect(dry); bus.connect(rv); rv.connect(wet); dry.connect(sLp); wet.connect(sLp); sLp.connect(sMaster); sMaster.connect(C.destination);
-    // minimal and ambient: a barely there bed (F and C, held), and over it a soft mallet circling the notes of a chord, four at a time, while the chord turns slowly (F, A minor, C, D minor); quiet and steady, like a pattern repeated by hand
-    [[87.31, .03], [130.81, .016]].forEach(([f, g]) => { const o = C.createOscillator(), og = C.createGain(); o.type = 'sine'; o.frequency.value = f; og.gain.value = g; o.connect(og); og.connect(bus); o.start(); });
-    const hz0 = m => 440 * Math.pow(2, (m - 69) / 12), CH = [[65, 69, 72, 76], [64, 69, 72, 76], [64, 67, 72, 76], [65, 69, 74, 77]], PAT = [0, 2, 1, 3, 2, 1];
-    let step = 0;
-    (function mallet() { const inside = false, dur = 1.15;   // inside a view the same music plays on, only filtered; slow and sparse
-      if (sOn && C.state === 'running' && Math.random() < .6) { const ch = CH[Math.floor(step / 12) % CH.length], m = ch[PAT[step % PAT.length]] - (inside ? 12 : 0), t = C.currentTime, accent = step % 6 === 0 ? 1 : .7;
-        [[1, .045 * accent], [4, .006 * accent], [2.76, .004 * accent]].forEach(([h, g]) => { const o = C.createOscillator(), e = C.createGain(); o.type = 'sine'; o.frequency.value = hz0(m) * h;
-          e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(g, t + .008); e.gain.exponentialRampToValueAtTime(.0001, t + (h === 1 ? 1.6 : .4)); o.connect(e); e.connect(bus); o.start(t); o.stop(t + 1.7); }); }   // a struck tone: quick attack, a short bright overtone, a longer soft body
-      step++; setTimeout(mallet, dur * 1000); })();
-    const hzm = m => 440 * Math.pow(2, (m - 69) / 12);
-    { const l = C.createOscillator(); sWob = C.createGain(); sWob.gain.value = 0; l.frequency.value = .07; l.connect(sWob); sWob.connect(sLp.frequency); l.start(); }   // inside a view the muffled room drifts very slowly
-    // inside a view the chord moves to F major with its seventh and ninth, softer and closer: the same bright museum, one room further in
-    { sInG = C.createGain(); sInG.gain.value = 0; const padLp = C.createBiquadFilter(); padLp.type = 'lowpass'; padLp.frequency.value = 800; padLp.Q.value = .5; padLp.connect(sInG); sInG.connect(sMaster); sInG.connect(rv);
-      [[41, .05], [53, .03], [57, .022], [64, .014], [67, .008]].forEach(([m, g], k) => { const o = C.createOscillator(), og = C.createGain(), l = C.createOscillator(), lg = C.createGain(); o.type = 'sine'; o.frequency.value = hzm(m); og.gain.value = g; l.frequency.value = .02 + k * .007; lg.gain.value = g * .08; l.connect(lg); lg.connect(og.gain); o.connect(og); og.connect(padLp); o.start(); l.start(); }); }
-    const nb = C.createBuffer(1, C.sampleRate * 2, C.sampleRate), nd = nb.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
-    const ns = C.createBufferSource(), bp = C.createBiquadFilter(), ng = C.createGain(); ns.buffer = nb; ns.loop = true; bp.type = 'bandpass'; bp.frequency.value = 260; bp.Q.value = .5; ng.gain.value = .03;   // the air of a big hall
-    ns.connect(bp); bp.connect(ng); ng.connect(bus); ns.start();
-    { const sw = C.createBufferSource(); sw.buffer = nb; sw.loop = true; sBp = C.createBiquadFilter(); sBp.type = 'lowpass'; sBp.Q.value = .7; sBp.frequency.value = 300; sSw = C.createGain(); sSw.gain.value = 0; sw.connect(sBp); sBp.connect(sSw); sSw.connect(sMaster); sSw.connect(rv); sw.start(); }   // the air that moves when something is swiped: low, through a soft low-pass, never hissing
-  }
-  function setSound(on) {
-    sOn = on; sndBtn.setAttribute('aria-pressed', on); if (on && !actx) startSound(); if (!actx) return;
-    if (actx.state === 'suspended') actx.resume();
-    const t = actx.currentTime; sMaster.gain.cancelScheduledValues(t); sMaster.gain.setValueAtTime(sMaster.gain.value, t); sMaster.gain.linearRampToValueAtTime(on ? .7 : 0, t + (on ? 3 : .8));
-    if (on) waveLoop();
-  }
-  function soundNudge(v) {                                               // a swipe or a drag: a soft breath of air, low and quiet, a little fuller the faster it goes
-    if (!sSw || !sOn) return; const k = Math.min(1, Math.abs(v)), t = actx.currentTime;
-    sSw.gain.cancelScheduledValues(t); sSw.gain.setValueAtTime(sSw.gain.value, t); sSw.gain.linearRampToValueAtTime(Math.max(sSw.gain.value, .015 + .05 * k), t + .12); sSw.gain.setTargetAtTime(0, t + .2, .5);
-    sBp.frequency.cancelScheduledValues(t); sBp.frequency.setValueAtTime(sBp.frequency.value, t); sBp.frequency.linearRampToValueAtTime(260 + 520 * k, t + .15); sBp.frequency.setTargetAtTime(300, t + .25, .6);
-  }
-  function muffle(on) { sInside = on; if (!sLp) return; const t = actx.currentTime; sLp.frequency.cancelScheduledValues(t); sLp.frequency.setValueAtTime(sLp.frequency.value, t); sLp.frequency.exponentialRampToValueAtTime(on ? 340 : 2600, t + 1.2); sLp.Q.cancelScheduledValues(t); sLp.Q.setValueAtTime(sLp.Q.value, t); sLp.Q.linearRampToValueAtTime(on ? 1.6 : .5, t + 1.2);
-    sWob.gain.cancelScheduledValues(t); sWob.gain.setValueAtTime(sWob.gain.value, t); sWob.gain.linearRampToValueAtTime(0, t + 1.5);
-    sInG.gain.cancelScheduledValues(t); sInG.gain.setValueAtTime(sInG.gain.value, t); sInG.gain.linearRampToValueAtTime(0, t + 2); }   // inside: softer and closer, an octave lower, with a warm fifth under it
-  const wave = sndBtn.querySelector('path');
-  function waveLoop(now = performance.now()) {                            // the line moves like a slow wave while the sound plays and lies flat again when it stops
-    let d = 'M0 5'; const amp = sOn ? 2.6 : 0; for (let x = 2; x <= 24; x += 2) d += `L${x} ${(5 + amp * Math.sin(x / 24 * Math.PI * 2 - now / 420) * Math.sin(x / 24 * Math.PI)).toFixed(2)}`;
-    wave.setAttribute('d', d); if (sOn) requestAnimationFrame(waveLoop);
-  }
-  sndBtn.addEventListener('click', e => { e.stopPropagation(); sndBtn._touched = true; setSound(!sOn); });
-  addEventListener('pointerdown', e => { if (!sndBtn._touched && !sOn && !sndBtn.contains(e.target)) { sndBtn._touched = true; setSound(true); } }, { capture: true });   // the first click anywhere starts the sound (the browser allows sound only after a click); after that only the switch turns it off and on
+  // the sound lives in sound.js (shared with the Order page): sndBtn, setSound, muffle and soundNudge come from there
 
   const htmlEl = document.documentElement, closeCur = one('.close-cursor:not(.more-cursor)'), moreCur = one('.more-cursor');
   let openView = null;
@@ -841,11 +796,11 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
   const pageEls = () => [one('.page'), ...$('.hc, .nav, .ct, .tagline, .midstrip, .ttl')];
 
   const SV = one('#storyView');
+  const MEDIA = [["MyDecor", "Clay tables by DirtyHands studio", "https://mydecor.ru/news/design/glinyanye-stoliki-studii-dirtyhands/"], ["TopDesignMag", "Art ceramics studio DirtyHands presented tables made of elements", "https://topdesignmag.ru/events/studiya-art-keramiki-dirtyhands-predstavila-stoliki-stihii/"], ["Interior+Design", "DirtyHands ceramic tables", "https://www.interior.ru/design/11036-wondercraft-days-v-kontsept-store-design-dealer.html"], ["Design Mate", "DirtyHands Studio created tables inspired by the elements of nature", "http://design-mate.ru/read/news/studiya-dirtyhands-sdelala-stoliki-vdohnovlennye-prirodnymi-stihiyami"], ["Elle Decoration", "New life for an old professor's apartment with windows overlooking Moscow State University", "https://mydecor.ru/interior/flats/novaya-zhizn-staroi-professorskoi-kvartiry-120-m-s-oknami-na-mgu/"], ["Your Home Ideas", "Before and after: a stylish apartment in a 1933 Stalin-era building", "https://www.ivd.ru/dizajn-i-dekor/kvartira/do-i-posle-stilnaya-kvartira-v-stalinke-1933-goda-dlya-molodoj-semi-102832"], ["Interior+Design", "Stalin-era apartment with a river view", "https://www.interior.ru/place/13717-open-interiors-kvartira-v-stalinskom-dome-s-vidom-na-reku.html"], ["Elle Decoration", "Made in Russia Week: 10 Russian ceramics workshops", "https://mydecor.ru/news/design/made-in-russia-week-10-keramicheskikh-masterskikh-rossii/"], ["NTV, Housing Issue", "Music lounge", "https://www.peredelka.tv/episodes/kv/muzykalnaya-gostinaya/"], ["Design Mate", "The largest list of Russian brands, manufacturers and craftsmen", "https://design-mate.ru/read/an-experience/brand/import-substitution-part-2"], ["Moskvich Mag", "Why should you know us?", "https://moskvichmag.ru/lyudi/pochemu-vy-dolzhny-nas-znat-osnovateli-studii-art-keramiki-dirtyhands-karen-yuzbashyan-i-elizaveta-martirosyan/"], ["New York Style Guide", "Venice Design Week 2021: the art and design inspired path", "https://newyorkstyleguide.com/https-newyorkstyleguide-com-p63626previewtrue/"], ["Seasons", "A Russian artist needs a canvas", "https://seasons-project.ru/nolst-i-maslo-mebel-russkih-dizajnerov-v-arendu/"], ["Robb Report", "The 10 best interior design items of 2021", "https://robb.report/stil-zhizni/58675-ot-sekretnoy-kuhni-do-kovra-samoleta-10-luchshih-predmetov-interernogo-dizayna-2021-goda/"], ["Design Mate", "Vertebra, a new ceramic shelving unit from DirtyHands", "https://design-mate.ru/read/objects/vertebra-new-ceramic-shelving-unit-by-igor-kurkin-and-dirtyhands"], ["Porusski.me", "From clay to painting. Interview", "https://porusski.me/2021/07/13/06-dirtyhands-ot-glini-do-kartini/"], ["NTV, Housing Issue", "Living room on the Mediterranean coast", "https://www.peredelka.tv/episodes/kv/gostinaya-na-beregu-sredizemnogo-morya/"], ["Design Mate", "Interview. Q&amp;A / DirtyHands", "https://design-mate.ru/read/people/dirtyhands-questionnaire"], ["Elle Decoration", "Wondercraft Day: Episode II exhibition", "https://mydecor.ru/news/events/vystavka-wondercraft-day-epizod-ii-v-koncept-store-design-dealer/"], ["Interior+Design", "Wondercraft Days x Design Dealer: a conversation about craft", "https://www.interior.ru/design/10975-wondercraft-days-h-design-dealer-razgovor-o-remesle.html"]];   // outlet, headline, link (from dirtyhands.ru, Media about us)
   function openStory() {
     if (!G || openView) return;
     const word = one('.tagged .big2'), r0 = word.getBoundingClientRect();
-    const srcItems = $('#storyView .sv-item'), title = one('.sv-title');
-    const data = srcItems.map((it, i) => ({ year: it.querySelector('.sv-year').textContent, lead: storyP[i].dataset.text, more: it.querySelector('.sv-more').dataset.more }));
+    const title = one('.sv-title'), data = MEDIA.map(([out, head, url]) => ({ year: out, lead: head, url }));   // twenty publications about the studio, in English
     SV.classList.add('open'); lockView(true); one('.tagged').style.visibility = 'hidden';   // only one Story word on the screen: the view's copy takes over from it
     gsap.set(title, { x: 0, y: 0 }); const r1 = title.getBoundingClientRect();
     const tl = gsap.timeline({ onReverseComplete() { one('.tagged').style.visibility = ''; SV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); tick(); } });
@@ -858,7 +813,7 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
     data.forEach((d, i) => {
       for (let k = 0; k < KS; k++) {                                                                    // the text layer
         const el = document.createElement('div'); el.className = 'sv-strip';
-        el.innerHTML = `<div class="sv-in" style="left:${-k * SW}px"><i class="sv-dot"></i><span class="sv-year">${d.year}</span><p class="t18 sv-lead">${d.lead}</p><p class="t18 sv-more">${d.more}</p></div>`;
+        el.innerHTML = `<div class="sv-in" style="left:${-k * SW}px"><i class="sv-dot"></i><span class="sv-year">${d.year}</span><p class="t18 sv-lead">${d.lead}</p><a class="t18 sv-more" href="${d.url}" target="_blank" rel="noopener">Read ↗</a></div>`;
         el.style.width = SW + 1 + 'px'; host.append(el); strips.push({ el, i, a: (k + .5) * SW - CW / 2, R: RAD, w: SW });
       }
       for (let k = 0; k < KS; k++) {                                                                    // the photo layer: smaller, so the photographs sit further in
@@ -876,8 +831,8 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
         const phi = (s.i * SP + s.a - pos * SP) / RAD, c = Math.cos(phi), d = Math.abs(s.i - pos);
         s.el.style.left = cx - s.w / 2 - (s.ph ? 2 : 0) + 'px';
         s.el.style.transform = `translate3d(0,0,${(-RAD).toFixed(1)}px) rotateY(${phi.toFixed(4)}rad) translate3d(0,0,${s.R.toFixed(1)}px)`;
-        const f = c <= 0.02 ? 0 : Math.pow(c, 1.1) * (1 - 0.15 * Math.min(1, d * 2));
-        if (s.ph) { s.el.style.opacity = f > 0 ? 1 : 0; s.el.style.filter = f > 0 ? `brightness(${(1 + (1 - f) * 1.4).toFixed(3)})` : ''; } else s.el.style.opacity = f.toFixed(3);   // a photo turning away goes paler, as one piece (see-through strips would show their seams)
+        const f = c <= 0.02 || Math.abs(phi) > 1.55 ? 0 : Math.pow(c, 1.1) * (1 - 0.15 * Math.min(1, d * 2));   // only the near side of the drum: twenty items go round it more than once
+        if (s.ph) { s.el.style.opacity = f > 0 ? 1 : 0; s.el.style.filter = f > 0 ? `brightness(${(1 + (1 - f) * .45).toFixed(3)})` : ''; } else s.el.style.opacity = f.toFixed(3);   // a photo turning away goes paler, as one piece (see-through strips would show their seams)
       }); };
     const snap = () => { target = Math.max(0, Math.min(N - 1, Math.round(target))); };
     const nudge = dd => { target = Math.max(-0.35, Math.min(N - 0.65, target + dd)); clearTimeout(snapT); snapT = setTimeout(snap, 140); };
@@ -897,7 +852,7 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
     if (SV._noClose || CV._noClose || CATV._noClose) return;
     const more = e.target.closest('a.more') || (!openView && !e.target.closest('a, nav, .nav, .ov') && inStory(e.clientY) ? e.target : null);
     if (more && !openView) { e.preventDefault(); moreCur.style.opacity = 0; openStory(); return; }
-    if (openView && e.target.closest('.ov')) openView.close();
+    if (openView && e.target.closest('.ov') && !e.target.closest('a')) openView.close();   // a link inside a view opens, it does not close the view
   });
 
   const CV = one('#caseView');
@@ -942,8 +897,11 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
       requestAnimationFrame(bendLoop); })();
     const stopSlider = () => { bendRun = false; CV.removeEventListener('wheel', onSw); removeEventListener('keydown', onSk); CV.removeEventListener('pointerdown', onSd); removeEventListener('pointermove', onSm); removeEventListener('pointerup', onSu); gsap.killTweensOf(track); gsap.set(track, { x: 0 }); track.innerHTML = ''; };
     CV.classList.add('open'); lockView(true);
+    const held = partners.filter(p => p.style.position === 'fixed').map(p => ({ p, par: p.parentNode, next: p.nextSibling }));   // the client names held on the right stay in sight over the case: lifted out of the faded page for as long as it is open
+    held.forEach(({ p }) => { document.body.append(p); p.style.zIndex = 401; });
+    const putBack = () => held.forEach(({ p, par, next }) => { par.insertBefore(p, next); p.style.zIndex = ''; });
     const inCap = splitMask(capEl), inA = splitMask(aEl), inB = splitMask(bEl);
-    const tl = gsap.timeline({ onReverseComplete() { stopSlider(); CV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); tick(); } });
+    const tl = gsap.timeline({ onReverseComplete() { stopSlider(); putBack(); CV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); tick(); } });
     tl.to(pageEls(), { opacity: 0.12, duration: .5, ease: 'power2.out' }, 0);                                  // the page stays, faintly, under the picture
     tl.fromTo('#caseView .ov-scrim', { opacity: 0 }, { opacity: .86, duration: .5, ease: 'power2.out' }, 0);
     tl.fromTo(cdPic, { left: r.left, top: r.top, width: r.width, height: r.height }, { left: 20 * U, top: picTop, width: 900 * U, height: picH, duration: 1, ease: 'power3.inOut' }, 0.05);
@@ -1038,588 +996,8 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
   $('.pic').forEach((pic, i) => pic.addEventListener('click', e => { e.stopPropagation(); openCase(i, pic); }));
 
   // Clay on the empty background (made separately, see glina.html): the sheet is transparent, hands covered in clay leave prints and smears on it, and the marks sink away by themselves
-  function makeClay(opt = {}) {                                         // live: the sheet over the page that follows the hand; with opt.cv: a still sheet (the marks on the Lisa and Karen cards)
-  const live = !opt.cv, inv = live || !!opt.invert;                  // inv: drawn in inverted colours, to be blended by difference (on the page, and over the text of the cards)
-  const cv = opt.cv || document.createElement('canvas'); cv.setAttribute('aria-hidden', 'true');
-  if (live) cv.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:450;pointer-events:none;display:block;mix-blend-mode:difference';   // above the page, blended by difference: the clay is drawn in inverted colours, so on white it is dark clay, and whatever it lies on (text, lines) turns to its negative
-  if (live) document.body.prepend(cv);
-  const ctx = cv.getContext('2d');
-
-  let S = 1, W = 0, H = 0, T = null, D = null, img = null;
-  const TILE = 64;
-  const tiles = new Map();
-  const content = new Set();      // tiles that still hold clay and keep fading
-  const HOLD = 1.75;              // seconds a fresh mark stays before it starts to fade
-  const FADE_STEP = 1 / 20;       // fading runs 20 times a second in small steps, so the marks melt away smoothly
-  let lastFade = 0;
-  const now = () => performance.now() / 1000;
-
-  // Clay slip: thin film is a dusty terracotta, thick lumps go dark and earthy.
-  const THIN = [104, 102, 100], THICK = [26, 26, 28];   // dark charcoal clay, dry and matte, like on the hands in the reference photo
-  const Lx = -0.6, Ly = -0.8;
-
-  /* ---------- noise ---------- */
-  const seed = (Math.random() * 1e9) | 0;
-  function hash(x, y) {
-    let h = (x * 374761393 + y * 668265263 + seed) | 0;
-    h = Math.imul(h ^ (h >>> 13), 1274126177);
-    return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
-  }
-  function vnoise(x, y) {
-    const xi = Math.floor(x), yi = Math.floor(y);
-    let fx = x - xi, fy = y - yi;
-    fx = fx * fx * (3 - 2 * fx); fy = fy * fy * (3 - 2 * fy);
-    const a = hash(xi, yi), b = hash(xi + 1, yi), c = hash(xi, yi + 1), d = hash(xi + 1, yi + 1);
-    return a + (b - a) * fx + (c - a) * fy + (a - b - c + d) * fx * fy;
-  }
-  function fbm(x, y) {
-    return vnoise(x, y) * 0.5 + vnoise(x * 2.1 + 7, y * 2.1 + 3) * 0.3 + vnoise(x * 4.3 + 11, y * 4.3 + 5) * 0.2;
-  }
-  const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
-  const rnd = (a, b) => a + Math.random() * (b - a);
-  const irnd = (a, b) => Math.floor(rnd(a, b + 1));
-
-  /* ---------- buffers & drawing ---------- */
-  function alloc() {
-    const ns = 1;                         // drawn at css-pixel size: soft clay needs no more, and it is 4 times lighter on a retina screen
-    const nw = Math.max(2, Math.round((opt.w || innerWidth) * ns)), nh = Math.max(2, Math.round((opt.h || innerHeight) * ns));
-    const nT = new Float32Array(nw * nh), nD = new Float32Array(nw * nh).fill(-100);
-    if (T && ns === S) {
-      const cw = Math.min(W, nw), ch = Math.min(H, nh);
-      for (let y = 0; y < ch; y++) {
-        nT.set(T.subarray(y * W, y * W + cw), y * nw);
-        nD.set(D.subarray(y * W, y * W + cw), y * nw);
-      }
-    }
-    S = ns; W = nw; H = nh; T = nT; D = nD; tiles.clear(); content.clear();
-    for (let ty = 0; ty < Math.ceil(H / TILE); ty++) for (let tx = 0; tx < Math.ceil(W / TILE); tx++) content.add(ty * Math.ceil(W / TILE) + tx);
-    cv.width = W; cv.height = H;
-    img = ctx.createImageData(W, H);
-    shade(0, 0, W - 1, H - 1, now());
-    ctx.putImageData(img, 0, 0);
-  }
-
-  function shade(x0, y0, x1, y1, t) {
-    x0 = Math.max(0, x0 | 0); y0 = Math.max(0, y0 | 0);
-    x1 = Math.min(W - 1, x1 | 0); y1 = Math.min(H - 1, y1 | 0);
-    const d = img.data;
-    for (let y = y0; y <= y1; y++) {
-      const yu = y > 0 ? y - 1 : y, yd = y < H - 1 ? y + 1 : y;
-      for (let x = x0; x <= x1; x++) {
-        const i = y * W + x, p = i * 4;
-        const th = T[i];
-        if (th <= 0.003) { d[p] = d[p + 1] = d[p + 2] = d[p + 3] = 0; continue; }
-        const xl = x > 0 ? i - 1 : i, xr = x < W - 1 ? i + 1 : i;
-        const gx = (T[xr] - T[xl]) * 0.5, gy = (T[yd * W + x] - T[yu * W + x]) * 0.5;
-        let s = 1 - (gx * Lx + gy * Ly) * 0.55 / S;
-        if (s < 0.55) s = 0.55; else if (s > 1.4) s = 1.4;
-        const a = 1 - Math.exp(-th * 3.2);
-        const m = th > 1.8 ? 1 : th / 1.8;
-        const wet = Math.exp(-(t - D[i]) / 0.6);
-        const dk = s * (1 - 0.2 * wet);
-        let r = (THIN[0] + (THICK[0] - THIN[0]) * m) * dk;
-        let g = (THIN[1] + (THICK[1] - THIN[1]) * m) * dk;
-        let b = (THIN[2] + (THICK[2] - THIN[2]) * m) * dk;
-        const spec = wet * Math.max(0, s - 1.05) * 0.9 * a;
-        d[p]     = inv ? 255 - (r + (255 - r) * spec) : r + (255 - r) * spec;   // the live sheet is drawn inverted (it is blended by difference)
-        d[p + 1] = inv ? 255 - (g + (255 - g) * spec) : g + (255 - g) * spec;
-        d[p + 2] = inv ? 255 - (b + (255 - b) * spec) : b + (255 - b) * spec;
-        d[p + 3] = a * 255;
-      }
-    }
-  }
-
-  function touched(x0, y0, x1, y1) {
-    const until = now() + 2.6, tw = Math.ceil(W / TILE), th = Math.ceil(H / TILE);
-    const tx0 = Math.max(0, Math.floor((x0 - 1) / TILE)), tx1 = Math.min(tw - 1, Math.floor((x1 + 1) / TILE));
-    const ty0 = Math.max(0, Math.floor((y0 - 1) / TILE)), ty1 = Math.min(th - 1, Math.floor((y1 + 1) / TILE));
-    for (let ty = ty0; ty <= ty1; ty++) for (let tx = tx0; tx <= tx1; tx++) { tiles.set(ty * tw + tx, until); content.add(ty * tw + tx); }
-  }
-
-  function deposit(i, add, t) {
-    if (add <= 0.002) return;
-    const v = T[i] + add;
-    T[i] = v > 3.5 ? 3.5 : v;
-    D[i] = t;
-  }
-
-  // Iterate pixels in a CSS-px box around (x, y) with radius R.
-  function box(xc, yc, R, fn) {
-    const cx = xc * S, cy = yc * S, Rd = R * S;
-    const x0 = Math.max(0, Math.floor(cx - Rd)), x1 = Math.min(W - 1, Math.ceil(cx + Rd));
-    const y0 = Math.max(0, Math.floor(cy - Rd)), y1 = Math.min(H - 1, Math.ceil(cy + Rd));
-    if (x1 < x0 || y1 < y0) return;
-    const t = now();
-    for (let y = y0; y <= y1; y++)
-      for (let x = x0; x <= x1; x++) fn(x, y, (x - cx) / S, (y - cy) / S, y * W + x, t);
-    touched(x0, y0, x1, y1);
-  }
-
-  /* ---------- mark primitives ---------- */
-
-  // Pressing onto clay that is already there squashes and mixes it.
-  let sq = new Float32Array(0), sq2 = new Float32Array(0);
-  function squash(o, blurPx = 3, strength = 0.85, reach = 1.15) {
-    const ca = Math.cos(o.ang), sa = Math.sin(o.ang);
-    const R = Math.max(o.rx, o.ry) * (reach + 0.4) * S, cx = o.x * S, cy = o.y * S, rb = Math.max(1, Math.round(blurPx * S));
-    const x0 = Math.max(0, Math.floor(cx - R)), x1 = Math.min(W - 1, Math.ceil(cx + R));
-    const y0 = Math.max(0, Math.floor(cy - R)), y1 = Math.min(H - 1, Math.ceil(cy + R));
-    const w = x1 - x0 + 1, h = y1 - y0 + 1;
-    if (w < 2 || h < 2) return;
-    if (sq.length < w * h) { sq = new Float32Array(w * h); sq2 = new Float32Array(w * h); }
-    let any = false;
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const v = T[(y + y0) * W + x + x0]; sq[y * w + x] = v; if (v > 0.01) any = true; }
-    if (!any) return;
-    // separable box blur
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-      let a = 0, c = 0;
-      for (let k = -rb; k <= rb; k++) { const xx = x + k; if (xx >= 0 && xx < w) { a += sq[y * w + xx]; c++; } }
-      sq2[y * w + x] = a / c;
-    }
-    const t = now();
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-      let a = 0, c = 0;
-      for (let k = -rb; k <= rb; k++) { const yy = y + k; if (yy >= 0 && yy < h) { a += sq2[yy * w + x]; c++; } }
-      const dx = (x + x0 - cx) / S, dy = (y + y0 - cy) / S;
-      const u = (dx * ca + dy * sa) / o.rx, v = (-dx * sa + dy * ca) / o.ry;
-      const wgt = clamp01((reach - Math.sqrt(u * u + v * v)) / 0.35) * strength;
-      if (wgt <= 0) continue;
-      const i = (y + y0) * W + x + x0, old = T[i];
-      const nv = old + (a / c - old) * wgt;
-      if (Math.abs(nv - old) > 0.003) { T[i] = nv; D[i] = t; }
-    }
-  }
-
-  function print(o) {
-    squash(o);
-    const freq = Math.PI * 2 * o.rx / 3.1;
-    const ca = Math.cos(o.ang), sa = Math.sin(o.ang);
-    const haze = o.haze ?? 0.32;
-    box(o.x, o.y, Math.max(o.rx, o.ry) * 1.7, (x, y, dx, dy, i, t) => {
-      const u = (dx * ca + dy * sa) / o.rx, v = (-dx * sa + dy * ca) / o.ry;
-      const r2 = u * u + v * v;
-      if (r2 > 2.6) return;
-      const r = Math.sqrt(r2);
-      const wx = x / S, wy = y / S;
-      const n = fbm(wx * 0.08 + o.k, wy * 0.08);
-      // dirty halo of clay residue around the print
-      if (haze > 0 && r > 0.85) {
-        const hz = fbm(wx * 0.05 - o.k, wy * 0.05);
-        deposit(i, haze * clamp01((1.6 - r) / 0.7) * clamp01((hz - 0.36) * 2.5) * o.load, t);
-      }
-      const edge = clamp01((1.08 + (n - 0.5) * 0.5 - r) / 0.38);
-      if (edge <= 0) return;
-      const pu = u + o.ox, pv = v + o.oy;
-      let ph;
-      if (o.pattern === 0) ph = Math.sqrt(pu * pu + pv * pv * 1.3);
-      else if (o.pattern === 1) ph = pv < 0 ? Math.sqrt(pu * pu + pv * pv * 1.3) : Math.abs(pu) + pv * 0.12;
-      else ph = -pv + 0.38 * Math.exp(-pu * pu * 2.2);
-      ph += (n - 0.5) * 0.09;
-      let ridge = 0.5 + 0.5 * Math.cos(ph * freq + o.phase);
-      ridge = ridge * ridge * (3 - 2 * ridge);
-      // places where the clay is a solid smudge and the ridges are lost
-      const mush = clamp01((fbm(wx * 0.06 - o.k, wy * 0.06 + o.k) - 0.48) * 3.5) * (o.mush ?? 0.8);
-      ridge = ridge + (1 - ridge) * mush;
-      // wet clay already on the sheet fills the ridges and blends with the new print
-      const e = T[i];
-      ridge = ridge + (1 - ridge) * clamp01(e * 0.6);
-      const patch = fbm(wx * 0.035 + o.k * 3, wy * 0.035 - o.k);
-      const cov = clamp01((patch - o.dry) / 0.2);
-      const press = 0.55 + 0.45 * (1 - r2);
-      // clumps: thick gobs stuck to the skin
-      const gob = clamp01((fbm(wx * 0.13 + o.k, wy * 0.13 - o.k) - 0.55) * 4) * (o.gobs ?? 1.1);
-      let add = o.load * edge * press * ((o.fill ?? 0.58) + (1 - (o.fill ?? 0.58)) * ridge) * cov + gob * edge * o.load;
-      add /= 1 + e * 0.7;
-      if (o.cut) add *= clamp01(0.5 - ((u * o.cut[0] + v * o.cut[1]) - o.cut[2]) * 3);
-      deposit(i, add, t);
-    });
-    squash(o, 1.2, 0.75, 1.6);   // soapy, slightly blurred print
-  }
-
-  // A finger dragged over the sheet: it pushes the wet clay along and smudges it, no stripes.
-  let snap = new Float32Array(0);
-  function smear(o, dirx, diry) {
-    const rx = o.rx * 1.05 * S, ry = o.ry * 0.8 * S, R = Math.max(rx, ry) * 1.2;
-    const cx = o.x * S, cy = o.y * S, shift = 3.2 * S, m = Math.ceil(shift) + 2;
-    const x0 = Math.max(0, Math.floor(cx - R)), x1 = Math.min(W - 1, Math.ceil(cx + R));
-    const y0 = Math.max(0, Math.floor(cy - R)), y1 = Math.min(H - 1, Math.ceil(cy + R));
-    if (x1 < x0 || y1 < y0) return;
-    const sx0 = Math.max(0, x0 - m), sy0 = Math.max(0, y0 - m);
-    const sx1 = Math.min(W - 1, x1 + m), sy1 = Math.min(H - 1, y1 + m);
-    const sw = sx1 - sx0 + 1, shh = sy1 - sy0 + 1;
-    if (snap.length < sw * shh) snap = new Float32Array(sw * shh);
-    for (let y = sy0; y <= sy1; y++) snap.set(T.subarray(y * W + sx0, y * W + sx1 + 1), (y - sy0) * sw);
-    const at = (px, py) => {
-      px = Math.min(sw - 1.001, Math.max(0, px)); py = Math.min(shh - 1.001, Math.max(0, py));
-      const xi = px | 0, yi = py | 0, fx = px - xi, fy = py - yi, j = yi * sw + xi;
-      const a = snap[j], b = snap[j + 1], c = snap[j + sw], d = snap[j + sw + 1];
-      return a + (b - a) * fx + (c - a) * fy + (a - b - c + d) * fx * fy;
-    };
-    const t = now();
-    for (let y = y0; y <= y1; y++) {
-      for (let x = x0; x <= x1; x++) {
-        const dx = x - cx, dy = y - cy;
-        const along = (dx * dirx + dy * diry) / ry, across = (-dx * diry + dy * dirx) / rx;
-        const r = Math.sqrt(along * along + across * across);
-        if (r > 1.25) continue;
-        const wx = x / S, wy = y / S;
-        const n = fbm(wx * 0.07 + o.k, wy * 0.07);
-        const e0 = clamp01((1.0 + (n - 0.5) * 0.3 - r) / 0.8), edge = e0 * e0 * (3 - 2 * e0);   // a wide, soft rim: one step of the drag melts into the next instead of leaving a scalloped edge
-        if (edge <= 0) continue;
-        const cur = snap[(y - sy0) * sw + (x - sx0)];
-        const src = at(x - dirx * shift - sx0, y - diry * shift - sy0);
-        let v = cur + (src - cur) * 0.5 * edge;                       // drag clay forward
-        const along2 = (wx * dirx + wy * diry), across2 = (-wx * diry + wy * dirx), soft = 0.25 + 1.3 * fbm(along2 * 0.025 + o.k, across2 * 0.28 - o.k);   // dry streaks along the drag, like clay rubbed over skin
-        v += o.load * 0.09 * edge * soft;                            // what is left on the finger
-        v *= 1 - 0.04 * edge;                                        // a little sticks to the skin
-        if (v < 0) v = 0; else if (v > 3.5) v = 3.5;
-        const i = y * W + x;
-        T[i] = v; D[i] = t;                                            // every pixel under the finger gets the same time, so the trail dries away evenly, not in bands
-      }
-    }
-    touched(x0, y0, x1, y1);
-  }
-
-  // Lower part of a finger (between the joints): skin lines run across, no whorl.
-  function segment(o) {
-    squash(o);
-    const ca = Math.cos(o.ang), sa = Math.sin(o.ang);
-    const freq = Math.PI * 2 * o.ry / 3.6;
-    box(o.x, o.y, Math.max(o.rx, o.ry) * 1.5, (x, y, dx, dy, i, t) => {
-      const u = (dx * ca + dy * sa) / o.rx, v = (-dx * sa + dy * ca) / o.ry;
-      // slightly squared-off ellipse: finger segments are sausage-shaped
-      const r = Math.pow(Math.pow(Math.abs(u), 2.6) + Math.pow(Math.abs(v), 2.2), 1 / 2.4);
-      if (r > 1.5) return;
-      const wx = x / S, wy = y / S;
-      const n = fbm(wx * 0.08 + o.k, wy * 0.08);
-      if (r > 0.9) {
-        const hz = fbm(wx * 0.05 - o.k, wy * 0.05);
-        deposit(i, 0.25 * clamp01((1.45 - r) / 0.55) * clamp01((hz - 0.4) * 2.5) * o.load, t);
-      }
-      const edge = clamp01((1.02 + (n - 0.5) * 0.5 - r) / 0.25);
-      if (edge <= 0) return;
-      let line = 0.5 + 0.5 * Math.cos((v + 0.12 * u * u + (n - 0.5) * 0.15) * freq + o.phase);
-      line = line * line;
-      const e = T[i];
-      line = line + (1 - line) * clamp01(e * 0.6 + clamp01((fbm(wx * 0.06 - o.k, wy * 0.06) - 0.45) * 3));
-      const cov = clamp01((fbm(wx * 0.035 + o.k * 3, wy * 0.035 - o.k) - o.dry) / 0.2);
-      const press = 0.55 + 0.45 * (1 - Math.min(1, u * u));
-      const gob = clamp01((fbm(wx * 0.13 + o.k, wy * 0.13 - o.k) - 0.57) * 4);
-      let add = o.load * edge * press * (0.4 + 0.6 * line) * cov + gob * edge * o.load * 0.8;
-      deposit(i, add / (1 + e * 0.7), t);
-    });
-    squash(o, 1.2, 0.75, 1.6);
-  }
-
-  // A whole finger lying on the sheet: tip print plus one or two lower segments with joint gaps.
-  function longFinger(x, y, opts = {}) {
-    const tip = finger(x, y, Object.assign({ load: rnd(1.2, 1.6) }, opts));
-    print(tip);
-    const ax = -Math.sin(tip.ang), ay = Math.cos(tip.ang);   // along the finger, toward the palm
-    const out = [tip];
-    let dist = tip.ry, prev = tip, n = Math.random() < 0.55 ? 2 : 1;
-    for (let j = 0; j < n; j++) {
-      const ry = tip.ry * rnd(0.72, 0.85), rx = prev.rx * rnd(1.02, 1.08);
-      dist += 3.5 + ry;                                        // the joint crease stays clean
-      const sg = finger(x + ax * dist, y + ay * dist, {
-        rx, ry, ang: tip.ang + rnd(-0.06, 0.06), load: tip.load * (j ? 0.6 : 0.85),
-        dry: tip.dry + 0.08 * (j + 1), k: tip.k + 10 * (j + 1)
-      });
-      segment(sg); out.push(sg);
-      dist += ry; prev = sg;
-    }
-    return out;
-  }
-
-  function blob(xc, yc, rad, load, flat = 0.5) {
-    const k = Math.random() * 50;
-    box(xc, yc, rad * 1.7, (x, y, dx, dy, i, t) => {
-      const ang = Math.atan2(dy, dx);
-      const wob = 1 + (vnoise(Math.cos(ang) * 2 + k, Math.sin(ang) * 2 + k) - 0.5) * 0.8;
-      const r = Math.hypot(dx, dy) / rad / wob;
-      if (r >= 1) return;
-      const n = fbm(x / S * 0.12 + k, y / S * 0.12);
-      deposit(i, load * Math.pow(1 - r * r, flat) * (0.7 + 0.6 * n), t);
-    });
-  }
-
-  function dot(xc, yc, rad, load) {
-    box(xc, yc, rad + 1, (x, y, dx, dy, i, t) => {
-      const r = Math.hypot(dx, dy) / rad;
-      if (r < 1) deposit(i, load * Math.sqrt(1 - r * r), t);
-    });
-  }
-
-  function specks(x, y, spread, n, big = 1.4) {
-    return;   // flying specks are switched off
-    for (let j = 0; j < n; j++) {
-      const a = Math.random() * Math.PI * 2, d = spread * rnd(0.9, 2.2);
-      dot(x + Math.cos(a) * d, y + Math.sin(a) * d, rnd(0.45, big), rnd(0.6, 1.2));
-    }
-  }
-
-  function drip(x, y, len, w, load) {
-    for (let s = 0; s < len; s += 1.2) {
-      const taper = 1 - (s / len) * 0.45;
-      dot(x + Math.sin(s * 0.05) * 1.2, y + s, w * taper, load * 0.5);
-    }
-    dot(x, y + len, w * 1.5, load * 1.3);
-  }
-
-  function finger(x, y, opts = {}) {
-    const size = (opts.size || rnd(0.92, 1.12)) * 1.3;                 // bigger marks
-    return Object.assign({
-      x, y, rx: 23 * size, ry: 30 * size,
-      ang: rnd(-0.6, 0.6), load: rnd(1.1, 1.5), dry: rnd(0.12, 0.26),
-      pattern: irnd(0, 2), phase: Math.random() * 6.28,
-      ox: rnd(-0.2, 0.2), oy: rnd(-0.15, 0.25), k: Math.random() * 100, cut: null
-    }, opts);
-  }
-
-  function autoSmear(f, dx, dy, len, decay = 0.985) {
-    const g = Object.assign({}, f), sx = f.x, sy = f.y;
-    for (let s = 0; s < len; s += 2) {
-      g.x = sx + dx * s; g.y = sy + dy * s;
-      smear(g, dx, dy); g.load *= decay;
-    }
-    return g;
-  }
-
-  /* ---------- ten variants ---------- */
-  const variants = [
-    { name: 'Жирный отпечаток', run(x, y) {
-        const f = finger(x, y, { load: rnd(1.3, 1.7), fill: 0.4 });
-        print(f);
-        if (Math.random() < 0.5) specks(x, y, f.rx, irnd(1, 4));
-        return [f];
-    } },
-    { name: 'Хват', run(x, y) {
-        const n = irnd(1, 3), base = rnd(-0.4, 0.4), gap = 42, long = Math.random() < 0.4 ? irnd(0, n - 1) : -1;   // one to three fingers, never more; sometimes one is pressed flat, its mark wider than a fingertip, a whole phalanx
-        const out = [];
-        for (let j = 0; j < n; j++) {
-          const o = j - (n - 1) / 2;
-          const px = x + Math.cos(base) * o * gap, py = y + Math.sin(base) * o * gap + o * o * 7;
-          const f = finger(px, py, { ang: base + o * 0.18 + rnd(-0.1, 0.1), size: 1.02 - Math.abs(o) * 0.08 }); if (j === long) { f.rx *= 1.6; f.ry *= 1.2; }
-          if (Math.random() < 0.25) f.cut = [rnd(-1, 1), rnd(-1, 1), rnd(0, 0.4)];
-          print(f); out.push(f);
-        }
-        return out;
-    } },
-    { name: 'Мазок большим пальцем', run(x, y) {
-        const f = finger(x, y, { size: rnd(1.25, 1.4), load: rnd(1.2, 1.5) });
-        const a = Math.random() * Math.PI * 2;
-        print(f);
-        autoSmear(f, Math.cos(a), Math.sin(a), rnd(40, 90));
-        return [f];
-    } },
-    { name: 'Съехавший палец', run(x, y) {
-        const a = Math.random() * Math.PI * 2, dx = Math.cos(a), dy = Math.sin(a), off = rnd(8, 16);
-        const f = finger(x, y, { load: rnd(0.9, 1.2) });
-        print(f);
-        autoSmear(f, dx, dy, off, 0.99);
-        print(Object.assign({}, f, { x: x + dx * off, y: y + dy * off, ang: f.ang + rnd(-0.2, 0.2), phase: f.phase + 1.3, load: f.load * 0.8 }));
-        return [f];
-    } },
-    { name: 'Комок глины', run(x, y) {
-        blob(x + rnd(-6, 6), y + rnd(-6, 6), rnd(14, 22), rnd(1.6, 2.3), 0.35);
-        const f = finger(x, y, { load: 1.2, dry: 0.05 });
-        print(f);
-        specks(x, y, 26, irnd(5, 10));
-        return [f];
-    } },
-    { name: 'Ладонь', run(x, y) {
-        const ang = rnd(-0.5, 0.5), ca = Math.cos(ang), sa = Math.sin(ang);
-        const rx = rnd(48, 60), ry = rnd(40, 50), k = Math.random() * 50, load = rnd(1.2, 1.6);
-        const cr = [[rnd(0.2, 0.5), rnd(-0.5, -0.2)], [rnd(-0.4, -0.1), rnd(0, 0.25)], [rnd(0.3, 0.6), rnd(0.3, 0.5)]];
-        box(x, y, Math.max(rx, ry) * 1.5, (px, py, dx, dy, i, t) => {
-          const u = (dx * ca + dy * sa) / rx, v = (-dx * sa + dy * ca) / ry;
-          const r = Math.hypot(u, v);
-          const wx = px / S, wy = py / S;
-          const n = fbm(wx * 0.05 + k, wy * 0.05);
-          const edge = clamp01((1.0 + (n - 0.5) * 0.6 - r) / 0.25);
-          if (edge <= 0) return;
-          let crease = 1;
-          for (const [a, b] of cr) {
-            const dv = Math.abs(v - (a * u * u + b));
-            crease *= clamp01(dv * ry / 2.2);
-          }
-          const skin = 0.6 + 0.4 * vnoise(wx * 0.9 + k, wy * 0.9);
-          const cov = clamp01((fbm(wx * 0.03 + k, wy * 0.03) - 0.25) / 0.25);
-          const gob = clamp01((fbm(wx * 0.12 - k, wy * 0.12) - 0.6) * 4);
-          deposit(i, load * edge * (0.25 + 0.75 * crease) * skin * cov + gob * edge, t);
-        });
-        return [finger(x, y, { size: 1.6, load: 0.9 })];
-    } },
-    { name: 'Шликер с подтёками', run(x, y) {
-        const rad = rnd(22, 34), k = Math.random() * 50;
-        box(x, y, rad * 1.6, (px, py, dx, dy, i, t) => {
-          const ang = Math.atan2(dy, dx);
-          const wob = 1 + (vnoise(Math.cos(ang) * 2.5 + k, Math.sin(ang) * 2.5 + k) - 0.5) * 0.6;
-          const r = Math.hypot(dx, dy) / rad / wob;
-          if (r >= 1) return;
-          const ring = Math.exp(-Math.pow((1 - r) * 9, 2)) * 0.9;   // darker drying edge
-          deposit(i, 0.45 * (0.8 + 0.4 * fbm(px / S * 0.1 + k, py / S * 0.1)) + ring, t);
-        });
-        const n = irnd(1, 3);
-        for (let j = 0; j < n; j++) drip(x + rnd(-rad * 0.7, rad * 0.7), y + rad * 0.7, rnd(25, 90), rnd(2, 3.5), 1.2);
-        return [finger(x, y, { load: 0.8, dry: 0.1 })];
-    } },
-    { name: 'Брызги', run(x, y) {
-        blob(x, y, rnd(6, 10), 1.8, 0.4);
-        const n = irnd(18, 34);
-        for (let j = 0; j < n; j++) {
-          const a = Math.random() * Math.PI * 2, d = 10 + Math.pow(Math.random(), 1.6) * 90;
-          const px = x + Math.cos(a) * d, py = y + Math.sin(a) * d;
-          const rr = Math.max(1, rnd(1.5, 6) * (1 - d / 170));
-          if (Math.random() < 0.25) {
-            for (let s = 0; s < 10; s++) dot(px + Math.cos(a) * s * 1.2, py + Math.sin(a) * s * 1.2, rr * (1 - s / 12), 1.2);
-          } else dot(px, py, rr, rnd(1, 2));
-        }
-        return [finger(x, y, { load: 0.9 })];
-    } },
-    { name: 'Протёр пальцами', run(x, y) {
-        const a = rnd(-Math.PI, Math.PI), dx = Math.cos(a), dy = Math.sin(a);
-        const nx = -dy, ny = dx, n = irnd(1, 3), len = rnd(90, 170), long = Math.random() < 0.4 ? irnd(0, n - 1) : -1;
-        const out = [];
-        for (let j = 0; j < n; j++) {
-          const o = j - (n - 1) / 2;
-          const f = finger(x + nx * o * 40 - dx * Math.abs(o) * 8, y + ny * o * 40 - dy * Math.abs(o) * 8, { size: 0.95, load: rnd(1.2, 1.6) }); if (j === long) { f.rx *= 1.6; f.ry *= 1.2; }
-          print(f);
-          autoSmear(f, dx, dy, len * (1 - Math.abs(o) * 0.15), 0.988);
-          out.push(f);
-        }
-        return out;
-    } },
-    { name: 'Сухая крошка', run(x, y) {
-        const f = finger(x, y, { load: rnd(0.6, 0.8), dry: rnd(0.35, 0.45), gobs: 0.3, cut: Math.random() < 0.5 ? [rnd(-1, 1), rnd(-1, 1), rnd(-0.1, 0.3)] : null });
-        print(f);
-        const n = irnd(14, 26);
-        for (let j = 0; j < n; j++) {
-          const a = Math.random() * Math.PI * 2, d = Math.sqrt(Math.random()) * 34;
-          blob(x + Math.cos(a) * d, y + Math.sin(a) * d * 1.2, rnd(1.5, 5), rnd(1.2, 2.4), 0.3);
-        }
-        return [f];
-    } },
-    { name: 'Два пальца', run(x, y) {
-        const base = rnd(-0.5, 0.5), gap = rnd(40, 48) * 1.3;
-        const out = [];
-        for (const o of [-0.5, 0.5]) {
-          const f = finger(x + Math.cos(base) * o * gap, y + Math.sin(base) * o * gap + (o > 0 ? rnd(-6, 4) : 0),
-                           { ang: base + o * 0.2 + rnd(-0.08, 0.08), size: o > 0 ? rnd(0.98, 1.08) : rnd(0.9, 1.0), load: rnd(1.2, 1.6) });
-          print(f); out.push(f);
-        }
-        if (Math.random() < 0.4) specks(x, y, 30, (Math.random() * 3) | 0);
-        return out;
-    } },
-    { name: 'Длинные пальцы', run(x, y) {
-        if (Math.random() < 0.5) return longFinger(x, y);
-        const base = rnd(-0.4, 0.4), gap = rnd(42, 48) * 1.3;
-        return [
-          ...longFinger(x - Math.cos(base) * gap / 2, y - Math.sin(base) * gap / 2, { ang: base - 0.08 }),
-          ...longFinger(x + Math.cos(base) * gap / 2, y + Math.sin(base) * gap / 2 - 6, { ang: base + 0.08, size: 1.05 })
-        ];
-    } }
-  ];
-
-  const kept = [0, 4];   // «Жирный отпечаток» and «Комок глины», mixed at random
-
-  if (!live) { alloc(); return { variants, finger, print, autoSmear, render() { shade(0, 0, W - 1, H - 1, now() + 100); ctx.putImageData(img, 0, 0); } }; }   // a still sheet: no hands, no fading
-
-  /* ---------- input ---------- */
-  const hands = new Map();
-  const empty = el => !el.closest('a, .pic, .hc, .more, [data-year], .partner, .ov, nav, button, .close-cursor');
-
-  // a click leaves no print; only a drag draws: a finger goes down unseen and smears the clay as it moves
-  addEventListener('pointerdown', e => {
-    if (e.button || openView || !empty(e.target)) return;
-    const fs = [finger(e.clientX, e.clientY, { load: rnd(1.2, 1.6) })];
-    hands.set(e.pointerId, { fs, sx: e.clientX, sy: e.clientY, x: e.clientX, y: e.clientY, smearing: false });
-  });
-
-  addEventListener('pointermove', e => {
-    const h = hands.get(e.pointerId);
-    if (!h || !h.fs.length) return;
-    if (!e.buttons) { release(e); return; }                        // the button went up where we did not hear it
-    const nx = e.clientX, ny = e.clientY;
-    if (!h.smearing && Math.hypot(nx - h.sx, ny - h.sy) < 4) return;
-    if (!h.smearing) { getSelection().removeAllRanges(); document.documentElement.style.userSelect = 'none'; }
-    h.smearing = true; h.tx = nx; h.ty = ny;                       // only remember where the pointer is: the frame loop draws as much as it can afford
-  });
-
-  // each frame spends a fixed budget of smear steps, so a fast hand or a big mark never freezes the page; the trail simply follows a little behind
-  function pump() {
-    for (const h of hands.values()) {
-      if (!h.smearing) continue;
-      const dx = h.tx - h.x, dy = h.ty - h.y, dist = Math.hypot(dx, dy); if (dist < 1) continue;
-      const n = Math.max(2, Math.floor(10 / h.fs.length)), len = Math.min(dist, n * 3), st = Math.max(1, Math.ceil(len / 3)), ux = dx / dist, uy = dy / dist;
-      for (const f of h.fs) {
-        const bx = f.x, by = f.y;
-        for (let k = 1; k <= st; k++) { f.x = bx + ux * len * k / st; f.y = by + uy * len * k / st; smear(f, ux, uy); f.load *= 0.9747; }       // the paint lasts longer (20% more than before)
-      }
-      h.x += ux * len; h.y += uy * len;
-    }
-  }
-
-  function release(e) {
-    const h = hands.get(e.pointerId);
-    hands.delete(e.pointerId);
-    if (!hands.size) document.documentElement.style.userSelect = '';
-    if (h && h.smearing) for (const f of h.fs) {
-      if (f.load > 0.6) print(Object.assign({}, f, { load: f.load * 0.7, ang: f.ang + rnd(-0.3, 0.3), haze: 0.05 }));
-    }
-  }
-  addEventListener('pointerup', release);
-  addEventListener('pointercancel', release);
-
-  // Marks slowly sink away: after HOLD seconds each pixel thins out until the sheet is white again.
-  function fade(t) {
-    const tw = Math.ceil(W / TILE);
-    for (const idx of content) {
-      const x0 = (idx % tw) * TILE, y0 = Math.floor(idx / tw) * TILE;
-      const x1 = Math.min(W - 1, x0 + TILE - 1), y1 = Math.min(H - 1, y0 + TILE - 1);
-      let left = false, changed = false;
-      for (let y = y0; y <= y1; y++) {
-        for (let i = y * W + x0, e = y * W + x1; i <= e; i++) {
-          let v = T[i];
-          if (v <= 0) continue;
-          if (t - D[i] > HOLD) {
-            v = v * 0.913 - 0.0054;
-            T[i] = v > 0.003 ? v : 0;
-            changed = true;
-          }
-          if (T[i] > 0) left = true;
-        }
-      }
-      if (changed && !tiles.has(idx)) {
-        shade(x0, y0, x1, y1, t);
-        ctx.putImageData(img, 0, 0, x0, y0, x1 - x0 + 1, y1 - y0 + 1);
-      }
-      if (!left) content.delete(idx);
-    }
-  }
-
-  let shown = true;
-  function tick() {
-    pump();
-    const any = content.size > 0 || tiles.size > 0;                // with no clay on it the blended layer is taken out of the page, so it costs nothing and cannot smear what moves under it
-    if (any !== shown) { shown = any; cv.style.display = any ? 'block' : 'none'; }
-    const t = now(), tw = Math.ceil(W / TILE);
-    if (t - lastFade >= FADE_STEP) { lastFade = t; fade(t); }
-    for (const [idx, until] of tiles) {
-      const x0 = (idx % tw) * TILE, y0 = Math.floor(idx / tw) * TILE;
-      const x1 = Math.min(W - 1, x0 + TILE - 1), y1 = Math.min(H - 1, y0 + TILE - 1);
-      shade(x0, y0, x1, y1, t);
-      ctx.putImageData(img, 0, 0, x0, y0, x1 - x0 + 1, y1 - y0 + 1);
-      if (t > until) tiles.delete(idx);
-    }
-    requestAnimationFrame(tick);
-  }
-
-  let rt = 0;
-  addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(alloc, 150); });
-  alloc();
-  requestAnimationFrame(tick);
-  }
+  // the clay engine lives in clay.js (shared with the Order page); here it only needs to know when a view is open
+  window.clayBlocked = () => !!openView;
   makeClay();
   // ---- the line drawing in the middle of "Unconventional ceramic forms": odd vessels that turn into one another — a lumpy jar, a leaning bottle with ears, a vessel with a hole through it, a twisted tower
   (function morph() {
@@ -1932,15 +1310,15 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
     let best = 0, bd = Infinity;
     partnerTops.forEach((top, i) => { const dd = Math.abs(top + 38 - labY); if (dd < bd) { bd = dd; best = i; } });
     let caseNow = -1, caseLit = -1; if (y > pinY0) { let bc = 0, cd = Infinity; picTops.forEach((t, k) => { const dd = Math.abs(t + pics[k].offsetHeight / U / 2 - V / 2); if (dd < cd) { cd = dd; bc = k; } }); const nm = shownP[Math.min(bc, shownP.length - 1)], nr = nm.getBoundingClientRect(), nMid = (nr.top + nr.height / 2) / U, level = nMid > picTops[bc] - 160 && nMid < picTops[bc] + pics[bc].offsetHeight / U;   // the case and its client's name are level: the name is between the top and the bottom of the picture
-      const moved = clamp((y - (pinY0 + 100) - (shownP.length - 1) * 40) / 260) > .6;   // not before the names have made room on the right: the caption would run into them
+      const moved = clamp((yS - (pinY0 + 100) - (shownP.length - 1) * 40) / 340) > .6;   // not before the names have made room on the right: the caption would run into them
       best = level && moved ? partners.indexOf(nm) : -1; caseNow = bc; if (best >= 0) caseLit = bc; }
     capTl.forEach((tl, k) => { if (k === caseLit && !tl._on) { tl._on = true; tl.timeScale(1).play(); } else if (tl._on && k !== caseLit) { const r = shownP[Math.min(k, shownP.length - 1)].getBoundingClientRect(); if (picTops[k] > (r.top + r.height / 2) / U) { tl._on = false; tl.timeScale(2.2).reverse(); } } });   // scrolled back so that the picture is below its name again: the caption goes   // a case's caption comes in at the same moment as its client's name turns black   // on the right all the names are grey, only the case we are in is black   // in the cases the name of the case on the screen is the one in black
     partners.forEach((el, i) => el.classList.toggle('on', i === best));
     { // as we come to the cases (a little after the names have stopped) they move over to the right edge with the scroll itself, the first one pulling the others like a train; on the right they are a size smaller, like an h3 (70%), and the rows close up round the middle of the screen; scrolling back takes them back the same way
-      const S0 = pinY0 + 100, n = shownP.length;
-      plab.style.opacity = (1 - clamp((y - S0) / 120)).toFixed(3);    // the clients' words go as the names move over
+      const S0 = pinY0 + 100, n = shownP.length, yN = yS;   // with a little inertia (the same as the cards): the names follow the scroll a step behind and settle softly
+      plab.style.opacity = (1 - clamp((yN - S0) / 120)).toFixed(3);    // the clients' words go as the names move over
       shownP.forEach((el, k) => {
-        const e = ease(clamp((y - S0 - k * 40) / 260));
+        const e = ease(clamp((yN - S0 - k * 40) / 340));
         if (e === 0 || el._w == null) { const L = el.firstElementChild, a = L.firstElementChild.getBoundingClientRect(), b = L.lastElementChild.getBoundingClientRect(); if (e === 0) { el._x0 = a.left / U; el._w = (b.right - a.left) / U; } }   // measured while it stands in its own place
         const T = PIN_TOP - (n - 1 - k) * 117, D = V / 2 - ((n - 1) * 82 + 69) / 2 + k * 82, fs = 108 + (75.6 - 108) * e;
         if (e === 0) { if (el._shifted) { el._shifted = false; gsap.set(el, { x: 0, y: 0 }); el.style.fontSize = ''; } return; }
@@ -1966,7 +1344,8 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
   let looping = false;
   function restart() {
     scrollTo(0, 0); yS = 0; mv = 0; rA = 1; prevY = 0;   // no inertia carried over from the bottom of the page: the cards are at the top at once
-    document.querySelectorAll('.ttl .h1 .ch, .nav a').forEach(el => { el.style.animation = 'none'; el.style.transform = 'none'; el.style.opacity = '1'; });   // already pulled up by the steps
+    document.querySelectorAll('.ttl .h1 .ch').forEach(el => { el.style.animation = 'none'; el.style.transform = 'none'; el.style.opacity = '1'; });   // already pulled up by the steps
+    document.querySelectorAll('.hero > .nav a').forEach(a => { a.style.animation = 'none'; a.style.transform = ''; a.style.opacity = ''; void a.offsetWidth; a.style.animation = ''; });   // the menu comes in again in its own place, word by word, as when the page loads
     navCur.fill(0); navTarget = 0; navLinks.forEach(a => { a.style.translate = ''; });   // the menu starts again from its own place
     t0 = performance.now(); introDone = false;
     tick();                                          // lay everything out for scroll 0 right now, so the swap with the copies shows no gap
@@ -1979,19 +1358,16 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scroll
     const rise = endBars.map(b => b.getBoundingClientRect().top - 20 * U), t1 = performance.now(), dur = DUR + 100, gap = 70;
     const ttl = document.createElement('div'); ttl.className = 't h1 endttl'; ttl.innerHTML = h1.innerHTML;
     ttl.querySelectorAll('.ch').forEach(c => { c.style.animation = 'none'; c.style.transform = 'none'; });
-    const nv = document.createElement('nav'); nv.className = 'nav endnav'; nv.innerHTML = nav.innerHTML; nv.style.left = nav.style.left;
-    nv.querySelectorAll('a').forEach(a => { a.style.animation = 'none'; a.style.transform = 'none'; a.style.opacity = '1'; });
-    document.body.append(ttl, nv);
-    nv.style.top = innerHeight * MIDF + 12 * U + 'px';
+    document.body.append(ttl);
     const below = 270 * U, tt = (now, d0, d) => 1 - ease(clamp((now - t1 - d0) / d));       // 1 = still below the screen, 0 = in place
     (function f(now) {
       let busy = false;
       endBars.forEach((b, i) => { const k = clamp((now - t1 - i * gap) / dur); if (k < 1) busy = true; const nat = b.getBoundingClientRect().top - (b._ty || 0); b._ty = -ease(k) * (nat - 20 * U); b.style.transform = `translateY(${b._ty}px)`; });   // measured every frame: the scrollbar goes away and the layout may rescale a little while the steps climb
-      const a = tt(now, 250, 800), b2 = tt(now, 350, 700);
-      ttl.style.transform = `translateY(${a * below}px)`; nv.style.transform = `translateY(${b2 * below}px)`;
+      const a = tt(now, 250, 800), b2 = 0;
+      ttl.style.transform = `translateY(${a * below}px)`;
       if (a > 0 || b2 > 0) busy = true;
       if (busy) requestAnimationFrame(f);
-      else { document.documentElement.style.overflow = ''; done(); gsap.set(under, { clearProps: 'opacity' }); ttl.remove(); nv.remove(); endBars.forEach(b => { b.style.transform = ''; b._ty = 0; }); }
+      else { document.documentElement.style.overflow = ''; done(); gsap.set(under, { clearProps: 'opacity' }); ttl.remove(); endBars.forEach(b => { b.style.transform = ''; b._ty = 0; }); }
     })(t1);
   }
   addEventListener('scroll', () => {
