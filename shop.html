@@ -25,7 +25,7 @@
   /* the works, one column of cut-outs drifting down through the text */
   .it { position: absolute; left: 0; top: 0; background: center / contain no-repeat; will-change: transform, opacity; transition: opacity .45s var(--ease); }
   .it.off { opacity: 0 !important; }
-  .it.sil { filter: brightness(0); opacity: .9; }   /* in the trail: black silhouettes */ .it.drop { transition: none; z-index: 7; }
+  .it.sil { filter: brightness(0); opacity: .9; }   /* in the trail: black silhouettes */ .it.drop { transition: none; z-index: 5; }   /* under the title: its words stay on top as the shelves turn */
   .it .nm { position: absolute; left: 50%; top: calc(100% + 10 * var(--u)); translate: -50% 0; white-space: nowrap; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; opacity: 0; transition: opacity .25s var(--ease); pointer-events: none; }
   .it:hover .nm { opacity: 1; }   /* the name of the work under it, while it is pointed at */
   /* the middle of the board: ordering and working together; the works pass right through it and the text flows round them (laid out line by line with pretext, as the table on the main page) */
@@ -143,14 +143,18 @@
   its.forEach(it => { it.x = mouse.x; it.y = mouse.y; it.el.classList.add('sil'); });
   addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; if (!mouse.seen) { mouse.seen = true; mouse.t = performance.now(); its.forEach(it => { it.x = e.clientX; it.y = e.clientY; }); } }, { passive: true });
   // a free place on one of the title's shelves (its ruled lines): not on a word, not on a work already standing there
+  // the shelves are cylinders: the wheel turns them sideways, round and round; each turns its own way and at its own speed
+  const shelfOff = [0, 0, 0], shelfTo = [0, 0, 0], SH_DIR = [1, -.8, .6], wrapX = (x, off) => { const W = 1360 * U, L0 = 20 * U; return L0 + ((((x - L0 + off) % W) + W) % W); };
+  addEventListener('wheel', e => { if (!falling.some(f => f.tx != null)) return; e.preventDefault(); const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY; shelfTo.forEach((v, i) => { shelfTo[i] += d * SH_DIR[i]; }); if (typeof soundNudge === 'function') soundNudge(Math.min(1, Math.abs(d) / 120)); }, { passive: false });
+  // a free place on one of the title's shelves (its ruled lines): not on a word, not on a work already standing there
   function shelfSpot() {
     const bands = [...otl.querySelectorAll('.hl')].map(h => { const r = h.getBoundingClientRect(), w = h.querySelector('.hw').getBoundingClientRect(); return { top: r.top, bot: r.bottom, word: [w.left - 24 * U, w.right + 24 * U] }; });
     const ts = 66 * U, half = ts / 2;
     for (let tries = 0; tries < 80; tries++) {
-      const b = bands[(Math.random() * bands.length) | 0], x = 20 * U + half + Math.random() * (1360 * U - ts);
+      const bi = (Math.random() * bands.length) | 0, b = bands[bi], x = 20 * U + half + Math.random() * (1360 * U - ts);
       if (x + half > b.word[0] && x - half < b.word[1]) continue;
-      if (falling.some(f => f.tx != null && Math.abs(f.ty - (b.bot - half)) < 2 && Math.abs(f.tx - x) < ts + 14 * U)) continue;
-      return { tx: x, ty: b.bot - half - 1, ts, rr: (Math.random() - .5) * 6 };
+      if (falling.some(f => f.tx != null && f.band === bi && Math.abs((f.dx ?? f.tx) - x) < ts + 14 * U)) continue;
+      return { tx: wrapX(x, -shelfOff[bi]), band: bi, ty: b.bot - half - 1, ts, rr: (Math.random() - .5) * 6 };   // where it will stand when the shelf is back at rest
     }
     return {};
   }
@@ -168,17 +172,19 @@
       it.el.style.width = it.el.style.height = S + 'px'; it.el.style.transform = `translate(${(it.x - S / 2).toFixed(1)}px,${(it.y - S / 2).toFixed(1)}px) rotate(${rot.toFixed(2)}deg) scale(${e.toFixed(3)})`; it.el.style.opacity = e > 0 ? 1 : 0;
       it.box = e > .02 ? { cx: it.x, cy: it.y, S: S * e } : null;   // the trail and the works on the shelves are the same size
     });
+    shelfOff.forEach((v, i) => { shelfOff[i] += (shelfTo[i] - v) * .08; });   // the shelves follow the wheel with a little inertia
     for (let i = falling.length - 1; i >= 0; i--) { const f = falling[i];
-      if (f.tx != null) {   // to its shelf: an arc over, shrinking to the height of a band, a small bounce as it lands, and there it stays
+      if (f.tx != null) {   // to its shelf: an arc over, shrinking to the height of a band, a small bounce as it lands, and there it stays, going round with its shelf
         const k = Math.min(1, (now - f.t0) / 750), e = 1 - Math.pow(1 - k, 3), land = Math.max(0, (now - f.t0 - 750) / 450), bob = land < 1 ? Math.sin(land * Math.PI * 2) * (1 - land) * 6 * U : 0;
-        f.x = f.x0 + (f.tx - f.x0) * e; f.y = f.y0 + (f.ty - f.y0) * e - Math.sin(k * Math.PI) * 90 * U - bob; f.sz = S + (f.ts - S) * e; f.r = (1 - e) * f.vr * 18 + f.rr * e;
+        const dx = wrapX(f.tx, shelfOff[f.band]); f.dx = dx; const th = (dx - innerWidth / 2) / (680 * U) * Math.PI / 2, cyl = Math.max(0, Math.cos(th));   // where it is on the turning shelf, and how far round the drum
+        f.x = f.x0 + (dx - f.x0) * e; f.y = f.y0 + (f.ty - f.y0) * e - Math.sin(k * Math.PI) * 90 * U - bob; f.sz = S + (f.ts - S) * e; f.r = (1 - e) * f.vr * 18 + f.rr * e; f.th = th * e; f.cyl = 1 - e + cyl * e;
         if (k >= 1 && !f.placed) { f.placed = true; if (typeof placeSound === 'function') placeSound(); }   // set down: a soft knock
         if (k >= 1) {   // standing on its shelf: a silhouette passing close shoves it aside, and it springs back to its place
-          let px = 0, py = 0; its.forEach(it => { if (!it.box) return; const dx = f.tx - it.x, dy = f.ty - it.y, d = Math.hypot(dx, dy) || 1, reach = it.box.S * .5 + f.ts * .5; if (d < reach) { const m = (reach - d); px += dx / d * m; py += dy / d * m * .5; } });
+          let px = 0, py = 0; its.forEach(it => { if (!it.box) return; const ddx = dx - it.x, dy = f.ty - it.y, d = Math.hypot(ddx, dy) || 1, reach = it.box.S * .5 + f.ts * .5; if (d < reach) { const m = (reach - d); px += ddx / d * m; py += dy / d * m * .5; } });
           f.ox = (f.ox || 0) + (px - (f.ox || 0)) * .18; f.oy = (f.oy || 0) + (py - (f.oy || 0)) * .18; f.x += f.ox; f.y += Math.min(0, f.oy); f.r += f.ox * .25;
         }
       } else { f.vy += .55; f.x += f.vx; f.y += f.vy; f.r += f.vr; f.sz = S; }   // no room left on the shelves: it simply falls away
-      f.el.style.width = f.el.style.height = f.sz + 'px'; f.el.style.transform = `translate(${(f.x - f.sz / 2).toFixed(1)}px,${(f.y - f.sz / 2).toFixed(1)}px) rotate(${f.r.toFixed(1)}deg)`; f.el.style.opacity = 1; f.box = f.tx != null ? null : { cx: f.x, cy: f.y, S: f.sz };
+      f.el.style.width = f.el.style.height = f.sz + 'px'; f.el.style.transform = `translate(${(f.x - f.sz / 2).toFixed(1)}px,${(f.y - f.sz / 2).toFixed(1)}px) perspective(${(500 * U).toFixed(0)}px) rotateY(${(f.th || 0).toFixed(3)}rad) rotate(${f.r.toFixed(1)}deg)`; f.el.style.opacity = f.tx != null ? Math.min(1, (f.cyl ?? 1) * 1.6).toFixed(3) : 1;   // round the drum it turns away and fades at the edges f.box = f.tx != null ? null : { cx: f.x, cy: f.y, S: f.sz };
       if (f.tx == null && f.y - S > innerHeight) { f.el.remove(); falling.splice(i, 1); } }
     flow();
     requestAnimationFrame(loop);
