@@ -73,13 +73,13 @@
   .yr .dstrip { display: block; will-change: transform; }
   .yr .dd { display: block; height: 1.15em; line-height: 1.15em; text-align: center; }   /* each digit is a reel 0-9 (three turns of it, so it can run on past 9 to 0) */
   .dot { transition: translate .3s var(--ease); }
-  .dot.dot-more { transition: none; }
+  .dot.dot-more { transition: translate .26s cubic-bezier(.34, 1.56, .64, 1); }   /* out with a snap */
   .dot.apart-up { translate: 0 calc(-14 * var(--u)); } .dot.apart-down { translate: 0 calc(14 * var(--u)); }   /* the two squares step away from each other and come back */
   .bigrow .cnt { width: calc(40 * var(--u)); text-align: left; left: 100%; margin-left: calc(6 * var(--u)); top: calc(18 * var(--u)); }   /* counter sits at the top right of the word, as in the design */
   .morph { overflow: visible; pointer-events: none; z-index: 2; mix-blend-mode: difference; transform: translate(calc(30 * var(--u)), calc(-24 * var(--u))) rotate(7deg); filter: url(#pencil); }   /* leaning a little to the right, drawn as if by an unsteady pencil */   /* over the words: where the line crosses a letter, it turns white */
   .morph path { fill: none; stroke: #fff; stroke-width: 1.6; stroke-linejoin: round; vector-effect: non-scaling-stroke; }   /* a vessel drawn in one thin line, in the middle of the words; it turns from one form into the next */
   .hl { position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); border-top: 1px solid var(--rule); height: 0; }
-  .dot { opacity: .1; position: absolute; width: calc(10 * var(--u)); height: calc(10 * var(--u)); background: #000; }
+  .dot { opacity: 1; position: absolute; width: calc(10 * var(--u)); height: calc(10 * var(--u)); background: #c4c4c4; }   /* solid grey, no transparency */
   .bar { background: #f2f2f2; will-change: transform; }   /* its own layer while it climbs: Safari left thin trails of it behind otherwise */   /* the same strip as the cards at the very top */
   /* the ruled line through the middle of the first screen: the first line of the table. The cards gather onto it, and when they have landed the whole table opens from it */
   .midstrip { position: fixed; left: calc(20 * var(--u)); right: calc(20 * var(--u)); top: 44vh; height: 0; border-top: 1px solid var(--rule); z-index: 4; pointer-events: none; opacity: 0; }
@@ -1246,11 +1246,12 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     if (storyWordTl && !openView) { const on = storyP[0].getBoundingClientRect().top / U < V * 0.95; if (on !== !!storyWordTl._on) { storyWordTl._on = on; on ? storyWordTl.timeScale(1).play() : storyWordTl.timeScale(2.2).reverse(); } }
     // Story: the word, its year and the two squares stay on the screen while the paragraphs (all in the 4th column) scroll past the middle
     { const restTop = one('.rest').offsetTop / U, tg = storyPinned[0], t0 = el => el._t0 ?? (el._t0 = parseFloat(el.style.top.match(/calc\(([\d.]+)/)[1]));
+      [dot0, ...dotsMore].forEach(d => { d._t0 = t0(tg) + tg.offsetHeight / U / 2 - 5; });   // the squares stand on the middle line of the word
       const ys = restTop + t0(tg) + tg.offsetHeight / U / 2 - V / 2, ye = Math.max(ys, restTop + storyMid(storyP.length - 1) - V / 2);   // held from when the word's middle reaches the middle of the screen until the last item does
       storyPinned.forEach(el => { const held = y >= ys && y <= ye, top = held ? t0(el) + restTop - ys : t0(el) + (y > ye ? ye - ys : 0);
         el.style.transform = ''; el.style.position = held ? 'fixed' : 'absolute'; el.style.top = top * U + 'px'; });   // fixed to the screen while held, so it never shakes with the scroll
-      const out = ease(clamp((y - (ys - V * 0.4)) / (V * 0.4)));   // the two squares come out as the word comes up to the middle
-      dotsMore.forEach(d => { d.style.translate = `${(+d.dataset.k * 20 * out * U).toFixed(2)}px 0`; }); }
+      const out = y > ys - V * 0.12;   // close to the middle the one square snaps into three, one above and one below it
+      dotsMore.forEach(d => { d.style.translate = out ? `0 ${((+d.dataset.k === 1 ? -1 : 1) * 20 * U).toFixed(2)}px` : '0 0'; }); }
     // About / Cases / Shop: they come in on the centre and, once the list has reached the middle of the screen, take their places on their own
     const listMid = bigrows[0].getBoundingClientRect().top / U + 122;
     const slideP = ease(clamp((V * 1.05 - listMid) / (V * 0.55)));            // the words slide out to their places as you scroll: from near the middle when the list comes in, in place by the time it is just above the middle

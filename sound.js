@@ -10,14 +10,29 @@ function startSound() {
   for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2); }
   rv.buffer = ir; const bus = C.createGain(); bus.connect(dry); bus.connect(rv); rv.connect(wet); dry.connect(sLp); wet.connect(sLp); sLp.connect(sMaster); sMaster.connect(C.destination);
   // minimal and ambient: a barely there bed (F and C, held), and over it a soft mallet circling the notes of a chord, four at a time, while the chord turns slowly (F, A minor, C, D minor); quiet and steady, like a pattern repeated by hand
-  [[87.31, .018], [130.81, .012], [174.61, .007]].forEach(([f, g]) => { const o = C.createOscillator(), og = C.createGain(); o.type = 'sine'; o.frequency.value = f; og.gain.value = g; o.connect(og); og.connect(bus); o.start(); });
-  const hz0 = m => 440 * Math.pow(2, (m - 69) / 12), CH = [[65, 69, 72, 76], [64, 69, 72, 76], [64, 67, 72, 76], [65, 69, 74, 77]], PAT = [0, 2, 1, 3, 2, 1];
-  let step = 0;
-  (function mallet() { const inside = false, dur = 1.6;   // inside a view the same music plays on, only filtered; slow and sparse
-    if (step % 4 !== 3) { const ch = CH[Math.floor(step / 12) % CH.length], m = ch[PAT[step % PAT.length]] - (inside ? 12 : 0), t = C.currentTime, accent = step % 6 === 0 ? 1 : .7;
-      [[1, .03 * accent], [4, .004 * accent], [2.76, .003 * accent]].forEach(([h, g]) => { const o = C.createOscillator(), e = C.createGain(); o.type = 'sine'; o.frequency.value = hz0(m) * h;
-        e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(g, t + .008); e.gain.exponentialRampToValueAtTime(.0001, t + (h === 1 ? 1.6 : .4)); o.connect(e); e.connect(bus); o.start(t); o.stop(t + 1.7); }); }   // a struck tone: quick attack, a short bright overtone, a longer soft body
-    step++; setTimeout(mallet, dur * 1000); })();
+  // "soft air", our own: slow airy chords that breathe (Fmaj7, Am7, Cmaj7, Dm9, eight seconds each), and over them a felt piano playing short phrases of one motif, never quite the same twice
+  const hz0 = m => 440 * Math.pow(2, (m - 69) / 12);
+  const CH = [[53, 64, 69, 72, 76], [57, 64, 67, 72, 74], [48, 64, 67, 71, 76], [50, 65, 69, 72, 76]], BAR = 8;   // F maj7, A m7, C maj7, D m9 (midi), from the bass up
+  const padLp = C.createBiquadFilter(); padLp.type = 'lowpass'; padLp.frequency.value = 1100; padLp.Q.value = .3; padLp.connect(bus);
+  { const l = C.createOscillator(), lg = C.createGain(); l.frequency.value = .05; lg.gain.value = 350; l.connect(lg); lg.connect(padLp.frequency); l.start(); }   // the air in the pad opens and closes very slowly
+  const MOTIF = [0, 2, 1, 3, 2];   // steps through the notes of the chord: the shape the phrases keep coming back to
+  let bar = 0;
+  (function chord() { const t = C.currentTime + .05, ch = CH[bar % CH.length];
+    ch.forEach((m, k) => [-6, 6].forEach(cents => { const o = C.createOscillator(), e = C.createGain(); o.type = k === 0 ? 'sine' : 'triangle'; o.frequency.value = hz0(m); o.detune.value = cents + (Math.random() - .5) * 4;   // two voices a little apart: the shimmer of air
+      const g = (k === 0 ? .022 : .009) / (1 + k * .15); e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(g, t + 3); e.gain.setValueAtTime(g, t + BAR - 1); e.gain.linearRampToValueAtTime(0, t + BAR + 3);   // slow in, and it lets go while the next one comes
+      o.connect(e); e.connect(padLp); o.start(t); o.stop(t + BAR + 3.2); }));
+    phrase(t + 1.2 + Math.random(), ch); bar++; setTimeout(chord, BAR * 1000); })();
+  function phrase(t0, ch) {
+    if (Math.random() < .25) return;   // now and then a bar with no tune at all, only the air
+    const scale = ch.slice(1).map(m => m + 12), n = 3 + Math.floor(Math.random() * 3), shift = Math.floor(Math.random() * 2); let t = t0;
+    for (let i = 0; i < n; i++) { let m = scale[(MOTIF[i % MOTIF.length] + shift) % scale.length]; if (Math.random() < .2) m += 2;   // a passing tone now and then
+      key(t, hz0(m), i === 0 ? 1 : .75); t += [.55, .8, 1.1, .7][Math.floor(Math.random() * 4)]; }
+  }
+  function key(t, f, accent) {   // a felt piano: soft attack, a warm body with a little second harmonic, a long fade
+    [[1, .05], [2, .012], [3.01, .004]].forEach(([h, g]) => { const o = C.createOscillator(), e = C.createGain(); o.type = 'sine'; o.frequency.value = f * h; const gg = g * accent;
+      e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(gg, t + .012); e.gain.exponentialRampToValueAtTime(gg * .35, t + .4); e.gain.exponentialRampToValueAtTime(.0001, t + (h === 1 ? 3.2 : 1.2));
+      o.connect(e); e.connect(bus); o.start(t); o.stop(t + 3.3); });
+  }
   const hzm = m => 440 * Math.pow(2, (m - 69) / 12);
   { const l = C.createOscillator(); sWob = C.createGain(); sWob.gain.value = 0; l.frequency.value = .07; l.connect(sWob); sWob.connect(sLp.frequency); l.start(); }   // inside a view the muffled room drifts very slowly
   // inside a view the chord moves to F major with its seventh and ninth, softer and closer: the same bright museum, one room further in
