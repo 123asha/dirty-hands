@@ -139,7 +139,7 @@
   addEventListener('load', () => { mid.style.top = `calc(50% - ${(mid.offsetHeight / 2).toFixed(0)}px)`; });
 
   // the works follow the hand as a trail of silhouettes, each a step behind the one before; a click lets the work at the head of the trail fall, in its own colours, and the next one takes its place
-  const SZ = 110, t0 = performance.now(), mouse = { x: innerWidth / 2, y: innerHeight * .75, seen: false }, falling = [];
+  const SZ = 66, t0 = performance.now(), mouse = { x: innerWidth / 2, y: innerHeight * .75, seen: false }, falling = [];
   its.forEach(it => { it.x = mouse.x; it.y = mouse.y; it.el.classList.add('sil'); });
   addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; if (!mouse.seen) { mouse.seen = true; mouse.t = performance.now(); its.forEach(it => { it.x = e.clientX; it.y = e.clientY; }); } }, { passive: true });
   // a free place on one of the title's shelves (its ruled lines): not on a word, not on a work already standing there
@@ -165,13 +165,17 @@
       const lead = k ? its[k - 1] : mouse, f = k ? .2 : .25; it.x += (lead.x - it.x) * f; it.y += (lead.y - it.y) * f;   // each one follows the one in front
       const g = mouse.seen ? Math.min(1, Math.max(0, (now - mouse.t - k * 120) / 500)) : 0, e = 1 - Math.pow(1 - g, 3);   // they come in one after another once the hand first moves
       const rot = (lead.x - it.x) * .15;
-      it.el.style.width = it.el.style.height = S + 'px'; it.el.style.transform = `translate(${(it.x - S / 2).toFixed(1)}px,${(it.y - S / 2).toFixed(1)}px) rotate(${rot.toFixed(2)}deg) scale(${(e * (1 - k * .06)).toFixed(3)})`; it.el.style.opacity = e > 0 ? 1 : 0;
-      it.box = e > .02 ? { cx: it.x, cy: it.y, S: S * e * (1 - k * .06) } : null;
+      it.el.style.width = it.el.style.height = S + 'px'; it.el.style.transform = `translate(${(it.x - S / 2).toFixed(1)}px,${(it.y - S / 2).toFixed(1)}px) rotate(${rot.toFixed(2)}deg) scale(${e.toFixed(3)})`; it.el.style.opacity = e > 0 ? 1 : 0;
+      it.box = e > .02 ? { cx: it.x, cy: it.y, S: S * e } : null;   // the trail and the works on the shelves are the same size
     });
     for (let i = falling.length - 1; i >= 0; i--) { const f = falling[i];
       if (f.tx != null) {   // to its shelf: an arc over, shrinking to the height of a band, a small bounce as it lands, and there it stays
         const k = Math.min(1, (now - f.t0) / 750), e = 1 - Math.pow(1 - k, 3), land = Math.max(0, (now - f.t0 - 750) / 450), bob = land < 1 ? Math.sin(land * Math.PI * 2) * (1 - land) * 6 * U : 0;
         f.x = f.x0 + (f.tx - f.x0) * e; f.y = f.y0 + (f.ty - f.y0) * e - Math.sin(k * Math.PI) * 90 * U - bob; f.sz = S + (f.ts - S) * e; f.r = (1 - e) * f.vr * 18 + f.rr * e;
+        if (k >= 1) {   // standing on its shelf: a silhouette passing close shoves it aside, and it springs back to its place
+          let px = 0, py = 0; its.forEach(it => { if (!it.box) return; const dx = f.tx - it.x, dy = f.ty - it.y, d = Math.hypot(dx, dy) || 1, reach = it.box.S * .5 + f.ts * .5; if (d < reach) { const m = (reach - d); px += dx / d * m; py += dy / d * m * .5; } });
+          f.ox = (f.ox || 0) + (px - (f.ox || 0)) * .18; f.oy = (f.oy || 0) + (py - (f.oy || 0)) * .18; f.x += f.ox; f.y += Math.min(0, f.oy); f.r += f.ox * .25;
+        }
       } else { f.vy += .55; f.x += f.vx; f.y += f.vy; f.r += f.vr; f.sz = S; }   // no room left on the shelves: it simply falls away
       f.el.style.width = f.el.style.height = f.sz + 'px'; f.el.style.transform = `translate(${(f.x - f.sz / 2).toFixed(1)}px,${(f.y - f.sz / 2).toFixed(1)}px) rotate(${f.r.toFixed(1)}deg)`; f.el.style.opacity = 1; f.box = f.tx != null ? null : { cx: f.x, cy: f.y, S: f.sz };
       if (f.tx == null && f.y - S > innerHeight) { f.el.remove(); falling.splice(i, 1); } }
