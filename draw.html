@@ -56,7 +56,7 @@
 <canvas class="sheet" aria-label="The sheet you draw on"></canvas>
 <i class="tip" aria-hidden="true"></i>
 <div class="intro">
-  <h1>Dirty<br>fingers</h1>
+  <h1>Dirty<br>hands</h1>
   <p>Draw in clay with your index finger, in the air in front of the camera. A moustache, a crown, a word: it stays on the screen, over the picture.</p>
   <p>Point with one finger to draw; open your hand to lift it. You can draw with the mouse too.</p>
   <button type="button" class="btn" id="go">Turn on the camera</button>
@@ -74,9 +74,9 @@
   const fresh = () => { c = makeClay({ cv: sheet, w: Math.round(innerWidth * S), h: Math.round(innerHeight * S) }); need = true; };   // a clean sheet, made at half size and stretched (soft clay loses nothing)
   fresh();
   (function paint() { if (need && c) { c.render(); need = false; } requestAnimationFrame(paint); })();
-  // one stroke at a time: the finger comes down (a print), then smears along wherever it goes, loaded again now and then so the line does not run dry
+  // one stroke at a time, as wide as the marks a hand leaves on the site: the finger comes down (a print), then smears along wherever it goes, loaded again now and then so the line does not run dry
   const pen = { f: null, x: 0, y: 0 };
-  const down = (x, y) => { pen.f = c.finger(x * S, y * S, { size: (.75 + Math.random() * .1) * S * Math.min(1.4, Math.max(.8, innerWidth / 1400)), load: 1.8, ang: (Math.random() - .5) * .5 }); c.print(pen.f); pen.x = x; pen.y = y; need = true; };
+  const down = (x, y) => { pen.f = c.finger(x * S, y * S, { size: (.92 + Math.random() * .2) * S, load: 1.8, ang: (Math.random() - .5) * .5 }); c.print(pen.f); pen.x = x; pen.y = y; need = true; };
   const move = (x, y) => { if (!pen.f) return; const dx = x - pen.x, dy = y - pen.y, d = Math.hypot(dx, dy); if (d < 1.5) return;
     pen.f.x = pen.x * S; pen.f.y = pen.y * S; pen.f = c.autoSmear(pen.f, dx / d, dy / d, Math.max(2, d * S), .996); if (pen.f.load < .9) pen.f.load = .9 + Math.random() * .3; pen.x = x; pen.y = y; need = true; };
   const up = () => { pen.f = null; };

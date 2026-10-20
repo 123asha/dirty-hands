@@ -27,7 +27,7 @@
   .s3 { z-index: 3; }
   .gray .grain { display: none !important;  position: absolute; inset: 0; z-index: 1; pointer-events: none; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  1 1 1 0 -1.2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E"); opacity: .09; mix-blend-mode: multiply; }   /* a very light grain over the photo of Karen and Lisa, under the cards */
   .gray { position: relative; margin: 0; height: calc(1080 * var(--u)); overflow: hidden; }   /* a block that scrolls with the page, with no grey fill of its own: first the photo of Karen and Lisa (it moves slower, parallax), then their two cards come up over it one after the other */
-  .rest { height: calc(5527 * var(--u)); }   /* (260 more at the end: room for the eye over the credit) */
+  .rest { height: calc(5587 * var(--u)); }   /* (320 more at the end: room for the eye over the credit) */
   /* vertical spacing, one rule for the page below (design px, from the visible bottom of one thing to the visible top of the next):
      20 inside a block (a number to its picture), 40 from a text to its link, 120 between the items of one section (case to case), 200 between sections */
   .t { font-weight: 400; white-space: nowrap; }
@@ -41,7 +41,7 @@
   .bigrow .name2 { margin-left: -.026em; }   /* the big words stand with their first letter exactly on the column line (the font keeps a little room before each letter) */
   .card2 .m { overflow: visible; }   /* the cards' lines and letters fade up whole, never cut by a mask */
   .rest > a.credit { translate: -50% 0; }
-  .rest > .eye { position: absolute; left: 50%; translate: -50% 0; width: calc(460 * var(--u)); height: calc(240 * var(--u)); display: block; cursor: pointer; }   /* an eye drawn in clay over the credit: it opens the page where you draw with your finger */
+  .rest > .eye { position: absolute; left: 50%; translate: -50% 0; width: calc(620 * var(--u)); height: calc(320 * var(--u)); display: block; cursor: pointer; }   /* an eye drawn in clay over the credit: it opens the page where you draw with your finger */
   .rest > .eye canvas { width: 100%; height: 100%; display: block; }   /* centred from the stylesheet: the motion clears inline translate, which used to throw it off centre */
   .credit .sfav { display: inline-block; height: .83em; width: auto; vertical-align: -.07em; }   /* the Skip Design mark, a couple of pixels bigger than the heart */
   .rest > .mrule { display: none; }   /* Media has no ruled lines now */
@@ -354,9 +354,9 @@
   <a class="t18 more" style="display:none;left:calc(710 * var(--u));top:calc(5111 * var(--u));" href="#story">More →</a>
   <div class="dot" style="left:calc(613 * var(--u));top:calc(4519.5 * var(--u));"></div>
   <div class="dot" style="display:none;left:calc(613 * var(--u));top:calc(4594.5 * var(--u));"></div>
-  <a class="eye" href="draw.html" aria-label="Draw with your finger" style="top:calc(5069 * var(--u) + 100vh * 5 / 24);"><canvas></canvas></a>
-  <a class="t18 credit" style="left:50%;top:calc(5329 * var(--u) + 100vh * 5 / 24);white-space:nowrap;" href="https://skip.design" target="_blank" rel="noopener">Made by <img class="sfav" src="skip-fav.png" alt="" aria-hidden="true"> <span style="text-decoration:underline;text-underline-offset:.18em;text-decoration-thickness:1px">Skip Design</span></a>
-  <p class="t18 credit" style="left:0;top:calc(5348 * var(--u) + 100vh * 5 / 24);width:100%;text-align:center;">With love for Dirty Hands ♥</p>
+  <a class="eye" href="draw.html" aria-label="Draw with your finger" style="top:calc(5059 * var(--u) + 100vh * 5 / 24);"><canvas></canvas></a>
+  <a class="t18 credit" style="left:50%;top:calc(5389 * var(--u) + 100vh * 5 / 24);white-space:nowrap;" href="https://skip.design" target="_blank" rel="noopener">Made by <img class="sfav" src="skip-fav.png" alt="" aria-hidden="true"> <span style="text-decoration:underline;text-underline-offset:.18em;text-decoration-thickness:1px">Skip Design</span></a>
+  <p class="t18 credit" style="left:0;top:calc(5408 * var(--u) + 100vh * 5 / 24);width:100%;text-align:center;">With love for Dirty Hands ♥</p>
   <div class="ph bar" style="--i:0;left:calc(20.00 * var(--u));top:calc(5207 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
   <div class="ph bar" style="--i:1;left:calc(250.17 * var(--u));top:calc(5207 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
   <div class="ph bar" style="--i:2;left:calc(480.34 * var(--u));top:calc(5207 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
@@ -1268,25 +1268,26 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   { const eye = one('.rest > .eye'), cv = eye && eye.querySelector('canvas');
     if (eye && cv && typeof makeClay === 'function' && 'IntersectionObserver' in window) {
       const io = new IntersectionObserver(es => { if (!es.some(e => e.isIntersecting)) return; io.disconnect();
-        const w = Math.round(eye.offsetWidth), h = Math.round(eye.offsetHeight), c = makeClay({ cv, w, h }), K = w / 460;   // drawn at css size; strokes as wide as a finger's
-        const R = (a, b) => a + Math.random() * (b - a), cx = w / 2, cy = h * .52, A = w * .3, B = h * .3;   // room all round for the strokes running on
-        const curve = (n, f) => Array.from({ length: n + 1 }, (_, k) => { const [x, y] = f(k / n); return [x + R(-1.5, 1.5) * K, y + R(-1.5, 1.5) * K]; });
+        const w = Math.round(eye.offsetWidth), h = Math.round(eye.offsetHeight), c = makeClay({ cv, w, h }), K = w / 620;   // drawn at css size
+        const R = (a, b) => a + Math.random() * (b - a), cx = w / 2 + R(-8, 8) * K, cy = h * .52, A = w * .29, B = h * .29;   // room all round for the strokes running on
+        const curve = (n, f) => { const p1 = R(0, 6.3), p2 = R(0, 6.3), wa = R(5, 11) * K, lean = R(-.08, .08);   // written quickly and badly: every stroke wobbles and leans its own way
+          return Array.from({ length: n + 1 }, (_, k) => { const t = k / n, [x, y] = f(t); return [x + Math.sin(t * 7 + p1) * wa * .6 + R(-2, 2) * K, y + Math.cos(t * 5 + p2) * wa + (x - cx) * lean + R(-2, 2) * K]; }); };
         const strokes = [
-          curve(28, t => [cx - A - 6 * K + (2 * A + 10 * K) * t, cy - B * Math.sin(Math.PI * t) - 4 * K * t]),                  // the upper lid
-          curve(30, t => [cx + A * 1.2 - A * 2.45 * t, cy - B * .12 + B * .95 * Math.sin(Math.PI * Math.min(1, t * 1.05))]),    // the lower lid, running on past the corner as a hand would
-          curve(30, t => { const a = -Math.PI / 2 + t * Math.PI * 2.2, r = B * .66; return [cx + 4 * K + Math.cos(a) * r, cy - B * .04 + Math.sin(a) * r * .96]; })   // the iris, round and round once
+          curve(28, t => [cx - A - R(10, 30) * K * (1 - t) + (2 * A + 30 * K) * t, cy - B * Math.sin(Math.PI * t) - 10 * K * t]),   // the upper lid, running on past the corner
+          curve(30, t => [cx + A * 1.25 - A * 2.6 * t, cy - B * .15 + B * 1.05 * Math.sin(Math.PI * Math.min(1, t * 1.06))]),   // the lower lid, from past one corner to past the other, as a hand would
+          curve(30, t => { const a = -Math.PI / 2 + R(-.3, .3) + t * Math.PI * R(1.85, 2.15), r = B * (.6 + .12 * t); return [cx + 6 * K + Math.cos(a) * r, cy - B * .02 + Math.sin(a) * r * .92]; })   // the iris: round once, not quite closing
         ];
         const lens = strokes.map(p => p.slice(1).reduce((a, q, k) => a + Math.hypot(q[0] - p[k][0], q[1] - p[k][1]), 0)), total = lens.reduce((a, b) => a + b, 0);
         let si = 0, pi = 0, f = null, done = 0;
         const advance = to => { while (si < strokes.length && done < to) { const P = strokes[si];
-          if (pi === 0) { f = c.finger(P[0][0], P[0][1], { size: R(.62, .72) * K, load: R(1.7, 2), ang: R(-.25, .25) }); c.print(f); pi = 1; }
+          if (pi === 0) { f = c.finger(P[0][0], P[0][1], { size: R(.92, 1.12) * K, load: R(1.6, 2), ang: R(-.5, .5) }); c.print(f); pi = 1; }   // a finger as wide as the marks a hand leaves all over the site
           const [ax, ay] = P[pi - 1], [bx, by] = P[pi], d = Math.hypot(bx - ax, by - ay);
           if (d > 0) { f.x = ax; f.y = ay; f = c.autoSmear(f, (bx - ax) / d, (by - ay) / d, Math.max(2, d), .99); }
           done += d; pi++; if (pi >= P.length) { si++; pi = 0; } } };
         const t1 = performance.now(), DUR = 1600;
         (function step(now) { const k = Math.min(1, (now - t1) / DUR), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
           advance(e * total + (k >= 1 ? 1 : 0));
-          if (k >= 1) c.print(c.finger(cx + 4 * K, cy - B * .04, { size: .5 * K, load: 2.6, ang: 0 }));   // and the pupil pressed in last
+          if (k >= 1) c.print(c.finger(cx + 6 * K + R(-6, 6) * K, cy - B * .02 + R(-5, 5) * K, { size: .75 * K, load: 2.6, ang: R(-.5, .5) }));   // and the pupil pressed in last
           c.render(); if (k < 1) requestAnimationFrame(step); })(t1);
       }, { threshold: .4 });
       io.observe(eye);
