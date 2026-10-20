@@ -7,7 +7,7 @@
 <style>
   @font-face { font-family: "CoFo Cinema"; src: url("CoFoCinema1909-Regular.otf") format("opentype"); font-weight: 400; font-display: swap; }
   @font-face { font-family: "CoFo Sans"; src: url("CoFoSans-Regular450.woff2") format("woff2"); font-weight: 400; font-display: swap; }
-  :root { --u: calc(100vw / 1400); --t18: min(18px, calc(18 * var(--u))); --ease: cubic-bezier(.2,.8,.2,1); }
+  :root { --u: calc(100vw / 1400); --t18: calc(18 * var(--u)); --l18: calc(18 * var(--u)); --ease: cubic-bezier(.2,.8,.2,1); }
   html, body { margin: 0; height: 100%; overflow: hidden; background: #fff; color: #000; }
   body { font-family: "CoFo Sans", -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: var(--t18); -webkit-font-smoothing: antialiased; user-select: none; }
   a { color: inherit; text-decoration: none; }
@@ -43,12 +43,12 @@
   .flow { position: relative; text-align: left; }
   .flow .rl { display: none; position: absolute; left: 0; right: 0; top: 0; height: 0; border-top: 1px solid #d9d9d9; pointer-events: none; }   /* ruled lines under the text, as in the table on the main page */
   .ln { position: absolute; left: 0; top: 0; white-space: pre; overflow: hidden; }
-  .flow .ln { font-size: var(--t18); line-height: min(19px, calc(19 * var(--u))); letter-spacing: -.01em; }
+  .flow .ln { font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; }
   .ln .in { display: inline-block; animation: rise .9s var(--ease) both; }   /* the lines come up from below as they first appear, as on the main page */
   @keyframes rise { from { transform: translateY(112%); } }
   .mail { animation: fade .8s var(--ease) 1.1s both; } @keyframes fade { from { opacity: 0; } }
   .mid h1 { margin: 0 0 calc(38 * var(--u)); font-family: "CoFo Cinema", "CoFo Sans", sans-serif; font-weight: 400; font-size: calc(72 * var(--u)); line-height: .91; letter-spacing: -.01em; text-transform: uppercase; }
-  .mid p { margin: 0 0 calc(19 * var(--u)); font-size: var(--t18); line-height: min(19px, calc(19 * var(--u))); letter-spacing: -.01em; }
+  .mid p { margin: 0 0 calc(18 * var(--u)); font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; }
   .mail { position: fixed; left: 50%; bottom: calc(20 * var(--u)); translate: -50% 0; z-index: 6; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
   .grid { position: fixed; inset: 0; z-index: 1000; pointer-events: none; display: grid; grid-template-columns: repeat(6, 1fr); column-gap: calc(20 * var(--u)); padding: 0 calc(20 * var(--u)); opacity: 0; }
   .grid.on { opacity: 1; }
@@ -82,7 +82,7 @@
 <script>{ const grid = document.querySelector('.grid'); try { if (sessionStorage.getItem('grid') === '1') grid.classList.add('on'); } catch (e) {}   // the grid stays on or off from page to page
   addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.code === 'KeyG') { e.preventDefault(); if (!e.repeat) { const on = grid.classList.toggle('on'); try { sessionStorage.setItem('grid', on ? '1' : '0'); } catch (er) {} } } }); }</script>
 <script src="clay.js?v=4"></script>
-<script src="sound.js?v=4"></script>
+<script src="sound.js?v=7"></script>
 <script>
 (() => {
   const CATS = ['Panels', 'Mirrors', 'Tables', 'Sculptures', 'Urbans', 'Vases'];
@@ -99,7 +99,7 @@
   ITEMS.forEach(([src]) => { const im = new Image(); im.onload = () => { const cv = document.createElement('canvas'); cv.width = cv.height = MR; const g = cv.getContext('2d'), k = Math.min(MR / im.naturalWidth, MR / im.naturalHeight), dw = im.naturalWidth * k, dh = im.naturalHeight * k; g.drawImage(im, (MR - dw) / 2, (MR - dh) / 2, dw, dh);
     const d = g.getImageData(0, 0, MR, MR).data, rows = []; for (let y = 0; y < MR; y++) { let a = -1, b = -1; for (let x = 0; x < MR; x++) if (d[(y * MR + x) * 4 + 3] > 40) { if (a < 0) a = x; b = x; } rows.push(a < 0 ? null : [a / MR, (b + 1) / MR]); } MASK[src] = rows; }; im.src = `photos/${src}.webp`; });
     // the text: pretext lays out every line in the room the works leave free on it, left to right, piece by piece
-  const otl = document.querySelector('.otl'), mid = document.querySelector('.mid'), fl = document.querySelector('.flow'), paras = [...fl.querySelectorAll('p')].map(p => p.textContent), LH = 19; let PT = null, preps = null, pool = [], rules = [], sig = '';
+  const otl = document.querySelector('.otl'), mid = document.querySelector('.mid'), fl = document.querySelector('.flow'), paras = [...fl.querySelectorAll('p')].map(p => p.textContent), LH = 18; let PT = null, preps = null, pool = [], rules = [], sig = '';
   import('https://esm.sh/@chenglou/pretext@1.0.0').then(m => document.fonts.ready.then(() => { PT = m; })).catch(() => {});
   const hws = [...document.querySelectorAll('.otl .hw')].map(el => ({ el, x: 0 }));
   function lay(pr, L, Rr, top, lh, obs, pad, rows, k0, center) {          // lay out one text into the room left free on each line, from line k0 of a block that starts at top; returns the next line
@@ -120,9 +120,9 @@
   }
   function flow() {
     if (!PT) return;
-    const f18 = Math.min(18, 18 * U);
+    const f18 = 18 * U;
     if (!preps || preps.f !== f18) { preps = paras.map(t => PT.prepareWithSegments(t, `${f18}px "CoFo Sans"`, { letterSpacing: -0.01 * f18 })); preps.f = f18; fl.querySelectorAll('p').forEach(p => p.remove()); }
-    const r = fl.getBoundingClientRect(), L = r.left, Rr = L + 440 * U, lh = Math.min(LH * U, LH), ht = mid.getBoundingClientRect().top;
+    const r = fl.getBoundingClientRect(), L = r.left, Rr = L + 440 * U, lh = LH * U, ht = mid.getBoundingClientRect().top;
     const obs = [...its, ...falling].filter(it => it.box && MASK[it.src] && it.box.cx + it.box.S / 2 > L && it.box.cx - it.box.S / 2 < Rr);
     otl.style.top = ht + 'px';
     hws.forEach(h => { const e = h.el, b = h.band ?? (h.band = [...otl.querySelectorAll('.hl')].indexOf(e.parentNode)), base = e.offsetLeft + e.offsetWidth / 2, dx = wrapX(base, shelfOff[b] || 0) - base, th = (base + dx - innerWidth / 2) / (680 * U) * Math.PI / 2;   // the title's words go round with their shelves (and are never pushed by the trail)
@@ -144,7 +144,7 @@
   addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; if (!mouse.seen) { mouse.seen = true; mouse.t = performance.now(); its.forEach(it => { it.x = e.clientX; it.y = e.clientY; }); } }, { passive: true });
   // a free place on one of the title's shelves (its ruled lines): not on a word, not on a work already standing there
   // the shelves are cylinders: the wheel turns them sideways, round and round; each turns its own way and at its own speed
-  function drumFade(c) { const o = Math.min(1, Math.max(0, c) * 1.15); return o * o * (3 - 2 * o); }   // round the drum things fade in and out over a long stretch, easing at both ends, so nothing pops in
+  function drumFade(c) { const o = Math.min(1, Math.max(0, c)); return o * o * (3 - 2 * o); }   // round the drum things fade in and out over a long stretch, easing at both ends, so nothing pops in
   const shelfOff = [0, 0, 0], shelfTo = [0, 0, 0], SH_DIR = [1, -.8, .6], wrapX = (x, off) => { const W = 1360 * U, L0 = 20 * U; return L0 + ((((x - L0 + off) % W) + W) % W); };
   addEventListener('wheel', e => { if (!falling.some(f => f.tx != null)) return; e.preventDefault(); const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY; shelfTo.forEach((v, i) => { shelfTo[i] += d * SH_DIR[i]; }); if (typeof soundNudge === 'function') soundNudge(Math.min(1, Math.abs(d) / 120)); }, { passive: false });
   // a free place on one of the title's shelves (its ruled lines): not on a word, not on a work already standing there
