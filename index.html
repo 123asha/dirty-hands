@@ -68,7 +68,7 @@
   .card2 .row { gap: 0 !important; }
   .card2 .row { align-items: flex-start; }   /* the number stands on the first line of its paragraph */
   .card2 .row .n { flex: none; width: calc(34 * var(--u)); line-height: var(--l18); }   /* the Lisa and Karen cards are one column wide: the text stands right by its number */
-  .card2 .row p { width: calc(231 * var(--u)); }   /* 20 of free space on the right of the text */
+  .card2 .row p { width: calc(176 * var(--u)); }   /* the text ends on the column line (210 = the number 34 + 176) */
   .n { width: calc(40 * var(--u)); opacity: .3; font-size: var(--t18); line-height: .91; flex: none; }
   .rules { pointer-events: none; }
   .rules i { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--rule); }
@@ -200,7 +200,7 @@
   .sv-in { position: absolute; top: calc(12 * var(--u)); width: calc(210 * var(--u)); text-align: left; }
   .sv-pin { position: absolute; top: 0; height: 100%; background: #eee center / cover no-repeat; }
   .sv-photo { position: absolute; left: 0; top: calc(-284 * var(--u)); width: 100%; height: calc(260 * var(--u)); background: #eee center / cover no-repeat; backface-visibility: hidden; }   /* the photographs are glued to the cylinder with the text */
-  .sv-dot { position: absolute; left: 0; top: calc(2 * var(--u)); width: calc(10 * var(--u)); height: calc(10 * var(--u)); background: #000; opacity: .35; display: block; }
+  .sv-dot { position: absolute; left: 0; top: calc(4.5 * var(--u)); width: calc(5 * var(--u)); height: calc(5 * var(--u)); background: #000; opacity: .35; display: block; }
   .sv-year { position: absolute; left: calc(20 * var(--u)); top: 0; font-size: var(--t18); line-height: 1.15; letter-spacing: -.01em; opacity: .4; }   /* the square, and the date beside it */
   .sv-out { position: absolute; left: 0; top: calc(32 * var(--u)); font-size: var(--t18); line-height: 1.15; letter-spacing: -.01em; }   /* the outlet under them, black */
   .sv-lead { position: absolute; left: calc(20 * var(--u)); top: calc(62 * var(--u)); width: calc(190 * var(--u)); }   /* the thesis stepped in, up to five lines */   /* the date, the outlet under it, then the thesis */
@@ -240,9 +240,7 @@
   html.case-open .hero > .nav, html.case-open .ct { opacity: 0 !important; pointer-events: none; }   /* in an open case the menu steps aside for Close */
   .cx { position: fixed; top: calc(20 * var(--u)); right: calc(20 * var(--u)); z-index: 403; display: inline-flex; gap: .35em; align-items: center; color: #fff; mix-blend-mode: difference; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; opacity: 0; translate: 0 .6em; pointer-events: none; transition: opacity .3s ease-out, translate .4s var(--ease); }
   html.case-open .cx { opacity: 1; translate: 0 0; pointer-events: auto; cursor: pointer !important; }   /* the case closes here, top right, where the menu was */
-  html.case-open .close-cursor { display: none; }
-  html.case-open.ov-open, html.case-open.ov-open * { cursor: auto !important; }
-  html.case-open.ov-open a, html.case-open.ov-open .cd-s, html.case-open.ov-open .cx { cursor: pointer !important; }
+  html.ov-open.ov-arrow .cd-s, html.ov-open.ov-arrow .cx, html.ov-open.ov-arrow .cx * { cursor: pointer !important; }   /* over the pictures the plain pointer; Close under it everywhere else */
   html.ov-open, html.ov-open * { cursor: none !important; }
   html.ov-open.ov-arrow, html.ov-open.ov-arrow * { cursor: default !important; }   /* over a case's pictures, where Close melts away, the plain arrow */
   html.on-story, html.on-story * { cursor: none !important; }
@@ -714,7 +712,10 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     flowSig = '';
     { let y0 = 196; texts.forEach((p, j) => { p.dataset.y = y0; p.dataset.c0 = y0 + lines[j].length * LH / 2; p.style.top = y0 * U + 'px'; if (nums[j]) nums[j].style.top = y0 * U + 'px'; y0 += (lines[j].length + 4) * LH; }); }   // c0: the middle of each paragraph in the plain layout, fixed, so the picture choice does not chase the flowing text
     alignShop();
-    $('.card2').forEach(c => { const rs = c.querySelectorAll('.row'); if (rs[1]) rs[1].style.top = (Math.round(rs[0].querySelector('p').offsetHeight / U / 18) + 2) * 18 * U + 'px'; });   // in Karen's and Lisa's cards two empty ruled lines between the paragraphs, however many lines the first one takes
+    $('.card2').forEach(c => { const rs = c.querySelectorAll('.row'); if (rs[1]) rs[1].style.top = (Math.round(rs[0].querySelector('p').offsetHeight / U / 18) + 2) * 18 * U + 'px';
+      const last = rs[rs.length - 1], end = 22 + (last.offsetTop + last.querySelector('p').offsetHeight) / U, dn = Math.max(0, Math.ceil((end + 18 - 256) / 18) * 18);   // the text one column wide may run longer: then the name, Co-founder and the card itself go down by whole ruled lines, so nothing ever sits on the text
+      const nm = c.querySelector('.t.name'), cf = c.querySelector('.cf'), rb = cf && cf.nextElementSibling;
+      if (nm) nm.style.top = `calc(${256 + dn} * var(--u))`; if (cf) cf.style.top = `calc(${339 + dn} * var(--u))`; if (rb && rb.classList.contains('rules')) rb.style.top = `calc(${339 + dn} * var(--u))`; c.style.height = `calc(${375 + dn} * var(--u))`; });   // in Karen's and Lisa's cards two empty ruled lines between the paragraphs, however many lines the first one takes
     bigrows.forEach(b => b.style.setProperty('--dx', (0.4 * (700 - (b.offsetLeft + b.offsetWidth / 2) / U)).toFixed(2)));   // every word starts 60% of the way to its place, so the words never sit on top of each other
     // the photo of Karen and Lisa, split between the two halves of the block so it reads as one picture: the whole photo across the full width, never cropped (both faces stay in)
     { const gr = one('.gray'), w = gr.offsetWidth, h = gr.offsetHeight + 320 * U, sc = w / 1680, iw = 1680 * sc, ih = 850 * sc, ox = 0, oy = (160 + 420) * U - ih / 2;   // its middle 700 down the block, so it is seen on its own before the cards come
@@ -971,7 +972,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const more = e.target.closest('a.more') || (!openView && !e.target.closest('a, nav, .nav, .ov') && inStory(e.clientY) ? e.target : null);
     if (more && !openView) { e.preventDefault(); moreCur.style.opacity = 0; openStory(); return; }
     if (e.target.closest('.cx')) { e.preventDefault(); closeView(); return; }   // an open case closes with its Close link
-    if (openView && !htmlEl.classList.contains('case-open') && e.target.closest('.ov') && !e.target.closest('a, .cd-pic, .cd-s, .cd-slider')) closeView();   // a link inside a view opens, it does not close the view; an open case closes only with Close
+    if (openView && e.target.closest('.ov') && !e.target.closest('a, .cd-pic, .cd-s, .cd-slider')) closeView();   // a click on any free place closes, as Close under the pointer says; on the pictures and links it does not
   });
 
   const CV = one('#caseView');
