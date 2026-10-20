@@ -51,7 +51,8 @@
   .mid h1 { margin: 0 0 calc(38 * var(--u)); font-family: "CoFo Cinema", "CoFo Sans", sans-serif; font-weight: 400; font-size: calc(72 * var(--u)); line-height: .91; letter-spacing: -.01em; text-transform: uppercase; }
   .flow p { text-indent: calc(40 * var(--u)); }
   .flow p { margin: 0 0 calc(19 * var(--u)); font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; }
-  .mail { position: fixed; left: 50%; bottom: calc(20 * var(--u)); translate: -50% 0; z-index: 6; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
+  .mail { position: fixed; left: 50%; bottom: calc(20 * var(--u)); translate: -50% 0; z-index: 6; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; padding-bottom: .12em; background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat; }
+  .mail:hover { animation: fade .8s var(--ease) 1.1s both, redraw .5s var(--ease); } @keyframes redraw { from { background-size: 0 1px; } }   /* the line is always there; pointed at, it draws in again from the left */
   .grid { position: fixed; inset: 0; z-index: 1000; pointer-events: none; display: grid; grid-template-columns: repeat(6, 1fr); column-gap: calc(20 * var(--u)); padding: 0 calc(20 * var(--u)); opacity: 0; }
   .grid.on { opacity: 1; }
   .grid i { background: rgba(255, 0, 80, .08); box-shadow: inset 1px 0 rgba(255, 0, 80, .35), inset -1px 0 rgba(255, 0, 80, .35); }   /* the six columns, as on the main page: Cmd/Ctrl+G */
@@ -64,12 +65,12 @@
 <body>
 <div class="top">
   <button type="button" class="snd" aria-pressed="false" aria-label="Sound"><svg viewBox="0 0 24 10" aria-hidden="true"><path d="M0 5H24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span>Sound</span></button>
-  <a class="back" href="./"><svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M8.5 5H1.5M5 1.5 1.5 5 5 8.5" fill="none" stroke="currentColor" stroke-width="1.1"/></svg>Back</a>
+  <a class="back" href="./"><svg viewBox="0 0 13 10" width="11.7" height="9" aria-hidden="true"><path d="M11.4 5H1.5M5 1.5 1.5 5 5 8.5" fill="none" stroke="currentColor" stroke-width="1.1"/></svg>Back</a>
   <nav><a href="./#about">About</a><a href="./#cases">Cases</a><a href="shop.html" aria-current="page">Order</a></nav>
   <a class="ct" href="mailto:order@dirtyhands.ru">Contact<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a>
 </div>
 <div class="board"></div>
-<div class="otl closed" aria-label="Order and cooperation"><div class="hl"><span class="hw" style="left:calc(480 * var(--u))">Order</span></div><div class="hl"><span class="hw" style="left:calc(710 * var(--u))">and</span></div><div class="hl"><span class="hw" style="left:calc(480 * var(--u))">cooperation</span></div></div>
+<div class="otl closed" aria-label="Order and cooperation"><div class="hl"><span class="hw" style="left:calc(480 * var(--u))">Order</span></div><div class="hl"><span class="hw" style="right:calc(480 * var(--u))">and</span></div><div class="hl"><span class="hw" style="left:calc(480 * var(--u))">cooperation</span></div></div>
 <div class="mid">
   <h1 aria-hidden="true" style="visibility:hidden;height:calc(222 * var(--u))"></h1>
 </div>
