@@ -44,8 +44,8 @@ function startSound() {
   (function crack() { const loud = Math.random() < .3 ? 2.6 : 1, t = C.currentTime + .05,   // now and then a crack much louder than the rest
     src = C.createBufferSource(), lp = C.createBiquadFilter(), e = C.createGain(), th = C.createOscillator(), te = C.createGain();
     src.buffer = nb; lp.type = 'bandpass'; lp.frequency.value = 900 + Math.random() * 1400; lp.Q.value = .7;
-    e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(.09 * loud, t + .003); e.gain.exponentialRampToValueAtTime(.0001, t + .09 + Math.random() * .08);
-    th.type = 'sine'; th.frequency.setValueAtTime(140, t); th.frequency.exponentialRampToValueAtTime(70, t + .06); te.gain.setValueAtTime(0, t); te.gain.linearRampToValueAtTime(.05 * loud, t + .004); te.gain.exponentialRampToValueAtTime(.0001, t + .08);
+    e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(.12 * loud, t + .003); e.gain.exponentialRampToValueAtTime(.0001, t + .09 + Math.random() * .08);
+    th.type = 'sine'; th.frequency.setValueAtTime(140, t); th.frequency.exponentialRampToValueAtTime(70, t + .06); te.gain.setValueAtTime(0, t); te.gain.linearRampToValueAtTime(.07 * loud, t + .004); te.gain.exponentialRampToValueAtTime(.0001, t + .08);
     src.connect(lp); lp.connect(e); e.connect(bus); th.connect(te); te.connect(bus); src.start(t, Math.random() * 3, .2); th.start(t); th.stop(t + .1);
     setTimeout(crack, (12 + Math.random() * 16) * 1000); })();
   // clay baking in the kiln: a faint hot hiss and a thick scatter of tiny dry pops, like slip drying and sizzling on a hot surface; it swells and settles slowly, under everything else
@@ -74,20 +74,19 @@ function leaf(t, g) {                                                    // one 
   e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(g * (.4 + Math.random() * .6), t + .002 + Math.random() * .006); e.gain.exponentialRampToValueAtTime(.0001, t + len);
   src.connect(hp); hp.connect(bp); bp.connect(e); if (pn) { pn.pan.value = (Math.random() - .5) * 1.6; e.connect(pn); pn.connect(sLeafOut); } else e.connect(sLeafOut);
   src.start(t, Math.random() * .4, len + .01); }
-function placeSound(at) {                                               // a work set down on a shelf: a heavy stoneware piece, a dull thud with a short stony clack and almost no ring (a long clean ring sounds like glass)
+function placeSound(at) {                                               // a work set down on a shelf: a heavy stoneware piece put down with care, a low dull thud (any clean ring sounds like glass)
   if (!actx || (!sOn && at == null)) return; const C = actx, t = at ?? C.currentTime + .01;
   const noise = (t, type, f, q, g, d, off) => { const src = C.createBufferSource(), fl = C.createBiquadFilter(), e = C.createGain(); src.buffer = sLeafBuf; fl.type = type; fl.frequency.value = f; fl.Q.value = q;
     e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(g, t + .002); e.gain.exponentialRampToValueAtTime(.0001, t + d); src.connect(fl); fl.connect(e); e.connect(sMaster); src.start(t, off ?? Math.random() * .4, d + .02); };
-  const hit = (t, amp) => {
-    const o = C.createOscillator(), e = C.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(105 + Math.random() * 25, t); o.frequency.exponentialRampToValueAtTime(52, t + .12);   // the weight: a deep thump
-    e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(.15 * amp, t + .003); e.gain.exponentialRampToValueAtTime(.0001, t + .2); o.connect(e); e.connect(sMaster); o.start(t); o.stop(t + .22);
-    noise(t, 'bandpass', 320 + Math.random() * 120, .8, .16 * amp, .1);                 // the dull body of the knock
-    noise(t, 'bandpass', 1500 + Math.random() * 700, 2.2, .05 * amp, .028);            // the stony clack of the foot on the shelf
-    const f0 = 640 + Math.random() * 260;                                               // a hint of fired clay, dying almost at once
-    [[1, .025, .07], [2.71, .012, .04], [5.15, .006, .025]].forEach(([r, g, d]) => { const p = C.createOscillator(), pe = C.createGain(); p.type = 'sine'; p.frequency.value = f0 * r;
-      pe.gain.setValueAtTime(0, t); pe.gain.linearRampToValueAtTime(g * amp, t + .002); pe.gain.exponentialRampToValueAtTime(.0001, t + d); p.connect(pe); pe.connect(sMaster); p.start(t); p.stop(t + d + .02); });
+  const hit = (t, amp) => {   // a heavy piece set down with care: a low, dull, soft thud and the shelf answering under it; no ring, no click
+    const o = C.createOscillator(), e = C.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(82 + Math.random() * 14, t); o.frequency.exponentialRampToValueAtTime(42, t + .16);
+    e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(.2 * amp, t + .006); e.gain.exponentialRampToValueAtTime(.0001, t + .3); o.connect(e); e.connect(sMaster); o.start(t); o.stop(t + .32);
+    noise(t, 'lowpass', 240 + Math.random() * 60, .7, .22 * amp, .13);                   // the soft weight of it
+    const w = C.createOscillator(), we = C.createGain(); w.type = 'sine'; w.frequency.value = 170 + Math.random() * 30;   // the shelf under it, short and woody
+    we.gain.setValueAtTime(0, t); we.gain.linearRampToValueAtTime(.05 * amp, t + .004); we.gain.exponentialRampToValueAtTime(.0001, t + .08); w.connect(we); we.connect(sMaster); w.start(t); w.stop(t + .1);
+    noise(t, 'lowpass', 900, .5, .025 * amp, .02);                                      // the touch of the foot, barely there
   };
-  const a = (.75 + Math.random() * .25) * 1.3; hit(t, a); hit(t + .07 + Math.random() * .03, a * (.12 + Math.random() * .08)); }   // it lands, and settles with a small second knock
+  const a = (.8 + Math.random() * .2) * 1.3; hit(t, a); hit(t + .09 + Math.random() * .03, a * (.08 + Math.random() * .06)); }   // it lands, and settles with a very small second knock
 function setSound(on) {
   sOn = on; sndBtn.setAttribute('aria-pressed', on); if (on && !actx) startSound(); if (!actx) return;
   if (actx.state === 'suspended') actx.resume();
@@ -96,11 +95,12 @@ function setSound(on) {
 }
 function soundNudge(v) {                                               // a swipe or a drag: a gust of wind with leaves in it, rising and falling, fuller and higher the faster it goes, from one side or the other
   if (!sSw || !sOn) return; const k = Math.min(1, Math.abs(v)), t = actx.currentTime;
-  sSw.gain.cancelScheduledValues(t); sSw.gain.setValueAtTime(sSw.gain.value, t); sSw.gain.linearRampToValueAtTime(Math.max(sSw.gain.value, .05 + .16 * k), t + .18); sSw.gain.setTargetAtTime(0, t + .25, .45);
+  sSw.gain.cancelScheduledValues(t); sSw.gain.setValueAtTime(sSw.gain.value, t); sSw.gain.linearRampToValueAtTime(Math.max(sSw.gain.value, .03 + .08 * k), t + .18);   // (quieter: at the level of the cracks)
+  sSw.gain.setTargetAtTime(0, t + .25, .45);
   sBp.frequency.cancelScheduledValues(t); sBp.frequency.setValueAtTime(sBp.frequency.value, t); sBp.frequency.linearRampToValueAtTime(420 + 900 * k, t + .22); sBp.frequency.setTargetAtTime(380, t + .3, .7);
   if (sPan) { sPan.pan.cancelScheduledValues(t); sPan.pan.setValueAtTime(sPan.pan.value, t); sPan.pan.linearRampToValueAtTime((Math.random() - .5) * .9, t + .3); }
   if (t - (soundNudge._l || 0) < .15) return; soundNudge._l = t;   // a scroll sends many events: one handful of leaves at most every 150 ms
-  const n = 3 + Math.round(9 * k); for (let i = 0; i < n; i++) leaf(t + .03 + Math.random() * (.2 + .3 * k), .04 + .06 * k);   // and a handful of leaves stirred by it
+  const n = 3 + Math.round(9 * k); for (let i = 0; i < n; i++) leaf(t + .03 + Math.random() * (.2 + .3 * k), .025 + .035 * k);   // and a handful of leaves stirred by it
 }
 function muffle(on) { sInside = on; if (!sLp) return; const t = actx.currentTime; sLp.frequency.cancelScheduledValues(t); sLp.frequency.setValueAtTime(sLp.frequency.value, t); sLp.frequency.exponentialRampToValueAtTime(on ? 340 : 2600, t + 1.2); sLp.Q.cancelScheduledValues(t); sLp.Q.setValueAtTime(sLp.Q.value, t); sLp.Q.linearRampToValueAtTime(on ? 1.6 : .5, t + 1.2);
   sWob.gain.cancelScheduledValues(t); sWob.gain.setValueAtTime(sWob.gain.value, t); sWob.gain.linearRampToValueAtTime(0, t + 1.5);

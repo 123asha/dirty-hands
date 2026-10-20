@@ -7,7 +7,7 @@
 <style>
   @font-face { font-family: "CoFo Cinema"; src: url("CoFoCinema1909-Regular.otf") format("opentype"); font-weight: 400; font-display: swap; }
   @font-face { font-family: "CoFo Sans"; src: url("CoFoSans-Regular450.woff2") format("woff2"); font-weight: 400; font-display: swap; }
-  :root { --u: calc(100vw / 1400); --t18: calc(18 * var(--u)); --l18: calc(18 * var(--u)); --ease: cubic-bezier(.2,.8,.2,1); }
+  :root { --u: calc(100vw / 1400); --t18: min(18px, calc(18 * var(--u))); --l18: calc(18 * var(--u)); --ease: cubic-bezier(.2,.8,.2,1); }
   html, body { margin: 0; height: 100%; overflow: hidden; background: #fff; color: #000; }
   body { font-family: "CoFo Sans", -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: var(--t18); -webkit-font-smoothing: antialiased; user-select: none; }
   a { color: inherit; text-decoration: none; }
@@ -29,7 +29,7 @@
   .it .nm { position: absolute; left: 50%; top: calc(100% + 10 * var(--u)); translate: -50% 0; white-space: nowrap; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; opacity: 0; transition: opacity .25s var(--ease); pointer-events: none; }
   .it:hover .nm { opacity: 1; }   /* the name of the work under it, while it is pointed at */
   /* the middle of the board: ordering and working together; the works pass right through it and the text flows round them (laid out line by line with pretext, as the table on the main page) */
-  .low { position: fixed; left: 50%; bottom: calc(78 * var(--u)); translate: -50% 0; width: calc(440 * var(--u)); z-index: 4; pointer-events: none; }   /* the text stands on the bottom, a little above the address */
+  .low { position: fixed; left: calc(710 * var(--u)); bottom: calc(78 * var(--u)); width: calc(440 * var(--u)); z-index: 4; pointer-events: none; }   /* the text stands on the bottom, a little above the address */
   .mid { position: fixed; left: 50%; top: 50%; translate: -50% 0; width: calc(440 * var(--u)); z-index: 4; text-align: center; pointer-events: none; }
   .mid a { pointer-events: auto; }
   .otl .hl { position: relative; height: calc(74 * var(--u)); overflow-x: visible; overflow-y: clip; }   /* the title steps across the page, as Unconventional / ceramic / forms on the main page: one word to a band between two ruled lines */
@@ -43,10 +43,10 @@
   .otl { position: fixed; left: 0; width: 100%; margin: 0; z-index: 6; text-align: left; font-family: "CoFo Cinema", "CoFo Sans", sans-serif; font-size: calc(72 * var(--u)); line-height: .91; letter-spacing: -.01em; text-transform: uppercase; color: #fff; mix-blend-mode: difference; pointer-events: none; font-family: "CoFo Cinema", "CoFo Sans", sans-serif; font-weight: 400; font-size: calc(72 * var(--u)); line-height: .91; letter-spacing: -.01em; text-transform: uppercase; }   /* the title over the works, turning white where it crosses them */
   .flow { position: relative; text-align: left; }
   .flow .rl { display: none; position: absolute; left: 0; right: 0; top: 0; height: 0; border-top: 1px solid #d9d9d9; pointer-events: none; }   /* ruled lines under the text, as in the table on the main page */
-  .ln { position: absolute; left: 0; top: 0; white-space: pre; overflow: hidden; }
+  .ln { position: absolute; left: 0; top: 0; white-space: pre; overflow: hidden; padding-bottom: .3em; margin-bottom: -.3em; }   /* room under the line: the tails of g and p are never cut */
   .flow .ln { font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; }
   .ln .in { display: inline-block; animation: rise .9s var(--ease) both; }   /* the lines come up from below as they first appear, as on the main page */
-  @keyframes rise { from { transform: translateY(112%); } }
+  @keyframes rise { from { transform: translateY(150%); } }
   .mail { animation: fade .8s var(--ease) 1.1s both; } @keyframes fade { from { opacity: 0; } }
   .mid h1 { margin: 0 0 calc(38 * var(--u)); font-family: "CoFo Cinema", "CoFo Sans", sans-serif; font-weight: 400; font-size: calc(72 * var(--u)); line-height: .91; letter-spacing: -.01em; text-transform: uppercase; }
   .flow p { text-indent: calc(40 * var(--u)); }
@@ -86,7 +86,7 @@
 <script>{ const grid = document.querySelector('.grid'); try { if (sessionStorage.getItem('grid') === '1') grid.classList.add('on'); } catch (e) {}   // the grid stays on or off from page to page
   addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.code === 'KeyG') { e.preventDefault(); if (!e.repeat) { const on = grid.classList.toggle('on'); try { sessionStorage.setItem('grid', on ? '1' : '0'); } catch (er) {} } } }); }</script>
 <script src="clay.js?v=4"></script>
-<script src="sound.js?v=10"></script>
+<script src="sound.js?v=11"></script>
 <script>
 (() => {
   const CATS = ['Panels', 'Mirrors', 'Tables', 'Sculptures', 'Urbans', 'Vases'];
@@ -124,7 +124,7 @@
   }
   function flow() {
     if (!PT) return;
-    const f18 = 18 * U;
+    const f18 = Math.min(18, 18 * U);
     if (!preps || preps.f !== f18) { preps = paras.map(t => PT.prepareWithSegments(t, `${f18}px "CoFo Sans"`, { letterSpacing: -0.01 * f18 })); preps.f = f18; fl.querySelectorAll('p').forEach(p => p.remove()); }
     const r = fl.getBoundingClientRect(), L = r.left, Rr = L + 440 * U, lh = LH * U, ht = mid.getBoundingClientRect().top;
     const obs = [...its, ...falling].filter(it => it.box && MASK[it.src] && it.box.cx + it.box.S / 2 > L && it.box.cx - it.box.S / 2 < Rr);
@@ -133,8 +133,7 @@
       e.style.transform = Math.abs(dx) > .3 ? `translateX(${dx.toFixed(1)}px)` : ''; e.style.opacity = drumFade(Math.cos(th)).toFixed(3); });
     const key = obs.map(o => `${Math.round(o.box.cx)},${Math.round(o.box.cy)},${Math.round(o.box.S)}`).join('|') + '|' + Math.round(r.top) + '|' + U; if (key === sig) return; sig = key;
     const rows = []; let k = 0;
-    const IND = [0, 230, 230]; let kmax = 0;   // two columns in the middle, each one column wide: the first paragraph on the left, the other two on the right from the same top
-    preps.forEach((pr, pi) => { if (pi === 1) k = 0; else if (pi) k++; const ind = (IND[pi] ?? 230) * U, n0 = rows.length; k = lay(pr, L + ind, L + ind + 210 * U, r.top, lh, obs, 8 * U, rows, k, false, 40 * U); kmax = Math.max(kmax, k); for (let q = n0; q < rows.length; q++) rows[q].x += ind; }); k = kmax;   // every paragraph starts with an indent
+    preps.forEach((pr, pi) => { if (pi) k++; k = lay(pr, L, L + 440 * U, r.top, lh, obs, 8 * U, rows, k, false, 40 * U); });   // the paragraphs one under another, two columns wide from the fourth column, each starting with an indent
     paint(rows, pool, fl);
     while (rules.length < k + 2) { const d = document.createElement('i'); d.className = 'rl'; fl.prepend(d); rules.push(d); }
     rules.forEach((d, i) => { d.style.display = i <= k + 1 ? '' : 'none'; d.style.transform = `translateY(${(i * lh).toFixed(1)}px)`; });   // one line at the top of every row, through the empty rows too

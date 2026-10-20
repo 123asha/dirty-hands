@@ -10,7 +10,7 @@
 <style>
   @font-face { font-family: "CoFo Cinema"; src: url("CoFoCinema1909-Regular.otf") format("opentype"); font-weight: 400; font-display: swap; }
   @font-face { font-family: "CoFo Sans"; src: url("CoFoSans-Regular450.woff2") format("woff2"); font-weight: 400; font-display: swap; }
-  :root { --t18: calc(18 * var(--u)); --l18: calc(18 * var(--u)); --bg: #fff; --ink: #000; --u: calc(var(--W, 100vw) / 1400); --ph: rgba(169,169,169,.15); --gray: #f2f2f2; --rule: #d9d9d9; --dur: .6s; --ease: cubic-bezier(.2,.8,.2,1); }
+  :root { --t18: min(18px, calc(18 * var(--u))); --l18: calc(18 * var(--u)); --bg: #fff; --ink: #000; --u: calc(var(--W, 100vw) / 1400); --ph: rgba(169,169,169,.15); --gray: #f2f2f2; --rule: #d9d9d9; --dur: .6s; --ease: cubic-bezier(.2,.8,.2,1); }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #fff; --ink: #000; } }
   :root[data-theme="dark"] { --bg: #fff; --ink: #000; }
   * { box-sizing: border-box; }
@@ -221,14 +221,12 @@
   .cat-ico path { fill: none; stroke: #c8c8c8; stroke-linejoin: round; stroke-linecap: round; }   /* no non-scaling stroke here: it breaks the dash the line is drawn with into pieces */
   .cat-text { position: absolute; left: 50%; bottom: calc(20 * var(--u)); width: calc(210 * var(--u)); margin-left: calc(-105 * var(--u)); font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; text-align: center; z-index: 2; }   /* the body text, one column wide, centred, down at the bottom of the screen 20 above its edge */
   .hc.hov { cursor: pointer; }
-  .cd-pic { position: absolute; background: var(--gray) center / cover no-repeat; }
+  .cd-pic { position: absolute; background: var(--gray) center / cover no-repeat; overflow: hidden; }
   .cd-rules { position: absolute; left: calc(940 * var(--u)); top: calc(60 * var(--u)); width: calc(440 * var(--u)); height: calc(54 * var(--u)); }
   .cd-cap { position: absolute; left: calc(940 * var(--u)); top: calc(60 * var(--u)); width: calc(440 * var(--u)); }
   .cd-a, .cd-b { position: absolute; width: calc(210 * var(--u)); }
   .cd-a:empty { display: none; }
-  .cd-list { position: absolute; left: calc(940 * var(--u)); width: calc(440 * var(--u)); display: flex; flex-direction: column; }   /* every case by name, this one in black: a click goes to the other */
-  .cd-list a { font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; opacity: .3; transition: opacity .25s var(--ease); width: max-content; }
-  .cd-list a:hover, .cd-list a.on { opacity: 1; }
+  .cd-layer { position: absolute; inset: 0; background: center / cover no-repeat; will-change: transform; }   /* switching cases: the photos slide through the frame */
   .pic { cursor: pointer; } a.more { cursor: pointer; }
   /* while a view is open the pointer is a "Close" label */
   .close-cursor { position: fixed; left: 0; top: 0; z-index: 1000; pointer-events: none; display: flex; gap: .35em; align-items: center; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; opacity: 0; transition: opacity .25s ease-out, filter .25s ease-out; }
@@ -240,9 +238,7 @@
   html.case-open .hero > .nav, html.case-open .ct { opacity: 0 !important; pointer-events: none; }   /* in an open case the menu steps aside for Close */
   .cx { position: fixed; top: calc(20 * var(--u)); right: calc(20 * var(--u)); z-index: 403; display: inline-flex; gap: .35em; align-items: center; color: #fff; mix-blend-mode: difference; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; opacity: 0; translate: 0 .6em; pointer-events: none; transition: opacity .3s ease-out, translate .4s var(--ease); }
   html.case-open .cx { opacity: 1; translate: 0 0; pointer-events: auto; cursor: pointer !important; }   /* the case closes here, top right, where the menu was */
-  html.case-open .close-cursor { display: none; }
-  html.case-open.ov-open, html.case-open.ov-open * { cursor: auto !important; }
-  html.case-open.ov-open a, html.case-open.ov-open .cd-s, html.case-open.ov-open .cx { cursor: pointer !important; }
+  html.ov-open.ov-arrow .cd-s, html.ov-open.ov-arrow .partner, html.ov-open.ov-arrow .partner *, html.ov-open.ov-arrow .cx, html.ov-open.ov-arrow .cx * { cursor: pointer !important; }   /* what can be clicked in a case says so: the previews, the names of the cases, Close */
   html.ov-open, html.ov-open * { cursor: none !important; }
   html.ov-open.ov-arrow, html.ov-open.ov-arrow * { cursor: default !important; }   /* over a case's pictures, where Close melts away, the plain arrow */
   html.on-story, html.on-story * { cursor: none !important; }
@@ -400,7 +396,6 @@
   <p class="t18 cd-cap" style="line-height:var(--l18)"></p>
   <p class="t18 cd-a"></p>
   <p class="t18 cd-b"></p>
-  <nav class="cd-list" aria-label="Cases"></nav>
 </div>
 <div class="close-cursor more-cursor" aria-hidden="true">More<svg viewBox="0 0 10 10" width="9" height="9"><path d="M1 5h8M5.5 1.5 9 5 5.5 8.5" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></div>
 <div class="close-cursor" aria-hidden="true">Close<svg viewBox="0 0 10 10" width="9" height="9"><path d="M1.5 1.5 8.5 8.5M8.5 1.5 1.5 8.5" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></div>
@@ -447,7 +442,7 @@ window.preDone = new Promise(done => {
     setTimeout(() => { pre.style.pointerEvents = 'none'; pre.style.transition = 'background-color .6s cubic-bezier(.4, 0, .2, 1)'; pre.style.backgroundColor = 'transparent'; done(); if (c.soak) c.soak(0, () => pre.remove()); else { pre.style.transition = 'opacity 1.2s ease'; pre.style.opacity = 0; setTimeout(() => pre.remove(), 1300); } }, 250); })(t1);   // (an older clay.js from the cache: it simply fades)   // the sheet goes and the page appears; the DH soaks away like any clay mark, gone by the time the top row has come in   // the sheet goes and the page appears; the DH stays and soaks away by itself, as every clay mark on the site does
 });
 </script>
-<script src="sound.js?v=10"></script>
+<script src="sound.js?v=11"></script>
 <script>
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scrollTo(0, 0);   // the page always starts from the top: the intro is built for it
 // smooth scroll for the whole page (Lenis): the wheel glides on with a little inertia, the page itself still reads scrollY as before. It rests whenever the page is locked (the intro, an open view, the ending)
@@ -904,7 +899,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     return m.g.getImageData(Math.min(m.cv.width - 1, u * m.cv.width | 0), Math.min(m.cv.height - 1, v * m.cv.height | 0), 1, 1).data[3] > 60 ? c : null;
   }
   const inStory = cy => { const ps = $('[data-year]'), a = ps[0].getBoundingClientRect(), b = ps[ps.length - 1].getBoundingClientRect(); return cy > a.top - 40 * U && cy < b.bottom + 40 * U; };   // the whole Story block: from a little above its first paragraph to a little below its last
-  addEventListener('pointermove', e => { if (openView) { closeCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`; const away = !!(e.target.closest && e.target.closest('.cd-pic, .cd-s')); closeCur.classList.toggle('away', away); htmlEl.classList.toggle('ov-arrow', away); }   // over the case's pictures the usual arrow comes back
+  addEventListener('pointermove', e => { if (openView) { closeCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`; const away = !!(e.target.closest && e.target.closest('.cd-pic, .cd-s, .partner, .cx')); closeCur.classList.toggle('away', away); htmlEl.classList.toggle('ov-arrow', away); }   // over the case's pictures the usual arrow comes back
     const onStory = !openView && ((inStory(e.clientY) && !e.target.closest('a, nav, .nav')) || !!cutHit(e) || !!(e.target.closest && e.target.closest('.pic'))); htmlEl.classList.toggle('on-story', onStory); moreCur.style.opacity = onStory ? 1 : 0; if (onStory) moreCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`; }, { passive: true });
   addEventListener('keydown', e => { if (e.key === 'Escape' && openView) closeView(); });
   function lockView(on) { muffle(on); htmlEl.classList.toggle('ov-open', on); if (lenis) window.scrollLocked = on; else htmlEl.style.overflow = on ? 'hidden' : ''; closeCur.classList.toggle('gone', !on); if (on) closeCur.style.opacity = 1; else setTimeout(() => { if (!htmlEl.classList.contains('ov-open')) closeCur.style.opacity = 0; }, 750); }   // the page under a view is held still without taking its scrollbar away (that made everything shift and blink on closing)
@@ -968,7 +963,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const more = e.target.closest('a.more') || (!openView && !e.target.closest('a, nav, .nav, .ov') && inStory(e.clientY) ? e.target : null);
     if (more && !openView) { e.preventDefault(); moreCur.style.opacity = 0; openStory(); return; }
     if (e.target.closest('.cx')) { e.preventDefault(); closeView(); return; }   // an open case closes with its Close link
-    if (openView && !htmlEl.classList.contains('case-open') && e.target.closest('.ov') && !e.target.closest('a, .cd-pic, .cd-s, .cd-slider')) closeView();   // a link inside a view opens, it does not close the view
+    if (openView && e.target.closest('.ov') && !e.target.closest('a, .cd-pic, .cd-s, .cd-slider')) closeView();   // a click on the empty white closes, as Close under the pointer says   // a link inside a view opens, it does not close the view
   });
 
   const CV = one('#caseView');
@@ -985,22 +980,29 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const caption = (pe.indexOf(pic) === 0 ? $('.rules.cap')[0] : $('.rules.cap')[pe.indexOf(pic)]).nextElementSibling;
     const img = getComputedStyle(pic).getPropertyValue('--img');
     const cdPic = one('.cd-pic'), capEl = one('.cd-cap'), aEl = one('.cd-a'), bEl = one('.cd-b'), rl = $('.cd-rules i');
-    const text = caption.dataset.text || caption.textContent.trim();
-    const desc = text + ' ' + CASE_TEXT[i][0];   // the description on the right, in ruled lines: the caption and the first text together
-    capEl.dataset.text = desc; capEl.textContent = desc; aEl.dataset.text = ''; aEl.textContent = ''; bEl.dataset.text = CASE_TEXT[i][1]; bEl.textContent = CASE_TEXT[i][1];
+    let cur = i;   // the case on show: a click on another name switches to it in place
+    const capOf = k => { const c = $('.rules.cap')[k].nextElementSibling; return c.dataset.text || c.textContent.trim(); }, rulesEl = one('.cd-rules');
+    aEl.dataset.text = ''; aEl.textContent = '';
     // layout (design px -> screen px): picture over the first four columns, caption and its lines over the last two, two paragraphs below as a staircase
     const picW = Math.min(900 * U, innerHeight * 0.62 * 16 / 9), picH = picW * 9 / 16, picTop = 20 * U,   // the picture always 16:9, four columns wide unless the screen is too low for it
       belowTop = picTop + picH + 40 * U;
     Object.assign(cdPic.style, { backgroundImage: img, left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
-    bEl.style.left = 940 * U + 'px'; bEl.style.width = 440 * U + 'px';   // one paragraph at the bottom right, from the fifth column
+    bEl.style.left = 940 * U + 'px'; bEl.style.width = 440 * U + 'px';
+    const fillText = k => {   // on the right the description in ruled lines (the caption and the first text together, eight lines at most); one paragraph at the bottom right from the fifth column, 40 above the bottom of the screen
+      const desc = capOf(k) + ' ' + CASE_TEXT[k][0]; capEl.dataset.text = desc; capEl.textContent = desc; bEl.dataset.text = CASE_TEXT[k][1]; bEl.textContent = CASE_TEXT[k][1];
+      const inC = splitMask(capEl).slice(0, 8); [...capEl.querySelectorAll('.m')].slice(8).forEach(m => m.remove());
+      rulesEl.style.height = inC.length * 18 * U + 'px'; rulesEl.innerHTML = Array.from({ length: inC.length + 1 }, (_, n) => `<i style="top:calc(${n * 18} * var(--u))"></i>`).join('');   // a line over every row and one under the last
+      const inB2 = splitMask(bEl); bEl.style.top = innerHeight - 40 * U - bEl.offsetHeight + 'px';
+      return { inC, inB: inB2, rl: [...rulesEl.children] }; };
     // more photos of the work below: a slider that is moved by the wheel (sideways), by dragging and by the arrow keys
     const slider = one('.cd-slider'), track = one('.cd-track'), endEl = one('.cd-end'), SW_ = [88, 88, 88, 88, 88, 88, 88];   // small previews under the picture, bottom left
-    track.innerHTML = SW_.map(() => '<div class="cd-s"></div>').join(''); [...track.children].forEach((el, k) => { el.style.width = SW_[k] * U + 'px'; el.style.height = [74, 58, 86, 64, 80, 54, 70][k] * U + 'px'; el.style.backgroundImage = IMG(i * 2 + 3 + k); });   // level at the top, a jagged edge at the bottom, as the cards on the main page
+    const fillTrack = c => { track.innerHTML = SW_.map(() => '<div class="cd-s"></div>').join(''); [...track.children].forEach((el, k) => { el.style.width = SW_[k] * U + 'px'; el.style.height = [74, 58, 86, 64, 80, 54, 70][k] * U + 'px'; el.style.backgroundImage = IMG(c * 2 + 3 + k);   // level at the top, a jagged edge at the bottom, as the cards on the main page
+      el.addEventListener('pointerenter', () => { alt.style.backgroundImage = el.style.backgroundImage; alt.classList.add('on'); soundNudge(.2); }); }); };
     const sTop = belowTop;   // right under the picture: the paragraphs now stand beside it
     slider.style.top = sTop + 'px'; endEl.style.top = sTop + 86 * U + 60 * U + 'px'; CV.scrollTop = 0;
     // pointing at a preview shows it in the big picture; moving off brings the case's own photo back
     const alt = cdPic.querySelector('.cd-alt') || cdPic.appendChild(Object.assign(document.createElement('i'), { className: 'cd-alt' }));
-    [...track.children].forEach(el => el.addEventListener('pointerenter', () => { alt.style.backgroundImage = el.style.backgroundImage; alt.classList.add('on'); soundNudge(.2); }));
+    fillTrack(i);
     track.addEventListener('pointerleave', () => alt.classList.remove('on'));
     let sx = 0, dragS = null; const maxX = () => Math.min(0, innerWidth - track.scrollWidth - 20 * U);
     const goX = v => { soundNudge((v - sx) / (300 * U)); sx = Math.max(maxX(), Math.min(0, v)); gsap.to(track, { x: sx, duration: .6, ease: 'power3.out', overwrite: true }); };
@@ -1019,32 +1021,42 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       requestAnimationFrame(bendLoop); })();
     const stopSlider = () => { bendRun = false; CV.removeEventListener('wheel', onSw); removeEventListener('keydown', onSk); CV.removeEventListener('pointerdown', onSd); removeEventListener('pointermove', onSm); removeEventListener('pointerup', onSu); gsap.killTweensOf(track); gsap.set(track, { x: 0 }); track.innerHTML = ''; alt.classList.remove('on'); };
     CV.classList.add('open'); lockView(true);
-    const own = null, held = own && own.style.display !== 'none' ? [{ p: own, par: own.parentNode, next: own.nextSibling, was: own.style.position === 'fixed' ? null : { position: own.style.position, top: own.style.top, left: own.style.left, translate: own.style.translate } }] : [];   // the case's own client is always named over it   // the client names held on the right stay in sight over the case: lifted out of the faded page for as long as it is open
-    held.forEach(h => { const p = h.p, r = p.getBoundingClientRect(); p._held = true; document.body.append(p); p.style.zIndex = 401; const pf = p.firstElementChild; if (pf) { gsap.killTweensOf([...pf.children]); gsap.set([...pf.children], { yPercent: 0, y: 0 }); pf.style.transform = ''; } if (h.was) { gsap.set(p, { x: 0, y: 0, scale: 1 }); p.style.translate = ''; }   // all its letters up, none of the moves it makes on the page
-      if (h.was) { const nw = p.firstElementChild.getBoundingClientRect().width || r.width; Object.assign(p.style, { position: 'fixed', top: (picTop + picH - r.height) + 'px', left: (1380 * U - nw - (p.firstElementChild.offsetLeft || 0)) + 'px' }); } });   // not pinned at the moment: it stands at the bottom right of the picture
-    const putBack = () => held.forEach(({ p, par, next, was }) => { p._held = false; par.insertBefore(p, next); p.style.zIndex = ''; if (was) Object.assign(p.style, was); tick(); });
-    const inCap = splitMask(capEl).slice(0, 8), inA = [], inB = splitMask(bEl);
-    [...capEl.querySelectorAll('.m')].slice(8).forEach(m => m.remove());   // eight lines at most
-    const rulesEl = one('.cd-rules'), nL = inCap.length; rulesEl.dataset.n = nL + 1; rulesEl.style.height = nL * 18 * U + 'px'; rulesEl.innerHTML = Array.from({ length: nL + 1 }, (_, k) => `<i style="top:calc(${k * 18} * var(--u))"></i>`).join('');   // a line over every row and one under the last
-    const rlNow = [...rulesEl.children], list = one('.cd-list');
-    list.innerHTML = pe.map((p, j) => `<a href="#case-${j}" data-j="${j}"${j === i ? ' class="on" aria-current="true"' : ''}>${(partners[j] && partners[j].textContent.trim()) || 'Case ' + (j + 1)}</a>`).join('');
-    list.style.top = 60 * U + (nL + 2) * 18 * U + 'px';   // the names of the cases under the description, an empty line between
-    list.onclick = e => { const a = e.target.closest('a'); if (!a) return; e.preventDefault(); e.stopPropagation(); const j = +a.dataset.j; if (j !== i && openView && openView.swap) openView.swap(j); };
-    bEl.style.top = Math.max(innerHeight - 40 * U - bEl.offsetHeight, list.offsetTop + list.offsetHeight + 36 * U) + 'px';   // its last line 40 above the bottom of the screen, never over the list
-    const others = partners;   // the client names on the page step back: the list on the right names them
+    let held = [];
+    const hold = () => { held = partners.filter(p => p.style.display !== 'none').map(p => ({ p, mark: p.parentNode.insertBefore(document.createComment(''), p), was: p.style.position === 'fixed' ? null : { position: p.style.position, top: p.style.top, left: p.style.left, translate: p.style.translate } }));   // the client names stay exactly where they stand on the page, lifted over the case
+      held.forEach(h => { const p = h.p, r = p.getBoundingClientRect(); p._held = true; document.body.append(p); p.style.zIndex = 401; const pf = p.firstElementChild; if (pf) { gsap.killTweensOf([...pf.children]); gsap.set([...pf.children], { yPercent: 0, y: 0 }); pf.style.transform = ''; }
+        if (h.was) { gsap.set(p, { x: 0, y: 0, scale: 1 }); p.style.translate = ''; Object.assign(p.style, { position: 'fixed', top: r.top + 'px', left: r.left + 'px' }); const n = p.getBoundingClientRect(); p.style.top = r.top * 2 - n.top + 'px'; p.style.left = r.left * 2 - n.left + 'px'; }
+        const j = partners.indexOf(p); p.style.pointerEvents = 'auto'; p.style.cursor = 'pointer'; p._sw = e => { e.preventDefault(); e.stopPropagation(); if (openView && openView.swap) openView.swap(j); }; p.addEventListener('click', p._sw, true); }); };
+    const putBack = () => { held.forEach(({ p, mark, was }) => { p._held = false; p.removeEventListener('click', p._sw, true); p.style.pointerEvents = p.style.cursor = ''; gsap.set(p, { clearProps: 'x,y,opacity' }); mark.replaceWith(p); p.style.zIndex = ''; if (was) Object.assign(p.style, was); }); held = []; tick(); };
+    hold();
+    let { inC: inCap, inB, rl: rlNow } = fillText(i);
     const caseEls = [...$('.page > *:not(.hero):not(.rest)'), ...$('.rest > *:not(.partner)'), ...$('.hero > *:not(.nav), .hc, .tagline, .midstrip, .ttl')];   // everything but the menu: it stays on top, readable
     htmlEl.classList.add('case-open');
-    const tl = gsap.timeline({ onReverseComplete() { stopSlider(); putBack(); gsap.set(others, { clearProps: 'opacity' }); htmlEl.classList.remove('case-open'); CV.classList.remove('open'); lockView(false); openView = null; gsap.set([...pageEls(), ...caseEls], { clearProps: 'opacity,transform' }); tick(); const nx = CV._next; CV._next = null; if (nx) requestAnimationFrame(nx); } });   // switching from the list: this case folds away quickly, the next one opens
+    const tl = gsap.timeline({ onReverseComplete() { stopSlider(); putBack(); htmlEl.classList.remove('case-open'); CV.classList.remove('open'); lockView(false); openView = null; gsap.set([...pageEls(), ...caseEls], { clearProps: 'opacity,transform' }); tick(); } });
     tl.to(caseEls, { opacity: 0.12, duration: .5, ease: 'power2.out' }, 0);                                  // the page stays, faintly, under the picture (the menu stays as it is)
-    tl.to(others, { opacity: 0, duration: .4, ease: 'power2.out' }, 0);
+    held.forEach(({ p }) => tl.to(p, { opacity: p === partners[i] ? 1 : .3, duration: .4, ease: 'power2.out' }, 0));   // this case's client in black, the others grey: a click on one switches to it
     tl.fromTo('#caseView .ov-scrim', { opacity: 0 }, { opacity: .86, duration: .5, ease: 'power2.out' }, 0);
-    tl.fromTo(cdPic, { left: r.left, top: r.top, width: r.width, height: r.height }, { left: 20 * U, top: picTop, width: picW, height: picH, duration: 1, ease: 'power3.inOut' }, 0.05);
+    const R = { left: r.left, top: r.top, width: r.width, height: r.height };   // where the picture folds back to: the card of the case on show
+    const picTw = gsap.fromTo(cdPic, { left: () => R.left, top: () => R.top, width: () => R.width, height: () => R.height }, { left: 20 * U, top: picTop, width: picW, height: picH, duration: 1, ease: 'power3.inOut', immediateRender: false }); tl.add(picTw, 0.05);
     fanIn(tl, rlNow, { each: .06, at: .55, dur: .9 });                                                          // the lines stretch to two columns
     riseIn(tl, inCap, { at: .6, each: .08, dur: .8 });
-    tl.fromTo([...list.children], { autoAlpha: 0, y: 10 * U }, { autoAlpha: (k, el) => el.classList.contains('on') ? 1 : .3, y: 0, duration: .7, ease: EASE, stagger: .05 }, .9);
     riseIn(tl, inB, { at: 1.15, each: .07, dur: .8 });
     tl.fromTo([...track.children], { autoAlpha: 0, x: 70 }, { autoAlpha: 1, x: 0, duration: .8, ease: EASE, stagger: .08 }, 1.35);   // the photos come in one after another
-    openView = { swap(j) { CV._next = () => openCase(j, pe[j]); if (CV.scrollTop > 1) CV.scrollTop = 0; tl.timeScale(3.2).reverse(); }, close() { if (CV.scrollTop > 1) gsap.to(CV, { scrollTop: 0, duration: .35, ease: 'power2.inOut', onComplete: () => tl.timeScale(1.7).reverse() }); else tl.timeScale(1.7).reverse(); } };   // back to the top of the view first: the picture then folds exactly onto its place on the page
+    const swap = j => {   // another case, in place: the photo slides on from left to right with a little zoom, the texts and previews change, and the page underneath moves to that case's card so closing lands there
+      if (j === cur || !pe[j] || tl.isActive()) return; cur = j;
+      const img2 = getComputedStyle(pe[j]).getPropertyValue('--img'), lay = k => { const e = document.createElement('i'); e.className = 'cd-layer'; e.style.backgroundImage = k; cdPic.insertBefore(e, alt); return e; };
+      const out = lay(cdPic.style.backgroundImage), inn = lay(img2); cdPic.style.backgroundImage = img2;
+      gsap.fromTo(out, { xPercent: 0, scale: 1 }, { xPercent: 100, scale: 1.1, duration: 1.1, ease: 'power3.inOut', onComplete: () => out.remove() });
+      gsap.fromTo(inn, { xPercent: -100, scale: 1.15 }, { xPercent: 0, scale: 1, duration: 1.1, ease: 'power3.inOut', onComplete: () => inn.remove() });
+      gsap.to([...capEl.querySelectorAll('.mi'), ...bEl.querySelectorAll('.mi')], { yPercent: -150, duration: .35, ease: 'power2.in', stagger: .02, onComplete: () => { ({ inC: inCap, inB, rl: rlNow } = fillText(j)); gsap.fromTo([...inCap, ...inB], { yPercent: 150 }, { yPercent: 0, duration: .8, ease: EASE, stagger: .05 }); gsap.set(rlNow, { scaleX: 1 }); } });
+      gsap.to([...track.children], { autoAlpha: 0, x: -30, duration: .3, stagger: .03, onComplete: () => { gsap.killTweensOf(track); gsap.set(track, { x: 0 }); sx = 0; fillTrack(j); gsap.fromTo([...track.children], { autoAlpha: 0, x: 70 }, { autoAlpha: 1, x: 0, duration: .8, ease: EASE, stagger: .06 }); } });
+      // the page under it: the new card comes to where the first one stood, and the names glide to their places on the page as they are there
+      const before = new Map(held.map(({ p }) => [p, p.getBoundingClientRect()])); putBack();
+      const pr = pe[j].getBoundingClientRect(), y = Math.max(0, Math.min(document.documentElement.scrollHeight - innerHeight, scrollY + pr.top - r.top));
+      if (lenis) lenis.scrollTo(y, { immediate: true, force: true }); else scrollTo(0, y); tick(); hold();
+      held.forEach(({ p }) => { const a = before.get(p), b = p.getBoundingClientRect(); gsap.set(p, { opacity: p === partners[j] ? 1 : .3 }); if (a) gsap.from(p, { x: a.left - b.left, y: a.top - b.top, duration: .9, ease: 'power3.inOut' }); });
+      const nr = pe[j].getBoundingClientRect(); Object.assign(R, { left: nr.left, top: nr.top, width: nr.width, height: nr.height }); picTw.invalidate();   // closing folds the picture onto this card
+      if (typeof soundNudge === 'function') soundNudge(.5); };
+    openView = { swap, close() { if (CV.scrollTop > 1) gsap.to(CV, { scrollTop: 0, duration: .35, ease: 'power2.inOut', onComplete: () => tl.timeScale(1.7).reverse() }); else tl.timeScale(1.7).reverse(); } };   // back to the top of the view first: the picture then folds exactly onto its place on the page
     tl.timeScale(1).play();
   }
   // ---- a category: its short text in front, its works on a cylinder behind; the picture that was clicked bulges first, the others come round the cylinder beside it
