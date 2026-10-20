@@ -52,7 +52,8 @@
   .gray-gl { position: absolute; left: 0; z-index: 0; transform: translateY(calc((var(--par, .5) - .5) * 640 * var(--u))); pointer-events: none; }   /* the shaded photo, moving as the plain one did */
   .gray.gl-on::before, .gray.gl-on::after { background-image: none !important; }
   .hc.snap .hc-alt, .hc.snap .hs b, .hc.snap .hs i { transition: none !important; }   /* at the restart the photo is there at once */
-  .pre { position: fixed; inset: 0; z-index: 3000; background-color: #fff; } .pre canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }   /* the preloader sheet */
+  .pre { position: fixed; inset: 0; z-index: 3000; background-color: #fff; }
+  .pre .pl { position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); top: 44vh; height: 0; border-top: 1px solid var(--rule); transform-origin: 0 50%; transform: scaleX(0); transition: transform 1.5s cubic-bezier(.65, 0, .35, 1); }   /* the page's strip, drawn in while the finger writes; it stays when the clay soaks away */ .pre canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }   /* the preloader sheet */
   .ph-line { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
   .ph-line path { fill: none; stroke: #000; stroke-width: 6.5; stroke-linejoin: round; }   /* 6.5 of the drawing's 1080 is about one screen pixel on the small picture */
   .rest > .ph:not(.pic):not(.bar):hover { background-image: none !important; background-color: transparent; } .rest > .ph:not(.pic):not(.bar):hover .ph-line { opacity: 1; }   /* pointed at: white, only the line, no animation */
@@ -409,7 +410,7 @@ window.preDone = new Promise(done => {
   window.scrollLocked = true;   // no scrolling under the sheet (a lock that leaves the scrollbar alone, so nothing shifts when it lifts)
   const S = 0.5, cv = pre.querySelector('canvas'), w = Math.round(innerWidth * S), h = Math.round(innerHeight * S), c = makeClay({ cv, w, h });   // made at half size and stretched: soft clay loses nothing, and it is ready six times sooner
   // a finger writes D and H in clay across the middle of the sheet, stroke by stroke, lifting between them (sizes in css px)
-  const LH = Math.min(210, innerHeight * .252),   /* sweeping, as if drawn across the sheet with a whole finger, but not too big (a fifth bigger than it was) */ BW = LH * .62, GAP = LH * .42, x0 = (innerWidth - (BW * 2 + GAP)) / 2, yT = innerHeight / 2 - LH / 2, yB = yT + LH;
+  const LH = Math.min(210, innerHeight * .252),   /* sweeping, as if drawn across the sheet with a whole finger, but not too big (a fifth bigger than it was) */ BW = LH * .86, GAP = LH * .46,   /* wide letters (the strokes as thick as before) */ x0 = (innerWidth - (BW * 2 + GAP)) / 2, yT = innerHeight / 2 - LH / 2, yB = yT + LH;
   // written by hand, not drawn: each letter a little askew, every stroke wobbling and running on past its end, the clay thinning out as it goes, so the ends are rubbed and dry
   // written by hand, quickly and badly, as a finger would: every stroke leaning its own way, starting and stopping a little off, running on well past its end, wobbling, the clay thinning out so the ends are dry and rubbed
   const R = (a, b) => a + Math.random() * (b - a), j = () => R(-.14, .14) * LH;
@@ -435,6 +436,8 @@ window.preDone = new Promise(done => {
       done_ += d; pi++; if (pi >= P.length) { si++; pi = 0; }   // the end of a stroke: it lifts
     }
   };
+  const pl = pre.insertBefore(Object.assign(document.createElement('i'), { className: 'pl' }), cv); requestAnimationFrame(() => requestAnimationFrame(() => { pl.style.transform = 'scaleX(1)'; }));   // the strip across the sheet, drawn with the letters
+  window.preStrip = true;   // the page's own strip is there from the start: it takes over from this one
   const t1 = performance.now(), DUR = 1500;
   (function step(now) { const k = Math.min(1, (now - t1) / DUR), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;   // slow in, slow out
     advance(e * total + (k >= 1 ? 1 : 0)); c.render();
@@ -1371,7 +1374,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const pc = texts.map(p => +p.dataset.c0);                         // fixed middles: the flow moves the paragraphs, but must not move the wheel
     let p = 0; for (let j = 0; j < pc.length - 1; j++) if (py > pc[j]) p = j + Math.min(1, (py - pc[j]) / (pc[j + 1] - pc[j]));   // 0 until the first paragraph, 5 from the last one on, turning with the scroll in between
     midStrip.classList.toggle('off', landed);                                              // gone once the table's first line has taken its place
-    midStrip.style.opacity = landed ? '' : clamp((now - t0 - (INTRO - 300)) / 500).toFixed(3);
+    midStrip.style.opacity = landed ? '' : window.preStrip ? '1' : clamp((now - t0 - (INTRO - 300)) / 500).toFixed(3);   // (drawn by the preloader: it simply stays)
     // the table is open from the landing of the cards until its last row reaches the middle of the screen
     const lastRow = texts[texts.length - 1].getBoundingClientRect(), lastRowMid = (lastRow.top + lastRow.height / 2) / U;
     // opens at the landing; goes away before the landing when you scroll back (the table first, then only its first line is left); and when its last row is in the middle
