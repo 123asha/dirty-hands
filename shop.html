@@ -129,7 +129,7 @@
       e.style.transform = Math.abs(dx) > .3 ? `translateX(${dx.toFixed(1)}px)` : ''; e.style.opacity = Math.min(1, Math.max(0, Math.cos(th)) * 1.6).toFixed(3); });
     const key = obs.map(o => `${Math.round(o.box.cx)},${Math.round(o.box.cy)},${Math.round(o.box.S)}`).join('|') + '|' + Math.round(r.top) + '|' + U; if (key === sig) return; sig = key;
     const rows = []; let k = 0;
-    preps.forEach((pr, pi) => { if (pi) k++; const ind = pi ? 230 * U : 0, n0 = rows.length; k = lay(pr, L + ind, Rr, r.top, lh, obs, 8 * U, rows, k, false); for (let q = n0; q < rows.length; q++) rows[q].x += ind; });   // the second and third paragraphs one column in
+    preps.forEach((pr, pi) => { if (pi) k++; const ind = pi ? 230 * U : 0, n0 = rows.length; k = lay(pr, L + ind, Rr + ind, r.top, lh, obs, 8 * U, rows, k, false); for (let q = n0; q < rows.length; q++) rows[q].x += ind; });   // the second and third paragraphs one column in
     paint(rows, pool, fl);
     while (rules.length < k + 2) { const d = document.createElement('i'); d.className = 'rl'; fl.prepend(d); rules.push(d); }
     rules.forEach((d, i) => { d.style.display = i <= k + 1 ? '' : 'none'; d.style.transform = `translateY(${(i * lh).toFixed(1)}px)`; });   // one line at the top of every row, through the empty rows too

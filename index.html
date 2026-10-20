@@ -38,10 +38,11 @@
   .name2 { font-size: calc(108 * var(--u)); line-height: .91; letter-spacing: -.01em; }
   .t18 { font-size: var(--t18); line-height: 1.08; letter-spacing: -.01em; }
   .ph { background: var(--ph); }
+  .bigrow .name2 { margin-left: -.026em; }   /* the big words stand with their first letter exactly on the column line (the font keeps a little room before each letter) */
   .card2 .m { overflow: visible; }   /* the cards' lines and letters fade up whole, never cut by a mask */
   .credit .sfav { display: inline-block; height: .72em; width: auto; vertical-align: -.02em; }   /* the Skip Design mark, as small as the heart */
-  .rest > .mrule { position: absolute; left: calc(710 * var(--u)); width: calc(670 * var(--u)); height: 0; border-top: 1px solid var(--rule); }   /* in Media: a ruled line level with each outlet, across its row */
-  .rest > .mdate { position: absolute; left: calc(1170 * var(--u)); width: calc(210 * var(--u)); opacity: .4; }   /* the date, grey, beside the thesis */
+  .rest > .mrule { position: absolute; left: calc(940 * var(--u)); width: calc(440 * var(--u)); height: 0; border-top: 1px solid var(--rule); }   /* in Media: a ruled line level with each outlet, across its row */
+  .rest > .mdate { position: absolute; left: calc(1170 * var(--u)); width: calc(210 * var(--u)); opacity: .4; text-align: right; }   /* flush with the right edge */   /* the date, grey, beside the thesis */
   .nav a, .top nav a { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; padding-bottom: .12em; transition: background-size .4s var(--ease); }   /* the menu: on hover an underline draws in from left to right */
   .nav a:hover, .top nav a:hover { background-size: 100% 1px; }
   @keyframes arrowSwap { 0% { transform: none; opacity: 1; } 42% { transform: translate(120%, -120%); opacity: 0; } 43% { transform: translate(-120%, 120%); opacity: 0; } 100% { transform: none; opacity: 1; } }
@@ -563,36 +564,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     ph.addEventListener('pointerdown', e => e.stopPropagation()); }   // no clay print on it; pointed at, it simply turns into the line drawing (CSS)
   one('.gray').style.setProperty('--imgL', 'url("photos/lisa-karen.jpg")');   // Karen and Lisa (dirtyhands.ru/about): one photo across both halves, Karen on the left, Lisa on the right
   one('.gray').style.setProperty('--imgR', 'url("photos/lisa-karen.jpg")');
-  // the photo of Karen and Lisa through a shader: the two of them are nearer than the wall behind, so as the page moves they move a little more than it, and they stand a touch forward: a feeling of volume. Without WebGL the plain photo stays
-  const grayGL = (() => {
-    const host = one('.gray'), cv = document.createElement('canvas'); cv.className = 'gray-gl'; const gl = cv.getContext('webgl'); if (!gl) return null;
-    const mk = (t, c) => { const sh = gl.createShader(t); gl.shaderSource(sh, c); gl.compileShader(sh); return gl.getShaderParameter(sh, gl.COMPILE_STATUS) ? sh : (console.warn(gl.getShaderInfoLog(sh)), null); };
-    const vs = mk(gl.VERTEX_SHADER, 'attribute vec2 a; varying vec2 v; void main(){ v = a * .5 + .5; gl_Position = vec4(a, 0., 1.); }');
-    const fs = mk(gl.FRAGMENT_SHADER, `precision highp float;
-      uniform sampler2D tex; uniform vec2 px; uniform float asp, t; varying vec2 v;
-      float near(vec2 p, vec2 c, float r) { return smoothstep(r, r * .35, length((p - c) * vec2(asp, 1.))); }   // how close to us this point is: the people are near, the wall behind them far
-      void main() {
-        vec2 p = vec2(v.x, 1. - v.y);
-        float d = max(near(p, vec2(.27, .44), .5), near(p, vec2(.74, .42), .5));   // Karen on the left, Lisa on the right
-        vec2 c = p.x < .5 ? vec2(.27, .44) : vec2(.74, .42);
-        vec2 q = p + vec2((t - .5) * .016, (.5 - t) * .07) * d;   // as the page moves they move a little more than the wall: depth
-        q = c + (q - c) / (1. + .035 * d);                         // and they stand a little forward, a touch larger
-        vec3 col = texture2D(tex, q).rgb * (.97 + .05 * d);
-        gl_FragColor = vec4(col, 1.);
-      }`);
-    if (!vs || !fs) return null;
-    const pr = gl.createProgram(); gl.attachShader(pr, vs); gl.attachShader(pr, fs); gl.linkProgram(pr); if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return null; gl.useProgram(pr);
-    const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
-    const loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-    const u = n => gl.getUniformLocation(pr, n); let ready = false, last = -1;
-    const img = new Image(); img.onload = () => { const tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-      [gl.TEXTURE_MIN_FILTER, gl.TEXTURE_MAG_FILTER].forEach(k => gl.texParameteri(gl.TEXTURE_2D, k, gl.LINEAR)); [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T].forEach(k => gl.texParameteri(gl.TEXTURE_2D, k, gl.CLAMP_TO_EDGE));
-      gl.uniform2f(u('px'), 1 / img.width, 1 / img.height); gl.uniform1f(u('asp'), img.width / img.height); ready = true; host.prepend(cv); host.classList.add('gl-on'); api.draw(.5, true); };
-    img.src = 'photos/lisa-karen.jpg';
-    const api = { place(top, w, h) { const d = Math.min(2, devicePixelRatio || 1); Object.assign(cv.style, { top: top + 'px', width: w + 'px', height: h + 'px' }); cv.width = Math.round(w * d); cv.height = Math.round(h * d); last = -1; },
-      draw(t, force) { if (!ready || (!force && Math.abs(t - last) < .002)) return; last = t; gl.viewport(0, 0, cv.width, cv.height); gl.uniform1f(u('t'), t); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4); } };
-    return api;
-  })();
+  const grayGL = null;   // the photo of Karen and Lisa stays a plain photo
 
   // ---- shader on one picture: the image lies on a slightly domed, glazed surface that turns in space as you scroll, with light and a highlight (a feeling of volume inside the frame)
   function shaderPicture(el, src) {
@@ -727,7 +699,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     // the photo of Karen and Lisa, split between the two halves of the block so it reads as one picture: the whole photo across the full width, never cropped (both faces stay in)
     { const gr = one('.gray'), w = gr.offsetWidth, h = gr.offsetHeight + 320 * U, sc = w / 1680, iw = 1680 * sc, ih = 850 * sc, ox = 0, oy = (160 + 420) * U - ih / 2;   // its middle 700 down the block, so it is seen on its own before the cards come
       gr.style.setProperty('--bgS', `${iw}px ${ih}px`); gr.style.setProperty('--bgL', `${ox}px ${oy}px`); gr.style.setProperty('--bgR', `${ox - w / 2}px ${oy}px`);
-      if (grayGL) { grayGL.place(oy - 160 * U, w, ih); grayGL.draw(.5, true); } }
+      if (grayGL) grayGL.place(oy - 160 * U, w, ih); }
     // the title stays pinned to the bottom while the whole table goes over it; then it leaves with the page
     ttlBox.style.height = (one('.s2').offsetTop / U + 1168 + 182.6) * U + 'px';   // pinned until the whole table (1168 high) has gone up past its top edge
   }
@@ -1246,14 +1218,8 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     m.w = w; m.h = h; m.drawn = -1; m.cv.width = w; m.cv.height = h; m.frames = [];
     const off = document.createElement('canvas'), c = makeClay({ cv: off, w, h, invert: true });
     const snap = () => { const fc = document.createElement('canvas'); fc.width = w; fc.height = h; c.render(); fc.getContext('2d').drawImage(off, 0, 0); m.frames.push(fc); };
-    // a small heart drawn with one finger in one go, each turned its own way: one on Karen's card, two on Lisa's, in the bottom right corner under the text
-    const n = m.idx === 0 ? 1 : 2;
-    for (let k = 0; k < n; k++) {
-      const cx = w * (0.72 + k * .13 + Math.random() * .04), cy = h * (0.74 + (k ? -.07 : 0) + Math.random() * .04), sz = h * (.0042 + Math.random() * .0012), rot = (Math.random() - .5) * 1.4;
-      const pts = Array.from({ length: 41 }, (_, i) => { const t = i / 40 * Math.PI * 2, x = 16 * Math.pow(Math.sin(t), 3), y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)); return [cx + (x * Math.cos(rot) - y * Math.sin(rot)) * sz, cy + (x * Math.sin(rot) + y * Math.cos(rot)) * sz]; });
-      let f = c.finger(pts[0][0], pts[0][1], { size: .38, load: 1.5 }); c.print(f);
-      for (let i = 1; i < pts.length; i++) { const [ax, ay] = pts[i - 1], [bx, by] = pts[i], d = Math.hypot(bx - ax, by - ay) || 1; f.x = ax; f.y = ay; f = c.autoSmear(f, (bx - ax) / d, (by - ay) / d, Math.max(2, d), 0.995); }
-    }
+    // a print the same as a click leaves on the page, in the bottom right corner under the text
+    c.variants[0].run(w * .78 + Math.random() * w * .05, h * .74 + Math.random() * h * .04);
     snap();
   }
   function drawMark(m, rev) {
