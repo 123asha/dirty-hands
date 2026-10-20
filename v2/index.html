@@ -40,6 +40,7 @@
   .ph { background: var(--ph); }
   .bigrow .name2 { margin-left: -.026em; }   /* the big words stand with their first letter exactly on the column line (the font keeps a little room before each letter) */
   .card2 .m { overflow: visible; }   /* the cards' lines and letters fade up whole, never cut by a mask */
+  .rest > a.credit { translate: -50% 0; }   /* centred from the stylesheet: the motion clears inline translate, which used to throw it off centre */
   .credit .sfav { display: inline-block; height: .83em; width: auto; vertical-align: -.07em; }   /* the Skip Design mark, a couple of pixels bigger than the heart */
   .rest > .mrule { display: none; }   /* Media has no ruled lines now */
   .rest > .mdate { position: absolute; left: calc(940 * var(--u)); width: calc(210 * var(--u)); opacity: .4; text-align: right; }   /* the date, grey, level with the outlet, flush right in the next column */
@@ -351,7 +352,7 @@
   <a class="t18 more" style="display:none;left:calc(710 * var(--u));top:calc(5111 * var(--u));" href="#story">More →</a>
   <div class="dot" style="left:calc(613 * var(--u));top:calc(4519.5 * var(--u));"></div>
   <div class="dot" style="display:none;left:calc(613 * var(--u));top:calc(4594.5 * var(--u));"></div>
-  <a class="t18 credit" style="left:50%;translate:-50% 0;top:calc(5069 * var(--u) + 100vh * 5 / 24);white-space:nowrap;" href="https://skip.design" target="_blank" rel="noopener">Made by <img class="sfav" src="skip-fav.png" alt="" aria-hidden="true"> <span style="text-decoration:underline;text-underline-offset:.18em;text-decoration-thickness:1px">Skip Design</span></a>
+  <a class="t18 credit" style="left:50%;top:calc(5069 * var(--u) + 100vh * 5 / 24);white-space:nowrap;" href="https://skip.design" target="_blank" rel="noopener">Made by <img class="sfav" src="skip-fav.png" alt="" aria-hidden="true"> <span style="text-decoration:underline;text-underline-offset:.18em;text-decoration-thickness:1px">Skip Design</span></a>
   <p class="t18 credit" style="left:0;top:calc(5088 * var(--u) + 100vh * 5 / 24);width:100%;text-align:center;">With love for Dirty Hands ♥</p>
   <div class="ph bar" style="--i:0;left:calc(20.00 * var(--u));top:calc(5207 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
   <div class="ph bar" style="--i:1;left:calc(250.17 * var(--u));top:calc(5207 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
