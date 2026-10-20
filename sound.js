@@ -32,18 +32,20 @@ function startSound() {
   // autumn outside: wind in gusts that never repeat (every second or three it picks a new strength and pitch and drifts to them), and dry leaves rustling, more of them the harder it blows
   { const w = C.createBufferSource(); w.buffer = nb; w.loop = true; const body = C.createBiquadFilter(); body.type = 'bandpass'; body.Q.value = .9; body.frequency.value = 480;
     const wh = C.createBiquadFilter(); wh.type = 'bandpass'; wh.Q.value = 9; wh.frequency.value = 1200; const whg = C.createGain(); whg.gain.value = .12;
-    const wg = C.createGain(); wg.gain.value = .03; const pan = C.createStereoPanner ? C.createStereoPanner() : null;
+    const wg = C.createGain(); wg.gain.value = .012; const pan = C.createStereoPanner ? C.createStereoPanner() : null;
     w.connect(body); body.connect(wg); w.connect(wh); wh.connect(whg); whg.connect(wg); if (pan) { wg.connect(pan); pan.connect(bus); } else wg.connect(bus); w.start();
     sGust = .3;
     (function gust() { const t = C.currentTime, calm = Math.random() < .25, k = calm ? Math.random() * .2 : .25 + Math.random() * .75, tc = .5 + Math.random() * 1.1;   // now and then it drops almost to nothing
-      sGust = k; wg.gain.setTargetAtTime(.012 + .075 * k, t, tc); body.frequency.setTargetAtTime(320 + 520 * k + Math.random() * 120, t, tc * 1.2); wh.frequency.setTargetAtTime(900 + 900 * k, t, tc);
+      sGust = k; wg.gain.setTargetAtTime(.005 + .03 * k, t, tc);   // the wind well in the background, quieter than it was
+      body.frequency.setTargetAtTime(320 + 520 * k + Math.random() * 120, t, tc * 1.2); wh.frequency.setTargetAtTime(900 + 900 * k, t, tc);
       if (pan) pan.pan.setTargetAtTime((Math.random() - .5) * .8, t, 2); setTimeout(gust, (1 + Math.random() * 2.2) * 1000); })(); }
   // clay after the kiln: once in a while it cracks, dry and short, with a dull knock under it
   // (no glaze pings: no bell-like sounds at all)
-  (function crack() { const t = C.currentTime + .05, src = C.createBufferSource(), lp = C.createBiquadFilter(), e = C.createGain(), th = C.createOscillator(), te = C.createGain();
+  (function crack() { const loud = Math.random() < .3 ? 2.6 : 1, t = C.currentTime + .05,   // now and then a crack much louder than the rest
+    src = C.createBufferSource(), lp = C.createBiquadFilter(), e = C.createGain(), th = C.createOscillator(), te = C.createGain();
     src.buffer = nb; lp.type = 'bandpass'; lp.frequency.value = 900 + Math.random() * 1400; lp.Q.value = .7;
-    e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(.09, t + .003); e.gain.exponentialRampToValueAtTime(.0001, t + .09 + Math.random() * .08);
-    th.type = 'sine'; th.frequency.setValueAtTime(140, t); th.frequency.exponentialRampToValueAtTime(70, t + .06); te.gain.setValueAtTime(0, t); te.gain.linearRampToValueAtTime(.05, t + .004); te.gain.exponentialRampToValueAtTime(.0001, t + .08);
+    e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(.09 * loud, t + .003); e.gain.exponentialRampToValueAtTime(.0001, t + .09 + Math.random() * .08);
+    th.type = 'sine'; th.frequency.setValueAtTime(140, t); th.frequency.exponentialRampToValueAtTime(70, t + .06); te.gain.setValueAtTime(0, t); te.gain.linearRampToValueAtTime(.05 * loud, t + .004); te.gain.exponentialRampToValueAtTime(.0001, t + .08);
     src.connect(lp); lp.connect(e); e.connect(bus); th.connect(te); te.connect(bus); src.start(t, Math.random() * 3, .2); th.start(t); th.stop(t + .1);
     setTimeout(crack, (12 + Math.random() * 16) * 1000); })();
   // clay baking in the kiln: a faint hot hiss and a thick scatter of tiny dry pops, like slip drying and sizzling on a hot surface; it swells and settles slowly, under everything else
