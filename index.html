@@ -54,7 +54,7 @@
   .gray-gl { position: absolute; left: 0; z-index: 0; transform: translateY(calc((var(--par, .5) - .5) * 640 * var(--u))); pointer-events: none; }   /* the shaded photo, moving as the plain one did */
   .gray.gl-on::before, .gray.gl-on::after { background-image: none !important; }
   .hc.snap .hc-alt, .hc.snap .hs b, .hc.snap .hs i { transition: none !important; }   /* at the restart the photo is there at once */
-  .pre { position: fixed; inset: 0; z-index: 3000; background-color: #fff; }
+  .pre { position: fixed; inset: 0; z-index: 3000; background-color: #fff; } .pre canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }   /* the preloader sheet across the whole screen (made at half size, stretched) */
   .ph-line { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
   .ph-line path { fill: none; stroke: #000; stroke-width: 6.5; stroke-linejoin: round; }   /* 6.5 of the drawing's 1080 is about one screen pixel on the small picture */
   .rest > .ph:not(.pic):not(.bar):hover { background-image: none !important; background-color: transparent; } .rest > .ph:not(.pic):not(.bar):hover .ph-line { opacity: 1; }   /* pointed at: white, only the line, no animation */
@@ -450,6 +450,7 @@ window.preDone = new Promise(done => {
 </script>
 <script src="sound.js?v=11"></script>
 <script>
+const HASH0 = location.hash; if (HASH0) history.replaceState(null, '', location.pathname + location.search);   // #cases or #about: the browser must not jump there under the preloader; the page glides there itself after the intro
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scrollTo(0, 0);   // the page always starts from the top: the intro is built for it
 // smooth scroll for the whole page (Lenis): the wheel glides on with a little inertia, the page itself still reads scrollY as before. It rests whenever the page is locked (the intro, an open view, the ending)
 const lenis = window.Lenis ? new Lenis({ lerp: 0.085, smoothWheel: true, wheelMultiplier: 0.9 }) : null;
@@ -1579,7 +1580,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   function intro(now) {
     lockScroll(true);                                // no scrolling while the cards drop and unfold
     tick(now);
-    if (now - t0 < INTRO) requestAnimationFrame(intro); else { introDone = true; lockScroll(false); if (location.hash && !intro._hash) { intro._hash = 1; const el = document.querySelector(location.hash); if (el) setTimeout(() => glideTo(el), 100); }   /* coming from the shop to About or Cases: after the intro the page glides there */ tick(); const tail = n => { tick(n); if (n - t0 < INTRO + 700) requestAnimationFrame(tail); }; requestAnimationFrame(tail); }   // keep laying out for a moment: the label of the row fades in after the cards have dropped
+    if (now - t0 < INTRO) requestAnimationFrame(intro); else { introDone = true; lockScroll(false); if (HASH0 && !intro._hash) { intro._hash = 1; const el = document.querySelector(HASH0); if (el) setTimeout(() => glideTo(el), 100); }   /* coming from the shop to About or Cases: after the intro the page glides there */ tick(); const tail = n => { tick(n); if (n - t0 < INTRO + 700) requestAnimationFrame(tail); }; requestAnimationFrame(tail); }   // keep laying out for a moment: the label of the row fades in after the cards have dropped
   }
 
   measure(); buildMotion();

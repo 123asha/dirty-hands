@@ -128,7 +128,8 @@
     const f18 = Math.min(18, 18 * U);
     if (!preps || preps.f !== f18) { preps = paras.map(t => PT.prepareWithSegments(t, `${f18}px "CoFo Sans"`, { letterSpacing: -0.01 * f18 })); preps.f = f18; fl.querySelectorAll('p').forEach(p => p.remove()); }
     const r = fl.getBoundingClientRect(), L = r.left, Rr = L + 440 * U, lh = LH * U, ht = mid.getBoundingClientRect().top;
-    const obs = [...its, ...falling].filter(it => it.box && MASK[it.src] && it.box.cx + it.box.S / 2 > L && it.box.cx - it.box.S / 2 < Rr);
+    const Q = 24 * U, stick = (it, k, v) => { const m = it._q || (it._q = {}); if (m[k] == null || Math.abs(v - m[k]) > Q) m[k] = v; return m[k]; };   // the text sees each work only once it has moved a fair way, so the lines re-break now and then, not on every pixel the hand moves
+    const obs = [...its.slice(0, 1), ...falling].filter(it => it.box && MASK[it.src] && it.box.cx + it.box.S / 2 > L && it.box.cx - it.box.S / 2 < Rr).map(it => ({ src: it.src, box: { cx: stick(it, 'x', it.box.cx), cy: stick(it, 'y', it.box.cy), S: stick(it, 's', it.box.S) } }));
     otl.style.top = ht + 'px';
     hws.forEach(h => { const e = h.el, b = h.band ?? (h.band = [...otl.querySelectorAll('.hl')].indexOf(e.parentNode)), base = e.offsetLeft + e.offsetWidth / 2, dx = wrapX(base, shelfOff[b] || 0) - base, th = (base + dx - innerWidth / 2) / (680 * U) * Math.PI / 2;   // the title's words go round with their shelves (and are never pushed by the trail)
       e.style.transform = Math.abs(dx) > .3 ? `translateX(${dx.toFixed(1)}px)` : ''; e.style.opacity = drumFade(Math.cos(th)).toFixed(3); });
