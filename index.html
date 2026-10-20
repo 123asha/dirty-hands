@@ -40,8 +40,8 @@
   .ph { background: var(--ph); }
   .bigrow .name2 { margin-left: -.026em; }   /* the big words stand with their first letter exactly on the column line (the font keeps a little room before each letter) */
   .card2 .m { overflow: visible; }   /* the cards' lines and letters fade up whole, never cut by a mask */
-  .rest > a.credit { translate: -50% 0; }
-  .rest > .eye { position: absolute; left: 50%; translate: -50% 0; width: calc(620 * var(--u)); height: calc(320 * var(--u)); display: block; cursor: pointer; }   /* an eye drawn in clay over the credit: it opens the page where you draw with your finger */
+  .rest > a.credit { left: 0 !important; right: 0; margin: 0 auto; width: max-content; translate: none !important; }   /* centred by its margins: no translate, which motion or a browser could double or clear */
+  .rest > .eye { position: absolute; left: 0; right: 0; margin: 0 auto; translate: none !important; width: calc(620 * var(--u)); height: calc(320 * var(--u)); display: block; cursor: pointer; }   /* an eye drawn in clay over the credit: it opens the page where you draw with your finger */
   .rest > .eye canvas { width: 100%; height: 100%; display: block; }   /* centred from the stylesheet: the motion clears inline translate, which used to throw it off centre */
   .credit .sfav { display: inline-block; height: .83em; width: auto; vertical-align: -.07em; }   /* the Skip Design mark, a couple of pixels bigger than the heart */
   .rest > .mrule { display: none; }   /* Media has no ruled lines now */
@@ -427,7 +427,7 @@ window.preDone = new Promise(done => {
   const by = yT + LH * R(.35, .62);   // the bar of the H, never quite in the middle
   const Hh = [line(hx + j(), yT + j(), hx + j(), yB + j() + R(0, .25) * LH), line(hx + BW + j(), yT + j() - R(0, .25) * LH, hx + BW + j(), yB + j() + R(0, .3) * LH), line(hx - R(10, 40), by + j() * .4, hx + BW + R(10, 50), by + j() * .6)];
   const SLANT = .2, strokes = [...D, ...Hh].map(P => hand(P, R(18, 70)).map(([x, y]) => [x + (innerHeight / 2 - y) * SLANT, y]));   // D: stem, then the bowl; H: two stems and the bar; the whole mark leaning to the right, as written in a hurry
-  { let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; strokes.forEach(P => P.forEach(([x, y]) => { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }));   // the whole mark in the middle of the screen
+  { let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; [...D, ...Hh].forEach(P => P.forEach(([x, y]) => { x += (innerHeight / 2 - y) * SLANT; x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }));   // the letters themselves in the middle of the screen (not the dry tails running on past them, which would pull it aside)
     const mx = innerWidth / 2 - (x0 + x1) / 2, my = innerHeight / 2 - (y0 + y1) / 2; strokes.forEach(P => P.forEach(q => { q[0] += mx; q[1] += my; })); }
   const lens = strokes.map(p => p.slice(1).reduce((a, q, i) => a + Math.hypot(q[0] - p[i][0], q[1] - p[i][1]), 0)), total = lens.reduce((a, b) => a + b, 0);
   let si = 0, pi = 0, f = null, done_ = 0;   // where the finger is: stroke, point, and how much of the way is written

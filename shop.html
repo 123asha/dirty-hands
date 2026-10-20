@@ -44,7 +44,7 @@
   .flow { position: relative; text-align: left; }
   .flow .rl { display: none; position: absolute; left: 0; right: 0; top: 0; height: 0; border-top: 1px solid #d9d9d9; pointer-events: none; }   /* ruled lines under the text, as in the table on the main page */
   .ln { position: absolute; left: 0; top: 0; white-space: pre; overflow: hidden; padding-bottom: .3em; margin-bottom: -.3em; }   /* room under the line: the tails of g and p are never cut */
-  .flow .ln { transition: transform .5s var(--ease); font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; }
+  .flow .ln { font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; }
   .ln .in { display: inline-block; animation: rise .9s var(--ease) both; }   /* the lines come up from below as they first appear, as on the main page */
   @keyframes rise { from { transform: translateY(150%); } }
   .mail { animation: fade .8s var(--ease) 1.1s both; } @keyframes fade { from { opacity: 0; } }
