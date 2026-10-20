@@ -27,7 +27,7 @@
   .s3 { z-index: 3; }
   .gray .grain { display: none !important;  position: absolute; inset: 0; z-index: 1; pointer-events: none; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  1 1 1 0 -1.2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E"); opacity: .09; mix-blend-mode: multiply; }   /* a very light grain over the photo of Karen and Lisa, under the cards */
   .gray { position: relative; margin: 0; height: calc(1080 * var(--u)); overflow: hidden; }   /* a block that scrolls with the page, with no grey fill of its own: first the photo of Karen and Lisa (it moves slower, parallax), then their two cards come up over it one after the other */
-  .rest { height: calc(5267 * var(--u)); }
+  .rest { height: calc(5527 * var(--u)); }   /* (260 more at the end: room for the eye over the credit) */
   /* vertical spacing, one rule for the page below (design px, from the visible bottom of one thing to the visible top of the next):
      20 inside a block (a number to its picture), 40 from a text to its link, 120 between the items of one section (case to case), 200 between sections */
   .t { font-weight: 400; white-space: nowrap; }
@@ -40,7 +40,9 @@
   .ph { background: var(--ph); }
   .bigrow .name2 { margin-left: -.026em; }   /* the big words stand with their first letter exactly on the column line (the font keeps a little room before each letter) */
   .card2 .m { overflow: visible; }   /* the cards' lines and letters fade up whole, never cut by a mask */
-  .rest > a.credit { translate: -50% 0; }   /* centred from the stylesheet: the motion clears inline translate, which used to throw it off centre */
+  .rest > a.credit { translate: -50% 0; }
+  .rest > .eye { position: absolute; left: 50%; translate: -50% 0; width: calc(460 * var(--u)); height: calc(240 * var(--u)); display: block; cursor: pointer; }   /* an eye drawn in clay over the credit: it opens the page where you draw with your finger */
+  .rest > .eye canvas { width: 100%; height: 100%; display: block; }   /* centred from the stylesheet: the motion clears inline translate, which used to throw it off centre */
   .credit .sfav { display: inline-block; height: .83em; width: auto; vertical-align: -.07em; }   /* the Skip Design mark, a couple of pixels bigger than the heart */
   .rest > .mrule { display: none; }   /* Media has no ruled lines now */
   .rest > .mdate { position: absolute; left: calc(940 * var(--u)); width: calc(210 * var(--u)); opacity: .4; text-align: right; }   /* the date, grey, level with the outlet, flush right in the next column */
@@ -53,7 +55,6 @@
   .gray.gl-on::before, .gray.gl-on::after { background-image: none !important; }
   .hc.snap .hc-alt, .hc.snap .hs b, .hc.snap .hs i { transition: none !important; }   /* at the restart the photo is there at once */
   .pre { position: fixed; inset: 0; z-index: 3000; background-color: #fff; }
-  .pre .pl { position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); top: 44vh; height: 0; border-top: 1px solid var(--rule); transform-origin: 0 50%; transform: scaleX(0); transition: transform 1.5s cubic-bezier(.65, 0, .35, 1); }   /* the page's strip, drawn in while the finger writes; it stays when the clay soaks away */ .pre canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }   /* the preloader sheet */
   .ph-line { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
   .ph-line path { fill: none; stroke: #000; stroke-width: 6.5; stroke-linejoin: round; }   /* 6.5 of the drawing's 1080 is about one screen pixel on the small picture */
   .rest > .ph:not(.pic):not(.bar):hover { background-image: none !important; background-color: transparent; } .rest > .ph:not(.pic):not(.bar):hover .ph-line { opacity: 1; }   /* pointed at: white, only the line, no animation */
@@ -353,8 +354,9 @@
   <a class="t18 more" style="display:none;left:calc(710 * var(--u));top:calc(5111 * var(--u));" href="#story">More →</a>
   <div class="dot" style="left:calc(613 * var(--u));top:calc(4519.5 * var(--u));"></div>
   <div class="dot" style="display:none;left:calc(613 * var(--u));top:calc(4594.5 * var(--u));"></div>
-  <a class="t18 credit" style="left:50%;top:calc(5069 * var(--u) + 100vh * 5 / 24);white-space:nowrap;" href="https://skip.design" target="_blank" rel="noopener">Made by <img class="sfav" src="skip-fav.png" alt="" aria-hidden="true"> <span style="text-decoration:underline;text-underline-offset:.18em;text-decoration-thickness:1px">Skip Design</span></a>
-  <p class="t18 credit" style="left:0;top:calc(5088 * var(--u) + 100vh * 5 / 24);width:100%;text-align:center;">With love for Dirty Hands ♥</p>
+  <a class="eye" href="draw.html" aria-label="Draw with your finger" style="top:calc(5069 * var(--u) + 100vh * 5 / 24);"><canvas></canvas></a>
+  <a class="t18 credit" style="left:50%;top:calc(5329 * var(--u) + 100vh * 5 / 24);white-space:nowrap;" href="https://skip.design" target="_blank" rel="noopener">Made by <img class="sfav" src="skip-fav.png" alt="" aria-hidden="true"> <span style="text-decoration:underline;text-underline-offset:.18em;text-decoration-thickness:1px">Skip Design</span></a>
+  <p class="t18 credit" style="left:0;top:calc(5348 * var(--u) + 100vh * 5 / 24);width:100%;text-align:center;">With love for Dirty Hands ♥</p>
   <div class="ph bar" style="--i:0;left:calc(20.00 * var(--u));top:calc(5207 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
   <div class="ph bar" style="--i:1;left:calc(250.17 * var(--u));top:calc(5207 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
   <div class="ph bar" style="--i:2;left:calc(480.34 * var(--u));top:calc(5207 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
@@ -410,7 +412,7 @@ window.preDone = new Promise(done => {
   window.scrollLocked = true;   // no scrolling under the sheet (a lock that leaves the scrollbar alone, so nothing shifts when it lifts)
   const S = 0.5, cv = pre.querySelector('canvas'), w = Math.round(innerWidth * S), h = Math.round(innerHeight * S), c = makeClay({ cv, w, h });   // made at half size and stretched: soft clay loses nothing, and it is ready six times sooner
   // a finger writes D and H in clay across the middle of the sheet, stroke by stroke, lifting between them (sizes in css px)
-  const LH = Math.min(210, innerHeight * .252),   /* sweeping, as if drawn across the sheet with a whole finger, but not too big (a fifth bigger than it was) */ BW = LH * .86, GAP = LH * .46,   /* wide letters (the strokes as thick as before) */ x0 = (innerWidth - (BW * 2 + GAP)) / 2, yT = innerHeight / 2 - LH / 2, yB = yT + LH;
+  const LH = Math.min(168, innerHeight * .2),   /* sweeping, as if drawn across the sheet with a whole finger, but not too big */ BW = LH * .95, GAP = LH * .48,   /* wide letters (the strokes as thick as before) */ x0 = (innerWidth - (BW * 2 + GAP)) / 2, yT = innerHeight / 2 - LH / 2, yB = yT + LH;
   // written by hand, not drawn: each letter a little askew, every stroke wobbling and running on past its end, the clay thinning out as it goes, so the ends are rubbed and dry
   // written by hand, quickly and badly, as a finger would: every stroke leaning its own way, starting and stopping a little off, running on well past its end, wobbling, the clay thinning out so the ends are dry and rubbed
   const R = (a, b) => a + Math.random() * (b - a), j = () => R(-.14, .14) * LH;
@@ -436,8 +438,6 @@ window.preDone = new Promise(done => {
       done_ += d; pi++; if (pi >= P.length) { si++; pi = 0; }   // the end of a stroke: it lifts
     }
   };
-  const pl = pre.insertBefore(Object.assign(document.createElement('i'), { className: 'pl' }), cv); requestAnimationFrame(() => requestAnimationFrame(() => { pl.style.transform = 'scaleX(1)'; }));   // the strip across the sheet, drawn with the letters
-  window.preStrip = true;   // the page's own strip is there from the start: it takes over from this one
   const t1 = performance.now(), DUR = 1500;
   (function step(now) { const k = Math.min(1, (now - t1) / DUR), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;   // slow in, slow out
     advance(e * total + (k >= 1 ? 1 : 0)); c.render();
@@ -1052,14 +1052,17 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       gsap.fromTo(inn, { xPercent: -100, scale: 1.15 }, { xPercent: 0, scale: 1, duration: 1.1, ease: 'power3.inOut', onComplete: () => inn.remove() });
       gsap.to([...capEl.querySelectorAll('.mi'), ...bEl.querySelectorAll('.mi')], { yPercent: -150, duration: .35, ease: 'power2.in', stagger: .02, onComplete: () => { ({ inC: inCap, inB, rl: rlNow } = fillText(j)); gsap.fromTo([...inCap, ...inB], { yPercent: 150 }, { yPercent: 0, duration: .8, ease: EASE, stagger: .05 }); gsap.set(rlNow, { scaleX: 1 }); } });
       gsap.to([...track.children], { autoAlpha: 0, x: -30, duration: .3, stagger: .03, onComplete: () => { gsap.killTweensOf(track); gsap.set(track, { x: 0 }); sx = 0; fillTrack(j); gsap.fromTo([...track.children], { autoAlpha: 0, x: 70 }, { autoAlpha: 1, x: 0, duration: .8, ease: EASE, stagger: .06 }); } });
-      // the page under it: the new card comes to where the first one stood, and the names glide to their places on the page as they are there
-      const before = new Map(held.map(({ p }) => [p, p.getBoundingClientRect()])); putBack();
+      // the names stay exactly where they are: only which one is black changes
+      held.forEach(({ p }) => gsap.to(p, { opacity: p === partners[j] ? 1 : .3, duration: .4, ease: 'power2.out' }));
+      // the page under it moves, unseen, to the new card, so closing lands on it (the held names are fixed to the screen and do not move with it)
       const pr = pe[j].getBoundingClientRect(), y = Math.max(0, Math.min(document.documentElement.scrollHeight - innerHeight, scrollY + pr.top - r.top));
-      if (lenis) lenis.scrollTo(y, { immediate: true, force: true }); else scrollTo(0, y); tick(); hold();
-      held.forEach(({ p }) => { const a = before.get(p), b = p.getBoundingClientRect(); gsap.set(p, { opacity: p === partners[j] ? 1 : .3 }); if (a) gsap.from(p, { x: a.left - b.left, y: a.top - b.top, duration: .9, ease: 'power3.inOut' }); });
+      if (lenis) lenis.scrollTo(y, { immediate: true, force: true }); else scrollTo(0, y);
       const nr = pe[j].getBoundingClientRect(); Object.assign(R, { left: nr.left, top: nr.top, width: nr.width, height: nr.height }); picTw.invalidate();   // closing folds the picture onto this card
       if (typeof soundNudge === 'function') soundNudge(.5); };
-    openView = { swap, close() { if (CV.scrollTop > 1) gsap.to(CV, { scrollTop: 0, duration: .35, ease: 'power2.inOut', onComplete: () => tl.timeScale(1.7).reverse() }); else tl.timeScale(1.7).reverse(); } };   // back to the top of the view first: the picture then folds exactly onto its place on the page
+    const settle = () => {   // closing after a switch: the names glide from where they stand over the case to their places on the page for this card, while the picture folds onto it
+      if (cur === i) return; const before = new Map(held.map(({ p }) => [p, p.getBoundingClientRect()])); putBack(); hold();
+      held.forEach(({ p }) => { const a = before.get(p), b = p.getBoundingClientRect(); gsap.fromTo(p, { x: a ? a.left - b.left : 0, y: a ? a.top - b.top : 0, opacity: gsap.getProperty(p, 'opacity') }, { x: 0, y: 0, opacity: 1, duration: .9, ease: 'power3.inOut' }); }); };
+    openView = { swap, close() { settle(); if (CV.scrollTop > 1) gsap.to(CV, { scrollTop: 0, duration: .35, ease: 'power2.inOut', onComplete: () => tl.timeScale(1.7).reverse() }); else tl.timeScale(1.7).reverse(); } };   // back to the top of the view first: the picture then folds exactly onto its place on the page
     tl.timeScale(1).play();
   }
   // ---- a category: its short text in front, its works on a cylinder behind; the picture that was clicked bulges first, the others come round the cylinder beside it
@@ -1261,6 +1264,34 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     glideRaf = busy ? requestAnimationFrame(glideTable) : 0; if (!busy) glideT = 0;
   }
 
+  // ---- the eye over the credit: written in clay by a finger, stroke by stroke, as the DH of the preloader, when it comes into sight
+  { const eye = one('.rest > .eye'), cv = eye && eye.querySelector('canvas');
+    if (eye && cv && typeof makeClay === 'function' && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver(es => { if (!es.some(e => e.isIntersecting)) return; io.disconnect();
+        const w = Math.round(eye.offsetWidth), h = Math.round(eye.offsetHeight), c = makeClay({ cv, w, h }), K = w / 460;   // drawn at css size; strokes as wide as a finger's
+        const R = (a, b) => a + Math.random() * (b - a), cx = w / 2, cy = h * .52, A = w * .3, B = h * .3;   // room all round for the strokes running on
+        const curve = (n, f) => Array.from({ length: n + 1 }, (_, k) => { const [x, y] = f(k / n); return [x + R(-1.5, 1.5) * K, y + R(-1.5, 1.5) * K]; });
+        const strokes = [
+          curve(28, t => [cx - A - 6 * K + (2 * A + 10 * K) * t, cy - B * Math.sin(Math.PI * t) - 4 * K * t]),                  // the upper lid
+          curve(30, t => [cx + A * 1.2 - A * 2.45 * t, cy - B * .12 + B * .95 * Math.sin(Math.PI * Math.min(1, t * 1.05))]),    // the lower lid, running on past the corner as a hand would
+          curve(30, t => { const a = -Math.PI / 2 + t * Math.PI * 2.2, r = B * .66; return [cx + 4 * K + Math.cos(a) * r, cy - B * .04 + Math.sin(a) * r * .96]; })   // the iris, round and round once
+        ];
+        const lens = strokes.map(p => p.slice(1).reduce((a, q, k) => a + Math.hypot(q[0] - p[k][0], q[1] - p[k][1]), 0)), total = lens.reduce((a, b) => a + b, 0);
+        let si = 0, pi = 0, f = null, done = 0;
+        const advance = to => { while (si < strokes.length && done < to) { const P = strokes[si];
+          if (pi === 0) { f = c.finger(P[0][0], P[0][1], { size: R(.62, .72) * K, load: R(1.7, 2), ang: R(-.25, .25) }); c.print(f); pi = 1; }
+          const [ax, ay] = P[pi - 1], [bx, by] = P[pi], d = Math.hypot(bx - ax, by - ay);
+          if (d > 0) { f.x = ax; f.y = ay; f = c.autoSmear(f, (bx - ax) / d, (by - ay) / d, Math.max(2, d), .99); }
+          done += d; pi++; if (pi >= P.length) { si++; pi = 0; } } };
+        const t1 = performance.now(), DUR = 1600;
+        (function step(now) { const k = Math.min(1, (now - t1) / DUR), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+          advance(e * total + (k >= 1 ? 1 : 0));
+          if (k >= 1) c.print(c.finger(cx + 4 * K, cy - B * .04, { size: .5 * K, load: 2.6, ang: 0 }));   // and the pupil pressed in last
+          c.render(); if (k < 1) requestAnimationFrame(step); })(t1);
+      }, { threshold: .4 });
+      io.observe(eye);
+    } }
+
   // ---- one clay mark on each of the Lisa and Karen cards, made by the same clay as the live marks: a finger print or a longer smear, placed at random, drawn in as the card scrolls up
   const cardMarks = [lisa, karen].map((card, idx) => { const cv = document.createElement('canvas'); cv.className = 'cmark'; card.prepend(cv); return { card, cv, idx, smear: false, w: 0, h: 0, drawn: -1 }; });
   setTimeout(() => cardMarks.forEach(m => { if (!m.frames) makeMark(m); }), 2500);   // made once, ahead of time, so the scroll does not stall on it
@@ -1374,7 +1405,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const pc = texts.map(p => +p.dataset.c0);                         // fixed middles: the flow moves the paragraphs, but must not move the wheel
     let p = 0; for (let j = 0; j < pc.length - 1; j++) if (py > pc[j]) p = j + Math.min(1, (py - pc[j]) / (pc[j + 1] - pc[j]));   // 0 until the first paragraph, 5 from the last one on, turning with the scroll in between
     midStrip.classList.toggle('off', landed);                                              // gone once the table's first line has taken its place
-    midStrip.style.opacity = landed ? '' : window.preStrip ? '1' : clamp((now - t0 - (INTRO - 300)) / 500).toFixed(3);   // (drawn by the preloader: it simply stays)
+    midStrip.style.opacity = landed ? '' : clamp((now - t0 - (INTRO - 300)) / 500).toFixed(3);
     // the table is open from the landing of the cards until its last row reaches the middle of the screen
     const lastRow = texts[texts.length - 1].getBoundingClientRect(), lastRowMid = (lastRow.top + lastRow.height / 2) / U;
     // opens at the landing; goes away before the landing when you scroll back (the table first, then only its first line is left); and when its last row is in the middle
