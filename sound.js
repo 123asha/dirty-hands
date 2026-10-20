@@ -74,11 +74,15 @@ function leaf(t, g) {                                                    // one 
   e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(g * (.4 + Math.random() * .6), t + .002 + Math.random() * .006); e.gain.exponentialRampToValueAtTime(.0001, t + len);
   src.connect(hp); hp.connect(bp); bp.connect(e); if (pn) { pn.pan.value = (Math.random() - .5) * 1.6; e.connect(pn); pn.connect(sLeafOut); } else e.connect(sLeafOut);
   src.start(t, Math.random() * .4, len + .01); }
-function placeSound() {                                                 // a work set down on a shelf: a soft, dull ceramic knock, a low body and a short dry click, no ring
+function placeSound() {                                                 // a work set down on a shelf: a ceramic knock and clink: a low body, a short dry click and the clay's own short ring
   if (!actx || !sOn) return; const C = actx, t = C.currentTime + .01, o = C.createOscillator(), e = C.createGain(), src = C.createBufferSource(), bp = C.createBiquadFilter(), ce = C.createGain();
   o.type = 'sine'; o.frequency.setValueAtTime(190 + Math.random() * 60, t); o.frequency.exponentialRampToValueAtTime(110, t + .07); e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(.09, t + .004); e.gain.exponentialRampToValueAtTime(.0001, t + .12);
   src.buffer = sLeafBuf; bp.type = 'bandpass'; bp.frequency.value = 1400 + Math.random() * 600; bp.Q.value = 1.2; ce.gain.setValueAtTime(.05, t); ce.gain.exponentialRampToValueAtTime(.0001, t + .03);
-  o.connect(e); e.connect(sMaster); src.connect(bp); bp.connect(ce); ce.connect(sMaster); o.start(t); o.stop(t + .15); src.start(t, Math.random() * .4, .04); }
+  o.connect(e); e.connect(sMaster); src.connect(bp); bp.connect(ce); ce.connect(sMaster); o.start(t); o.stop(t + .15); src.start(t, Math.random() * .4, .04);
+  // and the clay itself answers: a short clink of fired ceramic, a few uneven partials (as in a cup or a tile), dying fast so it never rings like a bell
+  const f0 = 900 + Math.random() * 700, cl = .45 + Math.random() * .55;
+  [[1, .05, .35], [2.32, .03, .18], [4.25, .018, .09], [6.63, .01, .05]].forEach(([r, g, d]) => { const p = C.createOscillator(), pe = C.createGain(); p.type = 'sine'; p.frequency.value = f0 * r * (1 + (Math.random() - .5) * .01);
+    pe.gain.setValueAtTime(0, t); pe.gain.linearRampToValueAtTime(g * cl, t + .002); pe.gain.exponentialRampToValueAtTime(.0001, t + d); p.connect(pe); pe.connect(sMaster); p.start(t); p.stop(t + d + .02); }); }
 function setSound(on) {
   sOn = on; sndBtn.setAttribute('aria-pressed', on); if (on && !actx) startSound(); if (!actx) return;
   if (actx.state === 'suspended') actx.resume();
