@@ -10,7 +10,7 @@
 <style>
   @font-face { font-family: "CoFo Cinema"; src: url("CoFoCinema1909-Regular.otf") format("opentype"); font-weight: 400; font-display: swap; }
   @font-face { font-family: "CoFo Sans"; src: url("CoFoSans-Regular450.woff2") format("woff2"); font-weight: 400; font-display: swap; }
-  :root { --t18: min(18px, calc(18 * var(--u))); --bg: #fff; --ink: #000; --u: calc(var(--W, 100vw) / 1400); --ph: rgba(169,169,169,.15); --gray: #f2f2f2; --rule: #d9d9d9; --dur: .6s; --ease: cubic-bezier(.2,.8,.2,1); }
+  :root { --t18: calc(18 * var(--u)); --l18: calc(18 * var(--u)); --bg: #fff; --ink: #000; --u: calc(var(--W, 100vw) / 1400); --ph: rgba(169,169,169,.15); --gray: #f2f2f2; --rule: #d9d9d9; --dur: .6s; --ease: cubic-bezier(.2,.8,.2,1); }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #fff; --ink: #000; } }
   :root[data-theme="dark"] { --bg: #fff; --ink: #000; }
   * { box-sizing: border-box; }
@@ -36,18 +36,18 @@
   .big2 { font-size: calc(108 * var(--u)); line-height: .91; letter-spacing: -.01em; }
   .name { font-size: calc(52 * var(--u)); line-height: .91; letter-spacing: -.01em; }
   .name2 { font-size: calc(108 * var(--u)); line-height: .91; letter-spacing: -.01em; }
-  .t18 { font-size: var(--t18); line-height: 1.08; letter-spacing: -.01em; }
+  .t18 { font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; }
   .ph { background: var(--ph); }
   .bigrow .name2 { margin-left: -.026em; }   /* the big words stand with their first letter exactly on the column line (the font keeps a little room before each letter) */
   .card2 .m { overflow: visible; }   /* the cards' lines and letters fade up whole, never cut by a mask */
-  .credit .sfav { display: inline-block; height: .72em; width: auto; vertical-align: -.02em; }   /* the Skip Design mark, as small as the heart */
-  .rest > .mrule { position: absolute; left: calc(940 * var(--u)); width: calc(440 * var(--u)); height: 0; border-top: 1px solid var(--rule); }   /* in Media: a ruled line level with each outlet, across its row */
-  .rest > .mdate { position: absolute; left: calc(1170 * var(--u)); width: calc(210 * var(--u)); opacity: .4; text-align: right; }   /* flush with the right edge */   /* the date, grey, beside the thesis */
+  .credit .sfav { display: inline-block; height: .83em; width: auto; vertical-align: -.07em; }   /* the Skip Design mark, a couple of pixels bigger than the heart */
+  .rest > .mrule { display: none; }   /* Media has no ruled lines now */
+  .rest > .mdate { position: absolute; left: calc(940 * var(--u)); width: calc(210 * var(--u)); opacity: .4; text-align: right; }   /* the date, grey, level with the outlet, flush right in the next column */
   .nav a, .top nav a { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; padding-bottom: .12em; transition: background-size .4s var(--ease); }   /* the menu: on hover an underline draws in from left to right */
   .nav a:hover, .top nav a:hover { background-size: 100% 1px; }
   @keyframes arrowSwap { 0% { transform: none; opacity: 1; } 42% { transform: translate(120%, -120%); opacity: 0; } 43% { transform: translate(-120%, 120%); opacity: 0; } 100% { transform: none; opacity: 1; } }
   .ctl:hover svg, .shop:hover svg, a.ct:hover svg { animation: arrowSwap .55s cubic-bezier(.4, 0, .2, 1); }   /* on hover the arrow flies off up and to the right and a new one comes in from below */
-  .card2 .cf { font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; opacity: .4; margin: 0; }   /* grey, on the first band under the name */
+  .card2 .cf { font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; opacity: .4; margin: 0; }   /* grey, on the first band under the name */
   .gray-gl { position: absolute; left: 0; z-index: 0; transform: translateY(calc((var(--par, .5) - .5) * 640 * var(--u))); pointer-events: none; }   /* the shaded photo, moving as the plain one did */
   .gray.gl-on::before, .gray.gl-on::after { background-image: none !important; }
   .hc.snap .hc-alt, .hc.snap .hs b, .hc.snap .hs i { transition: none !important; }   /* at the restart the photo is there at once */
@@ -60,11 +60,11 @@
   /* menu: rises with the scroll from its place in the hero, then stays 20 from the top (top is set in tick); white + difference, like the title, so it stays readable over blocks */
   .hero > .nav { position: fixed; top: calc(44vh + 12 * var(--u)); z-index: 101; color: #fff; mix-blend-mode: difference; }
   .nav { display: flex; gap: calc(12 * var(--u)); font-size: var(--t18); line-height: .91; letter-spacing: -.01em; }
-  .row { display: flex; gap: calc(31 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; position: absolute; }
+  .row { display: flex; gap: calc(31 * var(--u)); font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; position: absolute; }
   .row p { width: calc(250 * var(--u)); }
   .card2 .row { gap: 0 !important; }
   .card2 .row { align-items: flex-start; }   /* the number stands on the first line of its paragraph */
-  .card2 .row .n { flex: none; width: calc(34 * var(--u)); line-height: calc(18 * var(--u)); }   /* the Lisa and Karen cards are one column wide: the text stands right by its number */
+  .card2 .row .n { flex: none; width: calc(34 * var(--u)); line-height: var(--l18); }   /* the Lisa and Karen cards are one column wide: the text stands right by its number */
   .card2 .row p { width: calc(231 * var(--u)); }   /* 20 of free space on the right of the text */
   .n { width: calc(40 * var(--u)); opacity: .3; font-size: var(--t18); line-height: .91; flex: none; }
   .rules { pointer-events: none; }
@@ -122,7 +122,7 @@
   /* big title: sticks to the bottom of the screen through blocks 1-2, then rests above the gray block */
   .ttl { position: absolute; left: 0; top: 0; width: 100%; height: calc(100vh + 1559.3 * var(--u)); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; z-index: 100; mix-blend-mode: difference; }  /* above everything; inverts wherever it crosses text or blocks */
   .ttl .h1 { color: #fff; pointer-events: auto; position: sticky; bottom: calc(21.7 * var(--u)); height: calc(182.6 * var(--u)); margin: 0 calc(20 * var(--u)); text-align: center; white-space: nowrap; }
-  .rt { width: calc(230 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; }
+  .rt { width: calc(230 * var(--u)); font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; }
   .rt .ln { display: block; white-space: nowrap; overflow: hidden; padding-bottom: .2em; margin-bottom: -.2em; transition: transform .42s var(--ease); }   /* the line mask; the line itself glides aside when the picture comes close */
   .rt .li { display: block; }
   /* line masks: text rises out of its own line */
@@ -171,7 +171,7 @@
   /* imprint tools: a small list in the corner, white + difference like the title and menu */
   .tools { position: fixed; left: calc(20 * var(--u)); bottom: calc(20 * var(--u)); z-index: 120; display: flex; flex-direction: column; align-items: flex-start; color: #fff; mix-blend-mode: difference; font-size: var(--t18); }
   .tools[hidden] { display: none; }
-  .tools button { all: unset; cursor: pointer; line-height: calc(18 * var(--u)); letter-spacing: -.01em; opacity: .4; transition: opacity var(--dur) var(--ease); }
+  .tools button { all: unset; cursor: pointer; line-height: var(--l18); letter-spacing: -.01em; opacity: .4; transition: opacity var(--dur) var(--ease); }
   .tools button:hover, .tools button[aria-pressed="true"] { opacity: 1; }
   .tools button:focus-visible { outline: 1px solid currentColor; outline-offset: 2px; }
   /* clay prints left by a click */
@@ -218,21 +218,24 @@
   .cat-ico { position: absolute; left: 50%; top: 45%; width: 70vh; height: 70vh; translate: -50% -50%; opacity: 0; pointer-events: none; }   /* the category's form, drawn as one grey line, large, behind its works */
   .cat-ico svg { width: 100%; height: 100%; overflow: visible; }
   .cat-ico path { fill: none; stroke: #c8c8c8; stroke-linejoin: round; stroke-linecap: round; }   /* no non-scaling stroke here: it breaks the dash the line is drawn with into pieces */
-  .cat-text { position: absolute; left: 50%; bottom: calc(20 * var(--u)); width: calc(210 * var(--u)); margin-left: calc(-105 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; text-align: center; z-index: 2; }   /* the body text, one column wide, centred, down at the bottom of the screen 20 above its edge */
+  .cat-text { position: absolute; left: 50%; bottom: calc(20 * var(--u)); width: calc(210 * var(--u)); margin-left: calc(-105 * var(--u)); font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; text-align: center; z-index: 2; }   /* the body text, one column wide, centred, down at the bottom of the screen 20 above its edge */
   .hc.hov { cursor: pointer; }
   .cd-pic { position: absolute; background: var(--gray) center / cover no-repeat; }
-  .cd-rules { position: absolute; left: calc(940 * var(--u)); top: calc(60 * var(--u)); width: calc(440 * var(--u)); height: calc(57 * var(--u)); }
+  .cd-rules { position: absolute; left: calc(940 * var(--u)); top: calc(60 * var(--u)); width: calc(440 * var(--u)); height: calc(54 * var(--u)); }
   .cd-cap { position: absolute; left: calc(940 * var(--u)); top: calc(60 * var(--u)); width: calc(440 * var(--u)); }
   .cd-a, .cd-b { position: absolute; width: calc(210 * var(--u)); }
   .pic { cursor: pointer; } a.more { cursor: pointer; }
   /* while a view is open the pointer is a "Close" label */
   .close-cursor { position: fixed; left: 0; top: 0; z-index: 1000; pointer-events: none; display: flex; gap: .35em; align-items: center; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; opacity: 0; transition: opacity .25s ease-out, filter .25s ease-out; }
-  .close-cursor.away { opacity: 0 !important; filter: blur(6px); }   /* over a case's pictures Close melts away: a click there does nothing */
+  .close-cursor.away { opacity: 0 !important; filter: blur(6px); }
+  .close-cursor .lt, .close-cursor svg { display: inline-block; transition: transform .5s cubic-bezier(.5, 0, .3, 1) calc(var(--i, 0) * 60ms), opacity .4s ease-in calc(var(--i, 0) * 60ms + 100ms); }
+  .close-cursor.gone .lt, .close-cursor.gone svg { transform: translateY(-80%); opacity: 0; }   /* on closing, Close goes up and away one letter after another */   /* over a case's pictures Close melts away: a click there does nothing */
   html.case-open .hero > .nav, html.case-open .ct { z-index: 402; }   /* the menu over an open case */
   html.ov-open, html.ov-open * { cursor: none !important; }
+  html.ov-open.ov-arrow, html.ov-open.ov-arrow * { cursor: default !important; }   /* over a case's pictures, where Close melts away, the plain arrow */
   html.on-story, html.on-story * { cursor: none !important; }
   .sflow { pointer-events: none; }
-  .sflow .sl { position: absolute; left: 0; white-space: pre; font-size: var(--t18); line-height: calc(19 * var(--u)); letter-spacing: -.01em; }   /* over the Story paragraphs the pointer itself says More, as it says Close over an open view */
+  .sflow .sl { position: absolute; left: 0; white-space: pre; font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; }   /* over the Story paragraphs the pointer itself says More, as it says Close over an open view */
 </style>
 </head>
 <body>
@@ -276,8 +279,8 @@
 <section class="s3">
   <div class="gray">
     <i class="grain" aria-hidden="true"></i>
-    <div class="card2" id="lisa" style="left:calc(20 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, one of the two founders of DirtyHands.</p></div><div class="row" style="left:0;top:calc(90 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Pairs professional design with artistic intuition to bring unconventional ideas to life.</p></div></div><p class="t name" style="left:calc(34 * var(--u));top:calc(256 * var(--u))">Karen</p><p class="cf" style="left:calc(34 * var(--u));top:calc(339 * var(--u))">Co-founder Dirty Hands</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
-    <div class="card2" id="karen" style="left:calc(710 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, co-founder of DirtyHands together with Karen.</p></div><div class="row" style="left:0;top:calc(90 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Sees ceramics beyond plates and pots, as objects that shape the mood and character of a room.</p></div></div><p class="t name" style="left:calc(34 * var(--u));top:calc(256 * var(--u))">Lisa</p><p class="cf" style="left:calc(34 * var(--u));top:calc(339 * var(--u))">Co-founder Dirty Hands</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
+    <div class="card2" id="lisa" style="left:calc(20 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, one of the two founders of DirtyHands.</p></div><div class="row" style="left:0;top:calc(90 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Pairs professional design with artistic intuition to bring unconventional ideas to life.</p></div></div><p class="t name" style="left:calc(34 * var(--u));top:calc(256 * var(--u))">Karen</p><p class="cf" style="left:calc(34 * var(--u));top:calc(339 * var(--u))">Co-founder, Dirty Hands</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
+    <div class="card2" id="karen" style="left:calc(710 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, co-founder of DirtyHands together with Karen.</p></div><div class="row" style="left:0;top:calc(90 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Sees ceramics beyond plates and pots, as objects that shape the mood and character of a room.</p></div></div><p class="t name" style="left:calc(34 * var(--u));top:calc(256 * var(--u))">Lisa</p><p class="cf" style="left:calc(34 * var(--u));top:calc(339 * var(--u))">Co-founder, Dirty Hands</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
   </div>
 </section>
 
@@ -292,7 +295,7 @@
 
   <div class="plab" style="left:0;top:calc(613 * var(--u));width:100%;height:calc(709 * var(--u));"><div class="plab-in">
     <p class="t18" style="left:calc(20 * var(--u));opacity:.4">Clients about us</p>
-    <div class="quote" style="left:calc(250 * var(--u));width:calc(210 * var(--u));"><div class="rules" data-n="3" data-step="19" style="left:0;top:0;width:100%;height:calc(38 * var(--u));"></div><p class="t18 q" style="line-height:calc(19 * var(--u));"></p></div>
+    <div class="quote" style="left:calc(250 * var(--u));width:calc(210 * var(--u));"><div class="rules" data-n="3" data-step="18" style="left:0;top:0;width:100%;height:calc(36 * var(--u));"></div><p class="t18 q" style="line-height:var(--l18);"></p></div>
   </div></div>
   <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(621.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">The Greeks</span></p>
   <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(738.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">Novikov</span></p>
@@ -302,19 +305,19 @@
 
   <div class="ph pic" id="cases" style="left:calc(20 * var(--u));top:calc(1295 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
   <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(1258 * var(--u))">Restaurant</span>
-  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(1295 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(1295 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <div class="rules cap" data-n="4" data-step="18" style="left:calc(710 * var(--u));top:calc(1295 * var(--u));width:calc(210 * var(--u));height:calc(54 * var(--u));"></div>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(1295 * var(--u));width:calc(210 * var(--u));line-height:var(--l18)">Artful wall compositions bring depth, texture, and character to your space.</p>
   <div class="ph pic" style="left:calc(250 * var(--u));top:calc(1988 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
-  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(1988 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(1988 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <div class="rules cap" data-n="4" data-step="18" style="left:calc(710 * var(--u));top:calc(1988 * var(--u));width:calc(210 * var(--u));height:calc(54 * var(--u));"></div>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(1988 * var(--u));width:calc(210 * var(--u));line-height:var(--l18)">Artful wall compositions bring depth, texture, and character to your space.</p>
   <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(1951 * var(--u))">Restaurant</span>
   <div class="ph pic" style="left:calc(20 * var(--u));top:calc(2603 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
   <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(2566 * var(--u))">Members’ club</span>
-  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(2603 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(2603 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <div class="rules cap" data-n="4" data-step="18" style="left:calc(710 * var(--u));top:calc(2603 * var(--u));width:calc(210 * var(--u));height:calc(54 * var(--u));"></div>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(2603 * var(--u));width:calc(210 * var(--u));line-height:var(--l18)">Artful wall compositions bring depth, texture, and character to your space.</p>
   <div class="ph pic" style="left:calc(250 * var(--u));top:calc(3296 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
-  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(3296 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(3296 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <div class="rules cap" data-n="4" data-step="18" style="left:calc(710 * var(--u));top:calc(3296 * var(--u));width:calc(210 * var(--u));height:calc(54 * var(--u));"></div>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(3296 * var(--u));width:calc(210 * var(--u));line-height:var(--l18)">Artful wall compositions bring depth, texture, and character to your space.</p>
   <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(3259 * var(--u))">Private residence</span>
 
   <svg class="morph" viewBox="0 0 200 300" aria-hidden="true" style="left:calc(610 * var(--u));top:calc(3888 * var(--u));width:calc(320 * var(--u));height:calc(480 * var(--u));"><path class="mb" d=""/><path class="ml" d=""/><path class="mh" d=""/><path class="mx" d=""/><path class="my" d=""/></svg>
@@ -329,15 +332,15 @@
 
   <div class="tagged" style="left:calc(250 * var(--u));top:calc(4513 * var(--u));"><p class="t big2">Media</p><span class="yr" aria-hidden="true"></span></div>
   <p class="t18" data-year="2025" style="left:calc(710 * var(--u));top:calc(4533 * var(--u));width:calc(210 * var(--u));">Elle Decoration</p>
-  <p class="t18 mdesc" style="left:calc(940 * var(--u));top:calc(4533 * var(--u));width:calc(210 * var(--u));">Named among Russia's ceramic workshops with a style of their own.</p>
+  <p class="t18 mdesc" style="left:calc(750 * var(--u));top:calc(4533 * var(--u));width:calc(280 * var(--u));">Named among Russia's ceramic workshops with a style of their own.</p>
   <p class="t18" data-year="2023" style="left:calc(710 * var(--u));top:calc(4623 * var(--u));width:calc(210 * var(--u));">TopDesignMag</p>
-  <p class="t18 mdesc" style="left:calc(940 * var(--u));top:calc(4623 * var(--u));width:calc(210 * var(--u));">Coffee tables shaped by the elements, made to anchor a living room.</p>
+  <p class="t18 mdesc" style="left:calc(750 * var(--u));top:calc(4623 * var(--u));width:calc(280 * var(--u));">Coffee tables shaped by the elements, made to anchor a living room.</p>
   <p class="t18" data-year="2023" style="left:calc(710 * var(--u));top:calc(4713 * var(--u));width:calc(210 * var(--u));">MyDecor</p>
-  <p class="t18 mdesc" style="left:calc(940 * var(--u));top:calc(4713 * var(--u));width:calc(210 * var(--u));">The studio moves into furniture, a collection of clay coffee tables.</p>
+  <p class="t18 mdesc" style="left:calc(750 * var(--u));top:calc(4713 * var(--u));width:calc(280 * var(--u));">The studio moves into furniture, a collection of clay coffee tables.</p>
   <p class="t18" data-year="2023" style="left:calc(710 * var(--u));top:calc(4803 * var(--u));width:calc(210 * var(--u));">Design Mate</p>
-  <p class="t18 mdesc" style="left:calc(940 * var(--u));top:calc(4803 * var(--u));width:calc(210 * var(--u));">Eight conceptual tables, each named after an element or a natural material.</p>
+  <p class="t18 mdesc" style="left:calc(750 * var(--u));top:calc(4803 * var(--u));width:calc(280 * var(--u));">Eight conceptual tables, each named after an element or a natural material.</p>
   <p class="t18" data-year="2022" style="left:calc(710 * var(--u));top:calc(4893 * var(--u));width:calc(210 * var(--u));">Elle Decoration</p>
-  <p class="t18 mdesc" style="left:calc(940 * var(--u));top:calc(4893 * var(--u));width:calc(210 * var(--u));">A professor's 120 m² flat with windows facing Moscow State University.</p>
+  <p class="t18 mdesc" style="left:calc(750 * var(--u));top:calc(4893 * var(--u));width:calc(280 * var(--u));">A professor's 120 m² flat with windows facing Moscow State University.</p>
   <a class="t18 more" style="display:none;left:calc(710 * var(--u));top:calc(5111 * var(--u));" href="#story">More →</a>
   <div class="dot" style="left:calc(613 * var(--u));top:calc(4519.5 * var(--u));"></div>
   <div class="dot" style="display:none;left:calc(613 * var(--u));top:calc(4594.5 * var(--u));"></div>
@@ -380,8 +383,8 @@
   <div class="cd-pic"></div>
   <div class="cd-slider"><div class="cd-track"></div></div>
   <div class="cd-end"></div>
-  <div class="cd-rules rules" data-n="4" data-step="19"></div>
-  <p class="t18 cd-cap" style="line-height:calc(19 * var(--u))"></p>
+  <div class="cd-rules rules" data-n="4" data-step="18"></div>
+  <p class="t18 cd-cap" style="line-height:var(--l18)"></p>
   <p class="t18 cd-a"></p>
   <p class="t18 cd-b"></p>
 </div>
@@ -397,7 +400,7 @@ window.preDone = new Promise(done => {
   window.scrollLocked = true;   // no scrolling under the sheet (a lock that leaves the scrollbar alone, so nothing shifts when it lifts)
   const S = 0.5, cv = pre.querySelector('canvas'), w = Math.round(innerWidth * S), h = Math.round(innerHeight * S), c = makeClay({ cv, w, h });   // made at half size and stretched: soft clay loses nothing, and it is ready six times sooner
   // a finger writes D and H in clay across the middle of the sheet, stroke by stroke, lifting between them (sizes in css px)
-  const LH = Math.min(175, innerHeight * .21),   /* sweeping, as if drawn across the sheet with a whole finger, but not too big */ BW = LH * .62, GAP = LH * .42, x0 = (innerWidth - (BW * 2 + GAP)) / 2, yT = innerHeight / 2 - LH / 2, yB = yT + LH;
+  const LH = Math.min(210, innerHeight * .252),   /* sweeping, as if drawn across the sheet with a whole finger, but not too big (a fifth bigger than it was) */ BW = LH * .62, GAP = LH * .42, x0 = (innerWidth - (BW * 2 + GAP)) / 2, yT = innerHeight / 2 - LH / 2, yB = yT + LH;
   // written by hand, not drawn: each letter a little askew, every stroke wobbling and running on past its end, the clay thinning out as it goes, so the ends are rubbed and dry
   // written by hand, quickly and badly, as a finger would: every stroke leaning its own way, starting and stopping a little off, running on well past its end, wobbling, the clay thinning out so the ends are dry and rubbed
   const R = (a, b) => a + Math.random() * (b - a), j = () => R(-.14, .14) * LH;
@@ -411,7 +414,7 @@ window.preDone = new Promise(done => {
   const D = [line(x0 + j(), yT + j(), x0 + j(), yB + j()), [[x0 + j(), yT + j()], ...bowl(x0 + BW * .1, yT + LH / 2 + j() * .5, BW * R(.8, 1), LH / 2)]];
   const by = yT + LH * R(.35, .62);   // the bar of the H, never quite in the middle
   const Hh = [line(hx + j(), yT + j(), hx + j(), yB + j() + R(0, .25) * LH), line(hx + BW + j(), yT + j() - R(0, .25) * LH, hx + BW + j(), yB + j() + R(0, .3) * LH), line(hx - R(10, 40), by + j() * .4, hx + BW + R(10, 50), by + j() * .6)];
-  const strokes = [...D, ...Hh].map(P => hand(P, R(18, 70)));   // D: stem, then the bowl; H: two stems and the bar
+  const SLANT = .2, strokes = [...D, ...Hh].map(P => hand(P, R(18, 70)).map(([x, y]) => [x + (innerHeight / 2 - y) * SLANT, y]));   // D: stem, then the bowl; H: two stems and the bar; the whole mark leaning to the right, as written in a hurry
   const lens = strokes.map(p => p.slice(1).reduce((a, q, i) => a + Math.hypot(q[0] - p[i][0], q[1] - p[i][1]), 0)), total = lens.reduce((a, b) => a + b, 0);
   let si = 0, pi = 0, f = null, done_ = 0;   // where the finger is: stroke, point, and how much of the way is written
   const advance = to => {                    // smear on along the strokes until 'to' css px of the way are written
@@ -758,15 +761,15 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
 
 
   // the small picture stands level with "Shop now": its middle on the middle of the link (the link follows the length of the paragraph)
-  function stackStory() {                          // Media: one row per publication, one under another with the same gap however many lines each has: a ruled line level with the outlet, the outlet, its thesis a line lower one column to the right, and its date in grey beside the thesis
+  function stackStory() {                          // Media: one row per publication, one under another with the same gap however many lines each has: the outlet, its date in grey level with it at the right of the next column, and the thesis under the outlet, a little indented
     let top = storyP[0]._t0 ?? (storyP[0]._t0 = parseFloat(storyP[0].style.top.match(/calc\(([\d.]+)/)[1]));
     storyP.forEach((q, i) => {
       const d = q._desc || (q._desc = q.parentNode.querySelector(`.mdesc[data-i="${i}"]`) || [...q.parentNode.querySelectorAll('.mdesc')][i]);
       const r = q._rule || (q._rule = Object.assign(document.createElement('i'), { className: 'mrule' })); if (!r.parentNode) q.before(r);
       const dt = q._date || (q._date = Object.assign(document.createElement('p'), { className: 't18 mdate', textContent: (MEDIA[i] || [''])[0] })); if (!dt.parentNode) d.after(dt);
       const set = (el, v) => { el.style.top = `calc(${v.toFixed(1)} * var(--u))`; };
-      set(r, top - 4); set(q, top); const dTop = top + q.offsetHeight / U; set(d, dTop); set(dt, dTop);
-      top = dTop + Math.max(d.offsetHeight, dt.offsetHeight) / U + 40; });
+      set(r, top - 4); set(q, top); set(dt, top); const dTop = top + q.offsetHeight / U + 5; set(d, dTop);
+      top = dTop + d.offsetHeight / U + 56; });
   }
   function alignShop() {
     const shop = one('.stack .shop'), pic = one('.rest > .ph:not(.pic):not(.bar)'), rest = one('.rest');
@@ -863,7 +866,9 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   // the sound lives in sound.js (shared with the Order page): sndBtn, setSound, muffle and soundNudge come from there
 
   const htmlEl = document.documentElement, closeCur = one('.close-cursor:not(.more-cursor)'), moreCur = one('.more-cursor');
+  { const tn = closeCur.firstChild, t = tn.textContent; const w = document.createElement('span'); w.append(...[...t].map((ch, k) => Object.assign(document.createElement('span'), { className: 'lt', textContent: ch, style: `--i:${k}` }))); tn.replaceWith(w); closeCur.querySelector('svg').style.setProperty('--i', t.length); }   // Close in single letters
   let openView = null;
+  function closeView() { if (!openView) return; closeCur.classList.add('gone'); openView.close(); }   // Close goes up letter by letter the moment the view starts folding
   // a cut-out in the pile counts only where the work itself is (its alpha), not its empty box: there the pointer says More and a click opens its category
   const cutMask = [];
   const loadMask = i => cutMask[i] || (cutMask[i] = (() => { const o = { ok: false }, im = new Image(); im.onload = () => { const cv = document.createElement('canvas'); cv.width = 120; cv.height = Math.round(120 * im.naturalHeight / im.naturalWidth); const g = cv.getContext('2d', { willReadFrequently: true }); g.drawImage(im, 0, 0, cv.width, cv.height); o.cv = cv; o.g = g; o.ar = im.naturalWidth / im.naturalHeight; o.ok = true; }; im.src = HERO_SRC[i]; return o; })());
@@ -877,10 +882,10 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     return m.g.getImageData(Math.min(m.cv.width - 1, u * m.cv.width | 0), Math.min(m.cv.height - 1, v * m.cv.height | 0), 1, 1).data[3] > 60 ? c : null;
   }
   const inStory = cy => { const ps = $('[data-year]'), a = ps[0].getBoundingClientRect(), b = ps[ps.length - 1].getBoundingClientRect(); return cy > a.top - 40 * U && cy < b.bottom + 40 * U; };   // the whole Story block: from a little above its first paragraph to a little below its last
-  addEventListener('pointermove', e => { if (openView) { closeCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`; closeCur.classList.toggle('away', !!(e.target.closest && e.target.closest('.cd-pic, .cd-s'))); }
+  addEventListener('pointermove', e => { if (openView) { closeCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`; const away = !!(e.target.closest && e.target.closest('.cd-pic, .cd-s')); closeCur.classList.toggle('away', away); htmlEl.classList.toggle('ov-arrow', away); }   // over the case's pictures the usual arrow comes back
     const onStory = !openView && ((inStory(e.clientY) && !e.target.closest('a, nav, .nav')) || !!cutHit(e) || !!(e.target.closest && e.target.closest('.pic'))); htmlEl.classList.toggle('on-story', onStory); moreCur.style.opacity = onStory ? 1 : 0; if (onStory) moreCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`; }, { passive: true });
-  addEventListener('keydown', e => { if (e.key === 'Escape' && openView) openView.close(); });
-  function lockView(on) { muffle(on); htmlEl.classList.toggle('ov-open', on); if (lenis) window.scrollLocked = on; else htmlEl.style.overflow = on ? 'hidden' : ''; closeCur.style.opacity = on ? 1 : 0; }   // the page under a view is held still without taking its scrollbar away (that made everything shift and blink on closing)
+  addEventListener('keydown', e => { if (e.key === 'Escape' && openView) closeView(); });
+  function lockView(on) { muffle(on); htmlEl.classList.toggle('ov-open', on); if (lenis) window.scrollLocked = on; else htmlEl.style.overflow = on ? 'hidden' : ''; closeCur.classList.toggle('gone', !on); if (on) closeCur.style.opacity = 1; else setTimeout(() => { if (!htmlEl.classList.contains('ov-open')) closeCur.style.opacity = 0; }, 750); }   // the page under a view is held still without taking its scrollbar away (that made everything shift and blink on closing)
   const pageEls = () => [one('.page'), ...$('.hc, .nav, .ct, .tagline, .midstrip, .ttl')];
 
   const SV = one('#storyView');
@@ -940,7 +945,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     if (SV._noClose || CV._noClose || CATV._noClose) return;
     const more = e.target.closest('a.more') || (!openView && !e.target.closest('a, nav, .nav, .ov') && inStory(e.clientY) ? e.target : null);
     if (more && !openView) { e.preventDefault(); moreCur.style.opacity = 0; openStory(); return; }
-    if (openView && e.target.closest('.ov') && !e.target.closest('a, .cd-pic, .cd-s, .cd-slider')) openView.close();   // a link inside a view opens, it does not close the view
+    if (openView && e.target.closest('.ov') && !e.target.closest('a, .cd-pic, .cd-s, .cd-slider')) closeView();   // a link inside a view opens, it does not close the view
   });
 
   const CV = one('#caseView');
@@ -960,7 +965,8 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const text = caption.dataset.text || caption.textContent.trim();
     capEl.dataset.text = text; capEl.textContent = text; aEl.dataset.text = CASE_TEXT[i][0]; aEl.textContent = CASE_TEXT[i][0]; bEl.dataset.text = CASE_TEXT[i][1]; bEl.textContent = CASE_TEXT[i][1];
     // layout (design px -> screen px): picture over the first four columns, caption and its lines over the last two, two paragraphs below as a staircase
-    const picH = Math.min(560 * U, innerHeight * 0.62), picTop = 20 * U, belowTop = picTop + picH + 40 * U;
+    const picW = Math.min(900 * U, innerHeight * 0.62 * 16 / 9), picH = picW * 9 / 16, picTop = 20 * U,   // the picture always 16:9, four columns wide unless the screen is too low for it
+      belowTop = picTop + picH + 40 * U;
     Object.assign(cdPic.style, { backgroundImage: img, left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
     aEl.style.left = 940 * U + 'px'; aEl.style.top = picTop + 140 * U + 'px'; bEl.style.left = 1170 * U + 'px'; bEl.style.top = picTop + 218 * U + 'px';   // the two paragraphs to the right of the picture, under its caption, as a staircase
     // more photos of the work below: a slider that is moved by the wheel (sideways), by dragging and by the arrow keys
@@ -1002,7 +1008,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     tl.to(caseEls, { opacity: 0.12, duration: .5, ease: 'power2.out' }, 0);                                  // the page stays, faintly, under the picture (the menu stays as it is)
     tl.to(others, { opacity: .1, duration: .4, ease: 'power2.out' }, 0);   // the other clients stay in their places, a very faint grey
     tl.fromTo('#caseView .ov-scrim', { opacity: 0 }, { opacity: .86, duration: .5, ease: 'power2.out' }, 0);
-    tl.fromTo(cdPic, { left: r.left, top: r.top, width: r.width, height: r.height }, { left: 20 * U, top: picTop, width: 900 * U, height: picH, duration: 1, ease: 'power3.inOut' }, 0.05);
+    tl.fromTo(cdPic, { left: r.left, top: r.top, width: r.width, height: r.height }, { left: 20 * U, top: picTop, width: picW, height: picH, duration: 1, ease: 'power3.inOut' }, 0.05);
     fanIn(tl, rl, { each: .08, at: .55, dur: .9 });                                                          // the lines stretch to two columns
     riseIn(tl, inCap, { at: .6, each: .08, dur: .8 });
     riseIn(tl, inA, { at: .95, each: .07, dur: .8 });
