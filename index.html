@@ -200,9 +200,10 @@
   .sv-in { position: absolute; top: calc(12 * var(--u)); width: calc(210 * var(--u)); text-align: left; }
   .sv-pin { position: absolute; top: 0; height: 100%; background: #eee center / cover no-repeat; }
   .sv-photo { position: absolute; left: 0; top: calc(-284 * var(--u)); width: 100%; height: calc(260 * var(--u)); background: #eee center / cover no-repeat; backface-visibility: hidden; }   /* the photographs are glued to the cylinder with the text */
-  .sv-dot { position: absolute; left: 0; top: calc(-5 * var(--u)); width: calc(10 * var(--u)); height: calc(10 * var(--u)); background: #000; opacity: .35; display: block; }
-  .sv-year { position: absolute; left: 0; top: calc(22 * var(--u)); font-size: var(--t18); line-height: 1.15; letter-spacing: -.01em; opacity: .4; }
-  .sv-lead { position: absolute; left: 0; top: calc(76 * var(--u)); width: 100%; }   /* the date, the outlet under it, then the thesis */
+  .sv-dot { position: absolute; left: 0; top: calc(2 * var(--u)); width: calc(10 * var(--u)); height: calc(10 * var(--u)); background: #000; opacity: .35; display: block; }
+  .sv-year { position: absolute; left: calc(20 * var(--u)); top: 0; font-size: var(--t18); line-height: 1.15; letter-spacing: -.01em; opacity: .4; }   /* the square, and the date beside it */
+  .sv-out { position: absolute; left: 0; top: calc(32 * var(--u)); font-size: var(--t18); line-height: 1.15; letter-spacing: -.01em; }   /* the outlet under them, black */
+  .sv-lead { position: absolute; left: calc(20 * var(--u)); top: calc(62 * var(--u)); width: calc(190 * var(--u)); }   /* the thesis stepped in, up to five lines */   /* the date, the outlet under it, then the thesis */
   .sv-more { display: none; position: absolute; left: 0; top: calc(116 * var(--u)); width: max-content; opacity: .6; text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; pointer-events: auto; }
   #caseView { overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; }
   #caseView .ov-scrim { position: fixed; }
@@ -928,7 +929,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     data.forEach((d, i) => {
       for (let k = 0; k < KS; k++) {                                                                    // the text layer
         const el = document.createElement('div'); el.className = 'sv-strip';
-        el.innerHTML = `<div class="sv-in" style="left:${-k * SW}px"><i class="sv-dot"></i><span class="sv-year">${d.date}<br>${d.out}</span><p class="t18 sv-lead">${d.lead}</p></div>`;
+        el.innerHTML = `<div class="sv-in" style="left:${-k * SW}px"><i class="sv-dot"></i><span class="sv-year">${d.date}</span><span class="sv-out">${d.out}</span><p class="t18 sv-lead">${d.lead}</p></div>`;
         el.style.width = SW + 1 + 'px'; host.append(el); strips.push({ el, i, a: (k + .5) * SW - CW / 2, R: RAD, w: SW });
       }
       for (let k = 0; k < KS; k++) {                                                                    // the photo layer: smaller, so the photographs sit further in
@@ -940,10 +941,10 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     });
     tl.fromTo(host, { opacity: 0 }, { opacity: 1, duration: .8, ease: 'power2.out' }, .45);
     // a horizontal carousel: wheel, drag, arrows; the chosen year always stands exactly in the middle
-    let pos = -1.3, target = 0, run = true, snapT = 0, drag = null;
+    let pos = -1.3, posIn = -1.3, target = 0, run = true, snapT = 0, drag = null;
     const place = () => { const cx = SV.clientWidth / 2;
       strips.forEach(s => {
-        const phi = (s.i * SP + s.a - pos * SP) / RAD, c = Math.cos(phi), d = Math.abs(s.i - pos);
+        const phi = (s.i * SP + s.a - (s.ph ? posIn : pos) * SP) / RAD, c = Math.cos(phi), d = Math.abs(s.i - pos);
         s.el.style.left = cx - s.w / 2 - (s.ph ? 2 : 0) + 'px';
         s.el.style.transform = `translate3d(0,0,${(-RAD).toFixed(1)}px) rotateY(${phi.toFixed(4)}rad) translate3d(0,0,${s.R.toFixed(1)}px)`;
         const f = c <= 0.02 || Math.abs(phi) > 1.55 ? 0 : Math.pow(c, 1.1) * (1 - 0.15 * Math.min(1, d * 2));   // only the near side of the drum: twenty items go round it more than once
@@ -951,7 +952,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       }); };
     const snap = () => { target = Math.max(0, Math.min(N - 1, Math.round(target))); };
     const nudge = dd => { target = Math.max(-0.35, Math.min(N - 0.65, target + dd)); clearTimeout(snapT); snapT = setTimeout(snap, 140); };
-    (function loop() { if (!run) return; pos += (target - pos) * 0.08; place(); requestAnimationFrame(loop); })();
+    (function loop() { if (!run) return; pos += (target - pos) * 0.08; posIn += (pos - posIn) * 0.1; place(); requestAnimationFrame(loop); })();   // the inner drum of photos follows a little late, as if dragged along
     const onWheel = e => { e.preventDefault(); const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY; soundNudge(d / 120); nudge(d / SP * 0.9); };
     const onKey = e => { if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { target = Math.min(N - 1, Math.round(target) + 1); } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { target = Math.max(0, Math.round(target) - 1); } };
     const onDown = e => { drag = { x: e.clientX, t: target, moved: false }; };
