@@ -74,18 +74,18 @@ function leaf(t, g) {                                                    // one 
   e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(g * (.4 + Math.random() * .6), t + .002 + Math.random() * .006); e.gain.exponentialRampToValueAtTime(.0001, t + len);
   src.connect(hp); hp.connect(bp); bp.connect(e); if (pn) { pn.pan.value = (Math.random() - .5) * 1.6; e.connect(pn); pn.connect(sLeafOut); } else e.connect(sLeafOut);
   src.start(t, Math.random() * .4, len + .01); }
-function placeSound(at) {                                               // a work set down on a shelf: fired clay on a hard shelf, a hard glazed tick, a short bright ring of its own and a small second bounce
-  if (!actx || (!sOn && at == null)) return; const C = actx, t = at ?? C.currentTime + .01, f0 = 1250 + Math.random() * 900;
+function placeSound(at) {                                               // a work set down on a shelf: heavy fired stoneware on a hard shelf, a deep thud, a low clonk that rings a moment, a little glaze tick and a small second bounce
+  if (!actx || (!sOn && at == null)) return; const C = actx, t = at ?? C.currentTime + .01, f0 = 480 + Math.random() * 260;
   const hit = (t, amp) => {
-    const o = C.createOscillator(), e = C.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(260 + Math.random() * 80, t); o.frequency.exponentialRampToValueAtTime(150, t + .05);   // the dull body of the knock, short
-    e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(.05 * amp, t + .002); e.gain.exponentialRampToValueAtTime(.0001, t + .07); o.connect(e); e.connect(sMaster); o.start(t); o.stop(t + .09);
-    const src = C.createBufferSource(), hp = C.createBiquadFilter(), ce = C.createGain(); src.buffer = sLeafBuf; hp.type = 'highpass'; hp.frequency.value = 3200 + Math.random() * 1500; hp.Q.value = .7;   // the glaze: a hard, dry tick
-    ce.gain.setValueAtTime(.09 * amp, t); ce.gain.exponentialRampToValueAtTime(.0001, t + .018); src.connect(hp); hp.connect(ce); ce.connect(sMaster); src.start(t, Math.random() * .4, .03);
-    // the ring of a tile or a cup: uneven partials, the higher ones dying first
-    [[1, .07, .32], [1.59, .05, .22], [2.33, .035, .15], [3.18, .022, .1], [4.41, .014, .06]].forEach(([r, g, d]) => { const p = C.createOscillator(), pe = C.createGain(); p.type = 'sine'; p.frequency.value = f0 * r * (1 + (Math.random() - .5) * .012);
+    const o = C.createOscillator(), e = C.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(150 + Math.random() * 40, t); o.frequency.exponentialRampToValueAtTime(68, t + .09);   // the deep thud of a heavy piece
+    e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(.13 * amp, t + .003); e.gain.exponentialRampToValueAtTime(.0001, t + .2); o.connect(e); e.connect(sMaster); o.start(t); o.stop(t + .22);
+    const src = C.createBufferSource(), hp = C.createBiquadFilter(), ce = C.createGain(); src.buffer = sLeafBuf; hp.type = 'highpass'; hp.frequency.value = 2000 + Math.random() * 800; hp.Q.value = .7;   // the glaze: a dry tick, small beside the weight
+    ce.gain.setValueAtTime(.04 * amp, t); ce.gain.exponentialRampToValueAtTime(.0001, t + .015); src.connect(hp); hp.connect(ce); ce.connect(sMaster); src.start(t, Math.random() * .4, .03);
+    // the clonk of thick stoneware: low uneven partials, the higher ones dying first
+    [[1, .08, .55], [1.59, .055, .38], [2.33, .03, .24], [3.18, .016, .15], [4.41, .008, .09]].forEach(([r, g, d]) => { const p = C.createOscillator(), pe = C.createGain(); p.type = 'sine'; p.frequency.value = f0 * r * (1 + (Math.random() - .5) * .012);
       pe.gain.setValueAtTime(0, t); pe.gain.linearRampToValueAtTime(g * amp, t + .0015); pe.gain.exponentialRampToValueAtTime(.0001, t + d); p.connect(pe); pe.connect(sMaster); p.start(t); p.stop(t + d + .02); });
   };
-  const a = (.7 + Math.random() * .3) * .8; hit(t, a); hit(t + .06 + Math.random() * .04, a * (.22 + Math.random() * .15)); }   // it lands, and settles with a little second tap
+  const a = (.7 + Math.random() * .3) * .8; hit(t, a); hit(t + .08 + Math.random() * .04, a * (.15 + Math.random() * .1)); }   // it lands, and settles with a little second tap
 function setSound(on) {
   sOn = on; sndBtn.setAttribute('aria-pressed', on); if (on && !actx) startSound(); if (!actx) return;
   if (actx.state === 'suspended') actx.resume();
