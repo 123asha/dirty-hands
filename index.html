@@ -179,7 +179,7 @@
   /* photos (test images from a free stock) fill their blocks */
   .hc, .bar, .ph, .gray { background-size: cover; background-position: center; background-repeat: no-repeat; }
   /* the people on the background: two halves; when Lisa's block comes up the left photo melts away into the page */
-  .gray::before, .gray::after { content: ''; position: absolute; top: calc(-160 * var(--u)); bottom: calc(-160 * var(--u)); transform: translateY(calc((var(--par, .5) - .5) * 640 * var(--u))); width: 50%; background-size: cover; background-position: center; background-repeat: no-repeat; z-index: 0; transition: opacity .9s var(--ease); }
+  .gray::before, .gray::after { content: ''; position: absolute; top: calc(-160 * var(--u)); bottom: calc(-160 * var(--u)); transform: translateY(var(--py, 0px)); width: 50%; background-size: cover; background-position: center; background-repeat: no-repeat; z-index: 0; transition: opacity .9s var(--ease); }
   .gray::before { left: 0; background-image: var(--imgL, none); background-size: var(--bgS, cover); background-position: var(--bgL, center); }
   .gray::after { right: 0; background-image: var(--imgR, none); background-size: var(--bgS, cover); background-position: var(--bgR, center); }
   .gray.no-left::before, .gray.no-right::after { opacity: 0; }
@@ -1402,6 +1402,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     // the photo block scrolls with the page: the photo inside lags behind (parallax), the two cards run a little ahead of it, Lisa not far below Karen
     const gp = clamp((y + V - s3Top) / (1080 + V));                     // 0: the block comes in at the bottom, 1: it has gone out at the top
     one('.gray').style.setProperty('--par', gp.toFixed(4));
+    one('.gray').style.setProperty('--py', ((gp - .5) * ((1080 + V) * .2 + 512) * U).toFixed(1) + 'px');   // the photo goes up 20% slower than it did, so the cards have time to come over it
     if (grayGL) grayGL.draw(gp);   // the light moves across them with the scroll
     lisa.style.top = (380 - (gp - 0.5) * 160) * U + 'px';                // (the #lisa card carries Karen's name: it is the first one)
     karen.style.top = (600 - (gp - 0.5) * 240) * U + 'px';                // Lisa a little higher, and a little quicker than Karen

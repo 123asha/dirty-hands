@@ -43,12 +43,12 @@
   .flow { position: relative; text-align: left; }
   .flow .rl { display: none; position: absolute; left: 0; right: 0; top: 0; height: 0; border-top: 1px solid #d9d9d9; pointer-events: none; }   /* ruled lines under the text, as in the table on the main page */
   .ln { position: absolute; left: 0; top: 0; white-space: pre; overflow: hidden; }
-  .flow .ln { font-size: var(--t18); line-height: calc(19 * var(--u)); letter-spacing: -.01em; }
+  .flow .ln { font-size: var(--t18); line-height: min(19px, calc(19 * var(--u))); letter-spacing: -.01em; }
   .ln .in { display: inline-block; animation: rise .9s var(--ease) both; }   /* the lines come up from below as they first appear, as on the main page */
   @keyframes rise { from { transform: translateY(112%); } }
   .mail { animation: fade .8s var(--ease) 1.1s both; } @keyframes fade { from { opacity: 0; } }
   .mid h1 { margin: 0 0 calc(38 * var(--u)); font-family: "CoFo Cinema", "CoFo Sans", sans-serif; font-weight: 400; font-size: calc(72 * var(--u)); line-height: .91; letter-spacing: -.01em; text-transform: uppercase; }
-  .mid p { margin: 0 0 calc(19 * var(--u)); font-size: var(--t18); line-height: calc(19 * var(--u)); letter-spacing: -.01em; }
+  .mid p { margin: 0 0 calc(19 * var(--u)); font-size: var(--t18); line-height: min(19px, calc(19 * var(--u))); letter-spacing: -.01em; }
   .mail { position: fixed; left: 50%; bottom: calc(20 * var(--u)); translate: -50% 0; z-index: 6; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
   .grid { position: fixed; inset: 0; z-index: 1000; pointer-events: none; display: grid; grid-template-columns: repeat(6, 1fr); column-gap: calc(20 * var(--u)); padding: 0 calc(20 * var(--u)); opacity: 0; }
   .grid.on { opacity: 1; }
@@ -122,11 +122,11 @@
     if (!PT) return;
     const f18 = Math.min(18, 18 * U);
     if (!preps || preps.f !== f18) { preps = paras.map(t => PT.prepareWithSegments(t, `${f18}px "CoFo Sans"`, { letterSpacing: -0.01 * f18 })); preps.f = f18; fl.querySelectorAll('p').forEach(p => p.remove()); }
-    const r = fl.getBoundingClientRect(), L = r.left, Rr = L + 440 * U, lh = LH * U, ht = mid.getBoundingClientRect().top;
+    const r = fl.getBoundingClientRect(), L = r.left, Rr = L + 440 * U, lh = Math.min(LH * U, LH), ht = mid.getBoundingClientRect().top;
     const obs = [...its, ...falling].filter(it => it.box && MASK[it.src] && it.box.cx + it.box.S / 2 > L && it.box.cx - it.box.S / 2 < Rr);
     otl.style.top = ht + 'px';
     hws.forEach(h => { const e = h.el, b = h.band ?? (h.band = [...otl.querySelectorAll('.hl')].indexOf(e.parentNode)), base = e.offsetLeft + e.offsetWidth / 2, dx = wrapX(base, shelfOff[b] || 0) - base, th = (base + dx - innerWidth / 2) / (680 * U) * Math.PI / 2;   // the title's words go round with their shelves (and are never pushed by the trail)
-      e.style.transform = Math.abs(dx) > .3 ? `translateX(${dx.toFixed(1)}px)` : ''; e.style.opacity = Math.min(1, Math.max(0, Math.cos(th)) * 1.6).toFixed(3); });
+      e.style.transform = Math.abs(dx) > .3 ? `translateX(${dx.toFixed(1)}px)` : ''; e.style.opacity = drumFade(Math.cos(th)).toFixed(3); });
     const key = obs.map(o => `${Math.round(o.box.cx)},${Math.round(o.box.cy)},${Math.round(o.box.S)}`).join('|') + '|' + Math.round(r.top) + '|' + U; if (key === sig) return; sig = key;
     const rows = []; let k = 0;
     preps.forEach((pr, pi) => { if (pi) k++; const ind = pi ? 230 * U : 0, n0 = rows.length; k = lay(pr, L + ind, Rr + ind, r.top, lh, obs, 8 * U, rows, k, false); for (let q = n0; q < rows.length; q++) rows[q].x += ind; });   // the second and third paragraphs one column in
@@ -144,6 +144,7 @@
   addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; if (!mouse.seen) { mouse.seen = true; mouse.t = performance.now(); its.forEach(it => { it.x = e.clientX; it.y = e.clientY; }); } }, { passive: true });
   // a free place on one of the title's shelves (its ruled lines): not on a word, not on a work already standing there
   // the shelves are cylinders: the wheel turns them sideways, round and round; each turns its own way and at its own speed
+  function drumFade(c) { const o = Math.min(1, Math.max(0, c) * 1.15); return o * o * (3 - 2 * o); }   // round the drum things fade in and out over a long stretch, easing at both ends, so nothing pops in
   const shelfOff = [0, 0, 0], shelfTo = [0, 0, 0], SH_DIR = [1, -.8, .6], wrapX = (x, off) => { const W = 1360 * U, L0 = 20 * U; return L0 + ((((x - L0 + off) % W) + W) % W); };
   addEventListener('wheel', e => { if (!falling.some(f => f.tx != null)) return; e.preventDefault(); const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY; shelfTo.forEach((v, i) => { shelfTo[i] += d * SH_DIR[i]; }); if (typeof soundNudge === 'function') soundNudge(Math.min(1, Math.abs(d) / 120)); }, { passive: false });
   // a free place on one of the title's shelves (its ruled lines): not on a word, not on a work already standing there
@@ -180,7 +181,7 @@
         f.x = f.x0 + (dx - f.x0) * e; f.y = f.y0 + (f.ty - f.y0) * e - Math.sin(k * Math.PI) * 90 * U - bob; f.sz = S + (f.ts - S) * e; f.r = (1 - e) * f.vr * 18 + f.rr * e; f.th = 0; f.cyl = 1 - e + cyl * e;   // upright all the way round: only fading at the edges
         if (k >= 1 && !f.placed) { f.placed = true; if (typeof placeSound === 'function') placeSound(); }   // set down: a soft knock
       } else { f.vy += .55; f.x += f.vx; f.y += f.vy; f.r += f.vr; f.sz = S; }   // no room left on the shelves: it simply falls away
-      f.el.style.width = f.el.style.height = f.sz + 'px'; f.el.style.transform = `translate(${(f.x - f.sz / 2).toFixed(1)}px,${(f.y - f.sz / 2).toFixed(1)}px) perspective(${(500 * U).toFixed(0)}px) rotateY(${(f.th || 0).toFixed(3)}rad) rotate(${f.r.toFixed(1)}deg)`; f.el.style.opacity = f.tx != null ? Math.min(1, (f.cyl ?? 1) * 1.6).toFixed(3) : 1;   // round the drum it turns away and fades at the edges f.box = f.tx != null ? null : { cx: f.x, cy: f.y, S: f.sz };
+      f.el.style.width = f.el.style.height = f.sz + 'px'; f.el.style.transform = `translate(${(f.x - f.sz / 2).toFixed(1)}px,${(f.y - f.sz / 2).toFixed(1)}px) perspective(${(500 * U).toFixed(0)}px) rotateY(${(f.th || 0).toFixed(3)}rad) rotate(${f.r.toFixed(1)}deg)`; f.el.style.opacity = f.tx != null ? drumFade(f.cyl ?? 1).toFixed(3) : 1;   // round the drum it turns away and fades at the edges f.box = f.tx != null ? null : { cx: f.x, cy: f.y, S: f.sz };
       if (f.tx == null && f.y - S > innerHeight) { f.el.remove(); falling.splice(i, 1); } }
     flow();
     requestAnimationFrame(loop);
