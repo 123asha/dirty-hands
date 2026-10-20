@@ -100,7 +100,7 @@
   .midstrip.off { opacity: 0; }   /* the strip IS the first line of the table: at the landing it is swapped for the table's own line 0, which sits exactly on it */
   /* a small caption above the line in the middle of the first screen; when the menu rising from below reaches its level, it goes up with the menu and stays up there until the title melts into the background */
   .snd { position: fixed; left: calc(20 * var(--u)); top: calc(44vh + 12 * var(--u)); z-index: 101; display: flex; align-items: center; gap: calc(8 * var(--u)); padding: 0; border: 0; background: none; font: inherit; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; cursor: pointer; }   /* the sound switch: a line that comes alive when the sound is on; first on the middle line, left of it, then up in the top left corner with the menu */
-  .snd svg { width: calc(12 * var(--u)); height: calc(10 * var(--u)); overflow: visible; }
+  .snd svg { width: calc(18 * var(--u)); height: calc(12 * var(--u)); overflow: visible; }   /* the line as heavy as the letters beside it */
   .snd[aria-pressed="false"] span { opacity: .5; }
   .tagline { position: fixed; left: 50%; translate: -50% 0; top: calc(44vh + 12 * var(--u)); white-space: nowrap; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; z-index: 101; pointer-events: none; opacity: 0; }   /* the label of the row, centred on the page, on the menu's line under the middle line */
   /* hero cards: fly from the top row into the second block */
@@ -256,7 +256,7 @@
 
 <div class="midstrip" aria-hidden="true"></div>
 <div class="tagline">Interior ceramics studio</div>
-<button type="button" class="snd" aria-pressed="false" aria-label="Sound"><svg viewBox="0 0 24 10" aria-hidden="true"><path d="M0 5H24" fill="none" stroke="currentColor" stroke-width="1.1"/></svg><span>Sound</span></button>
+<button type="button" class="snd" aria-pressed="false" aria-label="Sound"><svg viewBox="0 0 24 10" aria-hidden="true"><path d="M0 5H24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span>Sound</span></button>
 <div class="hc" data-i="0" style="left:calc(20 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
 <div class="hc" data-i="1" style="left:calc(250.17 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
 <div class="hc" data-i="2" style="left:calc(480.34 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
