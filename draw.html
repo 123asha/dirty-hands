@@ -7,7 +7,7 @@
 <style>
   @font-face { font-family: "CoFo Cinema"; src: url("CoFoCinema1909-Regular.otf") format("opentype"); font-weight: 400; font-display: swap; }
   @font-face { font-family: "CoFo Sans"; src: url("CoFoSans-Regular450.woff2") format("woff2"); font-weight: 400; font-display: swap; }
-  :root { --u: calc(100vw / 1400); --t18: min(18px, calc(18 * var(--u))); --l18: calc(18 * var(--u)); --ease: cubic-bezier(.2,.8,.2,1); }
+  :root { --u: calc(100vw / 1400); --t18: min(18px, calc(18 * var(--u))); --l18: calc(19 * var(--u)); --ease: cubic-bezier(.2,.8,.2,1); }
   html, body { margin: 0; height: 100%; overflow: hidden; background: #fff; color: #000; }
   body { font-family: "CoFo Sans", -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: var(--t18); -webkit-font-smoothing: antialiased; user-select: none; }
   a { color: inherit; text-decoration: none; }
@@ -36,11 +36,13 @@
   .intro.off { opacity: 0; pointer-events: none; }
   .intro h1 { margin: 0 0 calc(36 * var(--u)); font-family: "CoFo Cinema", "CoFo Sans", sans-serif; font-weight: 400; font-size: calc(72 * var(--u)); line-height: .91; letter-spacing: -.01em; text-transform: uppercase; }
   .intro p { margin: 0 0 var(--l18); font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; text-indent: calc(40 * var(--u)); }
-  .btn { all: unset; cursor: pointer; display: inline-flex; gap: .3em; align-items: center; margin-top: calc(18 * var(--u)); font-size: var(--t18); line-height: .91; letter-spacing: -.01em; text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
+  .btn { all: unset; cursor: pointer; display: inline-flex; gap: .3em; align-items: center; margin-top: calc(18 * var(--u)); font-size: var(--t18); line-height: .91; letter-spacing: -.01em; }
   .btn:focus-visible { outline: 1px solid currentColor; outline-offset: 4px; }
   /* at the bottom: what is happening, and a clean sheet */
   .bar { position: fixed; left: calc(20 * var(--u)); right: calc(20 * var(--u)); bottom: calc(20 * var(--u)); z-index: 5; display: flex; justify-content: space-between; align-items: flex-end; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; pointer-events: none; }
-  .bar button { all: unset; cursor: pointer; pointer-events: auto; text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
+  .bar button { all: unset; cursor: pointer; pointer-events: auto; }
+  .btn, .bar button { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; padding-bottom: .12em; transition: background-size .4s var(--ease); }   /* as the menu: on hover a line draws in under the word */
+  .btn:hover, .bar button:hover { background-size: 100% 1px; }
   .bar .st { opacity: .6; }
 </style>
 </head>
@@ -91,7 +93,7 @@
   document.getElementById('go').addEventListener('click', async () => {
     say('Asking for the camera…');
     let stream; try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false }); }
-    catch (e) { say('No camera: allow it in the address bar and press the button again. The mouse still draws.'); return; }
+    catch (e) { say(window.top !== window ? 'The camera is closed inside this preview: open the page on the site itself. The mouse still draws.' : 'No camera: allow it in the address bar and press the button again. The mouse still draws.'); return; }
     video.srcObject = stream; await video.play(); video.classList.add('on'); intro.classList.add('off');
     say('Loading the hand finder…');
     let hands; try {

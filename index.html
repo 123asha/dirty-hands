@@ -27,7 +27,7 @@
   .s3 { z-index: 3; }
   .gray .grain { display: none !important;  position: absolute; inset: 0; z-index: 1; pointer-events: none; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  1 1 1 0 -1.2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E"); opacity: .09; mix-blend-mode: multiply; }   /* a very light grain over the photo of Karen and Lisa, under the cards */
   .gray { position: relative; margin: 0; height: calc(1080 * var(--u)); overflow: hidden; }   /* a block that scrolls with the page, with no grey fill of its own: first the photo of Karen and Lisa (it moves slower, parallax), then their two cards come up over it one after the other */
-  .rest { height: calc(5587 * var(--u)); }   /* (320 more at the end: room for the eye over the credit) */
+  .rest { height: calc(5809 * var(--u)); }   /* the end of the page, on steps of 40: Media, 80, the eye (320 high), 80, the credit, 160, the strip of pictures; the strip keeps its place against the end, so the loop stays seamless */
   /* vertical spacing, one rule for the page below (design px, from the visible bottom of one thing to the visible top of the next):
      20 inside a block (a number to its picture), 40 from a text to its link, 120 between the items of one section (case to case), 200 between sections */
   .t { font-weight: 400; white-space: nowrap; }
@@ -36,7 +36,7 @@
   .big2 { font-size: calc(108 * var(--u)); line-height: .91; letter-spacing: -.01em; }
   .name { font-size: calc(52 * var(--u)); line-height: .91; letter-spacing: -.01em; }
   .name2 { font-size: calc(108 * var(--u)); line-height: .91; letter-spacing: -.01em; }
-  .t18 { font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; }
+  .t18 { font-size: var(--t18); line-height: 1.08; letter-spacing: -.01em; }
   .ph { background: var(--ph); }
   .bigrow .name2 { margin-left: -.026em; }   /* the big words stand with their first letter exactly on the column line (the font keeps a little room before each letter) */
   .card2 .m { overflow: visible; }   /* the cards' lines and letters fade up whole, never cut by a mask */
@@ -224,7 +224,7 @@
   .cat-text { position: absolute; left: 50%; bottom: calc(20 * var(--u)); width: calc(210 * var(--u)); margin-left: calc(-105 * var(--u)); font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; text-align: center; z-index: 2; }   /* the body text, one column wide, centred, down at the bottom of the screen 20 above its edge */
   .hc.hov { cursor: pointer; }
   .cd-pic { position: absolute; background: var(--gray) center / cover no-repeat; overflow: hidden; }
-  .cd-rules { position: absolute; left: calc(940 * var(--u)); top: calc(60 * var(--u)); width: calc(440 * var(--u)); height: calc(54 * var(--u)); }
+  .cd-rules { position: absolute; left: calc(940 * var(--u)); top: calc(60 * var(--u)); width: calc(440 * var(--u)); height: calc(57 * var(--u)); }
   .cd-cap { position: absolute; left: calc(940 * var(--u)); top: calc(60 * var(--u)); width: calc(440 * var(--u)); }
   .cd-a, .cd-b { position: absolute; width: calc(210 * var(--u)); }
   .cd-a:empty { display: none; }
@@ -245,7 +245,7 @@
   html.ov-open.ov-arrow, html.ov-open.ov-arrow * { cursor: default !important; }   /* over a case's pictures, where Close melts away, the plain arrow */
   html.on-story, html.on-story * { cursor: none !important; }
   .sflow { pointer-events: none; }
-  .sflow .sl { position: absolute; left: 0; white-space: pre; font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; }   /* over the Story paragraphs the pointer itself says More, as it says Close over an open view */
+  .sflow .sl { position: absolute; left: 0; white-space: pre; font-size: var(--t18); line-height: calc(19 * var(--u)); letter-spacing: -.01em; }   /* over the Story paragraphs the pointer itself says More, as it says Close over an open view */
 </style>
 </head>
 <body>
@@ -305,7 +305,7 @@
 
   <div class="plab" style="left:0;top:calc(613 * var(--u));width:100%;height:calc(709 * var(--u));"><div class="plab-in">
     <p class="t18" style="left:calc(20 * var(--u));opacity:.4">Clients about us</p>
-    <div class="quote" style="left:calc(250 * var(--u));width:calc(210 * var(--u));"><div class="rules" data-n="3" data-step="18" style="left:0;top:0;width:100%;height:calc(36 * var(--u));"></div><p class="t18 q" style="line-height:var(--l18);"></p></div>
+    <div class="quote" style="left:calc(250 * var(--u));width:calc(210 * var(--u));"><div class="rules" data-n="3" data-step="19" style="left:0;top:0;width:100%;height:calc(38 * var(--u));"></div><p class="t18 q" style="line-height:calc(19 * var(--u));"></p></div>
   </div></div>
   <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(621.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">The Greeks</span></p>
   <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(738.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">Novikov</span></p>
@@ -315,19 +315,19 @@
 
   <div class="ph pic" id="cases" style="left:calc(20 * var(--u));top:calc(1295 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
   <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(1258 * var(--u))">Restaurant</span>
-  <div class="rules cap" data-n="4" data-step="18" style="left:calc(710 * var(--u));top:calc(1295 * var(--u));width:calc(210 * var(--u));height:calc(54 * var(--u));"></div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(1295 * var(--u));width:calc(210 * var(--u));line-height:var(--l18)">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(1295 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(1295 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
   <div class="ph pic" style="left:calc(250 * var(--u));top:calc(1988 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
-  <div class="rules cap" data-n="4" data-step="18" style="left:calc(710 * var(--u));top:calc(1988 * var(--u));width:calc(210 * var(--u));height:calc(54 * var(--u));"></div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(1988 * var(--u));width:calc(210 * var(--u));line-height:var(--l18)">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(1988 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(1988 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
   <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(1951 * var(--u))">Restaurant</span>
   <div class="ph pic" style="left:calc(20 * var(--u));top:calc(2603 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
   <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(2566 * var(--u))">Members’ club</span>
-  <div class="rules cap" data-n="4" data-step="18" style="left:calc(710 * var(--u));top:calc(2603 * var(--u));width:calc(210 * var(--u));height:calc(54 * var(--u));"></div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(2603 * var(--u));width:calc(210 * var(--u));line-height:var(--l18)">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(2603 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(2603 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
   <div class="ph pic" style="left:calc(250 * var(--u));top:calc(3296 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
-  <div class="rules cap" data-n="4" data-step="18" style="left:calc(710 * var(--u));top:calc(3296 * var(--u));width:calc(210 * var(--u));height:calc(54 * var(--u));"></div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(3296 * var(--u));width:calc(210 * var(--u));line-height:var(--l18)">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(3296 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(3296 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
   <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(3259 * var(--u))">Private residence</span>
 
   <svg class="morph" viewBox="0 0 200 300" aria-hidden="true" style="left:calc(610 * var(--u));top:calc(3888 * var(--u));width:calc(320 * var(--u));height:calc(480 * var(--u));"><path class="mb" d=""/><path class="ml" d=""/><path class="mh" d=""/><path class="mx" d=""/><path class="my" d=""/></svg>
@@ -354,15 +354,15 @@
   <a class="t18 more" style="display:none;left:calc(710 * var(--u));top:calc(5111 * var(--u));" href="#story">More →</a>
   <div class="dot" style="left:calc(613 * var(--u));top:calc(4519.5 * var(--u));"></div>
   <div class="dot" style="display:none;left:calc(613 * var(--u));top:calc(4594.5 * var(--u));"></div>
-  <a class="eye" href="draw.html" aria-label="Draw with your finger" style="top:calc(5059 * var(--u) + 100vh * 5 / 24);"><canvas></canvas></a>
-  <a class="t18 credit" style="left:50%;top:calc(5389 * var(--u) + 100vh * 5 / 24);white-space:nowrap;" href="https://skip.design" target="_blank" rel="noopener">Made by <img class="sfav" src="skip-fav.png" alt="" aria-hidden="true"> <span style="text-decoration:underline;text-underline-offset:.18em;text-decoration-thickness:1px">Skip Design</span></a>
-  <p class="t18 credit" style="left:0;top:calc(5408 * var(--u) + 100vh * 5 / 24);width:100%;text-align:center;">With love for Dirty Hands ♥</p>
-  <div class="ph bar" style="--i:0;left:calc(20.00 * var(--u));top:calc(5207 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:1;left:calc(250.17 * var(--u));top:calc(5207 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:2;left:calc(480.34 * var(--u));top:calc(5207 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:3;left:calc(710.51 * var(--u));top:calc(5207 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:4;left:calc(940.68 * var(--u));top:calc(5207 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:5;left:calc(1170.85 * var(--u));top:calc(5207 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <a class="eye" href="draw.html" aria-label="Draw with your finger" style="top:calc(5189 * var(--u) + 100vh * 5 / 24);"><canvas></canvas></a>
+  <a class="t18 credit" style="left:50%;top:calc(5589 * var(--u) + 100vh * 5 / 24);white-space:nowrap;" href="https://skip.design" target="_blank" rel="noopener">Made by <img class="sfav" src="skip-fav.png" alt="" aria-hidden="true"> <span style="text-decoration:underline;text-underline-offset:.18em;text-decoration-thickness:1px">Skip Design</span></a>
+  <p class="t18 credit" style="left:0;top:calc(5608 * var(--u) + 100vh * 5 / 24);width:100%;text-align:center;">With love for Dirty Hands ♥</p>
+  <div class="ph bar" style="--i:0;left:calc(20.00 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:1;left:calc(250.17 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:2;left:calc(480.34 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:3;left:calc(710.51 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:4;left:calc(940.68 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:5;left:calc(1170.85 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
 </section>
 
 <!-- extra scroll: the strip of pictures rises to 20 from the top, then the page starts over -->
@@ -395,8 +395,8 @@
   <div class="cd-pic"></div>
   <div class="cd-slider"><div class="cd-track"></div></div>
   <div class="cd-end"></div>
-  <div class="cd-rules rules" data-n="4" data-step="18"></div>
-  <p class="t18 cd-cap" style="line-height:var(--l18)"></p>
+  <div class="cd-rules rules" data-n="4" data-step="19"></div>
+  <p class="t18 cd-cap" style="line-height:calc(19 * var(--u))"></p>
   <p class="t18 cd-a"></p>
   <p class="t18 cd-b"></p>
 </div>
@@ -427,6 +427,8 @@ window.preDone = new Promise(done => {
   const by = yT + LH * R(.35, .62);   // the bar of the H, never quite in the middle
   const Hh = [line(hx + j(), yT + j(), hx + j(), yB + j() + R(0, .25) * LH), line(hx + BW + j(), yT + j() - R(0, .25) * LH, hx + BW + j(), yB + j() + R(0, .3) * LH), line(hx - R(10, 40), by + j() * .4, hx + BW + R(10, 50), by + j() * .6)];
   const SLANT = .2, strokes = [...D, ...Hh].map(P => hand(P, R(18, 70)).map(([x, y]) => [x + (innerHeight / 2 - y) * SLANT, y]));   // D: stem, then the bowl; H: two stems and the bar; the whole mark leaning to the right, as written in a hurry
+  { let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; strokes.forEach(P => P.forEach(([x, y]) => { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }));   // the whole mark in the middle of the screen
+    const mx = innerWidth / 2 - (x0 + x1) / 2, my = innerHeight / 2 - (y0 + y1) / 2; strokes.forEach(P => P.forEach(q => { q[0] += mx; q[1] += my; })); }
   const lens = strokes.map(p => p.slice(1).reduce((a, q, i) => a + Math.hypot(q[0] - p[i][0], q[1] - p[i][1]), 0)), total = lens.reduce((a, b) => a + b, 0);
   let si = 0, pi = 0, f = null, done_ = 0;   // where the finger is: stroke, point, and how much of the way is written
   const advance = to => {                    // smear on along the strokes until 'to' css px of the way are written
@@ -994,7 +996,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const fillText = k => {   // on the right the description in ruled lines (the caption and the first text together, eight lines at most); one paragraph at the bottom right from the fifth column, 40 above the bottom of the screen
       const desc = capOf(k) + ' ' + CASE_TEXT[k][0]; capEl.dataset.text = desc; capEl.textContent = desc; bEl.dataset.text = CASE_TEXT[k][1]; bEl.textContent = CASE_TEXT[k][1];
       const inC = splitMask(capEl).slice(0, 8); [...capEl.querySelectorAll('.m')].slice(8).forEach(m => m.remove());
-      rulesEl.style.height = inC.length * 18 * U + 'px'; rulesEl.innerHTML = Array.from({ length: inC.length + 1 }, (_, n) => `<i style="top:calc(${n * 18} * var(--u))"></i>`).join('');   // a line over every row and one under the last
+      rulesEl.style.height = inC.length * 19 * U + 'px'; rulesEl.innerHTML = Array.from({ length: inC.length + 1 }, (_, n) => `<i style="top:calc(${n * 19} * var(--u))"></i>`).join('');   // a line over every row and one under the last
       const inB2 = splitMask(bEl); bEl.style.top = innerHeight - 40 * U - bEl.offsetHeight + 'px';
       return { inC, inB: inB2, rl: [...rulesEl.children] }; };
     // more photos of the work below: a slider that is moved by the wheel (sideways), by dragging and by the arrow keys
