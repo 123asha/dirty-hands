@@ -53,6 +53,8 @@
   .grid { position: fixed; inset: 0; z-index: 1000; pointer-events: none; display: grid; grid-template-columns: repeat(6, 1fr); column-gap: calc(20 * var(--u)); padding: 0 calc(20 * var(--u)); opacity: 0; }
   .grid.on { opacity: 1; }
   .grid i { background: rgba(255, 0, 80, .08); box-shadow: inset 1px 0 rgba(255, 0, 80, .35), inset -1px 0 rgba(255, 0, 80, .35); }   /* the six columns, as on the main page: Cmd/Ctrl+G */
+  @keyframes arrowSwap { 0% { transform: none; opacity: 1; } 42% { transform: translate(120%, -120%); opacity: 0; } 43% { transform: translate(-120%, 120%); opacity: 0; } 100% { transform: none; opacity: 1; } }
+  .ctl:hover svg, .shop:hover svg, a.ct:hover svg { animation: arrowSwap .55s cubic-bezier(.4, 0, .2, 1); }   /* on hover the arrow flies off up and to the right and a new one comes in from below */
 </style>
 </head>
 <body>

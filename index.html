@@ -26,7 +26,7 @@
   .s2-in { position: relative; height: 100%; }
   .s3 { z-index: 3; }
   .gray .grain { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  1 1 1 0 -1.2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E"); opacity: .09; mix-blend-mode: multiply; }   /* a very light grain over the photo of Karen and Lisa, under the cards */
-  .gray { position: relative; margin: 0; height: calc(1300 * var(--u)); overflow: hidden; }   /* a block that scrolls with the page, with no grey fill of its own: first the photo of Karen and Lisa (it moves slower, parallax), then their two cards come up over it one after the other */
+  .gray { position: relative; margin: 0; height: calc(1080 * var(--u)); overflow: hidden; }   /* a block that scrolls with the page, with no grey fill of its own: first the photo of Karen and Lisa (it moves slower, parallax), then their two cards come up over it one after the other */
   .rest { height: calc(5267 * var(--u)); }
   /* vertical spacing, one rule for the page below (design px, from the visible bottom of one thing to the visible top of the next):
      20 inside a block (a number to its picture), 40 from a text to its link, 120 between the items of one section (case to case), 200 between sections */
@@ -38,8 +38,13 @@
   .name2 { font-size: calc(108 * var(--u)); line-height: .91; letter-spacing: -.01em; }
   .t18 { font-size: var(--t18); line-height: 1.08; letter-spacing: -.01em; }
   .ph { background: var(--ph); }
+  @keyframes arrowSwap { 0% { transform: none; opacity: 1; } 42% { transform: translate(120%, -120%); opacity: 0; } 43% { transform: translate(-120%, 120%); opacity: 0; } 100% { transform: none; opacity: 1; } }
+  .ctl:hover svg, .shop:hover svg, a.ct:hover svg { animation: arrowSwap .55s cubic-bezier(.4, 0, .2, 1); }   /* on hover the arrow flies off up and to the right and a new one comes in from below */
+  .card2 .cf { font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; opacity: .4; margin: 0; }   /* grey, on the first band under the name */
+  .gray-gl { position: absolute; left: 0; z-index: 0; transform: translateY(calc((var(--par, .5) - .5) * 640 * var(--u))); pointer-events: none; }   /* the shaded photo, moving as the plain one did */
+  .gray.gl-on::before, .gray.gl-on::after { background-image: none !important; }
   .hc.snap .hc-alt, .hc.snap .hs b, .hc.snap .hs i { transition: none !important; }   /* at the restart the photo is there at once */
-  .pre { position: fixed; inset: 0; z-index: 3000; background: #fff; } .pre canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }   /* the preloader sheet */
+  .pre { position: fixed; inset: 0; z-index: 3000; background-color: #fff; } .pre canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }   /* the preloader sheet */
   .ph-line { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
   .ph-line path { fill: none; stroke: #000; stroke-width: 6.5; stroke-linejoin: round; stroke-dasharray: 1.02 1; stroke-dashoffset: 1; }   /* 6.5 of the drawing's 1080 is about one screen pixel on the small picture */
   .ph.turned { background-image: none !important; background-color: transparent; } .ph.turned .ph-line { opacity: 1; }   /* the back of the card: white, only the line */
@@ -51,7 +56,7 @@
   .row { display: flex; gap: calc(31 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; position: absolute; }
   .row p { width: calc(250 * var(--u)); }
   .card2 .row { gap: 0 !important; }
-  .card2 .row { align-items: center; }   /* the number stands level with the middle of its paragraph */
+  .card2 .row { align-items: flex-start; }   /* the number stands on the first line of its paragraph */
   .card2 .row .n { flex: none; width: calc(34 * var(--u)); line-height: calc(18 * var(--u)); }   /* the Lisa and Karen cards are one column wide: the text stands right by its number */
   .card2 .row p { width: calc(231 * var(--u)); }   /* 20 of free space on the right of the text */
   .n { width: calc(40 * var(--u)); opacity: .3; font-size: var(--t18); line-height: .91; flex: none; }
@@ -262,8 +267,8 @@
 <section class="s3">
   <div class="gray">
     <i class="grain" aria-hidden="true"></i>
-    <div class="card2" id="lisa" style="left:calc(20 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, one of the two founders of DirtyHands.</p></div><div class="row" style="left:0;top:calc(90 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Pairs professional design with artistic intuition to bring unconventional ideas to life.</p></div></div><p class="t name" style="left:calc(34 * var(--u));top:calc(256 * var(--u))">Karen</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
-    <div class="card2" id="karen" style="left:calc(710 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, co-founder of DirtyHands together with Karen.</p></div><div class="row" style="left:0;top:calc(90 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Sees ceramics beyond plates and pots, as objects that shape the mood and character of a room.</p></div></div><p class="t name" style="left:calc(34 * var(--u));top:calc(256 * var(--u))">Lisa</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
+    <div class="card2" id="lisa" style="left:calc(20 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, one of the two founders of DirtyHands.</p></div><div class="row" style="left:0;top:calc(90 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Pairs professional design with artistic intuition to bring unconventional ideas to life.</p></div></div><p class="t name" style="left:calc(34 * var(--u));top:calc(256 * var(--u))">Karen</p><p class="cf" style="left:calc(34 * var(--u));top:calc(339 * var(--u))">Co-founder</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
+    <div class="card2" id="karen" style="left:calc(710 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, co-founder of DirtyHands together with Karen.</p></div><div class="row" style="left:0;top:calc(90 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Sees ceramics beyond plates and pots, as objects that shape the mood and character of a room.</p></div></div><p class="t name" style="left:calc(34 * var(--u));top:calc(256 * var(--u))">Lisa</p><p class="cf" style="left:calc(34 * var(--u));top:calc(339 * var(--u))">Co-founder</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
   </div>
 </section>
 
@@ -382,24 +387,27 @@ window.preDone = new Promise(done => {
   window.scrollLocked = true;   // no scrolling under the sheet (a lock that leaves the scrollbar alone, so nothing shifts when it lifts)
   const S = 0.5, cv = pre.querySelector('canvas'), w = Math.round(innerWidth * S), h = Math.round(innerHeight * S), c = makeClay({ cv, w, h });   // made at half size and stretched: soft clay loses nothing, and it is ready six times sooner
   // a finger writes D and H in clay across the middle of the sheet, stroke by stroke, lifting between them (sizes in css px)
-  const LH = Math.min(170, innerHeight * .22), BW = LH * .62, GAP = LH * .42, x0 = (innerWidth - (BW * 2 + GAP)) / 2, yT = innerHeight / 2 - LH / 2, yB = yT + LH;
+  const LH = Math.min(250, innerHeight * .3),   /* sweeping, as if drawn across the sheet with a whole finger, but not too big */ BW = LH * .62, GAP = LH * .42, x0 = (innerWidth - (BW * 2 + GAP)) / 2, yT = innerHeight / 2 - LH / 2, yB = yT + LH;
   // written by hand, not drawn: each letter a little askew, every stroke wobbling and running on past its end, the clay thinning out as it goes, so the ends are rubbed and dry
-  const wob = () => { const p1 = Math.random() * 6.3, p2 = Math.random() * 6.3, a1 = 3 + Math.random() * 4, a2 = 2 + Math.random() * 3; return t => [Math.sin(t * 5.1 + p1) * a1 + Math.sin(t * 11 + p2) * a2 * .5, Math.cos(t * 4.3 + p2) * a1 * .7]; };
-  const skew = (P, ox, oy, ang) => P.map(([x, y]) => { const dx = x - ox, dy = y - oy; return [ox + dx * Math.cos(ang) - dy * Math.sin(ang), oy + dx * Math.sin(ang) + dy * Math.cos(ang)]; });
-  const hand = (P, over) => { const w = wob(), n = P.length, [ax, ay] = P[n - 2], [bx, by] = P[n - 1], d = Math.hypot(bx - ax, by - ay) || 1, ext = Array.from({ length: 3 }, (_, i) => [bx + (bx - ax) / d * over * (i + 1) / 3, by + (by - ay) / d * over * (i + 1) / 3]);   // it runs on a little past the end
-    return [...P, ...ext].map(([x, y], i, A) => { const [jx, jy] = w(i / A.length); return [x + jx, y + jy]; }); };
+  // written by hand, quickly and badly, as a finger would: every stroke leaning its own way, starting and stopping a little off, running on well past its end, wobbling, the clay thinning out so the ends are dry and rubbed
+  const R = (a, b) => a + Math.random() * (b - a), j = () => R(-.14, .14) * LH;
+  const wob = () => { const p1 = R(0, 6.3), p2 = R(0, 6.3), a1 = R(4, 9), a2 = R(2, 5); return t => [Math.sin(t * 5.1 + p1) * a1 + Math.sin(t * 11 + p2) * a2 * .5, Math.cos(t * 4.3 + p2) * a1 * .7]; };
+  const turn = (P, ang) => { const ox = P[0][0], oy = P[0][1]; return P.map(([x, y]) => { const dx = x - ox, dy = y - oy; return [ox + dx * Math.cos(ang) - dy * Math.sin(ang), oy + dx * Math.sin(ang) + dy * Math.cos(ang)]; }); };
+  const hand = (P, over) => { const w = wob(), n = P.length, [ax, ay] = P[n - 2], [bx, by] = P[n - 1], d = Math.hypot(bx - ax, by - ay) || 1, ext = Array.from({ length: 4 }, (_, i) => [bx + (bx - ax) / d * over * (i + 1) / 4, by + (by - ay) / d * over * (i + 1) / 4]);   // it runs on past the end
+    return turn([...P, ...ext], R(-.2, .2)).map(([x, y], i, A) => { const [jx, jy] = w(i / A.length); return [x + jx, y + jy]; }); };
   const line = (ax, ay, bx, by) => { const n = Math.max(2, Math.ceil(Math.hypot(bx - ax, by - ay) / 10)); return Array.from({ length: n + 1 }, (_, i) => [ax + (bx - ax) * i / n, ay + (by - ay) * i / n]); };
-  const bowl = (cx, cy, rx, ry) => Array.from({ length: 25 }, (_, i) => { const t = -Math.PI / 2 + Math.PI * i / 24; return [cx + Math.cos(t) * rx * (1 + (Math.random() - .5) * .08), cy + Math.sin(t) * ry]; });
-  const hx = x0 + BW + GAP, aD = (Math.random() - .5) * .14, aH = (Math.random() - .5) * .14, ov = () => 8 + Math.random() * 18;
-  const D = [line(x0, yT - 6, x0 + 3, yB + 4), [[x0 - 4, yT + 2], ...bowl(x0 + BW * .12, yT + LH / 2, BW * .9, LH / 2)]].map(P => skew(P, x0 + BW / 2, yT + LH / 2, aD));
-  const Hh = [line(hx, yT, hx - 2, yB + 6), line(hx + BW, yT - 8, hx + BW + 4, yB), line(hx - 6, yT + LH * (.48 + Math.random() * .08), hx + BW + 8, yT + LH * (.5 + Math.random() * .08))].map(P => skew(P, hx + BW / 2, yT + LH / 2, aH));
-  const strokes = [...D, ...Hh].map(P => hand(P, ov()));   // D: stem, then the bowl; H: two stems and the bar
+  const bowl = (cx, cy, rx, ry) => { const k1 = R(.85, 1.15), k2 = R(.8, 1.1); return Array.from({ length: 25 }, (_, i) => { const t = -Math.PI / 2 + Math.PI * i / 24, kk = i < 12 ? k1 : k2; return [cx + Math.cos(t) * rx * kk, cy + Math.sin(t) * ry * R(.95, 1.05)]; }); };
+  const hx = x0 + BW + GAP;
+  const D = [line(x0 + j(), yT + j(), x0 + j(), yB + j()), [[x0 + j(), yT + j()], ...bowl(x0 + BW * .1, yT + LH / 2 + j() * .5, BW * R(.8, 1), LH / 2)]];
+  const by = yT + LH * R(.35, .62);   // the bar of the H, never quite in the middle
+  const Hh = [line(hx + j(), yT + j(), hx + j(), yB + j() + R(0, .25) * LH), line(hx + BW + j(), yT + j() - R(0, .25) * LH, hx + BW + j(), yB + j() + R(0, .3) * LH), line(hx - R(10, 40), by + j() * .4, hx + BW + R(10, 50), by + j() * .6)];
+  const strokes = [...D, ...Hh].map(P => hand(P, R(18, 70)));   // D: stem, then the bowl; H: two stems and the bar
   const lens = strokes.map(p => p.slice(1).reduce((a, q, i) => a + Math.hypot(q[0] - p[i][0], q[1] - p[i][1]), 0)), total = lens.reduce((a, b) => a + b, 0);
   let si = 0, pi = 0, f = null, done_ = 0;   // where the finger is: stroke, point, and how much of the way is written
   const advance = to => {                    // smear on along the strokes until 'to' css px of the way are written
     while (si < strokes.length && done_ < to) {
       const P = strokes[si];
-      if (pi === 0) { f = c.finger(P[0][0] * S, P[0][1] * S, { size: (1 + Math.random() * .2) * S, load: 1.6 + Math.random() * .4, ang: (Math.random() - .5) * .5 }); c.print(f); pi = 1; }   // the finger comes down, never quite the same way
+      if (pi === 0) { f = c.finger(P[0][0] * S, P[0][1] * S, { size: (1 + Math.random() * .25) * S * LH / 170, load: 1.6 + Math.random() * .4, ang: (Math.random() - .5) * .5 }); c.print(f); pi = 1; }   // the finger comes down, never quite the same way
       const [ax, ay] = P[pi - 1], [bx, by] = P[pi], d = Math.hypot(bx - ax, by - ay);
       if (d > 0) { f.x = ax * S; f.y = ay * S; f = c.autoSmear(f, (bx - ax) / d, (by - ay) / d, Math.max(2, d * S), 0.986); }   // the clay runs out along the stroke: a dry, rubbed end
       done_ += d; pi++; if (pi >= P.length) { si++; pi = 0; }   // the end of a stroke: it lifts
@@ -409,7 +417,7 @@ window.preDone = new Promise(done => {
   (function step(now) { const k = Math.min(1, (now - t1) / DUR), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;   // slow in, slow out
     advance(e * total + (k >= 1 ? 1 : 0)); c.render();
     if (k < 1) return requestAnimationFrame(step);
-    setTimeout(() => { pre.style.transition = 'opacity .6s cubic-bezier(.4, 0, .2, 1)'; pre.style.opacity = 0; done(); setTimeout(() => pre.remove(), 650); }, 250); })(t1);
+    setTimeout(() => { pre.style.pointerEvents = 'none'; pre.style.transition = 'background-color .6s cubic-bezier(.4, 0, .2, 1)'; pre.style.backgroundColor = 'transparent'; done(); setTimeout(() => pre.remove(), 5000); }, 250); })(t1);   // the sheet goes and the page appears; the DH stays and soaks away by itself, as every clay mark on the site does
 });
 </script>
 <script src="sound.js"></script>
@@ -543,15 +551,48 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   { // the small picture by "Clay with something to say" turns over like a card when clicked: on its back the two vessels are drawn as one line (traced by hand from the photo)
     const ph = one('.rest > .ph:not(.pic):not(.bar)'), POTS = 'M212 975L210 835L198 832L196 540C120 540 50 500 40 385L108 375C112 430 140 465 192 470L186 395L222 395L225 352L248 345L246 175C260 150 345 150 358 180L360 345L382 352L385 395L410 395L440 400L500 440L535 500L545 580L530 660L538 720L505 770L440 790L405 800L400 832L385 835L383 975C340 990 250 990 212 975Z M718 975L715 785L640 795L595 760L580 690L556 620L570 520L610 465L690 440L688 425L735 425L735 395C735 370 750 345 752 330L752 255L770 250L785 262L800 248L830 258L850 250L852 345L865 350L868 425L925 425L928 520C950 525 960 510 962 480L962 430L1052 428L1050 470C1045 540 990 560 930 560L925 780L885 785L882 975C840 990 760 990 718 975Z';
     ph.insertAdjacentHTML('beforeend', `<svg class="ph-line" viewBox="0 0 1080 1080" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path pathLength="1" d="${POTS}"/></svg>`);
-    const path = ph.querySelector('.ph-line path'); let back = false, busy = false;
-    ph.addEventListener('click', e => { e.stopPropagation(); if (busy || !window.gsap) return; busy = true; back = !back; soundNudge(.5);
-      gsap.timeline({ onComplete() { busy = false; } })
+    const path = ph.querySelector('.ph-line path'); let back = false, flip = null;
+    ph.addEventListener('pointerdown', e => e.stopPropagation());   // no clay print on it: a click here only turns it over
+    ph.addEventListener('click', e => { e.stopPropagation(); if (!window.gsap) return; back = !back; soundNudge(.5);
+      if (flip) flip.kill();   // a quick second click turns it straight back instead of being lost
+      flip = gsap.timeline()
         .to(ph, { rotationY: 90, transformPerspective: 900, duration: .3, ease: 'power2.in' })
         .add(() => { ph.classList.toggle('turned', back); gsap.set(path, { strokeDashoffset: 1 }); })
         .fromTo(ph, { rotationY: -90 }, { rotationY: 0, duration: .45, ease: 'power2.out' })
         .to(path, { strokeDashoffset: back ? 0 : 1, duration: back ? 1.8 : 0, ease: 'power2.inOut' }, '-=.15'); }); }
   one('.gray').style.setProperty('--imgL', 'url("photos/lisa-karen.jpg")');   // Karen and Lisa (dirtyhands.ru/about): one photo across both halves, Karen on the left, Lisa on the right
   one('.gray').style.setProperty('--imgR', 'url("photos/lisa-karen.jpg")');
+  // the photo of Karen and Lisa through a shader: light rakes across a relief read from the photo itself, and each of them bulges a little towards us, so the people seem to stand out of the picture. Without WebGL the plain photo stays
+  const grayGL = (() => {
+    const host = one('.gray'), cv = document.createElement('canvas'); cv.className = 'gray-gl'; const gl = cv.getContext('webgl'); if (!gl) return null;
+    const mk = (t, c) => { const sh = gl.createShader(t); gl.shaderSource(sh, c); gl.compileShader(sh); return gl.getShaderParameter(sh, gl.COMPILE_STATUS) ? sh : (console.warn(gl.getShaderInfoLog(sh)), null); };
+    const vs = mk(gl.VERTEX_SHADER, 'attribute vec2 a; varying vec2 v; void main(){ v = a * .5 + .5; gl_Position = vec4(a, 0., 1.); }');
+    const fs = mk(gl.FRAGMENT_SHADER, `precision highp float;
+      uniform sampler2D tex; uniform vec2 px; uniform float asp, t; varying vec2 v;
+      float lum(vec2 p) { return dot(texture2D(tex, p).rgb, vec3(.299, .587, .114)); }
+      float soft(vec2 p) { float s = 0.; for (int i = -1; i <= 1; i++) for (int j = -1; j <= 1; j++) s += lum(p + vec2(float(i), float(j)) * px * 4.); return s / 9.; }
+      vec2 bulge(vec2 p, vec2 c, float r, float k, inout float rim) { vec2 d = (p - c) * vec2(asp, 1.); float l = length(d) / r; if (l < 1.) { float f = 1. - k * (1. - l * l); p = c + (d * f) / vec2(asp, 1.); rim += smoothstep(.55, 1., l) * (1. - l) * 2.; } return p; }
+      void main() {
+        vec2 p = vec2(v.x, 1. - v.y); float rim = 0.;
+        p = bulge(p, vec2(.27, .42), .42, .1, rim); p = bulge(p, vec2(.74, .4), .42, .1, rim);   // Karen on the left, Lisa on the right
+        float gx = soft(p + vec2(px.x * 5., 0.)) - soft(p - vec2(px.x * 5., 0.)), gy = soft(p + vec2(0., px.y * 5.)) - soft(p - vec2(0., px.y * 5.));
+        vec3 n = normalize(vec3(-gx * 9., gy * 9., 1.)), L = normalize(vec3(-.45 + .5 * t, .55, .8));
+        float sh = .8 + .32 * max(dot(n, L), 0.) - .07 * rim;
+        vec3 c = texture2D(tex, p).rgb; gl_FragColor = vec4(c * sh, 1.);
+      }`);
+    if (!vs || !fs) return null;
+    const pr = gl.createProgram(); gl.attachShader(pr, vs); gl.attachShader(pr, fs); gl.linkProgram(pr); if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return null; gl.useProgram(pr);
+    const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    const u = n => gl.getUniformLocation(pr, n); let ready = false, last = -1;
+    const img = new Image(); img.onload = () => { const tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+      [gl.TEXTURE_MIN_FILTER, gl.TEXTURE_MAG_FILTER].forEach(k => gl.texParameteri(gl.TEXTURE_2D, k, gl.LINEAR)); [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T].forEach(k => gl.texParameteri(gl.TEXTURE_2D, k, gl.CLAMP_TO_EDGE));
+      gl.uniform2f(u('px'), 1 / img.width, 1 / img.height); gl.uniform1f(u('asp'), img.width / img.height); ready = true; host.prepend(cv); host.classList.add('gl-on'); api.draw(.5, true); };
+    img.src = 'photos/lisa-karen.jpg';
+    const api = { place(top, w, h) { const d = Math.min(2, devicePixelRatio || 1); Object.assign(cv.style, { top: top + 'px', width: w + 'px', height: h + 'px' }); cv.width = Math.round(w * d); cv.height = Math.round(h * d); last = -1; },
+      draw(t, force) { if (!ready || (!force && Math.abs(t - last) < .002)) return; last = t; gl.viewport(0, 0, cv.width, cv.height); gl.uniform1f(u('t'), t); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4); } };
+    return api;
+  })();
 
   // ---- shader on one picture: the image lies on a slightly domed, glazed surface that turns in space as you scroll, with light and a highlight (a feeling of volume inside the frame)
   function shaderPicture(el, src) {
@@ -662,8 +703,8 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   // split each paragraph into its rendered lines, so every line can wrap around the picture on its own
   function splitLines() {
     lines = texts.map(p => {
-      const text = p.dataset.text || (p.dataset.text = p.textContent.trim());
-      p.innerHTML = text.split(' ').map(w => `<span>${w}</span>`).join(' ');
+      const text = p.dataset.text || (p.dataset.text = glue(p.textContent.trim()));
+      p.innerHTML = text.split(' ').map(w => `<span style="white-space:nowrap">${w}</span>`).join(' ');
       const rows = [];
       [...p.children].forEach(s => { const top = s.offsetTop; (rows.length && rows[rows.length - 1].top === top) ? rows[rows.length - 1].w.push(s.textContent) : rows.push({ top, w: [s.textContent] }); });
       p.innerHTML = rows.map(r => `<span class="ln"><span class="li">${r.w.join(' ')} </span></span>`).join('');
@@ -685,7 +726,8 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     bigrows.forEach(b => b.style.setProperty('--dx', (0.4 * (700 - (b.offsetLeft + b.offsetWidth / 2) / U)).toFixed(2)));   // every word starts 60% of the way to its place, so the words never sit on top of each other
     // the photo of Karen and Lisa, split between the two halves of the block so it reads as one picture: the whole photo across the full width, never cropped (both faces stay in)
     { const gr = one('.gray'), w = gr.offsetWidth, h = gr.offsetHeight + 320 * U, sc = w / 1680, iw = 1680 * sc, ih = 850 * sc, ox = 0, oy = (160 + 420) * U - ih / 2;   // its middle 700 down the block, so it is seen on its own before the cards come
-      gr.style.setProperty('--bgS', `${iw}px ${ih}px`); gr.style.setProperty('--bgL', `${ox}px ${oy}px`); gr.style.setProperty('--bgR', `${ox - w / 2}px ${oy}px`); }
+      gr.style.setProperty('--bgS', `${iw}px ${ih}px`); gr.style.setProperty('--bgL', `${ox}px ${oy}px`); gr.style.setProperty('--bgR', `${ox - w / 2}px ${oy}px`);
+      if (grayGL) { grayGL.place(oy - 160 * U, w, ih); grayGL.draw(.5, true); } }
     // the title stays pinned to the bottom while the whole table goes over it; then it leaves with the page
     ttlBox.style.height = (one('.s2').offsetTop / U + 1168 + 182.6) * U + 'px';   // pinned until the whole table (1168 high) has gone up past its top edge
   }
@@ -696,10 +738,11 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   const EASE = 'power3.out';
   let storyWordTl = null, capTl = [], pairs = [], touched = [], fanTl = null, blockTexts = [], tableOpen = false;
 
+  const glue = t => t.replace(/(^|\s)(a|an|the|of|to|and|in|on|by|for|at|with|as|or|its|from)\s+/gi, '$1$2\u00a0');   // a short word never hangs at the end of a line: it goes down with the next word
   function splitMask(el) {                          // every rendered line gets its own mask: .m > .mi
-    const text = el.dataset.text || (el.dataset.text = el.textContent.trim().replace(/\s+/g, ' '));
+    const text = el.dataset.text || (el.dataset.text = glue(el.textContent.trim().replace(/\s+/g, ' ')));
     if (el._icon === undefined) { const ic = el.querySelector(':scope > svg'); el._icon = ic ? ic.outerHTML : ''; }   // an arrow at the end of a link rides on its last line
-    el.innerHTML = text.split(' ').map(w => `<span>${w}</span>`).join(' ') + el._icon;
+    el.innerHTML = text.split(' ').map(w => `<span style="white-space:nowrap">${w}</span>`).join(' ') + el._icon;   // measured whole: a word is never split at its hyphen
     const rows = [];
     [...el.children].forEach(sp => { if (sp.tagName === 'svg') return; const top = sp.offsetTop; (rows.length && rows[rows.length - 1].top === top) ? rows[rows.length - 1].w.push(sp.textContent) : rows.push({ top, w: [sp.textContent] }); });
     el.innerHTML = rows.map((r, i) => `<span class="m"><span class="mi">${r.w.join(' ')}${i === rows.length - 1 ? el._icon : ''} </span></span>`).join('');
@@ -804,10 +847,11 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       if (c._tl) c._tl.kill();
       const tl = gsap.timeline({ paused: true });
       fanIn(tl, top, { each: .045, at: 0, dur: .9 });                   // the ruled lines fan out one after another, as in the table
-      fadeIn(tl, nn, .3, .75, { dur: .5, each: .1 });                     // then the text comes in
-      riseIn(tl, inner, { at: .75, each: .07, dur: .8 });
-      riseIn(tl, nm, { at: 1.05, each: .06, dur: .8 });                  // the name rises letter by letter
-      fanIn(tl, bot, { each: .08, at: 1.05, dur: .8 });
+      [...c.querySelectorAll('.row')].forEach((row, r) => { const at = .7 + r * .45;   // then the text, tidily: the first paragraph with its number, then the second
+        fadeIn(tl, row.querySelector('.n'), .3, at, { dur: .6 }); riseIn(tl, [...row.querySelectorAll('p .mi')], { at, each: .1, dur: .9 }); });
+      riseIn(tl, nm, { at: 1.6, each: .06, dur: .8 });                   // and the name rises letter by letter
+      const cf = c.querySelector('.cf'); if (cf) { touched.push(cf); fadeIn(tl, cf, .4, 1.9, { dur: .6 }); }   // and Co-founder under it
+      fanIn(tl, bot, { each: .08, at: 1.6, dur: .8 });
       c._tl = tl; pairs.push({ st: { kill() {}, start: Infinity }, tl });
       if (c._on) tl.progress(1);
     });
@@ -1035,10 +1079,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     };
     (function loop() { if (!run) return; if (!st.fixed) { vel = (vel + (target - pos) * st.k) * st.damp; pos += vel; } place(); requestAnimationFrame(loop); })();   // the cylinder follows a little behind the hand, so it glides on after the scroll stops
     const lo = Math.min(...order), hi = Math.max(...order), nudge = v => { if (closing) return; target = Math.max(lo - 0.3, Math.min(hi + 0.3, v)); clearTimeout(snapT); snapT = setTimeout(() => { target = Math.max(lo, Math.min(hi, Math.round(target))); }, 180); };
-    let past = 0, pastT = 0; const onWheel = e => { e.preventDefault(); const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY; soundNudge(d / 120);   // any wheel turns the pictures round
-      const atEnd = (d > 0 && target >= hi) || (d < 0 && target <= lo); clearTimeout(pastT); pastT = setTimeout(() => { past = 0; }, 400);
-      if (atEnd) { past += Math.abs(d); if (past > 260 && openView) openView.close(); } else past = 0;   // scrolling on past the last (or the first) picture closes the category
-      nudge(target + d / SPc * 0.9); };
+    const onWheel = e => { e.preventDefault(); const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY; soundNudge(d / 120); nudge(target + d / SPc * 0.9); };   // any wheel turns the pictures; the category closes only on a click (or Escape)
     const onKey = e => { if (closing) return; if (e.key === 'ArrowRight') target = Math.min(hi, Math.round(target) + 1); else if (e.key === 'ArrowLeft') target = Math.max(lo, Math.round(target) - 1); };
     const onDown = e => { drag = { x: e.clientX, t: target, moved: false }; };
     const onMove = e => { if (!drag) return; const dx = e.clientX - drag.x; if (Math.abs(dx) > 5) drag.moved = true; if (drag.moved) { soundNudge((e.movementX || 0) / 30); nudge(drag.t - dx / SPc); } };
@@ -1168,33 +1209,37 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       const ls = lines[j];
       while (ls.length < rows.length) { const c = ls[ls.length - 1].cloneNode(true); c._clone = true; p.appendChild(c); ls.push(c); }
       ls.forEach((ln, i) => {
-        if (i >= rows.length) { ln.style.display = 'none'; return; }
+        if (i >= rows.length) { ln.style.display = 'none'; ln._hid = true; return; }
         const r = rows[i], li = ln.firstElementChild, txt = r ? r.t : '\u00a0';
         ln.style.display = ''; ln.style.transition = 'none';
         if (li.textContent !== txt) li.textContent = txt;
-        ln.style.transform = r && r.x ? `translateX(${(r.x * U).toFixed(1)}px)` : '';
+        ln._tx = r && r.x ? r.x * U : 0; if (ln._cx == null || ln._hid) { ln._cx = ln._tx; ln.style.transform = ln._tx ? `translateX(${ln._tx.toFixed(1)}px)` : ''; } ln._hid = false;   // where it should stand; it glides there (see glideTable)
       });
-      p.dataset.y = y0; p.style.top = y0 * U + 'px'; if (nums[j]) nums[j].style.top = y0 * U + 'px';
+      p.dataset.y = y0; p._ty = y0 * U; if (p._cy == null) { p._cy = p._ty; p.style.top = p._ty + 'px'; if (nums[j]) nums[j].style.top = p._ty + 'px'; }
       y0 += (rows.length + 4) * LH;                                     // four empty ruled lines between paragraphs
     });
+    if (!glideRaf) glideRaf = requestAnimationFrame(glideTable);   // one gliding loop at a time
+  }
+  // the lines and the paragraphs never jump to their new places: they glide there with a little inertia, the same at any frame rate
+  let glideRaf = 0, glideT = 0;
+  function glideTable(now = performance.now()) {
+    const dt = Math.min(50, now - (glideT || now)); glideT = now; const k = 1 - Math.pow(1 - .14, (dt || 16.7) / 16.7); let busy = false;
+    texts.forEach((p, j) => { if (p._ty != null && Math.abs(p._ty - p._cy) > .3) { p._cy += (p._ty - p._cy) * k; busy = true; } else if (p._ty != null) p._cy = p._ty; p.style.top = p._cy + 'px'; if (nums[j]) nums[j].style.top = p._cy + 'px';
+      (lines[j] || []).forEach(ln => { if (ln._tx == null || ln._hid) return; if (Math.abs(ln._tx - ln._cx) > .3) { ln._cx += (ln._tx - ln._cx) * k; busy = true; } else ln._cx = ln._tx; ln.style.transform = ln._cx ? `translateX(${ln._cx.toFixed(1)}px)` : ''; }); });
+    glideRaf = busy ? requestAnimationFrame(glideTable) : 0; if (!busy) glideT = 0;
   }
 
   // ---- one clay mark on each of the Lisa and Karen cards, made by the same clay as the live marks: a finger print or a longer smear, placed at random, drawn in as the card scrolls up
-  const cardMarks = [lisa, karen].map((card, idx) => { const cv = document.createElement('canvas'); cv.className = 'cmark'; card.prepend(cv); return { card, cv, idx, smear: Math.random() < 0.55, w: 0, h: 0, drawn: -1 }; });
+  const cardMarks = [lisa, karen].map((card, idx) => { const cv = document.createElement('canvas'); cv.className = 'cmark'; card.prepend(cv); return { card, cv, idx, smear: false, w: 0, h: 0, drawn: -1 }; });
   setTimeout(() => cardMarks.forEach(m => { if (!m.frames) makeMark(m); }), 2500);   // made once, ahead of time, so the scroll does not stall on it
   function makeMark(m) {
     const w = m.card.offsetWidth, h = m.card.offsetHeight; if (!w || !h) return;
     m.w = w; m.h = h; m.drawn = -1; m.cv.width = w; m.cv.height = h; m.frames = [];
     const off = document.createElement('canvas'), c = makeClay({ cv: off, w, h, invert: true });
     const snap = () => { const fc = document.createElement('canvas'); fc.width = w; fc.height = h; c.render(); fc.getContext('2d').drawImage(off, 0, 0); m.frames.push(fc); };
-    if (m.smear) {                                                       // a finger put down and dragged on a slant, until the clay runs out; kept as frames, so scrolling draws it stroke by stroke
-      const dir = -1, a = m.idx === 0 ? -(0.28 + Math.random() * 0.14) : -(0.95 + Math.random() * 0.2), dx = Math.cos(a) * dir, dy = Math.sin(a);   // in the bottom right corner, under the text: a short smear going up and to the left
-      const len = w * (0.26 + Math.random() * 0.12), sx = w * (0.8 + Math.random() * 0.08), sy = h * (0.86 + Math.random() * 0.04);
-      let f = c.finger(sx, sy, { load: 1.5 }); c.print(f); snap();
-      const F = 16; for (let k = 0; k < F; k++) { f = c.autoSmear(f, dx, dy, len / F); snap(); }
-    } else {
-      c.variants[Math.random() < 0.5 ? 0 : 11].run(w * (0.68 + Math.random() * 0.14), h * (0.7 + Math.random() * 0.12)); snap();
-    }
+    // just prints, no smear (a finger pressed flat, the length of a phalanx): one on Karen's card, two on Lisa's, in the bottom right corner under the text
+    const n = m.idx === 0 ? 1 : 2; for (let k = 0; k < n; k++) { const f = c.finger(w * (0.7 + k * .14 + Math.random() * .04), h * (0.74 + (k ? -.05 : 0) + Math.random() * .05), { size: .62 + Math.random() * .08, load: 1.7 + Math.random() * .3, ang: -.45 + (Math.random() - .5) * .3 }); f.ry *= 1.6; c.print(f); }   // a whole phalanx pressed flat: a long oval on a slant
+    snap();
   }
   function drawMark(m, rev) {
     if (m.w !== m.card.offsetWidth || m.h !== m.card.offsetHeight) makeMark(m);
@@ -1374,10 +1419,11 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     flowTable(obs.length ? obs : null);
 
     // the photo block scrolls with the page: the photo inside lags behind (parallax), the two cards run a little ahead of it, Lisa not far below Karen
-    const gp = clamp((y + V - s3Top) / (1300 + V));                     // 0: the block comes in at the bottom, 1: it has gone out at the top
+    const gp = clamp((y + V - s3Top) / (1080 + V));                     // 0: the block comes in at the bottom, 1: it has gone out at the top
     one('.gray').style.setProperty('--par', gp.toFixed(4));
+    if (grayGL) grayGL.draw(gp);   // the light moves across them with the scroll
     lisa.style.top = (380 - (gp - 0.5) * 160) * U + 'px';                // (the #lisa card carries Karen's name: it is the first one)
-    karen.style.top = (700 - (gp - 0.5) * 560) * U + 'px';
+    karen.style.top = (600 - (gp - 0.5) * 240) * U + 'px';                // Lisa a little higher, and a little quicker than Karen
     [[lisa, cardMarks[0]], [karen, cardMarks[1]]].forEach(([el, m]) => {
       const top = s3Top + parseFloat(el.style.top) / U - y;              // on the screen, design px
       drawMark(m, (V * 0.95 - top) / (V * 0.45));                        // the clay mark draws in while the card comes up
