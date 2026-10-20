@@ -396,7 +396,7 @@ window.preDone = new Promise(done => {
   window.scrollLocked = true;   // no scrolling under the sheet (a lock that leaves the scrollbar alone, so nothing shifts when it lifts)
   const S = 0.5, cv = pre.querySelector('canvas'), w = Math.round(innerWidth * S), h = Math.round(innerHeight * S), c = makeClay({ cv, w, h });   // made at half size and stretched: soft clay loses nothing, and it is ready six times sooner
   // a finger writes D and H in clay across the middle of the sheet, stroke by stroke, lifting between them (sizes in css px)
-  const LH = Math.min(250, innerHeight * .3),   /* sweeping, as if drawn across the sheet with a whole finger, but not too big */ BW = LH * .62, GAP = LH * .42, x0 = (innerWidth - (BW * 2 + GAP)) / 2, yT = innerHeight / 2 - LH / 2, yB = yT + LH;
+  const LH = Math.min(175, innerHeight * .21),   /* sweeping, as if drawn across the sheet with a whole finger, but not too big */ BW = LH * .62, GAP = LH * .42, x0 = (innerWidth - (BW * 2 + GAP)) / 2, yT = innerHeight / 2 - LH / 2, yB = yT + LH;
   // written by hand, not drawn: each letter a little askew, every stroke wobbling and running on past its end, the clay thinning out as it goes, so the ends are rubbed and dry
   // written by hand, quickly and badly, as a finger would: every stroke leaning its own way, starting and stopping a little off, running on well past its end, wobbling, the clay thinning out so the ends are dry and rubbed
   const R = (a, b) => a + Math.random() * (b - a), j = () => R(-.14, .14) * LH;
