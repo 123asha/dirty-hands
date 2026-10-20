@@ -27,7 +27,7 @@
   .s3 { z-index: 3; }
   .gray .grain { display: none !important;  position: absolute; inset: 0; z-index: 1; pointer-events: none; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  1 1 1 0 -1.2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E"); opacity: .09; mix-blend-mode: multiply; }   /* a very light grain over the photo of Karen and Lisa, under the cards */
   .gray { position: relative; margin: 0; height: calc(1080 * var(--u)); overflow: hidden; }   /* a block that scrolls with the page, with no grey fill of its own: first the photo of Karen and Lisa (it moves slower, parallax), then their two cards come up over it one after the other */
-  .rest { height: calc(5809 * var(--u)); }   /* the end of the page, on steps of 40: Media, 80, the eye (320 high), 80, the credit, 160, the strip of pictures; the strip keeps its place against the end, so the loop stays seamless */
+  .rest { height: calc(5809 * var(--u)); }   /* the end of the page, on steps of 40: Media, 80, the hand (320 high), 80, the credit, 160, the strip of pictures; the strip keeps its place against the end, so the loop stays seamless */
   /* vertical spacing, one rule for the page below (design px, from the visible bottom of one thing to the visible top of the next):
      20 inside a block (a number to its picture), 40 from a text to its link, 120 between the items of one section (case to case), 200 between sections */
   .t { font-weight: 400; white-space: nowrap; }
@@ -57,7 +57,8 @@
   .pre { position: fixed; inset: 0; z-index: 3000; background-color: #fff; } .pre canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }   /* the preloader sheet across the whole screen (made at half size, stretched) */
   .ph-line { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
   .ph-line path { fill: none; stroke: #000; stroke-width: 6.5; stroke-linejoin: round; }   /* 6.5 of the drawing's 1080 is about one screen pixel on the small picture */
-  .rest > .ph:not(.pic):not(.bar):hover { background-image: none !important; background-color: transparent; } .rest > .ph:not(.pic):not(.bar):hover .ph-line { opacity: 1; }   /* pointed at: white, only the line, no animation */
+  .rest > .ph:not(.pic):not(.bar) { background-image: none !important; background-color: transparent; } .rest > .ph:not(.pic):not(.bar) .ph-line { opacity: 1; }   /* at rest: white, only the line drawing */
+  .rest > .ph:not(.pic):not(.bar):hover { background-image: var(--ph) !important; } .rest > .ph:not(.pic):not(.bar):hover .ph-line { opacity: 0; }   /* pointed at: the photograph itself, no animation */
   .rest > .ph:not(.pic):not(.bar) { cursor: pointer; }
   #about { scroll-margin-top: calc(52 * var(--u)); }   /* the About link brings the block up to its own top edge, not the heading flush against the screen's */
   /* menu: rises with the scroll from its place in the hero, then stays 20 from the top (top is set in tick); white + difference, like the title, so it stays readable over blocks */
@@ -309,26 +310,26 @@
   </div></div>
   <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(621.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">The Greeks</span></p>
   <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(738.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">Novikov</span></p>
-  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(855.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">Club Brera</span></p>
+  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(855.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">Brera</span></p>
   <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(972.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">AVA</span></p>
   <p class="t name2 partner" style="display:none;left:calc(706 * var(--u));top:calc(1099.8 * var(--u));width:calc(674 * var(--u));"><span class="pf">Rodina Moskva</span></p>
 
   <div class="ph pic" id="cases" style="left:calc(20 * var(--u));top:calc(1295 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
   <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(1258 * var(--u))">Restaurant</span>
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(1295 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(1295 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(1295 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Smooth, rounded slabs like Mediterranean stones on three sides of the bar.</p>
   <div class="ph pic" style="left:calc(250 * var(--u));top:calc(1988 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(1988 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(1988 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(1988 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Half-round ceramic panels on the columns, and planters for several pots.</p>
   <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(1951 * var(--u))">Restaurant</span>
   <div class="ph pic" style="left:calc(20 * var(--u));top:calc(2603 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
-  <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(2566 * var(--u))">Members’ club</span>
+  <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(2566 * var(--u))">Restaurant</span>
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(2603 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(2603 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(2603 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">A ceramic triptych at the very centre of an Italian restaurant.</p>
   <div class="ph pic" style="left:calc(250 * var(--u));top:calc(3296 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(3296 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
-  <p class="t18" style="left:calc(710 * var(--u));top:calc(3296 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Artful wall compositions bring depth, texture, and character to your space.</p>
-  <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(3259 * var(--u))">Private residence</span>
+  <p class="t18" style="left:calc(710 * var(--u));top:calc(3296 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Two large panels, below and above, over a kitchen open to the guests.</p>
+  <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(3259 * var(--u))">Restaurant</span>
 
   <svg class="morph" viewBox="0 0 200 300" aria-hidden="true" style="left:calc(610 * var(--u));top:calc(3888 * var(--u));width:calc(320 * var(--u));height:calc(480 * var(--u));"><path class="mb" d=""/><path class="ml" d=""/><path class="mh" d=""/><path class="mx" d=""/><path class="my" d=""/></svg>
   <i class="hl" style="top:calc(4008 * var(--u))"></i>
@@ -341,16 +342,12 @@
   <div class="bigrow" style="left:calc(480 * var(--u));top:calc(4147.7 * var(--u));height:calc(98 * var(--u));"><p class="t name2">forms</p></div>
 
   <div class="tagged" style="left:calc(250 * var(--u));top:calc(4513 * var(--u));"><p class="t big2">Media</p><span class="yr" aria-hidden="true"></span></div>
-  <p class="t18" data-year="2025" style="left:calc(710 * var(--u));top:calc(4533 * var(--u));width:calc(210 * var(--u));">Elle Decoration</p>
-  <p class="t18 mdesc" style="left:calc(750 * var(--u));top:calc(4533 * var(--u));width:calc(280 * var(--u));">Named among Russia's ceramic workshops with a style of their own.</p>
-  <p class="t18" data-year="2023" style="left:calc(710 * var(--u));top:calc(4623 * var(--u));width:calc(210 * var(--u));">TopDesignMag</p>
-  <p class="t18 mdesc" style="left:calc(750 * var(--u));top:calc(4623 * var(--u));width:calc(280 * var(--u));">Coffee tables shaped by the elements, made to anchor a living room.</p>
-  <p class="t18" data-year="2023" style="left:calc(710 * var(--u));top:calc(4713 * var(--u));width:calc(210 * var(--u));">MyDecor</p>
-  <p class="t18 mdesc" style="left:calc(750 * var(--u));top:calc(4713 * var(--u));width:calc(280 * var(--u));">The studio moves into furniture, a collection of clay coffee tables.</p>
-  <p class="t18" data-year="2023" style="left:calc(710 * var(--u));top:calc(4803 * var(--u));width:calc(210 * var(--u));">Design Mate</p>
-  <p class="t18 mdesc" style="left:calc(750 * var(--u));top:calc(4803 * var(--u));width:calc(280 * var(--u));">Eight conceptual tables, each named after an element or a natural material.</p>
-  <p class="t18" data-year="2022" style="left:calc(710 * var(--u));top:calc(4893 * var(--u));width:calc(210 * var(--u));">Elle Decoration</p>
-  <p class="t18 mdesc" style="left:calc(750 * var(--u));top:calc(4893 * var(--u));width:calc(280 * var(--u));">A professor's 120 m² flat with windows facing Moscow State University.</p>
+  <p class="t18" data-year="2025" style="left:calc(710 * var(--u));top:calc(4533 * var(--u));width:calc(210 * var(--u));">Design Mate</p>
+  <p class="t18 mdesc" style="left:calc(750 * var(--u));top:calc(4533 * var(--u));width:calc(280 * var(--u));">DirtyHands opens Art in the Hands in Moscow: a gallery of the founders’ ceramics, and a room for lessons in hand-building and on the wheel, and for talks on painting, psychology and interiors.</p>
+  <p class="t18" data-year="2025" style="left:calc(710 * var(--u));top:calc(4623 * var(--u));width:calc(210 * var(--u));">Moskva Promyshlennaya</p>
+  <p class="t18 mdesc" style="left:calc(750 * var(--u));top:calc(4623 * var(--u));width:calc(280 * var(--u));">A visit to the studio founded in 2019: panels, lamps, furniture and sculpture shaped by hand from chamotte, red and white clay, fired twice, often a month for a single piece.</p>
+  <p class="t18" data-year="2025" style="left:calc(710 * var(--u));top:calc(4713 * var(--u));width:calc(210 * var(--u));">Interior+Design</p>
+  <p class="t18 mdesc" style="left:calc(750 * var(--u));top:calc(4713 * var(--u));width:calc(280 * var(--u));">A 60 m² flat in a Stalin-era house near Sokol by Marina Troshina of Bellager Design: oak, stone and glass, and a DirtyHands ceramic panel over the bed.</p>
   <a class="t18 more" style="display:none;left:calc(710 * var(--u));top:calc(5111 * var(--u));" href="#story">More →</a>
   <div class="dot" style="left:calc(613 * var(--u));top:calc(4519.5 * var(--u));"></div>
   <div class="dot" style="display:none;left:calc(613 * var(--u));top:calc(4594.5 * var(--u));"></div>
@@ -573,13 +570,14 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   const HS = 14;                   // strips a hovered card is cut into for its bulge
   $('.hc').forEach((c, i) => { c._hs = []; for (let j = 0; j < HS; j++) { const st = document.createElement('div'); st.className = 'hs'; st.style.setProperty('--j', j); const im = document.createElement('i'); im.style.backgroundImage = HERO(i); if (CUTOUT.has(i)) im.style.backgroundSize = 'contain'; const ph = document.createElement('b'); ph.style.backgroundImage = `url("${HOVER_SRC[i]}")`; { const f = frameFor(i, 210.2, CARD_H[i]), px = f.w > 210.2 ? f.x / (210.2 - f.w) * 100 : 50, py = f.h > CARD_H[i] ? f.y / (CARD_H[i] - f.h) * 100 : 50; Object.assign(ph.style, { backgroundSize: `auto ${(f.h / CARD_H[i] * 100).toFixed(2)}%`, backgroundPosition: `${px.toFixed(2)}% ${py.toFixed(2)}%` }); } st.append(ph); st.append(im); c.append(st); c._hs.push(st); } });
   $('.bar').forEach((b, i) => { const f = frameFor(i, 210.2, CARD_H[i]); Object.assign(b.style, { backgroundImage: `url("${HOVER_SRC[i]}")`, backgroundSize: `calc(${f.w.toFixed(1)} * var(--u)) calc(${f.h.toFixed(1)} * var(--u))`, backgroundPosition: `calc(${f.x.toFixed(1)} * var(--u)) calc(${f.y.toFixed(1)} * var(--u))` }); });   // each end strip is the top edge of its card's photo, framed the same: when the page starts over, the card simply grows down out of it
-  const CASE_IMG = [3, 5, 1, 6, 8];   // the photo of each case
-  $('.pic').forEach((e, i) => { e.style.setProperty('--img', IMG(CASE_IMG[i])); });      // the big pictures: the image lives in ::before, inside the frame
-  one('.rest > .ph:not(.pic):not(.bar)').style.backgroundImage = IMG(4);
+  const CASE_KEY = ['greeks', 'novikov', 'brera', 'ava', 'rodina'], CASE_N = { greeks: 9, novikov: 6, brera: 7, ava: 6, rodina: 7 };   // the projects from dirtyhands.ru/projects
+  const CASE_SRC = (i, k = 0) => `photos/projects/${CASE_KEY[i]}-${k % CASE_N[CASE_KEY[i]] + 1}.jpg`;   // a case's k-th photo (0: its own)
+  $('.pic').forEach((e, i) => { e.style.setProperty('--img', `url("${CASE_SRC(i)}")`); });      // the big pictures: the image lives in ::before, inside the frame
+  one('.rest > .ph:not(.pic):not(.bar)').style.setProperty('--ph', IMG(4));
   { // the small picture by "Clay with something to say": pointed at, it becomes the two vessels drawn as one line (traced by hand from the photo)
     const ph = one('.rest > .ph:not(.pic):not(.bar)'), POTS = 'M212 975L210 835L198 832L196 540C120 540 50 500 40 385L108 375C112 430 140 465 192 470L186 395L222 395L225 352L248 345L246 175C260 150 345 150 358 180L360 345L382 352L385 395L410 395L440 400L500 440L535 500L545 580L530 660L538 720L505 770L440 790L405 800L400 832L385 835L383 975C340 990 250 990 212 975Z M718 975L715 785L640 795L595 760L580 690L556 620L570 520L610 465L690 440L688 425L735 425L735 395C735 370 750 345 752 330L752 255L770 250L785 262L800 248L830 258L850 250L852 345L865 350L868 425L925 425L928 520C950 525 960 510 962 480L962 430L1052 428L1050 470C1045 540 990 560 930 560L925 780L885 785L882 975C840 990 760 990 718 975Z';
     ph.insertAdjacentHTML('beforeend', `<svg class="ph-line" viewBox="0 0 1080 1080" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path pathLength="1" d="${POTS}"/></svg>`);
-    ph.addEventListener('pointerdown', e => e.stopPropagation()); }   // no clay print on it; pointed at, it simply turns into the line drawing (CSS)
+    ph.addEventListener('pointerdown', e => e.stopPropagation()); }   // no clay print on it; pointed at, the line drawing turns into the photograph (CSS)
   one('.gray').style.setProperty('--imgL', 'url("photos/lisa-karen.jpg")');   // Karen and Lisa (dirtyhands.ru/about): one photo across both halves, Karen on the left, Lisa on the right
   one('.gray').style.setProperty('--imgR', 'url("photos/lisa-karen.jpg")');
   const grayGL = null;   // the photo of Karen and Lisa stays a plain photo
@@ -645,14 +643,16 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     };
     return api;
   }
-  const glPics = $('.pic').map((el, i) => shaderPicture(el, CER[CASE_IMG[i]]));      // the shader on every big picture of the cases
+  const glPics = $('.pic').map((el, i) => shaderPicture(el, CASE_SRC(i)));      // the shader on every big picture of the cases
   const midStrip = one('.midstrip'), tagline = one('.tagline');
   const cards = $('.hc'), s2 = one('.s2'), s3 = one('.s3'), lisa = one('#lisa'), karen = one('#karen');
   const fan = $('.fan i'), nums = $('.s2 .num'), texts = $('.s2 .rt');
   const pics = $('.pic'), partners = $('.partner'), plab = one('.plab-in');
-  const glideTo = el => { const r = el.getBoundingClientRect(), to = r.top + scrollY - (el.classList.contains('pic') ? (innerHeight - r.height) / 2 : 20 * U), sc = { v: scrollY }; gsap.to(sc, { v: to, duration: Math.min(1.8, 0.9 + Math.abs(to - scrollY) / innerHeight * 0.25), ease: 'power3.inOut', overwrite: true, onUpdate() { scrollTo(0, sc.v); } }); };
+  const glideTo = el => { const r = el.getBoundingClientRect(), to = r.top + scrollY - (el.classList.contains('pic') ? (innerHeight - r.height) / 2 : 20 * U), d = Math.min(2.6, 1.2 + Math.abs(to - scrollY) / innerHeight * 0.18);
+    if (lenis) { lenis.scrollTo(to, { duration: d, easing: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2, force: true }); return; }   // through Lenis itself: a scroll set from outside fought its own glide and the page shook on the way
+    const sc = { v: scrollY }; gsap.to(sc, { v: to, duration: d, ease: 'power3.inOut', overwrite: true, onUpdate() { scrollTo(0, sc.v); } }); };
   document.querySelectorAll('.hero > .nav a[href^="#"]').forEach(a => a.addEventListener('click', e => { const el = document.querySelector(a.getAttribute('href')); if (!el) return; e.preventDefault(); glideTo(el); }));   // About and Cases glide there: Cases to the first case, level with its client's name
-  partners.forEach((el, i) => el.addEventListener('click', () => { const pc = pics[i]; if (!pc) return; const to = pc.getBoundingClientRect().top + scrollY - (innerHeight - pc.offsetHeight) / 2, sc = { v: scrollY }; gsap.to(sc, { v: to, duration: Math.min(1.8, 0.9 + Math.abs(to - scrollY) / innerHeight * 0.25), ease: 'power3.inOut', overwrite: true, onUpdate() { scrollTo(0, sc.v); } }); }));   // a slow, soft glide rather than the browser's own jump   // a name is an anchor: it takes you to its case
+  partners.forEach((el, i) => el.addEventListener('click', () => { if (pics[i]) glideTo(pics[i]); }));   // a slow, soft glide rather than the browser's own jump   // a name is an anchor: it takes you to its case
 
   // "Clients about us": the quote on the left (two lines between ruled lines, one column wide) changes with the client that is level with the labels
   // (placeholder quotes: to be replaced with the real ones)
@@ -912,14 +912,17 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const onStory = !openView && ((inStory(e.clientY) && !e.target.closest('a, nav, .nav')) || !!cutHit(e) || !!(e.target.closest && e.target.closest('.pic'))); htmlEl.classList.toggle('on-story', onStory); moreCur.style.opacity = onStory ? 1 : 0; if (onStory) moreCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`; }, { passive: true });
   addEventListener('keydown', e => { if (e.key === 'Escape' && openView) closeView(); });
   function lockView(on) { muffle(on); htmlEl.classList.toggle('ov-open', on); if (lenis) window.scrollLocked = on; else htmlEl.style.overflow = on ? 'hidden' : ''; closeCur.classList.toggle('gone', !on); if (on) closeCur.style.opacity = 1; else setTimeout(() => { if (!htmlEl.classList.contains('ov-open')) closeCur.style.opacity = 0; }, 750); }   // the page under a view is held still without taking its scrollbar away (that made everything shift and blink on closing)
+  // while a view is open the page under it never moves: the wheel only scrolls the view itself, and only while it has somewhere to go (before, it slipped through to the page, so a case folded back onto a picture that had moved)
+  addEventListener('wheel', e => { if (!htmlEl.classList.contains('ov-open') || e.defaultPrevented) return; const ov = e.target.closest && e.target.closest('.ov'), d = e.deltaY;
+    if (!ov || ov.scrollHeight <= ov.clientHeight + 1 || (d < 0 && ov.scrollTop <= 0) || (d > 0 && ov.scrollTop + ov.clientHeight >= ov.scrollHeight - 1)) e.preventDefault(); }, { passive: false });
   const pageEls = () => [one('.page'), ...$('.hc, .nav, .ct, .tagline, .midstrip, .ttl')];
 
   const SV = one('#storyView');
-  const MEDIA = [["Jun 2025", "Elle Decoration", "Named among Russia's ceramic workshops with a style of their own."], ["Jan 2023", "TopDesignMag", "Coffee tables shaped by the elements, made to anchor a living room."], ["Jan 2023", "MyDecor", "The studio moves into furniture: a collection of clay coffee tables."], ["Jan 2023", "Design Mate", "Eight conceptual tables, each named after an element or a natural material."], ["Dec 2022", "Elle Decoration", "A professor's 120 m² flat with windows facing Moscow State University."], ["Aug 2022", "Your Home Ideas", "A 1933 Stalin-era flat for a young family: vintage, modern and a touch of irony."], ["Jul 2022", "Interior+Design", "A Stalin-era apartment with a river view by Open Interiors."], ["Jul 2022", "Design Mate", "On the list of Russian makers to furnish a home without imports."], ["May 2022", "NTV, Housing Issue", "A music lounge made over on the renovation show."], ["Mar 2022", "Moskvich Mag", "Karen and Lisa on Moscow, their school years and how the studio began."], ["Oct 2021", "Seasons", "Holst, an art hotel in Baden-Baden where the works on show can be bought."], ["Oct 2021", "New York Style Guide", "On the art and design path of Venice Design Week 2021."], ["2021", "Robb Report", "Among the ten best interior design pieces of the year."], ["Sep 2021", "Design Mate", "Vertebra, with Igor Kurkin: a shelving unit of this size made of chamotte clay."], ["Jul 2021", "Porusski.me", "The founders on the way from clay to painting."], ["Apr 2021", "NTV, Housing Issue", "A living room on the Mediterranean coast, made over on the show."], ["Feb 2021", "Design Mate", "Q&A: tabletop art objects, sculptural panels and bold ceramic provocations."], ["Dec 2020", "Interior+Design", "The tables at Wondercraft Days in the Design Dealer concept store."], ["Nov 2020", "Elle Decoration", "Wondercraft Day II: four days of fine craft at Design Dealer."], ["Nov 2020", "Interior+Design", "An exhibition and a public talk on what fine craft means today."]];   // date, outlet, a short thesis: twenty publications about the studio, newest first
+  const MEDIA = [["Dec 2025", "Design Mate", "DirtyHands opens Art in the Hands in Moscow: a gallery of the founders’ ceramics, and a room for lessons in hand-building and on the wheel, and for talks on painting, psychology and interiors.", "photos/media/m01.jpg"], ["Dec 2025", "Moskva Promyshlennaya", "A visit to the studio founded in 2019: panels, lamps, furniture and sculpture shaped by hand from chamotte, red and white clay, fired twice, often a month for a single piece.", "photos/media/m02.jpg"], ["Aug 2025", "Interior+Design", "A 60 m² flat in a Stalin-era house near Sokol by Marina Troshina of Bellager Design: oak, stone and glass, and a DirtyHands ceramic panel over the bed.", "photos/media/m03.jpg"], ["Jun 2025", "MyDecor", "Made in Russia Week 2025: twelve ceramic workshops from across the country, each with a hand and a style of its own, DirtyHands among them.", "photos/media/m04.jpg"], ["Apr 2025", "MyDecor", "Salon de 4ceramics at the All-Russian Museum of Decorative Art, 18 to 27 April: a show and sale of work by more than forty ceramic artists from all over Russia.", "photos/media/m05.jpg"], ["Dec 2024", "Interior+Design", "The Gold Edition 2024 party, for the magazine’s issue on the year’s best designers and architects, with Karen and Lisa of DirtyHands among the guests.", "photos/media/m06.jpg"], ["Aug 2024", "Design Mate", "A flat for a film producer’s family by Valeria Vinogradova, built round the memories of childhood, with furniture made by DirtyHands.", "photos/media/m07.jpg"], ["Jan 2023", "MyDecor", "Clay coffee tables: the studio that made its name with art objects and decor from clay turns to furniture, each table built and glazed by hand.", "photos/media/m08.jpg"], ["Jan 2023", "TopDesignMag", "The Elements tables: ceramic coffee tables after air, moss, soil, ripples on water and the starry sky, which can be grouped together into new bases.", "photos/media/m09.jpg"], ["Jan 2023", "Interior+Design", "Wondercraft days, Episode II, at the Design Dealer concept store during the Moscow Design Festival, with a public talk on collectible design and fine craft.", "photos/media/m10.jpg"], ["Jan 2023", "Design Mate", "Eight concept tables after the elements: white clay wrapped in a spiral, grey stones and mountains, an iron mace head, a blue lion’s paw for fire.", "photos/media/m11.jpg"]];   // the latest from dirtyhands.ru/news: date, outlet, what it says, its picture
   function openStory() {
     if (!G || openView) return;
     const word = one('.tagged .big2'), r0 = word.getBoundingClientRect();
-    const title = one('.sv-title'), data = MEDIA.map(([date, out, lead]) => ({ date, out, lead }));
+    const title = one('.sv-title'), data = MEDIA.map(([date, out, lead, img]) => ({ date, out, lead, img }));
     SV.classList.add('open'); lockView(true); one('.tagged').style.visibility = 'hidden';   // only one Story word on the screen: the view's copy takes over from it
     gsap.set(title, { x: 0, y: 0 }); const r1 = title.getBoundingClientRect();
     const tl = gsap.timeline({ onReverseComplete() { one('.tagged').style.visibility = ''; SV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); tick(); } });
@@ -938,7 +941,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       for (let k = 0; k < KS; k++) {                                                                    // the photo layer: smaller, so the photographs sit further in
         const el = document.createElement('div'); el.className = 'sv-strip sv-ph';
         const wf = PW_[i % 6], hh = PH_[i % 6] * U * FP, gap = PG_[i % 6] * U, pw = CW * FP * wf, sw = SW * FP * wf;       // every photo has its own size and its own height on the cylinder
-        el.innerHTML = `<div class="sv-pin" style="left:${-k * sw + 2}px;width:${pw}px;"></div>`; el.firstChild.style.backgroundImage = IMG(i + 2);
+        el.innerHTML = `<div class="sv-pin" style="left:${-k * sw + 2}px;width:${pw}px;"></div>`; el.firstChild.style.backgroundImage = `url("${d.img}")`;
         el.style.width = sw + 4 + 'px'; el.style.height = hh + 'px'; el.style.top = -(gap + hh) + 'px'; host.append(el); strips.push({ el, i, a: (k + .5) * SW * wf - CW * wf / 2, R: RP, w: sw, ph: true });   // the strips of a photo overlap by two pixels on each side, so no seam shows between them
       }
     });
@@ -976,12 +979,12 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   });
 
   const CV = one('#caseView');
-  const CASE_TEXT = [
-    ['Each piece is built by hand from stoneware and fired twice. The surface stays alive: it keeps the marks of the fingers, the tool and the kiln.', 'Made to order for private interiors and restaurants. The first sketch takes a week, the finished piece about six.'],
-    ['The mirror frame is pressed into a single slab, so the glaze gathers in the folds and the light follows the shape of the hand.', 'It comes in three sizes and two glazes, and each one is signed on the back before it leaves the studio.'],
-    ['A low side table for the quiet corner of a room: a thick top, a slow curve and a base that is wider than it looks.', 'We fit the height to the sofa it will stand beside, so the table sits exactly where an elbow expects to find it.'],
-    ['A bedroom wall in soft relief: tiles thrown one by one and laid while still damp, so the joints run like lines in a field.', 'The glaze is mixed for the room itself, matched by daylight to the linen and the floor before the first tile is fired.'],
-    ['Shelves with ceramic brackets for a reading room: each bracket is pinched by hand, and no two of them lean the same way.', 'They carry books, cups and the odd small vase, and are hung so the wall shows between them as much as the objects do.'],
+  const CASE_TEXT = [   // from dirtyhands.ru/projects
+    ['Anton Pinsky’s Mediterranean restaurant on Neglinnaya, designed by Irina Glik.', 'We clad three sides of the big bar in the middle of the room with smooth, full slabs, like stones from the Mediterranean shore, and made heavy, many-part stands to carry the shelves.'],
+    ['Arkady Novikov’s pan-Asian restaurant on the ground floor of The Ritz-Carlton, Tverskaya 3, designed by Irina Glik.', 'We wrapped the columns in half-round ceramic panels and made large floor planters, each big enough to hold several pots of flowers.'],
+    ['Brera, Alexander Oganezov’s Italian restaurant on Bolshaya Nikitskaya, 24/1.', 'We made a ceramic triptych that hangs at the very centre of the room.'],
+    ['AVA on Malaya Bronnaya, by Anton Pinsky (Pinskiy&Co), Artem Losev and Vitaly Istomin, designed by Irina Glik.', 'We dressed the open kitchen, in full view of the guests, with two large decorative panels: one below, one above.'],
+    ['Rodina Moskva, a club of many formats inspired by the country’s cultural heritage, read in a modern way.', 'Two large wall panels of girls for the bathroom, tattooed with Russian and Soviet symbols: a matryoshka, a bear, Gagarin, the 1980 Olympics, the hammer and sickle.'],
   ];
   function openCase(i, pic) {
     if (!G || openView) return;
@@ -998,7 +1001,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     aEl.style.left = 940 * U + 'px'; aEl.style.top = picTop + 140 * U + 'px'; bEl.style.left = 1170 * U + 'px'; bEl.style.top = picTop + 218 * U + 'px';   // the two paragraphs to the right of the picture, under its caption, as a staircase
     // more photos of the work below: a slider that is moved by the wheel (sideways), by dragging and by the arrow keys
     const slider = one('.cd-slider'), track = one('.cd-track'), endEl = one('.cd-end'), SW_ = [88, 88, 88, 88, 88, 88, 88];   // small previews under the picture, bottom left
-    track.innerHTML = SW_.map(() => '<div class="cd-s"></div>').join(''); [...track.children].forEach((el, k) => { el.style.width = SW_[k] * U + 'px'; el.style.height = [74, 58, 86, 64, 80, 54, 70][k] * U + 'px'; el.style.backgroundImage = IMG(i * 2 + 3 + k); });   // level at the top, a jagged edge at the bottom, as the cards on the main page
+    track.innerHTML = SW_.slice(0, CASE_N[CASE_KEY[i]] - 1).map(() => '<div class="cd-s"></div>').join('');   /* the case's other photos, none twice */ [...track.children].forEach((el, k) => { el.style.width = SW_[k] * U + 'px'; el.style.height = [74, 58, 86, 64, 80, 54, 70][k] * U + 'px'; el.style.backgroundImage = `url("${CASE_SRC(i, k + 1)}")`; });   // level at the top, a jagged edge at the bottom, as the cards on the main page
     const sTop = belowTop;   // right under the picture: the paragraphs now stand beside it
     slider.style.top = sTop + 'px'; endEl.style.top = sTop + 86 * U + 60 * U + 'px'; CV.scrollTop = 0;
     // pointing at a preview shows it in the big picture; moving off brings the case's own photo back
@@ -1243,30 +1246,31 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     glideRaf = busy ? requestAnimationFrame(glideTable) : 0; if (!busy) glideT = 0;
   }
 
-  // ---- the eye over the credit: written in clay by a finger, stroke by stroke, as the DH of the preloader, when it comes into sight
+  // ---- the hand over the credit: pressed in clay by a finger, stroke by stroke, as the DH of the preloader, when it comes into sight
   { const eye = one('.rest > .eye'), cv = eye && eye.querySelector('canvas');
     if (eye && cv && typeof makeClay === 'function' && 'IntersectionObserver' in window) {
       const io = new IntersectionObserver(es => { if (!es.some(e => e.isIntersecting)) return; io.disconnect();
         const w = Math.round(eye.offsetWidth), h = Math.round(eye.offsetHeight), c = makeClay({ cv, w, h }), K = w / 620;   // drawn at css size
-        const R = (a, b) => a + Math.random() * (b - a), cx = w / 2 + R(-8, 8) * K, cy = h * .52, A = w * .29, B = h * .29;   // room all round for the strokes running on
-        const curve = (n, f) => { const p1 = R(0, 6.3), p2 = R(0, 6.3), wa = R(5, 11) * K, lean = R(-.08, .08);   // written quickly and badly: every stroke wobbles and leans its own way
-          return Array.from({ length: n + 1 }, (_, k) => { const t = k / n, [x, y] = f(t); return [x + Math.sin(t * 7 + p1) * wa * .6 + R(-2, 2) * K, y + Math.cos(t * 5 + p2) * wa + (x - cx) * lean + R(-2, 2) * K]; }); };
-        const strokes = [
-          curve(28, t => [cx - A - R(10, 30) * K * (1 - t) + (2 * A + 30 * K) * t, cy - B * Math.sin(Math.PI * t) - 10 * K * t]),   // the upper lid, running on past the corner
-          curve(30, t => [cx + A * 1.25 - A * 2.6 * t, cy - B * .15 + B * 1.05 * Math.sin(Math.PI * Math.min(1, t * 1.06))]),   // the lower lid, from past one corner to past the other, as a hand would
-          curve(30, t => { const a = -Math.PI / 2 + R(-.3, .3) + t * Math.PI * R(1.85, 2.15), r = B * (.6 + .12 * t); return [cx + 6 * K + Math.cos(a) * r, cy - B * .02 + Math.sin(a) * r * .92]; })   // the iris: round once, not quite closing
+        const R = (a, b) => a + Math.random() * (b - a), ox = (w - 620 * K) / 2 + R(-8, 8) * K;   // a hand, as blunt as it gets: a square palm, square fingers, a square thumb, each pressed in by one finger
+        const line = (x0, y0, x1, y1) => { const n = Math.max(2, Math.round(Math.hypot(x1 - x0, y1 - y0) / 14)); return Array.from({ length: n + 1 }, (_, k) => [ox + (x0 + (x1 - x0) * k / n) * K + R(-1.5, 1.5) * K, (y0 + (y1 - y0) * k / n) * K + R(-1.5, 1.5) * K]); };
+        const path = (...p) => p.slice(1).flatMap((q, k) => line(p[k][0], p[k][1], q[0], q[1]).slice(k ? 1 : 0));   // a run of straight lines, corners left square
+        const strokes = [   // the outline of a hand, as blunt as it gets: a square thumb, four square fingers of their own heights, the wrist left open
+          path([212, 312], [212, 196], [136, 196], [136, 132], [212, 132], [212, 46]),
+          path([212, 46], [270, 46], [270, 130]),
+          path([270, 130], [270, 22], [330, 22], [330, 130]),
+          path([330, 130], [330, 34], [390, 34], [390, 130]),
+          path([390, 130], [390, 76], [446, 76], [446, 196], [430, 312])
         ];
         const lens = strokes.map(p => p.slice(1).reduce((a, q, k) => a + Math.hypot(q[0] - p[k][0], q[1] - p[k][1]), 0)), total = lens.reduce((a, b) => a + b, 0);
         let si = 0, pi = 0, f = null, done = 0;
         const advance = to => { while (si < strokes.length && done < to) { const P = strokes[si];
-          if (pi === 0) { f = c.finger(P[0][0], P[0][1], { size: R(.92, 1.12) * K, load: R(1.6, 2), ang: R(-.5, .5) }); c.print(f); pi = 1; }   // a finger as wide as the marks a hand leaves all over the site
+          if (pi === 0) { f = c.finger(P[0][0], P[0][1], { size: R(.5, .58) * K, load: R(1.6, 2), ang: R(-.5, .5) }); c.print(f); pi = 1; }   // a finger narrower than the site's marks: the square fingers must stay apart
           const [ax, ay] = P[pi - 1], [bx, by] = P[pi], d = Math.hypot(bx - ax, by - ay);
           if (d > 0) { f.x = ax; f.y = ay; f = c.autoSmear(f, (bx - ax) / d, (by - ay) / d, Math.max(2, d), .99); }
           done += d; pi++; if (pi >= P.length) { si++; pi = 0; } } };
         const t1 = performance.now(), DUR = 1600;
         (function step(now) { const k = Math.min(1, (now - t1) / DUR), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
           advance(e * total + (k >= 1 ? 1 : 0));
-          if (k >= 1) c.print(c.finger(cx + 6 * K + R(-6, 6) * K, cy - B * .02 + R(-5, 5) * K, { size: .75 * K, load: 2.6, ang: R(-.5, .5) }));   // and the pupil pressed in last
           c.render(); if (k < 1) requestAnimationFrame(step); })(t1);
       }, { threshold: .4 });
       io.observe(eye);
