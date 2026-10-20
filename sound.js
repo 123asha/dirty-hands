@@ -74,18 +74,20 @@ function leaf(t, g) {                                                    // one 
   e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(g * (.4 + Math.random() * .6), t + .002 + Math.random() * .006); e.gain.exponentialRampToValueAtTime(.0001, t + len);
   src.connect(hp); hp.connect(bp); bp.connect(e); if (pn) { pn.pan.value = (Math.random() - .5) * 1.6; e.connect(pn); pn.connect(sLeafOut); } else e.connect(sLeafOut);
   src.start(t, Math.random() * .4, len + .01); }
-function placeSound(at) {                                               // a work set down on a shelf: heavy fired stoneware on a hard shelf, a deep thud, a low clonk that rings a moment, a little glaze tick and a small second bounce
-  if (!actx || (!sOn && at == null)) return; const C = actx, t = at ?? C.currentTime + .01, f0 = 480 + Math.random() * 260;
+function placeSound(at) {                                               // a work set down on a shelf: a heavy stoneware piece, a dull thud with a short stony clack and almost no ring (a long clean ring sounds like glass)
+  if (!actx || (!sOn && at == null)) return; const C = actx, t = at ?? C.currentTime + .01;
+  const noise = (t, type, f, q, g, d, off) => { const src = C.createBufferSource(), fl = C.createBiquadFilter(), e = C.createGain(); src.buffer = sLeafBuf; fl.type = type; fl.frequency.value = f; fl.Q.value = q;
+    e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(g, t + .002); e.gain.exponentialRampToValueAtTime(.0001, t + d); src.connect(fl); fl.connect(e); e.connect(sMaster); src.start(t, off ?? Math.random() * .4, d + .02); };
   const hit = (t, amp) => {
-    const o = C.createOscillator(), e = C.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(150 + Math.random() * 40, t); o.frequency.exponentialRampToValueAtTime(68, t + .09);   // the deep thud of a heavy piece
-    e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(.13 * amp, t + .003); e.gain.exponentialRampToValueAtTime(.0001, t + .2); o.connect(e); e.connect(sMaster); o.start(t); o.stop(t + .22);
-    const src = C.createBufferSource(), hp = C.createBiquadFilter(), ce = C.createGain(); src.buffer = sLeafBuf; hp.type = 'highpass'; hp.frequency.value = 2000 + Math.random() * 800; hp.Q.value = .7;   // the glaze: a dry tick, small beside the weight
-    ce.gain.setValueAtTime(.04 * amp, t); ce.gain.exponentialRampToValueAtTime(.0001, t + .015); src.connect(hp); hp.connect(ce); ce.connect(sMaster); src.start(t, Math.random() * .4, .03);
-    // the clonk of thick stoneware: low uneven partials, the higher ones dying first
-    [[1, .08, .55], [1.59, .055, .38], [2.33, .03, .24], [3.18, .016, .15], [4.41, .008, .09]].forEach(([r, g, d]) => { const p = C.createOscillator(), pe = C.createGain(); p.type = 'sine'; p.frequency.value = f0 * r * (1 + (Math.random() - .5) * .012);
-      pe.gain.setValueAtTime(0, t); pe.gain.linearRampToValueAtTime(g * amp, t + .0015); pe.gain.exponentialRampToValueAtTime(.0001, t + d); p.connect(pe); pe.connect(sMaster); p.start(t); p.stop(t + d + .02); });
+    const o = C.createOscillator(), e = C.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(105 + Math.random() * 25, t); o.frequency.exponentialRampToValueAtTime(52, t + .12);   // the weight: a deep thump
+    e.gain.setValueAtTime(0, t); e.gain.linearRampToValueAtTime(.15 * amp, t + .003); e.gain.exponentialRampToValueAtTime(.0001, t + .2); o.connect(e); e.connect(sMaster); o.start(t); o.stop(t + .22);
+    noise(t, 'bandpass', 320 + Math.random() * 120, .8, .16 * amp, .1);                 // the dull body of the knock
+    noise(t, 'bandpass', 1500 + Math.random() * 700, 2.2, .05 * amp, .028);            // the stony clack of the foot on the shelf
+    const f0 = 640 + Math.random() * 260;                                               // a hint of fired clay, dying almost at once
+    [[1, .025, .07], [2.71, .012, .04], [5.15, .006, .025]].forEach(([r, g, d]) => { const p = C.createOscillator(), pe = C.createGain(); p.type = 'sine'; p.frequency.value = f0 * r;
+      pe.gain.setValueAtTime(0, t); pe.gain.linearRampToValueAtTime(g * amp, t + .002); pe.gain.exponentialRampToValueAtTime(.0001, t + d); p.connect(pe); pe.connect(sMaster); p.start(t); p.stop(t + d + .02); });
   };
-  const a = (.7 + Math.random() * .3) * .8; hit(t, a); hit(t + .08 + Math.random() * .04, a * (.15 + Math.random() * .1)); }   // it lands, and settles with a little second tap
+  const a = (.75 + Math.random() * .25) * 1.3; hit(t, a); hit(t + .07 + Math.random() * .03, a * (.12 + Math.random() * .08)); }   // it lands, and settles with a small second knock
 function setSound(on) {
   sOn = on; sndBtn.setAttribute('aria-pressed', on); if (on && !actx) startSound(); if (!actx) return;
   if (actx.state === 'suspended') actx.resume();

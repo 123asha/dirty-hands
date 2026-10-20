@@ -442,7 +442,7 @@ window.preDone = new Promise(done => {
     setTimeout(() => { pre.style.pointerEvents = 'none'; pre.style.transition = 'background-color .6s cubic-bezier(.4, 0, .2, 1)'; pre.style.backgroundColor = 'transparent'; done(); if (c.soak) c.soak(0, () => pre.remove()); else { pre.style.transition = 'opacity 1.2s ease'; pre.style.opacity = 0; setTimeout(() => pre.remove(), 1300); } }, 250); })(t1);   // (an older clay.js from the cache: it simply fades)   // the sheet goes and the page appears; the DH soaks away like any clay mark, gone by the time the top row has come in   // the sheet goes and the page appears; the DH stays and soaks away by itself, as every clay mark on the site does
 });
 </script>
-<script src="sound.js?v=9"></script>
+<script src="sound.js?v=10"></script>
 <script>
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scrollTo(0, 0);   // the page always starts from the top: the intro is built for it
 // smooth scroll for the whole page (Lenis): the wheel glides on with a little inertia, the page itself still reads scrollY as before. It rests whenever the page is locked (the intro, an open view, the ending)
@@ -658,7 +658,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const put = () => {
       if (my !== quoteToken) return;
       quoteP.dataset.text = QUOTES[i]; quoteP.textContent = QUOTES[i]; const inner = typeof splitMask === 'function' ? splitMask(quoteP) : [];
-      if (G && inner.length && !now) gsap.fromTo(inner, { yPercent: 112 }, { yPercent: 0, duration: .6, ease: EASE, stagger: .09 });
+      if (G && inner.length && !now) gsap.fromTo(inner, { yPercent: 150 }, { yPercent: 0, duration: .6, ease: EASE, stagger: .09 });
     };
     const old = [...quoteP.querySelectorAll('.mi')];
     if (G && old.length && !now) gsap.to(old, { yPercent: -112, duration: .22, ease: 'power2.in', stagger: .04, onComplete: put }); else put();
@@ -738,7 +738,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     return [...el.querySelectorAll('.lt')];
   }
   const fanIn = (tl, lines, o = {}) => tl.fromTo(lines, { scaleX: 0, rotation: 0, transformOrigin: o.origin || '0 50%' }, { scaleX: 1, rotation: 0, duration: o.dur ?? .95, ease: EASE, stagger: { each: o.each ?? .02 } }, o.at ?? 0);
-  const riseIn = (tl, inner, o = {}) => tl.fromTo(inner, { yPercent: 112 }, { yPercent: 0, duration: o.dur ?? 1, ease: EASE, stagger: { each: o.each ?? .08 } }, o.at ?? 0);
+  const riseIn = (tl, inner, o = {}) => tl.fromTo(inner, { yPercent: 150 }, { yPercent: 0, duration: o.dur ?? 1, ease: EASE, stagger: { each: o.each ?? .08 } }, o.at ?? 0);   // 150%: clear of the mask's room below the line, so no tops of letters peep out while hidden
   const fadeIn = (tl, els, to, at, o = {}) => tl.fromTo(els, { autoAlpha: 0 }, { autoAlpha: to, duration: o.dur ?? .7, ease: 'power2.out', stagger: o.each ?? 0 }, at);
 
   function mk(trigger, fn, start = 'top 88%') {    // one timeline that plays when its trigger comes up, and reverses when you scroll back above it
@@ -848,6 +848,14 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     // About / Cases / Shop: only the lines draw (as everywhere); the words are simply there and slide to their places on the sides
     const hl = $('.hl'); touched.push(...hl);
     mk(hl[0], tl => { tl.fromTo(hl, { scaleX: 0, transformOrigin: '0 50%' }, { scaleX: 1, duration: 1.1, ease: EASE, stagger: .14 }, 0); }, 'top 85%');
+
+    // Media: one publication after another, top to bottom: the outlet and its date come up, then the thesis line by line
+    stackStory();
+    const mediaItems = storyP.map(q => { const tl = gsap.timeline({ paused: true });
+      [q, q._desc, q._date].forEach(el => el && done.add(el));
+      riseIn(tl, splitMask(q), { each: .09 }); if (q._date) riseIn(tl, splitMask(q._date), { at: .06 }); if (q._desc) riseIn(tl, splitMask(q._desc), { each: .09, at: .18 });
+      return { el: q, tl }; });
+    stag(mediaItems, { gap: .22 });
 
     // all other text: line by line, one paragraph after another
     const items = [];
