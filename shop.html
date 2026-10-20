@@ -14,7 +14,7 @@
   /* the menu, as on the main page once it has reached the top */
   .top { position: fixed; top: calc(20 * var(--u)); left: 0; right: 0; height: 1em; z-index: 5; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; }
   .top .snd { position: absolute; left: calc(20 * var(--u)); display: flex; align-items: center; gap: calc(8 * var(--u)); padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; }
-  .top .snd svg { width: calc(24 * var(--u)); height: calc(10 * var(--u)); overflow: visible; }
+  .top .snd svg { width: calc(12 * var(--u)); height: calc(10 * var(--u)); overflow: visible; }
   .top .snd[aria-pressed="false"] span { opacity: .5; }
   .top .back { position: absolute; left: calc(250 * var(--u)); display: inline-flex; gap: .3em; align-items: center; }   /* back to the main page, top left, where the sound switch stands there */
   .top .tag { position: absolute; left: 50%; translate: -50% 0; white-space: nowrap; }
@@ -41,7 +41,7 @@
   .otl .ln { font-family: "CoFo Cinema", "CoFo Sans", sans-serif; font-size: calc(72 * var(--u)); line-height: calc(66 * var(--u)); letter-spacing: -.01em; }
   .otl { position: fixed; left: 0; width: 100%; margin: 0; z-index: 6; text-align: left; font-family: "CoFo Cinema", "CoFo Sans", sans-serif; font-size: calc(72 * var(--u)); line-height: .91; letter-spacing: -.01em; text-transform: uppercase; color: #fff; mix-blend-mode: difference; pointer-events: none; font-family: "CoFo Cinema", "CoFo Sans", sans-serif; font-weight: 400; font-size: calc(72 * var(--u)); line-height: .91; letter-spacing: -.01em; text-transform: uppercase; }   /* the title over the works, turning white where it crosses them */
   .flow { position: relative; text-align: left; }
-  .flow .rl { position: absolute; left: 0; right: 0; top: 0; height: 0; border-top: 1px solid #d9d9d9; pointer-events: none; }   /* ruled lines under the text, as in the table on the main page */
+  .flow .rl { display: none; position: absolute; left: 0; right: 0; top: 0; height: 0; border-top: 1px solid #d9d9d9; pointer-events: none; }   /* ruled lines under the text, as in the table on the main page */
   .ln { position: absolute; left: 0; top: 0; white-space: pre; overflow: hidden; }
   .flow .ln { font-size: var(--t18); line-height: calc(19 * var(--u)); letter-spacing: -.01em; }
   .ln .in { display: inline-block; animation: rise .9s var(--ease) both; }   /* the lines come up from below as they first appear, as on the main page */
@@ -55,6 +55,8 @@
   .grid i { background: rgba(255, 0, 80, .08); box-shadow: inset 1px 0 rgba(255, 0, 80, .35), inset -1px 0 rgba(255, 0, 80, .35); }   /* the six columns, as on the main page: Cmd/Ctrl+G */
   @keyframes arrowSwap { 0% { transform: none; opacity: 1; } 42% { transform: translate(120%, -120%); opacity: 0; } 43% { transform: translate(-120%, 120%); opacity: 0; } 100% { transform: none; opacity: 1; } }
   .ctl:hover svg, .shop:hover svg, a.ct:hover svg { animation: arrowSwap .55s cubic-bezier(.4, 0, .2, 1); }   /* on hover the arrow flies off up and to the right and a new one comes in from below */
+  .nav a, .top nav a { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; padding-bottom: .12em; transition: background-size .4s var(--ease); }   /* the menu: on hover an underline draws in from left to right */
+  .nav a:hover, .top nav a:hover { background-size: 100% 1px; }
 </style>
 </head>
 <body>
@@ -66,7 +68,7 @@
   <a class="ct" href="mailto:order@dirtyhands.ru">Contact<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a>
 </div>
 <div class="board"></div>
-<div class="otl closed" aria-label="Order and cooperation"><div class="hl"><span class="hw" style="left:calc(480 * var(--u))">Order</span></div><div class="hl"><span class="hw" style="left:calc(710 * var(--u))">and</span></div><div class="hl"><span class="hw" style="left:calc(480 * var(--u))">cooperation</span></div></div>
+<div class="otl closed" aria-label="Order and cooperation"><div class="hl"><span class="hw" style="left:calc(480 * var(--u))">Order</span></div><div class="hl"><span class="hw" style="right:calc(480 * var(--u))">and</span></div><div class="hl"><span class="hw" style="left:calc(480 * var(--u))">cooperation</span></div></div>
 <div class="mid">
   <h1 aria-hidden="true" style="visibility:hidden;height:calc(222 * var(--u))"></h1>
   <div class="flow">
@@ -79,8 +81,8 @@
 <div class="grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 <script>{ const grid = document.querySelector('.grid'); try { if (sessionStorage.getItem('grid') === '1') grid.classList.add('on'); } catch (e) {}   // the grid stays on or off from page to page
   addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.code === 'KeyG') { e.preventDefault(); if (!e.repeat) { const on = grid.classList.toggle('on'); try { sessionStorage.setItem('grid', on ? '1' : '0'); } catch (er) {} } } }); }</script>
-<script src="clay.js"></script>
-<script src="sound.js"></script>
+<script src="clay.js?v=4"></script>
+<script src="sound.js?v=4"></script>
 <script>
 (() => {
   const CATS = ['Panels', 'Mirrors', 'Tables', 'Sculptures', 'Urbans', 'Vases'];
@@ -123,15 +125,11 @@
     const r = fl.getBoundingClientRect(), L = r.left, Rr = L + 440 * U, lh = LH * U, ht = mid.getBoundingClientRect().top;
     const obs = [...its, ...falling].filter(it => it.box && MASK[it.src] && it.box.cx + it.box.S / 2 > L && it.box.cx - it.box.S / 2 < Rr);
     otl.style.top = ht + 'px';
-    hws.forEach(h => { const e = h.el, w = e.offsetWidth, x0 = e.offsetLeft + otl.getBoundingClientRect().left, y0 = e.getBoundingClientRect().top - (h.dy || 0), y1 = y0 + e.offsetHeight; let push = 0;   // the title's words step aside, whole, from a work passing through their line
-      obs.forEach(o => { const b = o.box, bt = b.cy - b.S / 2, v0 = Math.max(0, Math.floor((y0 - bt) / b.S * MR)), v1 = Math.min(MR - 1, Math.ceil((y1 - bt) / b.S * MR) - 1); if (v0 > v1) return;
-        let a = 1, c = 0; for (let v = v0; v <= v1; v++) { const rw = MASK[o.src][v]; if (rw) { a = Math.min(a, rw[0]); c = Math.max(c, rw[1]); } } if (a >= c) return;
-        const xa = b.cx - b.S / 2 + a * b.S - 14 * U, xb = b.cx - b.S / 2 + c * b.S + 14 * U; if (x0 + w <= xa || x0 >= xb) return;
-        push = x0 + w / 2 < (xa + xb) / 2 ? Math.min(push, xa - (x0 + w)) : Math.max(push, xb - x0); });
-      h.x += (push - h.x) * .25; e.style.transform = Math.abs(h.x) > .3 ? `translateX(${h.x.toFixed(1)}px)` : ''; });
+    hws.forEach(h => { const e = h.el, b = h.band ?? (h.band = [...otl.querySelectorAll('.hl')].indexOf(e.parentNode)), base = e.offsetLeft + e.offsetWidth / 2, dx = wrapX(base, shelfOff[b] || 0) - base, th = (base + dx - innerWidth / 2) / (680 * U) * Math.PI / 2;   // the title's words go round with their shelves (and are never pushed by the trail)
+      e.style.transform = Math.abs(dx) > .3 ? `translateX(${dx.toFixed(1)}px)` : ''; e.style.opacity = Math.min(1, Math.max(0, Math.cos(th)) * 1.6).toFixed(3); });
     const key = obs.map(o => `${Math.round(o.box.cx)},${Math.round(o.box.cy)},${Math.round(o.box.S)}`).join('|') + '|' + Math.round(r.top) + '|' + U; if (key === sig) return; sig = key;
     const rows = []; let k = 0;
-    preps.forEach((pr, pi) => { if (pi) k++; k = lay(pr, L, Rr, r.top, lh, obs, 8 * U, rows, k, false); });
+    preps.forEach((pr, pi) => { if (pi) k++; const ind = pi ? 230 * U : 0, n0 = rows.length; k = lay(pr, L + ind, Rr, r.top, lh, obs, 8 * U, rows, k, false); for (let q = n0; q < rows.length; q++) rows[q].x += ind; });   // the second and third paragraphs one column in
     paint(rows, pool, fl);
     while (rules.length < k + 2) { const d = document.createElement('i'); d.className = 'rl'; fl.prepend(d); rules.push(d); }
     rules.forEach((d, i) => { d.style.display = i <= k + 1 ? '' : 'none'; d.style.transform = `translateY(${(i * lh).toFixed(1)}px)`; });   // one line at the top of every row, through the empty rows too

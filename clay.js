@@ -485,7 +485,13 @@ const variants = [
 
 const kept = [0, 4];   // «Жирный отпечаток» and «Комок глины», mixed at random
 
-if (!live) { alloc(); return { variants, finger, print, autoSmear, render() { shade(0, 0, W - 1, H - 1, now() + 100); ctx.putImageData(img, 0, 0); } }; }   // a still sheet: no hands, no fading
+if (!live) { alloc(); const render = () => { shade(0, 0, W - 1, H - 1, now() + 100); ctx.putImageData(img, 0, 0); };
+  return { variants, finger, print, autoSmear, render,
+    soak(hold, done) {   // the clay soaks away exactly as the marks on the page do: after a pause, every pixel thins out step by step, the thin film first and the thick lumps last
+      const t0 = now(); let last = t0;
+      (function step() { const t = now(); if (t - t0 < hold) return requestAnimationFrame(step);
+        let left = false; if (t - last >= FADE_STEP) { last = t; for (let i = 0; i < T.length; i++) { const v = T[i]; if (v > 0) { const nv = v * 0.913 - 0.0054; T[i] = nv > 0.003 ? nv : 0; if (T[i] > 0) left = true; } } render(); } else left = true;
+        if (left) requestAnimationFrame(step); else { render(); if (done) done(); } })(); } }; }   // a still sheet: no hands; it fades only when asked
 
 /* ---------- input ---------- */
 const hands = new Map();

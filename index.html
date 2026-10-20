@@ -25,7 +25,7 @@
   .s2 { height: calc(1168 * var(--u)); margin-bottom: calc(348 * var(--u)); }
   .s2-in { position: relative; height: 100%; }
   .s3 { z-index: 3; }
-  .gray .grain { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  1 1 1 0 -1.2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E"); opacity: .09; mix-blend-mode: multiply; }   /* a very light grain over the photo of Karen and Lisa, under the cards */
+  .gray .grain { display: none !important;  position: absolute; inset: 0; z-index: 1; pointer-events: none; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  1 1 1 0 -1.2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E"); opacity: .09; mix-blend-mode: multiply; }   /* a very light grain over the photo of Karen and Lisa, under the cards */
   .gray { position: relative; margin: 0; height: calc(1080 * var(--u)); overflow: hidden; }   /* a block that scrolls with the page, with no grey fill of its own: first the photo of Karen and Lisa (it moves slower, parallax), then their two cards come up over it one after the other */
   .rest { height: calc(5267 * var(--u)); }
   /* vertical spacing, one rule for the page below (design px, from the visible bottom of one thing to the visible top of the next):
@@ -38,6 +38,12 @@
   .name2 { font-size: calc(108 * var(--u)); line-height: .91; letter-spacing: -.01em; }
   .t18 { font-size: var(--t18); line-height: 1.08; letter-spacing: -.01em; }
   .ph { background: var(--ph); }
+  .card2 .m { overflow: visible; }   /* the cards' lines and letters fade up whole, never cut by a mask */
+  .credit .sfav { display: inline-block; height: .72em; width: auto; vertical-align: -.02em; }   /* the Skip Design mark, as small as the heart */
+  .rest > .mrule { position: absolute; left: calc(710 * var(--u)); width: calc(670 * var(--u)); height: 0; border-top: 1px solid var(--rule); }   /* in Media: a ruled line level with each outlet, across its row */
+  .rest > .mdate { position: absolute; left: calc(1170 * var(--u)); width: calc(210 * var(--u)); opacity: .4; }   /* the date, grey, beside the thesis */
+  .nav a, .top nav a { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; padding-bottom: .12em; transition: background-size .4s var(--ease); }   /* the menu: on hover an underline draws in from left to right */
+  .nav a:hover, .top nav a:hover { background-size: 100% 1px; }
   @keyframes arrowSwap { 0% { transform: none; opacity: 1; } 42% { transform: translate(120%, -120%); opacity: 0; } 43% { transform: translate(-120%, 120%); opacity: 0; } 100% { transform: none; opacity: 1; } }
   .ctl:hover svg, .shop:hover svg, a.ct:hover svg { animation: arrowSwap .55s cubic-bezier(.4, 0, .2, 1); }   /* on hover the arrow flies off up and to the right and a new one comes in from below */
   .card2 .cf { font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; opacity: .4; margin: 0; }   /* grey, on the first band under the name */
@@ -46,8 +52,8 @@
   .hc.snap .hc-alt, .hc.snap .hs b, .hc.snap .hs i { transition: none !important; }   /* at the restart the photo is there at once */
   .pre { position: fixed; inset: 0; z-index: 3000; background-color: #fff; } .pre canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }   /* the preloader sheet */
   .ph-line { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
-  .ph-line path { fill: none; stroke: #000; stroke-width: 6.5; stroke-linejoin: round; stroke-dasharray: 1.02 1; stroke-dashoffset: 1; }   /* 6.5 of the drawing's 1080 is about one screen pixel on the small picture */
-  .ph.turned { background-image: none !important; background-color: transparent; } .ph.turned .ph-line { opacity: 1; }   /* the back of the card: white, only the line */
+  .ph-line path { fill: none; stroke: #000; stroke-width: 6.5; stroke-linejoin: round; }   /* 6.5 of the drawing's 1080 is about one screen pixel on the small picture */
+  .rest > .ph:not(.pic):not(.bar):hover { background-image: none !important; background-color: transparent; } .rest > .ph:not(.pic):not(.bar):hover .ph-line { opacity: 1; }   /* pointed at: white, only the line, no animation */
   .rest > .ph:not(.pic):not(.bar) { cursor: pointer; }
   #about { scroll-margin-top: calc(52 * var(--u)); }   /* the About link brings the block up to its own top edge, not the heading flush against the screen's */
   /* menu: rises with the scroll from its place in the hero, then stays 20 from the top (top is set in tick); white + difference, like the title, so it stays readable over blocks */
@@ -85,14 +91,14 @@
   .morph { overflow: visible; pointer-events: none; z-index: 2; mix-blend-mode: difference; transform: translate(calc(30 * var(--u)), calc(-24 * var(--u))) rotate(7deg); filter: url(#pencil); }   /* leaning a little to the right, drawn as if by an unsteady pencil */   /* over the words: where the line crosses a letter, it turns white */
   .morph path { fill: none; stroke: #fff; stroke-width: 1.6; stroke-linejoin: round; vector-effect: non-scaling-stroke; }   /* a vessel drawn in one thin line, in the middle of the words; it turns from one form into the next */
   .hl { position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); border-top: 1px solid var(--rule); height: 0; }
-  .dot { opacity: 1; position: absolute; width: calc(10 * var(--u)); height: calc(10 * var(--u)); background: #c4c4c4; }   /* solid grey, no transparency */
+  .dot { opacity: 1; position: absolute; width: calc(5 * var(--u)); height: calc(5 * var(--u)); background: #c4c4c4; }   /* solid grey, no transparency */
   .bar { background: #f2f2f2; will-change: transform; }   /* its own layer while it climbs: Safari left thin trails of it behind otherwise */   /* the same strip as the cards at the very top */
   /* the ruled line through the middle of the first screen: the first line of the table. The cards gather onto it, and when they have landed the whole table opens from it */
   .midstrip { position: fixed; left: calc(20 * var(--u)); right: calc(20 * var(--u)); top: 44vh; height: 0; border-top: 1px solid var(--rule); z-index: 4; pointer-events: none; opacity: 0; }
   .midstrip.off { opacity: 0; }   /* the strip IS the first line of the table: at the landing it is swapped for the table's own line 0, which sits exactly on it */
   /* a small caption above the line in the middle of the first screen; when the menu rising from below reaches its level, it goes up with the menu and stays up there until the title melts into the background */
   .snd { position: fixed; left: calc(20 * var(--u)); top: calc(44vh + 12 * var(--u)); z-index: 101; display: flex; align-items: center; gap: calc(8 * var(--u)); padding: 0; border: 0; background: none; font: inherit; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; cursor: pointer; }   /* the sound switch: a line that comes alive when the sound is on; first on the middle line, left of it, then up in the top left corner with the menu */
-  .snd svg { width: calc(24 * var(--u)); height: calc(10 * var(--u)); overflow: visible; }
+  .snd svg { width: calc(12 * var(--u)); height: calc(10 * var(--u)); overflow: visible; }
   .snd[aria-pressed="false"] span { opacity: .5; }
   .tagline { position: fixed; left: 50%; translate: -50% 0; top: calc(44vh + 12 * var(--u)); white-space: nowrap; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; z-index: 101; pointer-events: none; opacity: 0; }   /* the label of the row, centred on the page, on the menu's line under the middle line */
   /* hero cards: fly from the top row into the second block */
@@ -214,12 +220,14 @@
   .cat-text { position: absolute; left: 50%; bottom: calc(20 * var(--u)); width: calc(210 * var(--u)); margin-left: calc(-105 * var(--u)); font-size: var(--t18); line-height: calc(18 * var(--u)); letter-spacing: -.01em; text-align: center; z-index: 2; }   /* the body text, one column wide, centred, down at the bottom of the screen 20 above its edge */
   .hc.hov { cursor: pointer; }
   .cd-pic { position: absolute; background: var(--gray) center / cover no-repeat; }
-  .cd-rules { position: absolute; left: calc(940 * var(--u)); top: calc(20 * var(--u)); width: calc(440 * var(--u)); height: calc(57 * var(--u)); }
-  .cd-cap { position: absolute; left: calc(940 * var(--u)); top: calc(20 * var(--u)); width: calc(440 * var(--u)); }
+  .cd-rules { position: absolute; left: calc(940 * var(--u)); top: calc(60 * var(--u)); width: calc(440 * var(--u)); height: calc(57 * var(--u)); }
+  .cd-cap { position: absolute; left: calc(940 * var(--u)); top: calc(60 * var(--u)); width: calc(440 * var(--u)); }
   .cd-a, .cd-b { position: absolute; width: calc(210 * var(--u)); }
   .pic { cursor: pointer; } a.more { cursor: pointer; }
   /* while a view is open the pointer is a "Close" label */
-  .close-cursor { position: fixed; left: 0; top: 0; z-index: 1000; pointer-events: none; display: flex; gap: .35em; align-items: center; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; opacity: 0; transition: opacity .25s ease-out; }
+  .close-cursor { position: fixed; left: 0; top: 0; z-index: 1000; pointer-events: none; display: flex; gap: .35em; align-items: center; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; opacity: 0; transition: opacity .25s ease-out, filter .25s ease-out; }
+  .close-cursor.away { opacity: 0 !important; filter: blur(6px); }   /* over a case's pictures Close melts away: a click there does nothing */
+  html.case-open .hero > .nav, html.case-open .ct { z-index: 402; }   /* the menu over an open case */
   html.ov-open, html.ov-open * { cursor: none !important; }
   html.on-story, html.on-story * { cursor: none !important; }
   .sflow { pointer-events: none; }
@@ -267,8 +275,8 @@
 <section class="s3">
   <div class="gray">
     <i class="grain" aria-hidden="true"></i>
-    <div class="card2" id="lisa" style="left:calc(20 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, one of the two founders of DirtyHands.</p></div><div class="row" style="left:0;top:calc(90 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Pairs professional design with artistic intuition to bring unconventional ideas to life.</p></div></div><p class="t name" style="left:calc(34 * var(--u));top:calc(256 * var(--u))">Karen</p><p class="cf" style="left:calc(34 * var(--u));top:calc(339 * var(--u))">Co-founder</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
-    <div class="card2" id="karen" style="left:calc(710 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, co-founder of DirtyHands together with Karen.</p></div><div class="row" style="left:0;top:calc(90 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Sees ceramics beyond plates and pots, as objects that shape the mood and character of a room.</p></div></div><p class="t name" style="left:calc(34 * var(--u));top:calc(256 * var(--u))">Lisa</p><p class="cf" style="left:calc(34 * var(--u));top:calc(339 * var(--u))">Co-founder</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
+    <div class="card2" id="lisa" style="left:calc(20 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, one of the two founders of DirtyHands.</p></div><div class="row" style="left:0;top:calc(90 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Pairs professional design with artistic intuition to bring unconventional ideas to life.</p></div></div><p class="t name" style="left:calc(34 * var(--u));top:calc(256 * var(--u))">Karen</p><p class="cf" style="left:calc(34 * var(--u));top:calc(339 * var(--u))">Co-founder Dirty Hands</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
+    <div class="card2" id="karen" style="left:calc(710 * var(--u));top:100vh;width:calc(285 * var(--u));height:calc(375 * var(--u));"><div class="rules" data-n="13" data-step="18" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u))"></div><div class="rows" style="left:0;top:calc(22 * var(--u));width:calc(285 * var(--u));height:calc(126 * var(--u))"><div class="row" style="left:0;top:calc(0 * var(--u));width:calc(285 * var(--u));gap:calc(31 * var(--u))"><span class="n">01</span><p>Designer and entrepreneur, co-founder of DirtyHands together with Karen.</p></div><div class="row" style="left:0;top:calc(90 * var(--u));width:calc(285 * var(--u));gap:calc(60 * var(--u))"><span class="n">02</span><p>Sees ceramics beyond plates and pots, as objects that shape the mood and character of a room.</p></div></div><p class="t name" style="left:calc(34 * var(--u));top:calc(256 * var(--u))">Lisa</p><p class="cf" style="left:calc(34 * var(--u));top:calc(339 * var(--u))">Co-founder Dirty Hands</p><div class="rules" data-n="3" data-step="18" style="left:0;top:calc(339 * var(--u));width:calc(285 * var(--u))"></div></div>
   </div>
 </section>
 
@@ -315,6 +323,7 @@
   <i class="hl" style="top:calc(4228.3 * var(--u))"></i>
   <div class="bigrow" style="left:calc(20 * var(--u));top:calc(4000.8 * var(--u));height:calc(98 * var(--u));"><p class="t name2">Unconventional</p></div>
   <div class="bigrow" style="left:calc(940 * var(--u));top:calc(4074.2 * var(--u));height:calc(98 * var(--u));"><p class="t name2">ceramic</p></div>
+  <a class="t18 shop olink" href="shop.html" style="display:block;width:max-content;left:calc(940 * var(--u));top:calc(4256 * var(--u));">Order and cooperation<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a>
   <div class="bigrow" style="left:calc(480 * var(--u));top:calc(4147.7 * var(--u));height:calc(98 * var(--u));"><p class="t name2">forms</p></div>
 
   <div class="tagged" style="left:calc(250 * var(--u));top:calc(4513 * var(--u));"><p class="t big2">Media</p><span class="yr" aria-hidden="true"></span></div>
@@ -331,7 +340,7 @@
   <a class="t18 more" style="display:none;left:calc(710 * var(--u));top:calc(5111 * var(--u));" href="#story">More →</a>
   <div class="dot" style="left:calc(613 * var(--u));top:calc(4519.5 * var(--u));"></div>
   <div class="dot" style="display:none;left:calc(613 * var(--u));top:calc(4594.5 * var(--u));"></div>
-  <a class="t18 credit" style="left:50%;translate:-50% 0;top:calc(5069 * var(--u) + 100vh * 5 / 24);white-space:nowrap;" href="https://skip.design" target="_blank" rel="noopener">Made by <span style="text-decoration:underline;text-underline-offset:.18em;text-decoration-thickness:1px">Skip Design</span></a>
+  <a class="t18 credit" style="left:50%;translate:-50% 0;top:calc(5069 * var(--u) + 100vh * 5 / 24);white-space:nowrap;" href="https://skip.design" target="_blank" rel="noopener">Made by <img class="sfav" src="skip-fav.png" alt="" aria-hidden="true"> <span style="text-decoration:underline;text-underline-offset:.18em;text-decoration-thickness:1px">Skip Design</span></a>
   <p class="t18 credit" style="left:0;top:calc(5088 * var(--u) + 100vh * 5 / 24);width:100%;text-align:center;">With love for Dirty Hands ♥</p>
   <div class="ph bar" style="--i:0;left:calc(20.00 * var(--u));top:calc(5207 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
   <div class="ph bar" style="--i:1;left:calc(250.17 * var(--u));top:calc(5207 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
@@ -379,7 +388,7 @@
 <div class="close-cursor" aria-hidden="true">Close<svg viewBox="0 0 10 10" width="9" height="9"><path d="M1.5 1.5 8.5 8.5M8.5 1.5 1.5 8.5" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></div>
 <div class="grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 
-<script src="clay.js"></script>
+<script src="clay.js?v=4"></script>
 <script>
 // the preloader: a white sheet; one finger loaded with clay is drawn across it from left to right, then the sheet fades away and the page begins as it always does
 window.preDone = new Promise(done => {
@@ -417,10 +426,10 @@ window.preDone = new Promise(done => {
   (function step(now) { const k = Math.min(1, (now - t1) / DUR), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;   // slow in, slow out
     advance(e * total + (k >= 1 ? 1 : 0)); c.render();
     if (k < 1) return requestAnimationFrame(step);
-    setTimeout(() => { pre.style.pointerEvents = 'none'; pre.style.transition = 'background-color .6s cubic-bezier(.4, 0, .2, 1)'; pre.style.backgroundColor = 'transparent'; done(); setTimeout(() => pre.remove(), 5000); }, 250); })(t1);   // the sheet goes and the page appears; the DH stays and soaks away by itself, as every clay mark on the site does
+    setTimeout(() => { pre.style.pointerEvents = 'none'; pre.style.transition = 'background-color .6s cubic-bezier(.4, 0, .2, 1)'; pre.style.backgroundColor = 'transparent'; done(); if (c.soak) c.soak(0, () => pre.remove()); else { pre.style.transition = 'opacity 1.2s ease'; pre.style.opacity = 0; setTimeout(() => pre.remove(), 1300); } }, 250); })(t1);   // (an older clay.js from the cache: it simply fades)   // the sheet goes and the page appears; the DH soaks away like any clay mark, gone by the time the top row has come in   // the sheet goes and the page appears; the DH stays and soaks away by itself, as every clay mark on the site does
 });
 </script>
-<script src="sound.js"></script>
+<script src="sound.js?v=4"></script>
 <script>
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scrollTo(0, 0);   // the page always starts from the top: the intro is built for it
 // smooth scroll for the whole page (Lenis): the wheel glides on with a little inertia, the page itself still reads scrollY as before. It rests whenever the page is locked (the intro, an open view, the ending)
@@ -548,37 +557,28 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   const CASE_IMG = [3, 5, 1, 6, 8];   // the photo of each case
   $('.pic').forEach((e, i) => { e.style.setProperty('--img', IMG(CASE_IMG[i])); });      // the big pictures: the image lives in ::before, inside the frame
   one('.rest > .ph:not(.pic):not(.bar)').style.backgroundImage = IMG(4);
-  { // the small picture by "Clay with something to say" turns over like a card when clicked: on its back the two vessels are drawn as one line (traced by hand from the photo)
+  { // the small picture by "Clay with something to say": pointed at, it becomes the two vessels drawn as one line (traced by hand from the photo)
     const ph = one('.rest > .ph:not(.pic):not(.bar)'), POTS = 'M212 975L210 835L198 832L196 540C120 540 50 500 40 385L108 375C112 430 140 465 192 470L186 395L222 395L225 352L248 345L246 175C260 150 345 150 358 180L360 345L382 352L385 395L410 395L440 400L500 440L535 500L545 580L530 660L538 720L505 770L440 790L405 800L400 832L385 835L383 975C340 990 250 990 212 975Z M718 975L715 785L640 795L595 760L580 690L556 620L570 520L610 465L690 440L688 425L735 425L735 395C735 370 750 345 752 330L752 255L770 250L785 262L800 248L830 258L850 250L852 345L865 350L868 425L925 425L928 520C950 525 960 510 962 480L962 430L1052 428L1050 470C1045 540 990 560 930 560L925 780L885 785L882 975C840 990 760 990 718 975Z';
     ph.insertAdjacentHTML('beforeend', `<svg class="ph-line" viewBox="0 0 1080 1080" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path pathLength="1" d="${POTS}"/></svg>`);
-    const path = ph.querySelector('.ph-line path'); let back = false, flip = null;
-    ph.addEventListener('pointerdown', e => e.stopPropagation());   // no clay print on it: a click here only turns it over
-    ph.addEventListener('click', e => { e.stopPropagation(); if (!window.gsap) return; back = !back; soundNudge(.5);
-      if (flip) flip.kill();   // a quick second click turns it straight back instead of being lost
-      flip = gsap.timeline()
-        .to(ph, { rotationY: 90, transformPerspective: 900, duration: .3, ease: 'power2.in' })
-        .add(() => { ph.classList.toggle('turned', back); gsap.set(path, { strokeDashoffset: 1 }); })
-        .fromTo(ph, { rotationY: -90 }, { rotationY: 0, duration: .45, ease: 'power2.out' })
-        .to(path, { strokeDashoffset: back ? 0 : 1, duration: back ? 1.8 : 0, ease: 'power2.inOut' }, '-=.15'); }); }
+    ph.addEventListener('pointerdown', e => e.stopPropagation()); }   // no clay print on it; pointed at, it simply turns into the line drawing (CSS)
   one('.gray').style.setProperty('--imgL', 'url("photos/lisa-karen.jpg")');   // Karen and Lisa (dirtyhands.ru/about): one photo across both halves, Karen on the left, Lisa on the right
   one('.gray').style.setProperty('--imgR', 'url("photos/lisa-karen.jpg")');
-  // the photo of Karen and Lisa through a shader: light rakes across a relief read from the photo itself, and each of them bulges a little towards us, so the people seem to stand out of the picture. Without WebGL the plain photo stays
+  // the photo of Karen and Lisa through a shader: the two of them are nearer than the wall behind, so as the page moves they move a little more than it, and they stand a touch forward: a feeling of volume. Without WebGL the plain photo stays
   const grayGL = (() => {
     const host = one('.gray'), cv = document.createElement('canvas'); cv.className = 'gray-gl'; const gl = cv.getContext('webgl'); if (!gl) return null;
     const mk = (t, c) => { const sh = gl.createShader(t); gl.shaderSource(sh, c); gl.compileShader(sh); return gl.getShaderParameter(sh, gl.COMPILE_STATUS) ? sh : (console.warn(gl.getShaderInfoLog(sh)), null); };
     const vs = mk(gl.VERTEX_SHADER, 'attribute vec2 a; varying vec2 v; void main(){ v = a * .5 + .5; gl_Position = vec4(a, 0., 1.); }');
     const fs = mk(gl.FRAGMENT_SHADER, `precision highp float;
       uniform sampler2D tex; uniform vec2 px; uniform float asp, t; varying vec2 v;
-      float lum(vec2 p) { return dot(texture2D(tex, p).rgb, vec3(.299, .587, .114)); }
-      float soft(vec2 p) { float s = 0.; for (int i = -1; i <= 1; i++) for (int j = -1; j <= 1; j++) s += lum(p + vec2(float(i), float(j)) * px * 4.); return s / 9.; }
-      vec2 bulge(vec2 p, vec2 c, float r, float k, inout float rim) { vec2 d = (p - c) * vec2(asp, 1.); float l = length(d) / r; if (l < 1.) { float f = 1. - k * (1. - l * l); p = c + (d * f) / vec2(asp, 1.); rim += smoothstep(.55, 1., l) * (1. - l) * 2.; } return p; }
+      float near(vec2 p, vec2 c, float r) { return smoothstep(r, r * .35, length((p - c) * vec2(asp, 1.))); }   // how close to us this point is: the people are near, the wall behind them far
       void main() {
-        vec2 p = vec2(v.x, 1. - v.y); float rim = 0.;
-        p = bulge(p, vec2(.27, .42), .42, .1, rim); p = bulge(p, vec2(.74, .4), .42, .1, rim);   // Karen on the left, Lisa on the right
-        float gx = soft(p + vec2(px.x * 5., 0.)) - soft(p - vec2(px.x * 5., 0.)), gy = soft(p + vec2(0., px.y * 5.)) - soft(p - vec2(0., px.y * 5.));
-        vec3 n = normalize(vec3(-gx * 9., gy * 9., 1.)), L = normalize(vec3(-.45 + .5 * t, .55, .8));
-        float sh = .8 + .32 * max(dot(n, L), 0.) - .07 * rim;
-        vec3 c = texture2D(tex, p).rgb; gl_FragColor = vec4(c * sh, 1.);
+        vec2 p = vec2(v.x, 1. - v.y);
+        float d = max(near(p, vec2(.27, .44), .5), near(p, vec2(.74, .42), .5));   // Karen on the left, Lisa on the right
+        vec2 c = p.x < .5 ? vec2(.27, .44) : vec2(.74, .42);
+        vec2 q = p + vec2((t - .5) * .016, (.5 - t) * .07) * d;   // as the page moves they move a little more than the wall: depth
+        q = c + (q - c) / (1. + .035 * d);                         // and they stand a little forward, a touch larger
+        vec3 col = texture2D(tex, q).rgb * (.97 + .05 * d);
+        gl_FragColor = vec4(col, 1.);
       }`);
     if (!vs || !fs) return null;
     const pr = gl.createProgram(); gl.attachShader(pr, vs); gl.attachShader(pr, fs); gl.linkProgram(pr); if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return null; gl.useProgram(pr);
@@ -786,11 +786,15 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
 
 
   // the small picture stands level with "Shop now": its middle on the middle of the link (the link follows the length of the paragraph)
-  function stackStory() {                          // the Story theses stand one under another with the same gap between them, however many lines each one has
-    let top = parseFloat(storyP[0].style.top.match(/calc\(([\d.]+)/)[1]);
-    storyP.forEach(q => { q.style.top = `calc(${top.toFixed(1)} * var(--u))`; top += q.offsetHeight / U;
-      const d = q.nextElementSibling; if (d && d.classList.contains('mdesc')) { d.style.top = `calc(${top.toFixed(1)} * var(--u))`; top += d.offsetHeight / U; }   // the outlet, and its thesis under it one column to the right, as a step
-      top += 38; });
+  function stackStory() {                          // Media: one row per publication, one under another with the same gap however many lines each has: a ruled line level with the outlet, the outlet, its thesis a line lower one column to the right, and its date in grey beside the thesis
+    let top = storyP[0]._t0 ?? (storyP[0]._t0 = parseFloat(storyP[0].style.top.match(/calc\(([\d.]+)/)[1]));
+    storyP.forEach((q, i) => {
+      const d = q._desc || (q._desc = q.parentNode.querySelector(`.mdesc[data-i="${i}"]`) || [...q.parentNode.querySelectorAll('.mdesc')][i]);
+      const r = q._rule || (q._rule = Object.assign(document.createElement('i'), { className: 'mrule' })); if (!r.parentNode) q.before(r);
+      const dt = q._date || (q._date = Object.assign(document.createElement('p'), { className: 't18 mdate', textContent: (MEDIA[i] || [''])[0] })); if (!dt.parentNode) d.after(dt);
+      const set = (el, v) => { el.style.top = `calc(${v.toFixed(1)} * var(--u))`; };
+      set(r, top - 4); set(q, top); const dTop = top + q.offsetHeight / U; set(d, dTop); set(dt, dTop);
+      top = dTop + Math.max(d.offsetHeight, dt.offsetHeight) / U + 40; });
   }
   function alignShop() {
     const shop = one('.stack .shop'), pic = one('.rest > .ph:not(.pic):not(.bar)'), rest = one('.rest');
@@ -847,9 +851,10 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       if (c._tl) c._tl.kill();
       const tl = gsap.timeline({ paused: true });
       fanIn(tl, top, { each: .045, at: 0, dur: .9 });                   // the ruled lines fan out one after another, as in the table
+      const soft = (els, at, each) => tl.fromTo(els, { yPercent: 70, opacity: 0 }, { yPercent: 0, opacity: 1, duration: .9, ease: EASE, stagger: each }, at);   // up from below out of nothing: no mask, nothing seen in pieces
       [...c.querySelectorAll('.row')].forEach((row, r) => { const at = .7 + r * .45;   // then the text, tidily: the first paragraph with its number, then the second
-        fadeIn(tl, row.querySelector('.n'), .3, at, { dur: .6 }); riseIn(tl, [...row.querySelectorAll('p .mi')], { at, each: .1, dur: .9 }); });
-      riseIn(tl, nm, { at: 1.6, each: .06, dur: .8 });                   // and the name rises letter by letter
+        fadeIn(tl, row.querySelector('.n'), .3, at, { dur: .6 }); soft([...row.querySelectorAll('p .mi')], at, .1); });
+      soft(nm, 1.6, .06);                                                 // and the name rises letter by letter
       const cf = c.querySelector('.cf'); if (cf) { touched.push(cf); fadeIn(tl, cf, .4, 1.9, { dur: .6 }); }   // and Co-founder under it
       fanIn(tl, bot, { each: .08, at: 1.6, dur: .8 });
       c._tl = tl; pairs.push({ st: { kill() {}, start: Infinity }, tl });
@@ -900,10 +905,10 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     return m.g.getImageData(Math.min(m.cv.width - 1, u * m.cv.width | 0), Math.min(m.cv.height - 1, v * m.cv.height | 0), 1, 1).data[3] > 60 ? c : null;
   }
   const inStory = cy => { const ps = $('[data-year]'), a = ps[0].getBoundingClientRect(), b = ps[ps.length - 1].getBoundingClientRect(); return cy > a.top - 40 * U && cy < b.bottom + 40 * U; };   // the whole Story block: from a little above its first paragraph to a little below its last
-  addEventListener('pointermove', e => { if (openView) closeCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`;
-    const onStory = !openView && ((inStory(e.clientY) && !e.target.closest('a, nav, .nav')) || !!cutHit(e)); htmlEl.classList.toggle('on-story', onStory); moreCur.style.opacity = onStory ? 1 : 0; if (onStory) moreCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`; }, { passive: true });
+  addEventListener('pointermove', e => { if (openView) { closeCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`; closeCur.classList.toggle('away', !!(e.target.closest && e.target.closest('.cd-pic, .cd-s'))); }
+    const onStory = !openView && ((inStory(e.clientY) && !e.target.closest('a, nav, .nav')) || !!cutHit(e) || !!(e.target.closest && e.target.closest('.pic'))); htmlEl.classList.toggle('on-story', onStory); moreCur.style.opacity = onStory ? 1 : 0; if (onStory) moreCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`; }, { passive: true });
   addEventListener('keydown', e => { if (e.key === 'Escape' && openView) openView.close(); });
-  function lockView(on) { muffle(on); htmlEl.classList.toggle('ov-open', on); htmlEl.style.overflow = on ? 'hidden' : ''; closeCur.style.opacity = on ? 1 : 0; }
+  function lockView(on) { muffle(on); htmlEl.classList.toggle('ov-open', on); if (lenis) window.scrollLocked = on; else htmlEl.style.overflow = on ? 'hidden' : ''; closeCur.style.opacity = on ? 1 : 0; }   // the page under a view is held still without taking its scrollbar away (that made everything shift and blink on closing)
   const pageEls = () => [one('.page'), ...$('.hc, .nav, .ct, .tagline, .midstrip, .ttl')];
 
   const SV = one('#storyView');
@@ -963,7 +968,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     if (SV._noClose || CV._noClose || CATV._noClose) return;
     const more = e.target.closest('a.more') || (!openView && !e.target.closest('a, nav, .nav, .ov') && inStory(e.clientY) ? e.target : null);
     if (more && !openView) { e.preventDefault(); moreCur.style.opacity = 0; openStory(); return; }
-    if (openView && e.target.closest('.ov') && !e.target.closest('a')) openView.close();   // a link inside a view opens, it does not close the view
+    if (openView && e.target.closest('.ov') && !e.target.closest('a, .cd-pic, .cd-s, .cd-slider')) openView.close();   // a link inside a view opens, it does not close the view
   });
 
   const CV = one('#caseView');
@@ -1012,14 +1017,18 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       requestAnimationFrame(bendLoop); })();
     const stopSlider = () => { bendRun = false; CV.removeEventListener('wheel', onSw); removeEventListener('keydown', onSk); CV.removeEventListener('pointerdown', onSd); removeEventListener('pointermove', onSm); removeEventListener('pointerup', onSu); gsap.killTweensOf(track); gsap.set(track, { x: 0 }); track.innerHTML = ''; alt.classList.remove('on'); };
     CV.classList.add('open'); lockView(true);
-    const held = partners.filter(p => p.style.position === 'fixed' && p === partners[i]).map(p => ({ p, par: p.parentNode, next: p.nextSibling }));   // the client names held on the right stay in sight over the case: lifted out of the faded page for as long as it is open
-    held.forEach(({ p }) => { document.body.append(p); p.style.zIndex = 401; });
-    const putBack = () => held.forEach(({ p, par, next }) => { par.insertBefore(p, next); p.style.zIndex = ''; });
+    const own = partners[i], held = own && own.style.display !== 'none' ? [{ p: own, par: own.parentNode, next: own.nextSibling, was: own.style.position === 'fixed' ? null : { position: own.style.position, top: own.style.top, left: own.style.left, translate: own.style.translate } }] : [];   // the case's own client is always named over it   // the client names held on the right stay in sight over the case: lifted out of the faded page for as long as it is open
+    held.forEach(h => { const p = h.p, r = p.getBoundingClientRect(); p._held = true; document.body.append(p); p.style.zIndex = 401; const pf = p.firstElementChild; if (pf) { gsap.killTweensOf([...pf.children]); gsap.set([...pf.children], { yPercent: 0, y: 0 }); pf.style.transform = ''; } if (h.was) { gsap.set(p, { x: 0, y: 0, scale: 1 }); p.style.translate = ''; }   // all its letters up, none of the moves it makes on the page
+      if (h.was) { const nw = p.firstElementChild.getBoundingClientRect().width || r.width; Object.assign(p.style, { position: 'fixed', top: (picTop + picH - r.height) + 'px', left: (1380 * U - nw - (p.firstElementChild.offsetLeft || 0)) + 'px' }); } });   // not pinned at the moment: it stands at the bottom right of the picture
+    { const nm = held[0] && held[0].p.firstElementChild.getBoundingClientRect(), bt = parseFloat(bEl.style.top); if (nm && nm.top < bt + 120 * U && nm.bottom > bt) bEl.style.top = nm.bottom + 20 * U + 'px'; }   // the second paragraph never under the name: it goes below it
+    const putBack = () => held.forEach(({ p, par, next, was }) => { p._held = false; par.insertBefore(p, next); p.style.zIndex = ''; if (was) Object.assign(p.style, was); tick(); });
     const inCap = splitMask(capEl), inA = splitMask(aEl), inB = splitMask(bEl);
     const others = partners.filter(p => p !== partners[i]);   // only this case's client stays named over it
-    const tl = gsap.timeline({ onReverseComplete() { stopSlider(); putBack(); gsap.set(others, { clearProps: 'opacity' }); CV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); tick(); } });
-    tl.to(pageEls(), { opacity: 0.12, duration: .5, ease: 'power2.out' }, 0);                                  // the page stays, faintly, under the picture
-    tl.to(others, { opacity: 0, duration: .4, ease: 'power2.out' }, 0);
+    const caseEls = [...$('.page > *:not(.hero):not(.rest)'), ...$('.rest > *:not(.partner)'), ...$('.hero > *:not(.nav), .hc, .tagline, .midstrip, .ttl')];   // everything but the menu: it stays on top, readable
+    htmlEl.classList.add('case-open');
+    const tl = gsap.timeline({ onReverseComplete() { stopSlider(); putBack(); gsap.set(others, { clearProps: 'opacity' }); htmlEl.classList.remove('case-open'); CV.classList.remove('open'); lockView(false); openView = null; gsap.set([...pageEls(), ...caseEls], { clearProps: 'opacity,transform' }); tick(); } });
+    tl.to(caseEls, { opacity: 0.12, duration: .5, ease: 'power2.out' }, 0);                                  // the page stays, faintly, under the picture (the menu stays as it is)
+    tl.to(others, { opacity: .1, duration: .4, ease: 'power2.out' }, 0);   // the other clients stay in their places, a very faint grey
     tl.fromTo('#caseView .ov-scrim', { opacity: 0 }, { opacity: .86, duration: .5, ease: 'power2.out' }, 0);
     tl.fromTo(cdPic, { left: r.left, top: r.top, width: r.width, height: r.height }, { left: 20 * U, top: picTop, width: 900 * U, height: picH, duration: 1, ease: 'power3.inOut' }, 0.05);
     fanIn(tl, rl, { each: .08, at: .55, dur: .9 });                                                          // the lines stretch to two columns
@@ -1237,8 +1246,14 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     m.w = w; m.h = h; m.drawn = -1; m.cv.width = w; m.cv.height = h; m.frames = [];
     const off = document.createElement('canvas'), c = makeClay({ cv: off, w, h, invert: true });
     const snap = () => { const fc = document.createElement('canvas'); fc.width = w; fc.height = h; c.render(); fc.getContext('2d').drawImage(off, 0, 0); m.frames.push(fc); };
-    // just prints, no smear (a finger pressed flat, the length of a phalanx): one on Karen's card, two on Lisa's, in the bottom right corner under the text
-    const n = m.idx === 0 ? 1 : 2; for (let k = 0; k < n; k++) { const f = c.finger(w * (0.7 + k * .14 + Math.random() * .04), h * (0.74 + (k ? -.05 : 0) + Math.random() * .05), { size: .62 + Math.random() * .08, load: 1.7 + Math.random() * .3, ang: -.45 + (Math.random() - .5) * .3 }); f.ry *= 1.6; c.print(f); }   // a whole phalanx pressed flat: a long oval on a slant
+    // a small heart drawn with one finger in one go, each turned its own way: one on Karen's card, two on Lisa's, in the bottom right corner under the text
+    const n = m.idx === 0 ? 1 : 2;
+    for (let k = 0; k < n; k++) {
+      const cx = w * (0.72 + k * .13 + Math.random() * .04), cy = h * (0.74 + (k ? -.07 : 0) + Math.random() * .04), sz = h * (.0042 + Math.random() * .0012), rot = (Math.random() - .5) * 1.4;
+      const pts = Array.from({ length: 41 }, (_, i) => { const t = i / 40 * Math.PI * 2, x = 16 * Math.pow(Math.sin(t), 3), y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)); return [cx + (x * Math.cos(rot) - y * Math.sin(rot)) * sz, cy + (x * Math.sin(rot) + y * Math.cos(rot)) * sz]; });
+      let f = c.finger(pts[0][0], pts[0][1], { size: .38, load: 1.5 }); c.print(f);
+      for (let i = 1; i < pts.length; i++) { const [ax, ay] = pts[i - 1], [bx, by] = pts[i], d = Math.hypot(bx - ax, by - ay) || 1; f.x = ax; f.y = ay; f = c.autoSmear(f, (bx - ax) / d, (by - ay) / d, Math.max(2, d), 0.995); }
+    }
     snap();
   }
   function drawMark(m, rev) {
@@ -1275,7 +1290,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const PIN_TOP = V / 2 - ((shownP.length - 1) * 117 + 98) / 2 + (shownP.length - 1) * 117;   // the last name's place when the whole group stands in the middle of the screen: there they stop
     const pinY0 = partnerTops[lastP] + y - PIN_TOP, pinY1 = picTops[pics.length - 1] + y + pics[pics.length - 1].offsetHeight / U - PIN_TOP - 40;
     const pin = Math.max(0, Math.min(y - pinY0, pinY1 - pinY0)), pinned = y > pinY0 && y < pinY1;
-    partners.forEach((p, i) => { p._pin = pin; partnerTops[i] += pin;   // while held they are fixed to the screen itself, so they never shake with the scroll
+    partners.forEach((p, i) => { p._pin = pin; partnerTops[i] += pin; if (p._held) return;   // (a name lifted over an open case is left alone) while held they are fixed to the screen itself, so they never shake with the scroll
       if (pinned) { if (!p._top) p._top = p.style.top; p.style.position = 'fixed'; p.style.top = ((PIN_TOP - (lastP - i) * 117) * U).toFixed(1) + 'px'; p.style.translate = ''; } else { p.style.position = ''; p.style.top = p._top || (p._top = p.style.top); p.style.translate = pin ? `0 ${(pin * U).toFixed(1)}px` : ''; }
       p.classList.toggle('pinned', pin > 0); });
 
@@ -1308,12 +1323,12 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     if (storyWordTl && !openView) { const on = storyP[0].getBoundingClientRect().top / U < V * 0.95; if (on !== !!storyWordTl._on) { storyWordTl._on = on; on ? storyWordTl.timeScale(1).play() : storyWordTl.timeScale(2.2).reverse(); } }
     // Story: the word, its year and the two squares stay on the screen while the paragraphs (all in the 4th column) scroll past the middle
     { const restTop = one('.rest').offsetTop / U, tg = storyPinned[0], t0 = el => el._t0 ?? (el._t0 = parseFloat(el.style.top.match(/calc\(([\d.]+)/)[1]));
-      [dot0, ...dotsMore].forEach(d => { d._t0 = t0(tg) + tg.offsetHeight / U / 2 - 5; });   // the squares stand on the middle line of the word
+      [dot0, ...dotsMore].forEach(d => { d._t0 = t0(tg) + tg.offsetHeight / U / 2 - 2.5; });   // the squares stand on the middle line of the word
       const ys = restTop + t0(tg) + tg.offsetHeight / U / 2 - V / 2, ye = Math.max(ys, restTop + storyMid(storyP.length - 1) - V / 2);   // held from when the word's middle reaches the middle of the screen until the last item does
       storyPinned.forEach(el => { const held = y >= ys && y <= ye, top = held ? t0(el) + restTop - ys : t0(el) + (y > ye ? ye - ys : 0);
         el.style.transform = ''; el.style.position = held ? 'fixed' : 'absolute'; el.style.top = top * U + 'px'; });   // fixed to the screen while held, so it never shakes with the scroll
       const out = y > ys - V * 0.12;   // close to the middle the one square snaps into three, one above and one below it
-      dotsMore.forEach(d => { d.style.translate = out ? `0 ${((+d.dataset.k === 1 ? -1 : 1) * 20 * U).toFixed(2)}px` : '0 0'; }); }
+      dotsMore.forEach(d => { d.style.translate = out ? `0 ${((+d.dataset.k === 1 ? -1 : 1) * 10 * U).toFixed(2)}px` : '0 0'; }); }
     // About / Cases / Shop: they come in on the centre and, once the list has reached the middle of the screen, take their places on their own
     const listMid = bigrows[0].getBoundingClientRect().top / U + 122;
     const slideP = ease(clamp((V * 1.05 - listMid) / (V * 0.55)));            // the words slide out to their places as you scroll: from near the middle when the list comes in, in place by the time it is just above the middle
@@ -1444,7 +1459,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       tick._yN = tick._yN == null ? yS : tick._yN + (yS - tick._yN) * 0.1; if (Math.abs(yS - tick._yN) < .2) tick._yN = yS; else if (!smoothRaf) smoothRaf = requestAnimationFrame(() => { smoothRaf = 0; tick(); });
       const S0 = pinY0 + 100, n = shownP.length, yN = tick._yN;   // with more inertia than the cards: the names follow the scroll well behind and settle softly
       plab.style.opacity = (1 - clamp((yN - S0) / 120)).toFixed(3);    // the clients' words go as the names move over
-      shownP.forEach((el, k) => {
+      shownP.forEach((el, k) => { if (el._held) return;
         const e = ease(clamp((yN - S0 - k * 40) / 480));
         if (e === 0 || el._w == null) { const L = el.firstElementChild, a = L.firstElementChild.getBoundingClientRect(), b = L.lastElementChild.getBoundingClientRect(); if (e === 0) { el._x0 = a.left / U; el._w = (b.right - a.left) / U; } }   // measured while it stands in its own place
         const T = PIN_TOP - (n - 1 - k) * 117, D = V / 2 - ((n - 1) * 82 + 69) / 2 + k * 82, fs = 108 + (75.6 - 108) * e;
@@ -1453,8 +1468,8 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       }); }
     if (best >= 0) setQuote(best);
     // names start a bit further apart and close up like train cars as they rise to the labels (the row level with them sits at its own place)
-    partners.forEach((el, i) => { const pf = el.firstElementChild, onScreen = partnerTops[i] < V * 0.9; if (onScreen !== !!pf._in) { pf._in = onScreen; typeName(pf, onScreen); } });   // the names come in one letter at a time when their row comes up, and go back the same way
-    partners.forEach((el, i) => { el.firstElementChild.style.transform = `translateY(${PGAP * ease((partnerTops[i] - pin - (PIN_TOP - (lastP - i) * 117)) / (V * 0.6)) * U}px)`; });
+    partners.forEach((el, i) => { if (el._held) return; const pf = el.firstElementChild, onScreen = partnerTops[i] < V * 0.9; if (onScreen !== !!pf._in) { pf._in = onScreen; typeName(pf, onScreen); } });   // the names come in one letter at a time when their row comes up, and go back the same way
+    partners.forEach((el, i) => { if (el._held) return; el.firstElementChild.style.transform = `translateY(${PGAP * ease((partnerTops[i] - pin - (PIN_TOP - (lastP - i) * 117)) / (V * 0.6)) * U}px)`; });
 
 
 
