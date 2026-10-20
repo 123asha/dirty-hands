@@ -430,7 +430,7 @@ window.preDone = new Promise(done => {
     setTimeout(() => { pre.style.pointerEvents = 'none'; pre.style.transition = 'background-color .6s cubic-bezier(.4, 0, .2, 1)'; pre.style.backgroundColor = 'transparent'; done(); if (c.soak) c.soak(0, () => pre.remove()); else { pre.style.transition = 'opacity 1.2s ease'; pre.style.opacity = 0; setTimeout(() => pre.remove(), 1300); } }, 250); })(t1);   // (an older clay.js from the cache: it simply fades)   // the sheet goes and the page appears; the DH soaks away like any clay mark, gone by the time the top row has come in   // the sheet goes and the page appears; the DH stays and soaks away by itself, as every clay mark on the site does
 });
 </script>
-<script src="sound.js?v=5"></script>
+<script src="sound.js?v=6"></script>
 <script>
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scrollTo(0, 0);   // the page always starts from the top: the intro is built for it
 // smooth scroll for the whole page (Lenis): the wheel glides on with a little inertia, the page itself still reads scrollY as before. It rests whenever the page is locked (the intro, an open view, the ending)
