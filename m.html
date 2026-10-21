@@ -56,7 +56,7 @@
   .hero { padding: calc(var(--s5) + env(safe-area-inset-top)) 0 0; }
   .strip { display: flex; gap: var(--g); overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 var(--m); scroll-padding: 0 var(--m); scrollbar-width: none; perspective: 900px; }
   .strip::-webkit-scrollbar { display: none; }
-  .cat { flex: none; width: 46vw; scroll-snap-align: start; text-align: left; }
+  .cat { flex: none; width: 38vw; scroll-snap-align: start; text-align: left; }
   .cat i { display: block; aspect-ratio: 4 / 5; background: #ecebe9 50% 48% / 170% auto no-repeat; }
   .cat:nth-child(2) i, .cat:nth-child(4) i { aspect-ratio: 1; }   /* as the cards on the full page: level at the top, stepped at the bottom (tall, short, tall, short, tall, tall) */
   .strip#cats { align-items: flex-start; }
@@ -65,15 +65,16 @@
   .ttl { font-size: 37vw; margin-top: var(--s4); text-align: center; }
   .ttl { line-height: .8; }
   .ttl .ln { display: block; overflow: hidden; padding: .03em 0 0; }   /* the two lines closer: half the gap they had */
-  .ttl .kR { margin-right: -.045em; }   /* the R a little closer to the T */
+  .ttl .kR { margin-right: calc(-.045em - 10px); }   /* the R a little closer to the T */
   .ttl .ch { display: inline-block; }
   .tag { margin: var(--s4) var(--m) 0; padding-top: var(--s1); border-top: 1px solid var(--rule); text-align: center; opacity: 0; }   /* as on the full page: on the ruled line between the slider and the title, in the middle */
 
   /* the categories as a ruled list */
   .list { margin-top: var(--s5); }
   /* block 2, as on the full page: the cards of the top slider fly together into a pile in the middle of the screen and turn over into the works cut out; under them the table, its ruled lines and numbered paragraphs; the work of the paragraph in front stands on top of the pile */
-  .tbl { position: relative; margin-top: 30vh; padding: 0 var(--m) 40vh; background: repeating-linear-gradient(to bottom, var(--rule) 0 1px, transparent 1px var(--lh)); }
-  .tr { display: grid; grid-template-columns: 28px 1fr; gap: var(--s1); min-height: 62vh; padding-right: 44vw; }   /* the right of the screen is the pile's: the text keeps to the left of it */
+  .tbl { position: relative; margin-top: 30vh; padding: 0 var(--m) 60vh; background: repeating-linear-gradient(to bottom, var(--rule) 0 1px, transparent 1px var(--lh)); }
+  .tr { display: grid; grid-template-columns: 28px 1fr; gap: var(--s1); margin-bottom: calc(2 * var(--lh)); padding-right: 0; transition: padding-right .45s var(--ease); }   /* full width; where the pile stands beside it, it is pushed aside */
+  .tr.push { padding-right: 44vw; }   /* the right of the screen is the pile's: the text keeps to the left of it */
   .tr .n { opacity: .4; } .tr p { line-height: var(--lh); }
   .pile { position: fixed; inset: 0; pointer-events: none; z-index: 6; }
   .pile .pc { position: absolute; left: 0; top: 0; background: #ecebe9 50% 48% / 170% auto no-repeat; will-change: transform; backface-visibility: visible; }
@@ -163,14 +164,14 @@
   .cv { height: 100%; display: flex; flex-direction: column; }
   .cv .head { flex: none; }
   .gal { flex: none; position: relative; height: 48vh; margin-top: var(--s3); }
-  .gal .ico { position: absolute; left: 50%; top: 50%; width: 58vh; height: 58vh; translate: -50% -50%; overflow: visible; pointer-events: none; z-index: 2; }   /* the outline over the pictures */
+  .cv .ico { display: block; width: 56px; height: 56px; margin: 0 auto var(--s2); overflow: visible; }   /* a small outline over the text, redrawn as the slider turns */
   .gal .ico path { fill: none; stroke: #c8c8c8; stroke-linejoin: round; stroke-linecap: round; }
   .track { position: relative; z-index: 1; display: flex; align-items: center; gap: var(--g); height: 100%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; padding: 0 22vw; scrollbar-width: none; perspective: 900px; }
   .track::-webkit-scrollbar { display: none; }
   .track .fr { flex: none; display: block; max-height: 100%; scroll-snap-align: center; isolation: isolate; }
   .track .fr.grey { background: #f2f2f2; } .track .fr.grey img { mix-blend-mode: multiply; }   /* a photo on white stands on the cards' grey: the white multiplied into it, the work untouched */
   .track img { width: auto; height: auto; max-height: 48vh; max-width: 78vw; }   /* whole, never wider than the screen allows: a wide photo simply gets lower */
-  .cv .mid { flex: 1; display: grid; place-items: center; padding: var(--s2) var(--m); text-align: center; }
+  .cv .mid { flex: 1; display: grid; place-content: center; padding: var(--s2) var(--m); text-align: center; }
 
   /* order: the title on three shelves; the works stand on them and go round as the shelves are swiped; a tap lets the next work fall onto a free place; a black silhouette stands in the text and the lines bend round it */
   .shelves { border-top: 1px solid var(--rule); margin-top: 0; touch-action: pan-y; }
@@ -332,7 +333,8 @@ window.preDone = new Promise(done => {
       const f = flip * 180, back = f > 90; if (el.classList.contains('back') !== back) { el.classList.toggle('back', back); el.style.backgroundImage = `url('${back ? CUT[k] : PHOTO[k]}')`; }   // edge-on half way, and on its back the work without its background
       el.style.width = w + 'px'; el.style.height = h + 'px'; el.style.zIndex = 10 - dk;
       el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) perspective(800px) rotateY(${(back ? f - 180 : f).toFixed(1)}deg) rotate(${(sk[2] * dk * e * .6).toFixed(1)}deg)`;
-      el.style.opacity = flip < 1 ? 1 : (k === top ? 1 : Math.max(0, 1 - dk * .35)); }); }
+      el.style.opacity = k === top ? 1 : flip > .9 ? 0 : (1 - flip).toFixed(3); });   // once turned over only the work on top is seen
+    { const pr = pcs[top].getBoundingClientRect(); trs.forEach(r => { const b = r.getBoundingClientRect(); r.classList.toggle('push', p >= 1 && b.bottom > pr.top - 8 && b.top < pr.bottom + 8); }); } }   // the rows beside the work are pushed aside, the others run the whole width
   pcs.forEach((el, k) => el.style.backgroundImage = `url('${PHOTO[k]}')`);
   addEventListener('scroll', () => requestAnimationFrame(pileTick), { passive: true }); addEventListener('resize', pileTick); one('#cats').addEventListener('scroll', pileTick, { passive: true }); pileTick();
   // the cases, under the clients' names
@@ -348,12 +350,14 @@ window.preDone = new Promise(done => {
   { const hd = one('.hands'), ho = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { hd.classList.add('on'); ho.disconnect(); } }, { threshold: .9 }); ho.observe(hd); }
 
   // a slider swiped: the pictures bow round a little while it moves, as on a drum, and lie flat again when it stops (the browser's own glide gives the inertia)
-  function bendStrip(el) { let last = el.scrollLeft, lt = performance.now(), amt = 0, goal = 0, run = false;
+  function bendStrip(el, base = 0) { let last = el.scrollLeft, lt = performance.now(), amt = 0, goal = 0, run = false;   // base: a drum the pictures always stand on (case and category sliders), the swipe bows it a little more
     const items = () => [...el.children].filter(c => c.classList.contains('bend') || c.tagName === 'IMG');
-    const frame = () => { amt += (goal - amt) * .14; goal *= .9; const W = el.clientWidth, c0 = el.getBoundingClientRect().left + W / 2;
-      items().forEach(it => { const r = it.getBoundingClientRect(), d = (r.left + r.width / 2 - c0) / W; it.style.transform = amt > .002 ? `rotateY(${(-d * 38 * amt).toFixed(2)}deg) translateZ(${(-Math.abs(d) * 70 * amt).toFixed(1)}px)` : ''; });
+    const frame = () => { amt += (goal - amt) * .14; goal *= .9; const W = el.clientWidth, k = Math.min(1, base + amt * (1 - base * .5));
+      items().forEach(it => { const d = (it.offsetLeft + it.offsetWidth / 2 - el.scrollLeft - W / 2) / W;   // from where it lies, not where its own turn has put it: no feedback, no wobble
+        it.style.transform = k > .002 ? `rotateY(${(-d * 42 * k).toFixed(2)}deg) translateZ(${(-d * d * 180 * k).toFixed(1)}px)` : ''; it.style.opacity = base ? (1 - Math.min(.55, Math.abs(d) * .45)).toFixed(3) : ''; });
       if (amt > .002 || goal > .002) requestAnimationFrame(frame); else run = false; };
-    el.addEventListener('scroll', () => { const t = performance.now(), v = Math.abs(el.scrollLeft - last) / Math.max(8, t - lt); last = el.scrollLeft; lt = t; goal = Math.min(1, Math.max(goal, v * .9)); if (!run) { run = true; requestAnimationFrame(frame); } if (window.soundNudge) soundNudge(Math.min(.6, v * .3)); }, { passive: true }); }
+    el.addEventListener('scroll', () => { const t = performance.now(), v = Math.abs(el.scrollLeft - last) / Math.max(8, t - lt); last = el.scrollLeft; lt = t; goal = Math.min(1, Math.max(goal, v * .9)); if (!run) { run = true; requestAnimationFrame(frame); } if (window.soundNudge) soundNudge(Math.min(.6, v * .3)); }, { passive: true });
+    requestAnimationFrame(frame); }
   bendStrip(one('#cats'));
 
   // the scroll: Lisa's card a little quicker than Karen's; the pots from line to photo; clients lit in turn; the forms' words sliding to their places
@@ -383,7 +387,7 @@ window.preDone = new Promise(done => {
 
   // a category opens softly: its name rises, the picture that was tapped grows from its place into the slider, the others come in after it
   function openCat(k, from) { const key = KEYS[k], photos = [PHOTO[k], ...CAT_FILES[key]];   /* the tapped work on its card's grey */
-    show(`<div class="cv"><div class="head"><p class="h">${letters(CATS[k])}</p></div><div class="gal"><svg class="ico" viewBox="0 0 52 52" aria-hidden="true"><path pathLength="1" stroke-dasharray="1.04 1" stroke-dashoffset="1" d="${ICO[k]}"/></svg><div class="track">${photos.map((p, n) => `<span class="fr bend"><img src="${p}" alt="" draggable="false"${n ? '' : ' class="cut"'}></span>`).join('')}</div></div><div class="mid"><p>${TEXT[k]}</p></div></div>`, true);
+    show(`<div class="cv"><div class="head"><p class="h">${letters(CATS[k])}</p></div><div class="gal"><div class="track">${photos.map((p, n) => `<span class="fr bend"><img src="${p}" alt="" draggable="false"${n ? '' : ' class="cut"'}></span>`).join('')}</div></div><div class="mid"><svg class="ico" viewBox="0 0 52 52" aria-hidden="true"><path pathLength="1" stroke-dasharray="1.04 1" stroke-dashoffset="1" d="${ICO[k]}"/></svg><p>${TEXT[k]}</p></div></div>`, true);
     const track = view.querySelector('.track'), ico = view.querySelector('.ico'), ip = ico.querySelector('path'), imgs = [...track.children];
     const isWhite = im => { try { const c = document.createElement('canvas'); c.width = c.height = 16; const g = c.getContext('2d'); g.drawImage(im, 0, 0, 16, 16); const d = g.getImageData(0, 0, 16, 16).data, px = (x, y) => { const i = (y * 16 + x) * 4; return (d[i] + d[i + 1] + d[i + 2]) / 3; }; return [[0, 0], [15, 0], [0, 15], [15, 15], [8, 0]].every(([x, y]) => px(x, y) > 228); } catch (e) { return false; } };
     imgs.slice(1).forEach(fr => { const im = fr.firstChild, mark = () => fr.classList.add('grey'); if (im.complete) mark(); else im.addEventListener('load', mark, { once: true }); });
@@ -397,10 +401,10 @@ window.preDone = new Promise(done => {
       if (best !== near) { const first_ = near < 0; near = best; if (first_) gsap.fromTo(ip, { attr: { 'stroke-dashoffset': 1 } }, { attr: { 'stroke-dashoffset': 0 }, duration: 1.4, ease: 'power2.inOut' }); else goal = nums[(k + best) % nums.length]; } };   // drawn once, then it flows from one form into the next behind each picture that comes to the middle
     let cur = nums[k].slice(), goal = null; (function flow() { if (!view.contains(ip)) return; if (goal) { let moved = false; cur.forEach((v, n) => { const d = goal[n] - v; if (Math.abs(d) > .01) { cur[n] = v + d * .07; moved = true; } }); if (moved) { let n = 0; ip.setAttribute('d', tpl.replace(/#/g, () => cur[n++].toFixed(2))); } } requestAnimationFrame(flow); })();
     track.addEventListener('scroll', redraw, { passive: true }); setTimeout(redraw, 300);
-    bendStrip(track); }
+    bendStrip(track, .6); }
   function openCase(c) { const [n, t] = CASES[c];
     show(`<div class="head"><p class="h">${n}</p><p class="lab" style="margin-top:var(--s1)">${t}</p><div class="big" style="background-image:url('${SRC(c)}');background-position:${POS(c)}"></div></div><div class="txt"><p>${CASE_TEXT[c][0]}</p><p>${CASE_TEXT[c][1]}</p></div><div class="strip cover">${Array.from({ length: CASE_N[CASE_KEY[c]] - 1 }, (_, k) => `<i class="bend" style="background-image:url('${SRC(c, k + 1)}');background-position:${POS(c, k + 1)}"></i>`).join('')}</div>`);
-    bendStrip(view.querySelector('.strip')); }
+    bendStrip(view.querySelector('.strip'), .6); }
 
   // order, as on the full page: the title on three shelves that turn when swiped, a tap lets the next work fall onto a free place on them, and a black silhouette stands in the text
   function openOrder() { const W = ['tattoo-relief-up', 'panel-eva', 'shelf-spine', 'mirror-beetles', 'bust', 'urban-angel', 'vase-brutskin', 'table-cubeball'];

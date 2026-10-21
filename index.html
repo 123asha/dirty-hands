@@ -1179,7 +1179,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     let closing = false;
     const icoEl = CATV.querySelector('.cat-ico'), icoAt = { x: cx, y: 0, h: 0, near: 0 };   // the category's outline stands behind the picture in the middle, as tall as it, and draws itself again under every next one
     const follow = () => { const near = Math.max(lo0, Math.min(hi0, Math.round(pos))), P = photos.find(p => p.d === near); if (!P) return;
-      const tx = cx + (centre[near] - arcAt(pos)), ty = P.tj + P.ph / 2, th = P.ph * 1.45;
+      const tb = textEl.getBoundingClientRect(), th = 64 * U * 1.2, tx = CATV.clientWidth / 2, ty = tb.top - th / 2 - 16 * U;   // small, in the middle, just over the text below
       if (!icoAt.h) Object.assign(icoAt, { x: tx, y: ty, h: th }); icoAt.x += (tx - icoAt.x) * .12; icoAt.y += (ty - icoAt.y) * .12; icoAt.h += (th - icoAt.h) * .12;
       Object.assign(icoEl.style, { left: icoAt.x.toFixed(1) + 'px', top: icoAt.y.toFixed(1) + 'px', width: icoAt.h.toFixed(1) + 'px', height: icoAt.h.toFixed(1) + 'px' });
       const pth = icoEl.querySelector('path'); if (pth) pth.style.strokeWidth = (52 / icoAt.h).toFixed(4);   // one screen pixel at any size
