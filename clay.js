@@ -7,7 +7,7 @@ if (live) cv.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-in
 if (live) document.body.prepend(cv);
 const ctx = cv.getContext('2d');
 
-let S = 1, W = 0, H = 0, T = null, D = null, img = null;
+let S = 1, W = 0, H = 0, T = null, D = null, G = null, img = null;
 const TILE = 64;
 const tiles = new Map();
 const content = new Set();      // tiles that still hold clay and keep fading
@@ -18,7 +18,7 @@ let lastFade = 0;
 const now = () => performance.now() / 1000;
 
 // Clay slip: thin film is a dusty terracotta, thick lumps go dark and earthy.
-const THIN = [84, 82, 80], THICK = [22, 22, 24];   /* a thicker slip: even its thin film is dense */   // dark charcoal clay, dry and matte, like on the hands in the reference photo
+const THIN = [92, 90, 88], THICK = [44, 43, 44];   /* a thicker slip: even its thin film is dense */   // dark charcoal clay, dry and matte, like on the hands in the reference photo
 const Lx = -0.6, Ly = -0.8;
 
 /* ---------- noise ---------- */
@@ -55,6 +55,7 @@ function alloc() {
     }
   }
   S = ns; W = nw; H = nh; T = nT; D = nD; tiles.clear(); content.clear();
+  G = new Float32Array(nw * nh); for (let y = 0; y < nh; y++) for (let x = 0; x < nw; x++) G[y * nw + x] = (vnoise(x * .45, y * .45) - .5) * .7 + (hash(x, y) - .5) * .3;   // the grain of plasticine: fine lumps pressed into every mark
   for (let ty = 0; ty < Math.ceil(H / TILE); ty++) for (let tx = 0; tx < Math.ceil(W / TILE); tx++) content.add(ty * Math.ceil(W / TILE) + tx);
   cv.width = W; cv.height = H;
   img = ctx.createImageData(W, H);
@@ -72,18 +73,19 @@ function shade(x0, y0, x1, y1, t) {
       const i = y * W + x, p = i * 4;
       const th = T[i];
       if (th <= 0.003) { d[p] = d[p + 1] = d[p + 2] = d[p + 3] = 0; continue; }
-      const xl = x > 0 ? i - 1 : i, xr = x < W - 1 ? i + 1 : i;
-      const gx = (T[xr] - T[xl]) * 0.5, gy = (T[yd * W + x] - T[yu * W + x]) * 0.5;
-      let s = 1 - (gx * Lx + gy * Ly) * 0.55 / S;
-      if (s < 0.55) s = 0.55; else if (s > 1.4) s = 1.4;
-      const a = 1 - Math.exp(-th * 3.2);
+      const xl = x > 0 ? i - 1 : i, xr = x < W - 1 ? i + 1 : i, iu = yu * W + x, id = yd * W + x;
+      const hh = j => { const v = T[j]; return 2.4 * v / (v + .6) + G[j] * .5 * (v < 1 ? v : 1); };   // a cushion, not a plateau: the clay rounds off steeply at its edges, as a pressed lump does; and its grain, so the light catches the lumps
+      const gx = (hh(xr) - hh(xl)) * 0.5, gy = (hh(id) - hh(iu)) * 0.5;
+      let s = 1 - (gx * Lx + gy * Ly) * 1.3 / S;   // a strong raking light: every mark stands up off the page like a pressed lump
+      if (s < 0.4) s = 0.4; else if (s > 1.7) s = 1.7;
+      let a = (th - 0.06) / 0.3; a = a < 0 ? 0 : a > 1 ? 1 : a * a * (3 - 2 * a);   // dense and opaque with a clean edge, as plasticine is, not a wash of paint
       const m = th > 1.8 ? 1 : th / 1.8;
       const wet = Math.exp(-(t - D[i]) / 0.6);
       const dk = s * (1 - 0.2 * wet);
       let r = (THIN[0] + (THICK[0] - THIN[0]) * m) * dk;
       let g = (THIN[1] + (THICK[1] - THIN[1]) * m) * dk;
       let b = (THIN[2] + (THICK[2] - THIN[2]) * m) * dk;
-      const spec = wet * Math.max(0, s - 1.05) * 0.9 * a;
+      const spec = (0.45 + wet * 0.5) * Math.max(0, s - 1.0) * 1.1 * a;   // a soft waxy sheen on the lit side of every lump, a little brighter while fresh
       d[p]     = inv ? 255 - (r + (255 - r) * spec) : r + (255 - r) * spec;   // the live sheet is drawn inverted (it is blended by difference)
       d[p + 1] = inv ? 255 - (g + (255 - g) * spec) : g + (255 - g) * spec;
       d[p + 2] = inv ? 255 - (b + (255 - b) * spec) : b + (255 - b) * spec;

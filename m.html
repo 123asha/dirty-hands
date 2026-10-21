@@ -54,7 +54,7 @@
 
   /* first screen: the categories as a horizontal slider of signed pictures, then the title rising letter by letter */
   .hero { position: relative; height: 100svh; min-height: 520px; padding: calc(var(--s5) + env(safe-area-inset-top)) 0 0; }   /* the first screen: the slider at the top, the studio in the middle, the title at the bottom */
-  .strip { display: flex; gap: var(--g); overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 var(--m); scroll-padding: 0 var(--m); scrollbar-width: none; perspective: 1100px; perspective-origin: 50% 50%; touch-action: pan-x; }
+  .strip { display: flex; gap: 6px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 var(--m); scroll-padding: 0 var(--m); scrollbar-width: none; perspective: 1100px; perspective-origin: 50% 50%; touch-action: pan-x; }
   .strip::-webkit-scrollbar { display: none; }
   .cat { flex: none; width: 38vw; scroll-snap-align: start; text-align: left; }
   .cat i { display: block; aspect-ratio: 4 / 5; background: #ecebe9 50% 48% / 170% auto no-repeat; }
@@ -91,9 +91,9 @@
 
   /* Karen and Lisa: the photo whole (no face cut) held in the middle of the screen, their two cards passing over it, Karen first, Lisa after her and a little quicker */
   .duo { position: relative; margin-top: var(--s5); }
-  .duo .photo { position: sticky; top: 0; height: 100vh; overflow: hidden; z-index: 0; }   /* the whole screen: they stand full length behind the cards */
-  .duo .photo::before { content: ''; position: absolute; left: 50%; top: 50%; width: 100vh; height: 100vw; translate: -50% calc(-50% + var(--py, 0px)); rotate: 90deg; scale: 1.16; background: url("photos/lisa-karen.jpg") center / contain no-repeat; }   /* the photo turned a quarter: whole, nothing cut at the sides, and the cards pass over it */
-  .cards { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 45vh; padding: 0 0 40vh; margin-top: 55vh; }   /* one after another down the middle of the screen */
+  .duo .photo { position: absolute; left: 0; right: 0; top: 0; height: 100vh; overflow: hidden; z-index: 0; will-change: transform; }   /* not held: it goes up with the page, slower than the cards over it */   /* the whole screen: they stand full length behind the cards */
+  .duo .photo::before { content: ''; position: absolute; left: 50%; top: 50%; width: 100vh; height: 100vw; translate: -50% -50%; rotate: 90deg; background: url("photos/lisa-karen.jpg") center / contain no-repeat; }   /* the photo turned a quarter: whole, nothing cut at the sides, and the cards pass over it */
+  .cards { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 30vh; padding: 55vh 0 20vh; }   /* one after another down the middle of the screen */
   .card { width: calc(100vw * 2 / 3); aspect-ratio: 5 / 7; display: flex; flex-direction: column; background: #fff; padding: var(--s1) var(--s1) var(--s2); will-change: transform; }   /* upright: the name drops to the foot of the card */
   .card:first-child { align-self: flex-start; margin-left: var(--m); } .card:last-child { align-self: flex-end; margin-right: var(--m); }   /* Karen on the left line, Lisa on the right */
   .card .h { margin-top: auto !important; }
@@ -178,7 +178,7 @@
   .gal { flex: none; position: relative; height: 48vh; margin-top: var(--s3); }
   .cv .ico { display: block; width: 56px; height: 56px; margin: 0 auto var(--s2); overflow: visible; }   /* a small outline over the text, redrawn as the slider turns */
   .cv .ico path { fill: none; stroke: #9a9a9a; stroke-width: 1.2; vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: round; }   /* drawn as one line, never a black blot */
-  .track { position: relative; z-index: 1; display: flex; align-items: center; gap: var(--g); height: 100%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; padding: 0 22vw; scrollbar-width: none; perspective: 1100px; perspective-origin: 50% 50%; touch-action: pan-x; }
+  .track { position: relative; z-index: 1; display: flex; align-items: center; gap: 6px; height: 100%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; padding: 0 22vw; scrollbar-width: none; perspective: 1100px; perspective-origin: 50% 50%; touch-action: pan-x; }
   .track::-webkit-scrollbar { display: none; }
   .track .fr { flex: none; display: block; max-height: 100%; scroll-snap-align: center; isolation: isolate; }
   .track .fr.grey { background: #f2f2f2; } .track .fr.grey img { mix-blend-mode: multiply; }   /* a photo on white stands on the cards' grey: the white multiplied into it, the work untouched */
@@ -191,7 +191,7 @@
   .shelf .h { position: absolute; top: 50%; translate: 0 -50%; font-size: var(--h2); white-space: nowrap; z-index: 2; }
   .shelf:nth-child(1) .h { left: var(--m); } .shelf:nth-child(2) .h { right: var(--m); } .shelf:nth-child(3) .h { left: var(--m); }
   .shelf .w { position: absolute; bottom: 1px; width: 14vw; height: 14vw; background: center bottom / contain no-repeat; z-index: 1; }
-  .sil { position: absolute; z-index: 62; right: var(--m); bottom: 0; width: 14vw; height: 14vw; background: center bottom / contain no-repeat; filter: brightness(0); transition: transform .25s var(--ease); }   /* the next work, a black silhouette at the bottom right: a tap sends it flying onto a shelf */
+  .sil { position: absolute; z-index: 62; right: var(--m); top: calc(var(--lh) / 2); translate: 0 -50%; width: 14vw; height: 14vw; background: center bottom / contain no-repeat; filter: brightness(0); transition: transform .25s var(--ease); }   /* the next work, a black silhouette at the bottom right: a tap sends it flying onto a shelf */
   .sil:active { transform: scale(.9); }
   .fall { filter: brightness(0); } .shelf .w { transition: filter .7s var(--ease); } .shelf .w.dark { filter: brightness(0); }
   .fall { position: fixed; z-index: 70; width: 14vw; height: 14vw; background: center bottom / contain no-repeat; pointer-events: none; }
@@ -269,7 +269,7 @@
 <button type="button" class="x" id="close" aria-label="Close" hidden><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1 1 13" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></button>
 
 <script>window.clayFast = true;   // on the phone the marks dry sooner</script>
-<script src="clay.js?v=6"></script>
+<script src="clay.js?v=7"></script>
 <script src="sound.js?v=13"></script>
 <script src="outline.js"></script>
 <script>
@@ -444,9 +444,9 @@ window.preDone = new Promise(done => {
   function showName(k) { const w = document.createElement('span'); w.className = 'w'; w.innerHTML = [...CASES[k][0]].map(c => `<span class="ch">${c === ' ' ? '&nbsp;' : c}</span>`).join(''); nameBox.append(w);
     const old = nameEl; nameEl = w; gsap.fromTo(w.children, { yPercent: 110 }, { yPercent: 0, duration: .7, ease: EASE, stagger: .03, delay: old ? .12 : 0 });
     if (old) gsap.to(old.children, { yPercent: -110, duration: .45, ease: 'power2.in', stagger: .02, onComplete() { old.remove(); } }); }   // the old name goes up and out as the new one comes up after it
-  let act = -1, duoT = 0, duoC = 0, duoRaf = 0, duoLt = 0; const karen = one('.card');
+  let act = -1, duoT = 0, duoC = 0, duoRaf = 0, duoLt = 0; const karen = one('.card'), photo = one('.duo .photo');
   function duoGlide(now) { const dt = Math.min(50, now - (duoLt || now)) || 16.7; duoLt = now; duoC += (duoT - duoC) * (1 - Math.pow(1 - .09, dt / 16.7));   // one soft follower for the whole pair: no hanging, no jump
-    const V = innerHeight / 100; karen.style.transform = `translate3d(0,${(-duoC * 6 * V).toFixed(2)}px,0)`; lisa.style.transform = `translate3d(0,${(-duoC * 16 * V).toFixed(2)}px,0)`; duo.style.setProperty('--py', `${((.5 - duoC) * 14 * V).toFixed(2)}px`);   // Lisa a little quicker than Karen, the photo slower than both
+    const V = innerHeight / 100; karen.style.transform = `translate3d(0,${(-duoC * 6 * V).toFixed(2)}px,0)`; lisa.style.transform = `translate3d(0,${(-duoC * 16 * V).toFixed(2)}px,0)`; photo.style.transform = `translate3d(0,${(duoC * (duo.offsetHeight - innerHeight) * .6).toFixed(1)}px,0)`;   // Lisa a little quicker than Karen, the photo at less than half their speed
     if (Math.abs(duoT - duoC) > .0004) duoRaf = requestAnimationFrame(duoGlide); else { duoRaf = 0; duoLt = 0; } }
   function onScroll() { const V = innerHeight;
     { const r = duo.getBoundingClientRect(), p = clamp(-r.top / Math.max(1, r.height - V)); duoT = p; if (!duoRaf) duoRaf = requestAnimationFrame(duoGlide); }   // the cards and the photo follow the scroll a little late (see duoGlide)
@@ -502,7 +502,9 @@ window.preDone = new Promise(done => {
     gsap.fromTo(view.querySelectorAll('.shelf .h'), { opacity: 0, x: (i, t) => (innerWidth / 2 - (t.offsetLeft + t.offsetWidth / 2)) }, { opacity: 1, x: 0, duration: 1.3, ease: 'power3.out', stagger: .12, delay: .15 });   // the three words open out from the middle of the screen to their places
     const shelves = [...view.querySelectorAll('.shelf')], SW = innerWidth, DIR = [1, -.8, .6], off = [0, 0, 0], to = [0, 0, 0], stood = [[], [], []]; let wi = 0;
     const wrap = (x, o) => ((x + o) % SW + SW) % SW;
-    const place = () => shelves.forEach((s, b) => stood[b].forEach(it => { const xx = wrap(it.x, off[b]), e = Math.min(xx, SW - xx) / (SW * .18); it.el.style.left = (xx - it.el.offsetWidth / 2).toFixed(1) + 'px'; it.el.style.opacity = Math.min(1, e).toFixed(3); }));
+    shelves.forEach(s => { const h = s.querySelector('.h'), c = h.cloneNode(true); c.setAttribute('aria-hidden', 'true'); c.style.opacity = 1; c.style.transform = 'none'; s.append(c); s._h = [h, c]; });   // each word and a copy one shelf-length behind it, so it goes round without a gap
+    const place = () => shelves.forEach((s, b) => { const d = ((off[b] % SW) + SW) % SW; s._h.forEach((h, c) => { h.style.translate = c ? `${(d - SW).toFixed(1)}px -50%` : `${d.toFixed(1)}px 0`; });   /* the word itself keeps the half-height lift GSAP took over from the CSS in its transform; the copy has its own */ }) || shelves.forEach((s, b) => stood[b].forEach(it => { const xx = wrap(it.x, off[b]), e = Math.min(xx, SW - xx) / (SW * .18); it.el.style.left = (xx - it.el.offsetWidth / 2).toFixed(1) + 'px'; it.el.style.opacity = Math.min(1, e).toFixed(3); }));
+    place();
     (function spin() { if (!open) return; let moving = false; off.forEach((v, b) => { off[b] += (to[b] - v) * .1; if (Math.abs(to[b] - off[b]) > .3) moving = true; }); if (moving) place(); requestAnimationFrame(spin); })();
     let sx = null, last = 0; const box = view.querySelector('.shelves');
     box.addEventListener('touchstart', e => { sx = e.touches[0].clientX; last = sx; }, { passive: true });
