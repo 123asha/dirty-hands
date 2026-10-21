@@ -53,8 +53,9 @@
   .card2 .m { overflow: visible; }   /* the cards' lines and letters fade up whole, never cut by a mask */
   .rest > a.credit { left: 0 !important; right: 0; margin: 0 auto; width: max-content; translate: none !important; }   /* centred by its margins: no translate, which motion or a browser could double or clear */
   .rest > .eye { position: absolute; left: 0; right: 0; margin: 0 auto; translate: none !important; width: calc(160 * var(--u)); height: calc(87 * var(--u)); display: block; pointer-events: none; }   /* a pair of small hands over the credit, a thin outline; only a drawing, not a link */
-  .rest > .eye svg { width: 100%; height: 100%; display: block; overflow: visible; } .rest > .eye path { fill: none; stroke: #000; stroke-width: 4.2; stroke-linejoin: miter; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 2.4s cubic-bezier(.4, 0, .2, 1); } .rest > .eye.on path { stroke-dashoffset: 0; } .rest > .eye.on path + path { transition-delay: .5s; }   /* an eye drawn in clay over the credit: it opens the page where you draw with your finger */
+  .rest > .eye svg { width: 100%; height: 100%; display: block; overflow: visible; } .rest > .eye path { fill: none; stroke: #000; stroke-width: 4.2; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 2.4s cubic-bezier(.4, 0, .2, 1); } .rest > .eye.on path { stroke-dashoffset: 0; } .rest > .eye.on path + path { transition-delay: .5s; }   /* an eye drawn in clay over the credit: it opens the page where you draw with your finger */
   .rest > .eye canvas { display: none; }   /* centred from the stylesheet: the motion clears inline translate, which used to throw it off centre */
+  .credit a, a.credit { text-decoration: none; } .credit .u { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; padding-bottom: .12em; transition: background-size .4s var(--ease, cubic-bezier(.2,.8,.2,1)); } .credit a:hover .u, a.credit:hover .u { background-size: 100% 1px; } .credit .arr { margin-left: .25em; vertical-align: .02em; } .credit a:hover .arr, a.credit:hover .arr { animation: arrowSwap .55s cubic-bezier(.4, 0, .2, 1); }   /* Skip Design: an arrow as on the other links; on hover a line draws in under the name and the arrow flies off and comes back */
   .credit .sfav { display: inline-block; height: .83em; width: auto; vertical-align: -.07em; }   /* the Skip Design mark, a couple of pixels bigger than the heart */
   .rest > .mrule { display: none; }   /* Media has no ruled lines now */
   .rest > .mdate { position: absolute; left: calc(940 * var(--u)); width: calc(210 * var(--u)); opacity: .4; text-align: right; }   /* the date, grey, level with the outlet, flush right in the next column */
@@ -143,6 +144,7 @@
   /* line masks: text rises out of its own line */
   .m { display: block; overflow: hidden; padding: 0 .25em .3em .1em; margin: 0 -.25em -.3em -.1em; }   /* room at the sides too: big letters with tight spacing hang over the edge of their box */
   .mi { display: block; white-space: nowrap; }
+  .t18 .m, .lr .m, .rt .m { overflow: visible; }   /* body text in the air is not cut out of the page by a mask: its lines rise a little and fade in */
   .lt { display: inline-block; white-space: pre; }   /* a letter that rises on its own inside its word's mask */
   .shop .mi { display: flex; align-items: flex-start; gap: .25em; }   /* "Shop now" with the arrow of Contact in the header, set the same way */
   .shop .mi svg { flex: none; margin-top: .12em; }
@@ -372,8 +374,8 @@
   <a class="t18 more" style="display:none;left:calc(710 * var(--u));top:calc(5111 * var(--u));" href="#story">More →</a>
   <div class="dot" style="left:calc(613 * var(--u));top:calc(4519.5 * var(--u));"></div>
   <div class="dot" style="display:none;left:calc(613 * var(--u));top:calc(4594.5 * var(--u));"></div>
-  <div class="eye" aria-hidden="true" style="top:calc(5189 * var(--u) + 100vh * 5 / 24);"><svg viewBox="164 14 680 368"><path pathLength="1" d="M408 372L408 240L484 240L484 176L408 176L408 70L354 70L354 190L354 24L298 24L298 190L298 40L240 40L240 190L240 100L186 100L186 240L200 372"/><path pathLength="1" d="M600 372L600 240L524 240L524 176L600 176L600 70L654 70L654 190L654 24L710 24L710 190L710 40L768 40L768 190L768 100L822 100L822 240L808 372"/></svg></div>
-  <a class="t18 credit" style="left:50%;top:calc(5589 * var(--u) + 100vh * 5 / 24);white-space:nowrap;" href="https://skip.design" target="_blank" rel="noopener">Made by <img class="sfav" src="skip-fav.png" alt="" aria-hidden="true"> <span class="u">Skip Design</span></a>
+  <div class="eye" aria-hidden="true" style="top:calc(5189 * var(--u) + 100vh * 5 / 24);"><svg viewBox="164 14 680 368"><path pathLength="1" d="M408 372L408.0 254.0Q408 240 422.0 240.0L470.0 240.0Q484 240 484.0 226.0L484.0 190.0Q484 176 470.0 176.0L422.0 176.0Q408 176 408.0 162.0L408.0 84.0Q408 70 394.0 70.0L368.0 70.0Q354 70 354.0 84.0L354 190L354.0 38.0Q354 24 340.0 24.0L312.0 24.0Q298 24 298.0 38.0L298 190L298.0 54.0Q298 40 284.0 40.0L254.0 40.0Q240 40 240.0 54.0L240 190L240.0 114.0Q240 100 226.0 100.0L200.0 100.0Q186 100 186.0 114.0L186 240L200 372"/><path pathLength="1" d="M600 372L600.0 254.0Q600 240 586.0 240.0L538.0 240.0Q524 240 524.0 226.0L524.0 190.0Q524 176 538.0 176.0L586.0 176.0Q600 176 600.0 162.0L600.0 84.0Q600 70 614.0 70.0L640.0 70.0Q654 70 654.0 84.0L654 190L654.0 38.0Q654 24 668.0 24.0L696.0 24.0Q710 24 710.0 38.0L710 190L710.0 54.0Q710 40 724.0 40.0L754.0 40.0Q768 40 768.0 54.0L768 190L768.0 114.0Q768 100 782.0 100.0L808.0 100.0Q822 100 822.0 114.0L822 240L808 372"/></svg></div>
+  <a class="t18 credit" style="left:50%;top:calc(5589 * var(--u) + 100vh * 5 / 24);white-space:nowrap;" href="https://skip.design" target="_blank" rel="noopener">Made by <img class="sfav" src="skip-fav.png" alt="" aria-hidden="true"> <span class="u">Skip Design</span><svg class="arr" viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a>
   <p class="t18 credit" style="left:0;top:calc(5608 * var(--u) + 100vh * 5 / 24);width:100%;text-align:center;">With love for Dirty Hands ♥</p>
   <div class="ph bar" style="--i:0;left:calc(20.00 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 10 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(10 * var(--u));"></div>
   <div class="ph bar" style="--i:1;left:calc(250.17 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 10 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(10 * var(--u));"></div>
@@ -591,7 +593,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   const HS = 14;                   // strips a hovered card is cut into for its bulge
   $('.hc').forEach((c, i) => { c._hs = []; for (let j = 0; j < HS; j++) { const st = document.createElement('div'); st.className = 'hs'; st.style.setProperty('--j', j); const im = document.createElement('i'); im.style.backgroundImage = HERO(i); if (CUTOUT.has(i)) im.style.backgroundSize = 'contain'; const ph = document.createElement('b'); ph.style.backgroundImage = `url("${HOVER_SRC[i]}")`; { const f = frameFor(i, 210.2, CARD_H[i]), px = f.w > 210.2 ? f.x / (210.2 - f.w) * 100 : 50, py = f.h > CARD_H[i] ? f.y / (CARD_H[i] - f.h) * 100 : 50; Object.assign(ph.style, { backgroundSize: `auto ${(f.h / CARD_H[i] * 100).toFixed(2)}%`, backgroundPosition: `${px.toFixed(2)}% ${py.toFixed(2)}%` }); } st.append(ph); st.append(im); c.append(st); c._hs.push(st); } });
   $('.bar').forEach((b, i) => { const f = frameFor(i, 210.2, CARD_H[i]); Object.assign(b.style, { backgroundImage: `url("${HOVER_SRC[i]}")`, backgroundSize: `calc(${f.w.toFixed(1)} * var(--u)) calc(${f.h.toFixed(1)} * var(--u))`, backgroundPosition: `calc(${f.x.toFixed(1)} * var(--u)) calc(${f.y.toFixed(1)} * var(--u))` }); });   // each end strip is the top edge of its card's photo, framed the same: when the page starts over, the card simply grows down out of it
-  const CASE_KEY = ['brera', 'ava', 'greeks', 'novikov', 'rodina'], CASE_N = { greeks: 7, novikov: 5, brera: 7, ava: 6, rodina: 7 };   // the projects from dirtyhands.ru/projects
+  const CASE_KEY = ['brera', 'ava', 'greeks', 'novikov', 'rodina'], CASE_N = { greeks: 7, novikov: 5, brera: 7, ava: 5, rodina: 7 };   // the projects from dirtyhands.ru/projects
   const CASE_FOCUS = { brera: [.5, .42, .22, .42, .18, .35, .62], greeks: [.6, .5, .5, .5, .5, .5, .5] };   // where to hold the crop, from the top of each photo, so the work itself stays in the frame (Brera: the triptych high on the wall; The Greeks: the slabs low on the bar)
   const CASE_FY = (i, k = 0) => { const f = CASE_FOCUS[CASE_KEY[i]]; return f ? f[k % f.length] : .5; }, CASE_POS = (i, k = 0) => `50% ${(CASE_FY(i, k) * 100).toFixed(0)}%`;
   const CASE_SRC = (i, k = 0) => `photos/projects/${CASE_KEY[i]}-${k % CASE_N[CASE_KEY[i]] + 1}.jpg`;   // a case's k-th photo (0: its own)
@@ -676,7 +678,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const sc = { v: scrollY }; gsap.to(sc, { v: to, duration: d, ease: 'power3.inOut', overwrite: true, onUpdate() { scrollTo(0, sc.v); } }); };
   // Karen's and Lisa's cards are sheets of paper on a table, never quite flat: each curls up a little from its lower edge; while the page moves it curls a touch more, Karen's first and Lisa's a moment after, and when it stops it settles back softly.
   // A sheet is drawn as thin strips of itself set along the curve (a paper cannot bend as one flat plane): the strips hold copies of the card, made again whenever the card changes, and its clay mark is copied every frame.
-  { const N = 16, REST = .12;
+  { const N = 16, REST = .08;   /* a gentler curl */
     const sheets = $('.card2').map((card, k) => { const curl = document.createElement('div'); curl.className = 'curl'; card.append(curl); return { card, curl, k, a: REST, va: 0, dirty: true, pairs: [], strips: [], H: 0 }; });
     const mo = new MutationObserver(ms => ms.forEach(m => { if (m.target.closest && m.target.closest('.curl')) return; const s = sheets.find(s => s.card !== m.target && s.card.contains(m.target)); if (s) s.dirty = true; }));
     sheets.forEach(s => mo.observe(s.card, { subtree: true, attributes: true, childList: true, characterData: true }));
@@ -692,7 +694,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       if (h1el && typeof whisper === 'function') { const y = parseFloat((h1el.style.translate || '0 0').split(' ')[1]) || 0; if (h1y !== null && Math.abs(y - h1y) > 1.5) whisper(Math.abs(y - h1y) / 25); h1y = y; }   // the title's letters going: a breath of air
       sheets.forEach(s => { const r = s.card.getBoundingClientRect(); if (r.bottom < -50 || r.top > innerHeight + 50) return;   // only the sheets on the screen
         if ((s.dirty && fr % 3 === 0) || s.H !== s.card.offsetHeight || !s.strips.length) build(s);
-        const vk = s.k ? (hist[0] ?? vs) : vs, target = REST + Math.min(.42, Math.abs(vk) * .012 * (s.k ? 1.15 : 1)); s.va += (target - s.a) * (s.k ? .035 : .045); s.va *= .9; s.a += s.va;   // Karen's sheet first, Lisa's a moment later (about a fifth of a second); the air bows it, a spring lets it down again
+        const vk = s.k ? (hist[0] ?? vs) : vs, target = REST + Math.min(.28, Math.abs(vk) * .008 * (s.k ? 1.15 : 1)); s.va += (target - s.a) * (s.k ? .035 : .045); s.va *= .9; s.a += s.va;   // Karen's sheet first, Lisa's a moment later (about a fifth of a second); the air bows it, a spring lets it down again
         const H = s.H, sh = H / N, c = Math.max(1e-4, s.a) / H;
         s.strips.forEach((st, j) => { const d = H - (j + 1) * sh, dy = d - Math.sin(c * d) / c, dz = (1 - Math.cos(c * d)) / c; st.style.transform = `translate3d(0,${dy.toFixed(2)}px,${dz.toFixed(2)}px) rotateX(${(-c * d).toFixed(4)}rad)`; });   // each strip where the curl takes it, turned to follow it
         s.pairs.forEach(([o, cc]) => { if (cc.width !== o.width || cc.height !== o.height) { cc.width = o.width; cc.height = o.height; } const g = cc.getContext('2d'); g.clearRect(0, 0, cc.width, cc.height); g.drawImage(o, 0, 0); }); });
@@ -711,10 +713,10 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const put = () => {
       if (my !== quoteToken) return;
       quoteP.dataset.text = QUOTES[i]; quoteP.textContent = QUOTES[i]; const inner = typeof splitMask === 'function' ? splitMask(quoteP) : [];
-      if (G && inner.length && !now) gsap.fromTo(inner, { yPercent: 150 }, { yPercent: 0, duration: .6, ease: EASE, stagger: .09 });
+      if (G && inner.length && !now) gsap.fromTo(inner, { yPercent: 70, opacity: 0 }, { yPercent: 0, opacity: 1, duration: .6, ease: EASE, stagger: .09 });
     };
     const old = [...quoteP.querySelectorAll('.mi')];
-    if (G && old.length && !now) gsap.to(old, { yPercent: -112, duration: .22, ease: 'power2.in', stagger: .04, onComplete: put }); else put();
+    if (G && old.length && !now) gsap.to(old, { yPercent: -60, opacity: 0, duration: .22, ease: 'power2.in', stagger: .04, onComplete: put }); else put();
   }
 
 
@@ -794,7 +796,8 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     return [...el.querySelectorAll('.lt')];
   }
   const fanIn = (tl, lines, o = {}) => tl.fromTo(lines, { scaleX: 0, rotation: 0, transformOrigin: o.origin || '0 50%' }, { scaleX: 1, rotation: 0, duration: o.dur ?? .95, ease: EASE, stagger: { each: o.each ?? .02 } }, o.at ?? 0);
-  const riseIn = (tl, inner, o = {}) => tl.fromTo(inner, { yPercent: 150 }, { yPercent: 0, duration: o.dur ?? 1, ease: EASE, stagger: { each: o.each ?? .08 } }, o.at ?? 0);   // 150%: clear of the mask's room below the line, so no tops of letters peep out while hidden
+  const open_ = t => t.parentNode && getComputedStyle(t.parentNode).overflow === 'visible';   // an unmasked line: it fades up from a little below
+  const riseIn = (tl, inner, o = {}) => tl.fromTo(inner, { yPercent: (i, t) => open_(t) ? 70 : 150, opacity: (i, t) => open_(t) ? 0 : 1 }, { yPercent: 0, opacity: 1, duration: o.dur ?? 1, ease: EASE, stagger: { each: o.each ?? .08 } }, o.at ?? 0);   // 150%: clear of the mask's room below the line, so no tops of letters peep out while hidden
   const fadeIn = (tl, els, to, at, o = {}) => tl.fromTo(els, { autoAlpha: 0 }, { autoAlpha: to, duration: o.dur ?? .7, ease: 'power2.out', stagger: o.each ?? 0 }, at);
 
   function mk(trigger, fn, start = 'top 88%') {    // one timeline that plays when its trigger comes up, and reverses when you scroll back above it
@@ -984,12 +987,12 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     tl.fromTo('#storyView .ov-scrim', { opacity: 0 }, { opacity: 1, duration: .45, ease: 'power2.out' }, 0.05);
     tl.fromTo(title, { x: r0.left - r1.left, y: r0.top - r1.top }, { x: 0, y: 0, duration: .95, ease: EASE }, 0.15);                 // the Story word stays: it only moves to its new place
     // an invisible cylinder with the text written on it, and a smaller one inside it with the photographs: both are cut into thin vertical strips, every strip stands on its own angle
-    const host = one('#storyView .sv-items'), SP = 320 * U, TW = 260 * U, RAD = 930 * U, RP = RAD * 0.7, FP = RP / RAD, PGR = 1.12, N = data.length, CW = 210 * U, SW = 12 * U, KS = Math.ceil(CW / SW);
+    const host = one('#storyView .sv-items'), SP = 320 * U, TW = 260 * U, RAD = 930 * U, RT = 1500 * U, RP = RAD * 0.7, FP = RP / RAD, PGR = 1.12, N = data.length, CW = 210 * U, SW = 12 * U, KS = Math.ceil(CW / SW);
     const PW_ = [1, .8, 1.15, .9, 1.05, .85], PH_ = [260, 190, 320, 230, 290, 200], PG_ = [24, 80, 24, 120, 44, 96], strips = [];
     data.forEach((d, i) => {
       { const el = document.createElement('div'); el.className = 'sv-strip';   // the text layer: one card, whole, set on the drum (cut into strips the letters broke at every seam)
         el.innerHTML = `<div class="sv-in" style="left:0"><i class="sv-dot"></i><span class="sv-year">${d.date}</span><span class="sv-out">${d.out}</span><p class="t18 sv-lead">${d.lead}</p></div>`;
-        el.style.width = TW + 'px'; host.append(el); strips.push({ el, i, a: 0, R: RAD, w: TW }); }   /* the text a little wider than the photos, so a fuller thesis still fits on the screen */
+        el.style.width = TW + 'px'; host.append(el); strips.push({ el, i, a: 0, R: RT, C: RT, w: TW }); }   /* the texts on a wider drum: flat plates turning gently, never the corners of a box */   /* the text a little wider than the photos, so a fuller thesis still fits on the screen */
       for (let k = 0; k < KS; k++) {                                                                    // the photo layer: smaller, so the photographs sit further in
         const el = document.createElement('div'); el.className = 'sv-strip sv-ph';
         const wf = PW_[i % 6], hh = PH_[i % 6] * U * FP * PGR, gap = PG_[i % 6] * U + 36 * U, pw = CW * FP * wf * PGR, sw = SW * FP * wf * PGR;   // the photos a little bigger and higher       // every photo has its own size and its own height on the cylinder
@@ -1002,9 +1005,9 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     let pos = -1.3, posIn = -1.3, target = 0, run = true, snapT = 0, drag = null;
     const place = () => { const cx = SV.clientWidth / 2;
       strips.forEach(s => {
-        const phi = (s.i * SP + s.a - (s.ph ? posIn : pos) * SP) / RAD, c = Math.cos(phi), d = Math.abs(s.i - pos);
+        const C = s.C || RAD, phi = (s.i * SP + s.a - (s.ph ? posIn : pos) * SP) / C, c = Math.cos(phi * C / RAD), d = Math.abs(s.i - pos);
         s.el.style.left = cx - s.w / 2 - (s.ph ? 2 : 0) + 'px';
-        s.el.style.transform = `translate3d(0,0,${(-RAD).toFixed(1)}px) rotateY(${phi.toFixed(4)}rad) translate3d(0,0,${s.R.toFixed(1)}px)`;
+        s.el.style.transform = `translate3d(0,0,${(-C).toFixed(1)}px) rotateY(${phi.toFixed(4)}rad) translate3d(0,0,${s.R.toFixed(1)}px)`;
         const f = c <= 0.02 || Math.abs(phi) > 1.55 ? 0 : Math.pow(c, 1.1) * (1 - 0.15 * Math.min(1, d * 2));   // only the near side of the drum: twenty items go round it more than once
         if (s.ph) { s.el.style.opacity = f > 0 ? 1 : 0; s.el.style.filter = f > 0 ? `brightness(${(1 + (1 - f) * .45).toFixed(3)})` : ''; } else s.el.style.opacity = f.toFixed(3);   // a photo turning away goes paler, as one piece (see-through strips would show their seams)
       }); };
@@ -1119,7 +1122,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const order = srcs.map((_, j) => j === 0 ? 0 : (j % 2 ? 1 : -1) * Math.ceil(j / 2));   // the clicked one in the middle, the others to its right and left in turn
     const photos = [];                                                    // each picture is a group of its strips: the group fades as one, the strips in it stay solid and overlap by a pixel on each side
     const WF = [1, .78, 1.12, .86, 1.04, .8, 1.1, .9, .82, 1.06], HF = [1, .74, .9, 1.06, .8, .96, .7, 1.02, .86, .92], YO = [0, 70, -40, 34, 96, -24, 58, 10, 84, -50];   // uneven sizes and steps, as in the Story
-    srcs.forEach((src, j) => { const pw = PWc * WF[j % 10], ph = PHc * HF[j % 10], sj = pw / KS, tj = top + (PHc - ph) / 2 + YO[j % 10] * U;
+    srcs.forEach((src, j) => { const pw = PWc * WF[j % 10], ph = j === 0 ? PWc * CARD_H[ci] / 210.2 : PHc * HF[j % 10],   /* the clicked one keeps its card's shape, so its crop never changes on the way */ sj = pw / KS, tj = top + (PHc - ph) / 2 + YO[j % 10] * U;
       const g = document.createElement('div'); g.className = 'cat-ph'; g.style.zIndex = order[j] === 0 ? 2 : 1; host.append(g); const p = { g, d: order[j], strips: [], ph, tj }; photos.push(p);   // the clicked one lies on top: the others come out from under it
       for (let k = 0; k < KS; k++) {
         const el = document.createElement('div'); el.className = 'cat-strip';
@@ -1167,11 +1170,11 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const r = card.getBoundingClientRect(), ox = r.left + r.width / 2 - cx, oy = r.top + r.height / 2 - (top + PHc / 2), sc = r.width / PWc;
     const inT = splitMask(textEl), letters = [...titleEl.children], ico = CATV.querySelector('.cat-ico');
     ico.innerHTML = `<svg viewBox="0 0 52 52"><path pathLength="1" stroke-dasharray="1.04 1" stroke-dashoffset="1" d="${CAT_ICO[ci]}"/></svg>`; ico.firstChild.firstChild.style.strokeWidth = (52 / (innerHeight * .7)).toFixed(4);   // one screen pixel wide
-    const tl = gsap.timeline({ onReverseComplete() { stop(); card.style.visibility = ''; CATV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); tick(); } });
+    const tl = gsap.timeline({ onReverseComplete() { stop(); card.style.visibility = ''; if (scrollY < 4 && card.matches(':hover')) card.classList.add('hov');   /* still pointed at: the card shows the same photo the gallery folded back */ CATV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); tick(); } });
     tl.to(pageEls(), { opacity: 0, duration: .45, ease: 'power2.in' }, 0);
     tl.fromTo('#catView .ov-scrim', { opacity: 0 }, { opacity: 1, duration: .45, ease: 'power2.out' }, 0);
     tl.fromTo(host, { x: ox, y: oy, scale: sc }, { x: 0, y: 0, scale: 1, duration: .75, ease: 'back.out(1.3)' }, 0);   // the picture comes straight at us from where it was clicked
-    tl.fromTo(st, { bend: .35 }, { bend: 1, duration: .75, ease: 'power2.out' }, 0);                                    // already bulging on its way
+    tl.fromTo(st, { bend: .08 }, { bend: 1, duration: .75, ease: 'power2.out' }, 0);   /* flat at the card: it lands back flat, as the card is */                                    // already bulging on its way
     tl.to(st, { spread: 1, duration: 1.7, ease: 'power1.inOut' }, .5);                                           // the others come out round it
     tl.fromTo(letters, { yPercent: -115 }, { yPercent: 0, duration: .6, ease: EASE, stagger: .04 }, .45);
     riseIn(tl, inT, { at: 1, each: .07, dur: .8 });                                                             // the text in front
@@ -1504,7 +1507,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     one('.gray').style.setProperty('--py', ((gp - .5) * ((1080 + V) * .2 + 512) * U).toFixed(1) + 'px');   // the photo goes up 20% slower than it did, so the cards have time to come over it
     if (grayGL) grayGL.draw(gp);   // the light moves across them with the scroll
     lisa.style.top = (380 - (gp - 0.5) * 160) * U + 'px';                // (the #lisa card carries Karen's name: it is the first one)
-    karen.style.top = (600 - (gp - 0.5) * 288) * U + 'px';                // Lisa a little higher, and a little quicker than Karen
+    karen.style.top = (600 - (gp - 0.5) * 360) * U + 'px';                // Lisa a little higher, and quicker than Karen: the two never move as one
     [[lisa, cardMarks[0]], [karen, cardMarks[1]]].forEach(([el, m]) => {
       const top = s3Top + parseFloat(el.style.top) / U - y;              // on the screen, design px
       drawMark(m, (V * 0.95 - top) / (V * 0.45));                        // the clay mark draws in while the card comes up

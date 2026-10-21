@@ -106,10 +106,9 @@
   .allbtn { margin-top: var(--s2); text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
 
   .hands { display: block; width: 136px; height: 74px; margin: var(--s5) auto 0; overflow: visible; }   /* the two hands over the credit, a thin outline drawn in once seen */
-  .hands path { fill: none; stroke: #000; stroke-width: 4.6; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 2.4s cubic-bezier(.4, 0, .2, 1); } .hands.on path { stroke-dashoffset: 0; } .hands.on path + path { transition-delay: .5s; }
+  .hands path { fill: none; stroke: #000; stroke-width: 4.6; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 2.4s cubic-bezier(.4, 0, .2, 1); } .hands.on path { stroke-dashoffset: 0; } .hands.on path + path { transition-delay: .5s; }
   .credit { margin: var(--s4) 0 calc(var(--s5) + env(safe-area-inset-bottom)); text-align: center; }
   .credit .sfav { display: inline-block; height: .83em; width: auto; vertical-align: -.07em; }
-  .credit a span { text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
 
   /* the simple way things come in on the phone: up a little and into view, once */
   .in { opacity: 0; transform: translateY(16px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
@@ -137,6 +136,8 @@
   .ov .txt { padding: var(--s3) var(--m) var(--s5); }
   .ov .txt p + p { margin-top: var(--lh); }
   .ov .big { width: 100%; aspect-ratio: 5 / 4; background: var(--gray) center / cover no-repeat; margin-top: var(--s3); }
+  .credit a, a.credit { text-decoration: none; } .credit .u { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; padding-bottom: .12em; transition: background-size .4s var(--ease, cubic-bezier(.2,.8,.2,1)); } .credit a:hover .u, a.credit:hover .u { background-size: 100% 1px; } .credit .arr { margin-left: .25em; vertical-align: .02em; } .credit a:hover .arr, a.credit:hover .arr { animation: arrowSwap .55s cubic-bezier(.4, 0, .2, 1); }   /* Skip Design: an arrow as on the other links; on hover a line draws in under the name and the arrow flies off and comes back */
+  @keyframes arrowSwap { 0% { transform: none; opacity: 1; } 42% { transform: translate(120%, -120%); opacity: 0; } 43% { transform: translate(-120%, 120%); opacity: 0; } 100% { transform: none; opacity: 1; } }
 </style>
 </head>
 <body>
@@ -186,8 +187,8 @@
   <button type="button" class="allbtn" id="allmedia">All publications</button>
 </section>
 
-<svg class="hands" viewBox="164 14 680 368" aria-hidden="true"><path pathLength="1" d="M408 372L408 240L484 240L484 176L408 176L408 70L354 70L354 190L354 24L298 24L298 190L298 40L240 40L240 190L240 100L186 100L186 240L200 372"/><path pathLength="1" d="M600 372L600 240L524 240L524 176L600 176L600 70L654 70L654 190L654 24L710 24L710 190L710 40L768 40L768 190L768 100L822 100L822 240L808 372"/></svg>
-<p class="credit"><a href="https://skip.design" target="_blank" rel="noopener">Made by <img class="sfav" src="skip-fav.png" alt="" aria-hidden="true"> <span>Skip Design</span></a><br>With love for Dirty Hands ♥</p>
+<svg class="hands" viewBox="164 14 680 368" aria-hidden="true"><path pathLength="1" d="M408 372L408.0 254.0Q408 240 422.0 240.0L470.0 240.0Q484 240 484.0 226.0L484.0 190.0Q484 176 470.0 176.0L422.0 176.0Q408 176 408.0 162.0L408.0 84.0Q408 70 394.0 70.0L368.0 70.0Q354 70 354.0 84.0L354 190L354.0 38.0Q354 24 340.0 24.0L312.0 24.0Q298 24 298.0 38.0L298 190L298.0 54.0Q298 40 284.0 40.0L254.0 40.0Q240 40 240.0 54.0L240 190L240.0 114.0Q240 100 226.0 100.0L200.0 100.0Q186 100 186.0 114.0L186 240L200 372"/><path pathLength="1" d="M600 372L600.0 254.0Q600 240 586.0 240.0L538.0 240.0Q524 240 524.0 226.0L524.0 190.0Q524 176 538.0 176.0L586.0 176.0Q600 176 600.0 162.0L600.0 84.0Q600 70 614.0 70.0L640.0 70.0Q654 70 654.0 84.0L654 190L654.0 38.0Q654 24 668.0 24.0L696.0 24.0Q710 24 710.0 38.0L710 190L710.0 54.0Q710 40 724.0 40.0L754.0 40.0Q768 40 768.0 54.0L768 190L768.0 114.0Q768 100 782.0 100.0L808.0 100.0Q822 100 822.0 114.0L822 240L808 372"/></svg>
+<p class="credit"><a href="https://skip.design" target="_blank" rel="noopener">Made by <img class="sfav" src="skip-fav.png" alt="" aria-hidden="true"> <span class="u">Skip Design</span><svg class="arr" viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a><br>With love for Dirty Hands ♥</p>
 
 <div class="ov" id="view" aria-hidden="true"></div>
 <button type="button" class="x" id="close" aria-label="Close" hidden><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1 1 13" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></button>
@@ -202,7 +203,7 @@
   const PHOTO = ['photos/card-panel.jpg', 'photos/card-mirror.jpg', 'photos/card-table.jpg', 'photos/card-sculpture.jpg', 'photos/card-urban.jpg', 'photos/card-vase.jpg'];   // every work cut out on light grey, as on the full page
   const CUT = ['photos/tattoo-relief-up.webp', 'photos/mirror-beetles.webp', 'photos/table-cubeball.webp', 'photos/bust.webp', 'photos/urban-angel.webp', 'photos/vase-brutskin.webp'];
   const TEXT = ['Panels — ceramic paintings for the wall, carved and glazed by hand, from a single tile to a whole room.', 'Mirrors framed in ceramic relief: beetles, leaves and small stories that catch the light of the room.', 'Tables of glazed clay — a cube, a sphere, a quiet corner where a cup or a book can rest.', 'Sculptures and busts with a rough, living surface that keeps the marks of the hand.', 'Urbans — tall vessels like small city towers, standing alone or in a group.', 'Vases and bowls in BrutSkin glaze: raw, metallic and heavy to the touch.'];
-  const CASE_KEY = ['brera', 'ava', 'greeks', 'novikov'], CASE_N = { brera: 7, ava: 6, greeks: 7, novikov: 5 }, CASE_FOCUS = { brera: [.5, .42, .22, .42, .18, .35, .62], greeks: [.6, .5, .5, .5, .5, .5, .5] };
+  const CASE_KEY = ['brera', 'ava', 'greeks', 'novikov'], CASE_N = { brera: 7, ava: 5, greeks: 7, novikov: 5 }, CASE_FOCUS = { brera: [.5, .42, .22, .42, .18, .35, .62], greeks: [.6, .5, .5, .5, .5, .5, .5] };
   const SRC = (c, k = 0) => `photos/projects/${CASE_KEY[c]}-${k % CASE_N[CASE_KEY[c]] + 1}.jpg`, POS = (c, k = 0) => { const f = CASE_FOCUS[CASE_KEY[c]]; return `50% ${((f ? f[k % f.length] : .5) * 100).toFixed(0)}%`; };
   const CASES = [['Brera', 'Restaurant', 'A ceramic triptych at the very centre of an Italian restaurant.'], ['AVA', 'Restaurant', 'Two large panels, below and above, over a kitchen open to the guests.'], ['The Greeks', 'Restaurant', 'Smooth, rounded slabs like Mediterranean stones on three sides of the bar.'], ['Novikov', 'Restaurant', 'Half-round ceramic panels on the columns, and planters for several pots.']];
   const CASE_TEXT = [   // from dirtyhands.ru/projects, as on the full page
