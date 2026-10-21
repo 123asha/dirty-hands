@@ -70,6 +70,13 @@
 
   /* the categories as a ruled list */
   .list { margin-top: var(--s5); }
+  /* block 2, as on the full page: the cards of the top slider fly together into a pile in the middle of the screen and turn over into the works cut out; under them the table, its ruled lines and numbered paragraphs; the work of the paragraph in front stands on top of the pile */
+  .tbl { position: relative; margin-top: 30vh; padding: 0 var(--m) 40vh; background: repeating-linear-gradient(to bottom, var(--rule) 0 1px, transparent 1px var(--lh)); }
+  .tr { display: grid; grid-template-columns: 28px 1fr; gap: var(--s1); min-height: 62vh; padding-right: 44vw; }   /* the right of the screen is the pile's: the text keeps to the left of it */
+  .tr .n { opacity: .4; } .tr p { line-height: var(--lh); }
+  .pile { position: fixed; inset: 0; pointer-events: none; z-index: 6; }
+  .pile .pc { position: absolute; left: 0; top: 0; background: #ecebe9 50% 48% / 170% auto no-repeat; will-change: transform; backface-visibility: visible; }
+  .pile .pc.back { background: transparent center / contain no-repeat; }
   .row { display: grid; grid-template-columns: 24px 72px 1fr; gap: var(--g); align-items: start; padding: var(--s2) 0; border-top: 1px solid var(--rule); width: 100%; text-align: left; }
   .row:last-child { border-bottom: 1px solid var(--rule); }
   .row .n { opacity: .4; }
@@ -90,7 +97,8 @@
   .about p + p { margin-top: var(--lh); }
   .about .shift { padding-left: calc(100vw / 3); }   /* the second paragraph a third of the screen in */
   .pots { position: relative; width: var(--col); aspect-ratio: 1; margin: var(--s4) 0; }
-  .pots i { position: absolute; inset: 0; background: url("photos/white-pots.jpg") center / cover no-repeat; opacity: 0; }
+  .pots { perspective: 700px; }
+  .pots .pp { position: absolute; top: 0; bottom: 0; left: calc(var(--k) * 25%); width: 25.4%; background: url("photos/white-pots.jpg") calc(var(--k) * 33.333%) center / 400% 100% no-repeat; transform-origin: 0 50%; backface-visibility: hidden; }   /* the photo in four panels that turn to face us one after another, like planes in a collage */
   .pots svg { position: absolute; inset: 0; width: 100%; height: 100%; }
   .pots path { fill: none; stroke: #000; stroke-width: 1.4; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
   .lnk { display: inline-flex; gap: .25em; align-items: flex-start; }
@@ -190,7 +198,8 @@
   <h1 class="h ttl" aria-label="Dirty Hands"><span class="ln">Dirty</span><span class="ln">Hands</span></h1>
 </header>
 
-<section class="wrap list" id="list"></section>
+<section class="tbl" id="tbl"></section>
+<div class="pile" id="pile" aria-hidden="true"></div>
 
 <section class="duo" id="duo">
   <div class="photo" role="img" aria-label="Karen and Lisa"></div>
@@ -203,7 +212,7 @@
 <section class="wrap sec about" id="about">
   <p class="lab in">Clay with something to say</p>
   <p class="in" style="margin-top:var(--s2)">At DirtyHands, we create original design pieces — from tabletop art objects and wall panels to sculptural forms and interior accents that enhance spaces and set their emotional tone.</p>
-  <div class="pots" id="pots"><i></i><svg viewBox="0 0 1080 1080" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M212 975L210 835L198 832L196 540C120 540 50 500 40 385L108 375C112 430 140 465 192 470L186 395L222 395L225 352L248 345L246 175C260 150 345 150 358 180L360 345L382 352L385 395L410 395L440 400L500 440L535 500L545 580L530 660L538 720L505 770L440 790L405 800L400 832L385 835L383 975C340 990 250 990 212 975Z M718 975L715 785L640 795L595 760L580 690L556 620L570 520L610 465L690 440L688 425L735 425L735 395C735 370 750 345 752 330L752 255L770 250L785 262L800 248L830 258L850 250L852 345L865 350L868 425L925 425L928 520C950 525 960 510 962 480L962 430L1052 428L1050 470C1045 540 990 560 930 560L925 780L885 785L882 975C840 990 760 990 718 975Z"/></svg></div>
+  <div class="pots" id="pots"><i class="pp" style="--k:0"></i><i class="pp" style="--k:1"></i><i class="pp" style="--k:2"></i><i class="pp" style="--k:3"></i><svg viewBox="0 0 1080 1080" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M212 975L210 835L198 832L196 540C120 540 50 500 40 385L108 375C112 430 140 465 192 470L186 395L222 395L225 352L248 345L246 175C260 150 345 150 358 180L360 345L382 352L385 395L410 395L440 400L500 440L535 500L545 580L530 660L538 720L505 770L440 790L405 800L400 832L385 835L383 975C340 990 250 990 212 975Z M718 975L715 785L640 795L595 760L580 690L556 620L570 520L610 465L690 440L688 425L735 425L735 395C735 370 750 345 752 330L752 255L770 250L785 262L800 248L830 258L850 250L852 345L865 350L868 425L925 425L928 520C950 525 960 510 962 480L962 430L1052 428L1050 470C1045 540 990 560 930 560L925 780L885 785L882 975C840 990 760 990 718 975Z"/></svg></div>
   <p class="in shift">The studio was founded by designers and entrepreneurs Lisa and Karen, who combine professional expertise with artistic intuition to bring unconventional ideas to life. Their approach reimagines ceramics, moving beyond functional plates and pots towards an artistic language that expresses the style, mood, and character of a space.</p>
   <p class="in shift" style="margin-top:var(--s3)"><a class="lnk ord" href="#order">Shop now<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a></p>
 </section>
@@ -308,7 +317,23 @@ window.preDone = new Promise(done => {
     gsap.to('.tag', { opacity: 1, duration: .8, delay: .9 });
   });
   // the ruled list
-  one('#list').innerHTML = CATS.map((n, k) => `<button type="button" class="row in" data-k="${k}"><span class="n">0${k + 1}</span><i style="background-image:url('${CUT[k]}')"></i><p>${TEXT[k]}</p></button>`).join('');
+  one('#tbl').innerHTML = CATS.map((n, k) => `<div class="tr" data-k="${k}"><span class="n">0${k + 1}</span><p>${TEXT[k]}</p></div>`).join('');
+  const pile = one('#pile'), pcs = CATS.map((_, k) => { const d = document.createElement('i'); d.className = 'pc'; pile.append(d); return d; }), cats = $('#cats .cat i'), trs = $('.tr'), tbl = one('#tbl');
+  const SKEW = [[-3, -2, -4], [4, 3, 3], [-2, 5, -2], [5, -4, 5], [-5, 2, -3], [2, -5, 4]];   // each work a little askew under the one on top
+  function pileTick() { const V = innerHeight, W = innerWidth, hero = one('.hero'), p = clamp(scrollY / Math.max(1, hero.offsetHeight * .75)), e = p * p * (3 - 2 * p);
+    if (p <= 0) { pile.style.visibility = 'hidden'; cats.forEach(c => c.style.visibility = ''); return; }
+    pile.style.visibility = ''; cats.forEach(c => c.style.visibility = 'hidden');
+    const tr = tbl.getBoundingClientRect(), endShift = Math.min(0, tr.bottom - V * .6);   // at the end of the table the pile goes up with it
+    let top = 0, bd = 1e9; trs.forEach((r, k) => { const b = r.getBoundingClientRect(), d = Math.abs(b.top + 40 - V * .38); if (d < bd) { bd = d; top = k; } });
+    const S = W * .36, PX = W - W * .06 - S, PY = V * .3, flip = clamp((p - .55) / .3);
+    pcs.forEach((el, k) => { const c = cats[k].getBoundingClientRect(), dk = Math.min(5, Math.abs(k - top)), sk = SKEW[k];
+      const x = c.left + (PX + sk[0] * dk - c.left) * e, y = c.top + (PY + sk[1] * dk + endShift - c.top) * e, w = c.width + (S - c.width) * e, h = c.height + (S - c.height) * e;
+      const f = flip * 180, back = f > 90; if (el.classList.contains('back') !== back) { el.classList.toggle('back', back); el.style.backgroundImage = `url('${back ? CUT[k] : PHOTO[k]}')`; }   // edge-on half way, and on its back the work without its background
+      el.style.width = w + 'px'; el.style.height = h + 'px'; el.style.zIndex = 10 - dk;
+      el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) perspective(800px) rotateY(${(back ? f - 180 : f).toFixed(1)}deg) rotate(${(sk[2] * dk * e * .6).toFixed(1)}deg)`;
+      el.style.opacity = flip < 1 ? 1 : (k === top ? 1 : Math.max(0, 1 - dk * .35)); }); }
+  pcs.forEach((el, k) => el.style.backgroundImage = `url('${PHOTO[k]}')`);
+  addEventListener('scroll', () => requestAnimationFrame(pileTick), { passive: true }); addEventListener('resize', pileTick); one('#cats').addEventListener('scroll', pileTick, { passive: true }); pileTick();
   // the cases, under the clients' names
   one('#caselist').innerHTML = CASES.map(([n, t, cap], k) => `<article class="case" data-c="${k}"><h3 class="h">${n}</h3><p class="type lab">${t}</p><button type="button" class="pic" data-c="${k}" style="background-image:url('${SRC(k)}');background-position:${POS(k)}" aria-label="${n}"></button><p class="cap"><span>${cap}</span></p></article>`).join('');
   // the media: four, the rest behind a button
@@ -335,7 +360,7 @@ window.preDone = new Promise(done => {
   let act = -1;
   function onScroll() { const V = innerHeight;
     { const r = duo.getBoundingClientRect(), p = clamp(-r.top / Math.max(1, r.height - V)); lisa.style.transform = `translateY(${(-p * 14).toFixed(2)}vh)`; }
-    { const r = pots.getBoundingClientRect(), p = clamp((V * .85 - r.top) / (V * .5)); pots.firstElementChild.style.opacity = p.toFixed(3); pots.lastElementChild.style.opacity = (1 - p).toFixed(3); }   // a line drawing first, the photo as it comes up
+    { const r = pots.getBoundingClientRect(), p = clamp((V * .85 - r.top) / (V * .5)); pots.querySelectorAll('.pp').forEach((el, k) => { const e = clamp(p * 1.6 - k * .2); el.style.transform = `rotateY(${(-(1 - e) * 92).toFixed(1)}deg)`; el.style.opacity = e > 0 ? 1 : 0; }); pots.lastElementChild.style.opacity = clamp(1 - p * 1.4).toFixed(3); }   // a line drawing first, the photo as it comes up
     { let best = 0, bd = 1e9; cases.forEach((c, k) => { const r = c.firstElementChild.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - V * .42); if (d < bd) { bd = d; best = k; } });
       if (best !== act) { act = best; cases.forEach((c, k) => c.classList.toggle('act', k === best)); gsap.to(q, { opacity: 0, duration: .2, onComplete() { q.textContent = QUOTES[best % QUOTES.length]; gsap.to(q, { opacity: 1, duration: .35 }); } }); } }
     { const r = formsEl.getBoundingClientRect(), p = clamp((V - r.top) / (V * .9)), e = 1 - Math.pow(1 - p, 3), DX = [-28, 30, 22]; words.forEach((w, k) => { w.style.transform = `translateX(${(DX[k] * (1 - e)).toFixed(2)}vw)`; }); }
@@ -399,7 +424,7 @@ window.preDone = new Promise(done => {
   }
   $('.ord').forEach(a => a.addEventListener('click', e => { e.preventDefault(); openOrder(); }));
   if (location.hash === '#order') openOrder();
-  document.addEventListener('click', e => { if (open) return; const c = e.target.closest('.cat, .row'), p = e.target.closest('.pic'); if (c) openCat(+c.dataset.k, c.querySelector('i')); else if (p) openCase(+p.dataset.c); });
+  document.addEventListener('click', e => { if (open) return; const c = e.target.closest('.cat, .tr'), p = e.target.closest('.pic'); if (c) openCat(+c.dataset.k, c.querySelector('i')); else if (p) openCase(+p.dataset.c); });
   view.addEventListener('scroll', () => { if (window.soundNudge) soundNudge(.2); }, { passive: true });
 
   makeClay();   // the clay, as on the full page: a finger leaves marks and smears them, also while the page scrolls (on the phone they dry sooner)
