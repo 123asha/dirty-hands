@@ -66,7 +66,7 @@
   .ttl .ln { display: block; overflow: hidden; padding: .03em 0 0; }   /* the two lines closer: half the gap they had */
   .ttl .kR { margin-right: -.045em; }   /* the R a little closer to the T */
   .ttl .ch { display: inline-block; }
-  .tag { margin-top: var(--s2); text-align: center; opacity: 0; }
+  .tag { margin: var(--s4) var(--m) 0; padding-top: var(--s1); border-top: 1px solid var(--rule); text-align: center; opacity: 0; }   /* as on the full page: on the ruled line between the slider and the title, in the middle */
 
   /* the categories as a ruled list */
   .list { margin-top: var(--s5); }
@@ -186,8 +186,8 @@
 
 <header class="hero">
   <div class="strip" id="cats"></div>
-  <h1 class="h ttl" aria-label="Dirty Hands"><span class="ln">Dirty</span><span class="ln">Hands</span></h1>
   <p class="tag">Interior ceramics studio</p>
+  <h1 class="h ttl" aria-label="Dirty Hands"><span class="ln">Dirty</span><span class="ln">Hands</span></h1>
 </header>
 
 <section class="wrap list" id="list"></section>
