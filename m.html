@@ -60,7 +60,6 @@
   .cat i { display: block; aspect-ratio: 4 / 5; background: #ecebe9 50% 48% / 170% auto no-repeat; }
   .cat:nth-child(2) i, .cat:nth-child(4) i { aspect-ratio: 1; }   /* as the cards on the full page: level at the top, stepped at the bottom (tall, short, tall, short, tall, tall) */
   .strip#cats { align-items: flex-start; }
-  .cat span { display: block; margin-top: var(--s1); }
   .bend { will-change: transform; transform-origin: 50% 50%; }
   .ttl { font-size: 37vw; margin-top: var(--s4); text-align: center; }
   .ttl { line-height: .8; }
@@ -72,9 +71,8 @@
   /* the categories as a ruled list */
   .list { margin-top: var(--s5); }
   /* block 2, as on the full page: the cards of the top slider fly together into a pile in the middle of the screen and turn over into the works cut out; under them the table, its ruled lines and numbered paragraphs; the work of the paragraph in front stands on top of the pile */
-  .tbl { position: relative; margin-top: 30vh; padding: 0 var(--m) 60vh; background: repeating-linear-gradient(to bottom, var(--rule) 0 1px, transparent 1px var(--lh)); }
+  .tbl { position: relative; margin-top: 30vh; padding: 0 var(--m) 20vh; background: repeating-linear-gradient(to bottom, var(--rule) 0 1px, transparent 1px var(--lh)); }
   .tr { display: grid; grid-template-columns: 28px 1fr; gap: var(--s1); margin-bottom: calc(2 * var(--lh)); padding-right: 0; transition: padding-right .45s var(--ease); }   /* full width; where the pile stands beside it, it is pushed aside */
-  .tr.push { padding-right: 44vw; }   /* the right of the screen is the pile's: the text keeps to the left of it */
   .tr .n { opacity: .4; } .tr p { line-height: var(--lh); }
   .pile { position: fixed; inset: 0; pointer-events: none; z-index: 6; }
   .pile .pc { position: absolute; left: 0; top: 0; background: #ecebe9 50% 48% / 170% auto no-repeat; will-change: transform; backface-visibility: visible; }
@@ -86,7 +84,8 @@
 
   /* Karen and Lisa: the photo whole (no face cut) held in the middle of the screen, their two cards passing over it, Karen first, Lisa after her and a little quicker */
   .duo { position: relative; margin-top: var(--s5); }
-  .duo .photo { position: sticky; top: calc(50vh - 25.3vw); height: 50.6vw; background: url("photos/lisa-karen.jpg") center / 100% auto no-repeat; z-index: 0; }
+  .duo .photo { position: sticky; top: calc(50vh - 50vw); height: 100vw; overflow: hidden; z-index: 0; }
+  .duo .photo::before { content: ''; position: absolute; left: 50%; top: 50%; width: 100vw; height: 198vw; translate: -50% -50%; rotate: 90deg; background: url("photos/lisa-karen.jpg") center / 198vw auto no-repeat; }   /* the photo turned a quarter: it stands tall, and the cards pass over it */
   .cards { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: var(--g); padding: 0 var(--m) 30vh; margin-top: 35vh; align-items: start; }
   .card { background: #fff; padding: var(--s1) var(--s1) var(--s2); will-change: transform; }
   .card:nth-child(2) { margin-top: 28vh; }
@@ -110,7 +109,8 @@
   .chead { position: sticky; top: calc(48px + env(safe-area-inset-top)); z-index: 2; background: #fff; padding: var(--s1) 0 var(--s2); }
   .quote { margin-top: var(--s1); min-height: calc(2 * var(--lh)); }
   .case { margin-top: var(--s4); }
-  .case .h { font-size: var(--h2); color: #d0d0d0; transition: color .5s var(--ease); }
+  .case .h { font-size: var(--h2); color: #d0d0d0; transition: color .5s var(--ease); text-align: right; }
+  .case .type { text-align: right; }
   .case.act .h { color: #000; }
   .case .type { margin-top: var(--s1); }
   .case .pic { display: block; width: 100%; aspect-ratio: 5 / 4; margin-top: var(--s2); background: var(--gray) center / cover no-repeat; }
@@ -179,11 +179,12 @@
   .shelf .h { position: absolute; top: 50%; translate: 0 -50%; font-size: var(--h2); white-space: nowrap; z-index: 2; }
   .shelf:nth-child(1) .h { left: var(--m); } .shelf:nth-child(2) .h { right: var(--m); } .shelf:nth-child(3) .h { left: var(--m); }
   .shelf .w { position: absolute; bottom: 1px; width: 14vw; height: 14vw; background: center bottom / contain no-repeat; z-index: 1; }
-  .sil { position: fixed; z-index: 62; right: var(--m); bottom: calc(var(--s3) + env(safe-area-inset-bottom)); width: 14vw; height: 14vw; background: center bottom / contain no-repeat; filter: brightness(0); transition: transform .25s var(--ease); }   /* the next work, a black silhouette at the bottom right: a tap sends it flying onto a shelf */
+  .sil { position: absolute; z-index: 62; right: var(--m); bottom: 0; width: 14vw; height: 14vw; background: center bottom / contain no-repeat; filter: brightness(0); transition: transform .25s var(--ease); }   /* the next work, a black silhouette at the bottom right: a tap sends it flying onto a shelf */
   .sil:active { transform: scale(.9); }
   .fall { filter: brightness(0); } .shelf .w { transition: filter .7s var(--ease); } .shelf .w.dark { filter: brightness(0); }
   .fall { position: fixed; z-index: 70; width: 14vw; height: 14vw; background: center bottom / contain no-repeat; pointer-events: none; }
-  .ov .mail { display: inline-flex; gap: .25em; align-items: flex-start; padding: 0 var(--m) calc(var(--s5) + env(safe-area-inset-bottom)); }
+  .foot { position: relative; display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: calc(var(--s5) + env(safe-area-inset-bottom)); }   /* the address and the silhouette on one line */
+  .ov .mail { display: inline-flex; gap: .25em; align-items: flex-start; padding: 0 0 0 var(--m); }
   .ov .mail span { background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat; padding-bottom: .12em; }
 </style>
 </head>
@@ -220,7 +221,7 @@
 </section>
 
 <section class="wrap sec" id="cases">
-  <div class="chead"><p class="lab">Clients about us</p><p class="quote" id="quote"></p></div>
+  <div class="chead"><p class="lab">Clients about us</p><p class="quote" id="quote"></p></div>   <!-- the kind of place the project in front is, in place of the words -->
   <div id="caselist"></div>
 </section>
 
@@ -295,7 +296,7 @@ window.preDone = new Promise(done => {
   const TEXT = ['Panels — ceramic paintings for the wall, carved and glazed by hand, from a single tile to a whole room.', 'Mirrors framed in ceramic relief: beetles, leaves and small stories that catch the light of the room.', 'Tables of glazed clay — a cube, a sphere, a quiet corner where a cup or a book can rest.', 'Sculptures and busts with a rough, living surface that keeps the marks of the hand.', 'Urbans — tall vessels like small city towers, standing alone or in a group.', 'Vases and bowls in BrutSkin glaze: raw, metallic and heavy to the touch.'];
   const CASE_KEY = ['brera', 'ava', 'greeks', 'novikov'], CASE_N = { brera: 7, ava: 5, greeks: 7, novikov: 5 }, CASE_FOCUS = { brera: [.5, .42, .22, .42, .18, .35, .62], greeks: [.6, .5, .5, .5, .5, .5, .5] };
   const SRC = (c, k = 0) => `photos/projects/${CASE_KEY[c]}-${k % CASE_N[CASE_KEY[c]] + 1}.jpg`, POS = (c, k = 0) => { const f = CASE_FOCUS[CASE_KEY[c]]; return `50% ${((f ? f[k % f.length] : .5) * 100).toFixed(0)}%`; };
-  const CASES = [['Brera', 'Restaurant', 'A ceramic triptych at the very centre of an Italian restaurant.'], ['AVA', 'Restaurant', 'Two large panels, below and above, over a kitchen open to the guests.'], ['The Greeks', 'Restaurant', 'Smooth, rounded slabs like Mediterranean stones on three sides of the bar.'], ['Novikov', 'Restaurant', 'Half-round ceramic panels on the columns, and planters for several pots.']];
+  const CASES = [['Brera', 'Italian restaurant', 'A ceramic triptych at the very centre of an Italian restaurant.'], ['AVA', 'Restaurant', 'Two large panels, below and above, over a kitchen open to the guests.'], ['The Greeks', 'Mediterranean restaurant', 'Smooth, rounded slabs like Mediterranean stones on three sides of the bar.'], ['Novikov', 'Pan-Asian restaurant', 'Half-round ceramic panels on the columns, and planters for several pots.']];
   const CASE_TEXT = [   // from dirtyhands.ru/projects, as on the full page
     ['Brera, Alexander Oganezov’s Italian restaurant on Bolshaya Nikitskaya, 24/1.', 'We made a ceramic triptych that hangs at the very centre of the room.'],
     ['AVA on Malaya Bronnaya, by Anton Pinsky (Pinskiy&Co), Artem Losev and Vitaly Istomin, designed by Irina Glik.', 'We dressed the open kitchen, in full view of the guests, with two large decorative panels: one below, one above.'],
@@ -310,31 +311,33 @@ window.preDone = new Promise(done => {
   const EASE = 'power3.out';
 
   // the first screen: the categories as a slider of signed pictures
-  one('#cats').innerHTML = CATS.map((n, k) => `<button type="button" class="cat bend" data-k="${k}"><i style="background-image:url('${PHOTO[k]}')"></i><span>${n}</span></button>`).join('');
+  one('#cats').innerHTML = CATS.map((n, k) => `<button type="button" class="cat bend" data-k="${k}" aria-label="${n}"><i style="background-image:url('${PHOTO[k]}')"></i></button>`).join('');
   // the title: each letter rises from below once the preloader has gone, as on the full page
   $('.ttl .ln').forEach(l => { l.innerHTML = [...l.textContent].map(c => `<span class="ch${c === 'r' ? ' kR' : ''}">${c}</span>`).join(''); }); gsap.set('.ttl .ch', { yPercent: 110 }); gsap.set('#cats .cat', { opacity: 0 });
   (window.preDone || Promise.resolve()).then(() => {
     gsap.fromTo('#cats .cat', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .9, ease: EASE, stagger: .07 });
-    gsap.to('.ttl .ch', { yPercent: 0, duration: 1.1, ease: EASE, stagger: .05, delay: .25 });
+    gsap.to('.ttl .ch', { yPercent: 0, duration: 1.1, ease: EASE, stagger: .05, delay: .25, onComplete() { gsap.set('.ttl .ch', { clearProps: 'transform' }); titleReady = true; } });
     gsap.to('.tag', { opacity: 1, duration: .8, delay: .9 });
   });
   // the ruled list
   one('#tbl').innerHTML = CATS.map((n, k) => `<div class="tr" data-k="${k}"><span class="n">0${k + 1}</span><p>${TEXT[k]}</p></div>`).join('');
+  let titleReady = false; const chs = $('.ttl .ch');
   const pile = one('#pile'), pcs = CATS.map((_, k) => { const d = document.createElement('i'); d.className = 'pc'; pile.append(d); return d; }), cats = $('#cats .cat i'), trs = $('.tr'), tbl = one('#tbl');
   const SKEW = [[-3, -2, -4], [4, 3, 3], [-2, 5, -2], [5, -4, 5], [-5, 2, -3], [2, -5, 4]];   // each work a little askew under the one on top
   function pileTick() { const V = innerHeight, W = innerWidth, hero = one('.hero'), p = clamp(scrollY / Math.max(1, hero.offsetHeight * .75)), e = p * p * (3 - 2 * p);
     if (p <= 0) { pile.style.visibility = 'hidden'; cats.forEach(c => c.style.visibility = ''); return; }
+    if (titleReady) chs.forEach((c, k) => { const e = clamp(p * 1.5 - k * .045); c.style.transform = `translateY(${(-e * 130).toFixed(1)}%)`; });   // the title leaves letter by letter, as it came
     pile.style.visibility = ''; cats.forEach(c => c.style.visibility = 'hidden');
     const tr = tbl.getBoundingClientRect(), endShift = Math.min(0, tr.bottom - V * .6);   // at the end of the table the pile goes up with it
     let top = 0, bd = 1e9; trs.forEach((r, k) => { const b = r.getBoundingClientRect(), d = Math.abs(b.top + 40 - V * .38); if (d < bd) { bd = d; top = k; } });
-    const S = W * .36, PX = W - W * .06 - S, PY = V * .3, flip = clamp((p - .55) / .3);
+    const S = W * .46, PX = (W - S) / 2, PY = V * .34, flip = clamp((p - .55) / .3);
     pcs.forEach((el, k) => { const c = cats[k].getBoundingClientRect(), dk = Math.min(5, Math.abs(k - top)), sk = SKEW[k];
       const x = c.left + (PX + sk[0] * dk - c.left) * e, y = c.top + (PY + sk[1] * dk + endShift - c.top) * e, w = c.width + (S - c.width) * e, h = c.height + (S - c.height) * e;
       const f = flip * 180, back = f > 90; if (el.classList.contains('back') !== back) { el.classList.toggle('back', back); el.style.backgroundImage = `url('${back ? CUT[k] : PHOTO[k]}')`; }   // edge-on half way, and on its back the work without its background
       el.style.width = w + 'px'; el.style.height = h + 'px'; el.style.zIndex = 10 - dk;
       el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) perspective(800px) rotateY(${(back ? f - 180 : f).toFixed(1)}deg) rotate(${(sk[2] * dk * e * .6).toFixed(1)}deg)`;
       el.style.opacity = k === top ? 1 : flip > .9 ? 0 : (1 - flip).toFixed(3); });   // once turned over only the work on top is seen
-    { const pr = pcs[top].getBoundingClientRect(); trs.forEach(r => { const b = r.getBoundingClientRect(); r.classList.toggle('push', p >= 1 && b.bottom > pr.top - 8 && b.top < pr.bottom + 8); }); } }   // the rows beside the work are pushed aside, the others run the whole width
+    { const pr = pcs[top].getBoundingClientRect(); trs.forEach(r => { const b = r.getBoundingClientRect(); r.classList.toggle('near', p >= 1 && b.bottom > pr.top - 8 && b.top < pr.bottom + 8); }); } }   // the work lies over the paragraph it belongs to
   pcs.forEach((el, k) => el.style.backgroundImage = `url('${PHOTO[k]}')`);
   addEventListener('scroll', () => requestAnimationFrame(pileTick), { passive: true }); addEventListener('resize', pileTick); one('#cats').addEventListener('scroll', pileTick, { passive: true }); pileTick();
   // the cases, under the clients' names
@@ -358,7 +361,7 @@ window.preDone = new Promise(done => {
       if (amt > .002 || goal > .002) requestAnimationFrame(frame); else run = false; };
     el.addEventListener('scroll', () => { const t = performance.now(), v = Math.abs(el.scrollLeft - last) / Math.max(8, t - lt); last = el.scrollLeft; lt = t; goal = Math.min(1, Math.max(goal, v * .9)); if (!run) { run = true; requestAnimationFrame(frame); } if (window.soundNudge) soundNudge(Math.min(.6, v * .3)); }, { passive: true });
     requestAnimationFrame(frame); }
-  bendStrip(one('#cats'));
+  bendStrip(one('#cats'), .55);
 
   // the scroll: Lisa's card a little quicker than Karen's; the pots from line to photo; clients lit in turn; the forms' words sliding to their places
   const lisa = one('#lisa'), duo = one('#duo'), pots = one('#pots'), cases = $('.case'), q = one('#quote'), words = $('.forms .h'), formsEl = one('.forms');
@@ -367,7 +370,7 @@ window.preDone = new Promise(done => {
     { const r = duo.getBoundingClientRect(), p = clamp(-r.top / Math.max(1, r.height - V)); lisa.style.transform = `translateY(${(-p * 14).toFixed(2)}vh)`; }
     { const r = pots.getBoundingClientRect(), p = clamp((V * .85 - r.top) / (V * .5)); pots.querySelectorAll('.pp').forEach((el, k) => { const e = clamp(p * 1.6 - k * .2); el.style.transform = `rotateY(${(-(1 - e) * 92).toFixed(1)}deg)`; el.style.opacity = e > 0 ? 1 : 0; }); pots.lastElementChild.style.opacity = clamp(1 - p * 1.4).toFixed(3); }   // a line drawing first, the photo as it comes up
     { let best = 0, bd = 1e9; cases.forEach((c, k) => { const r = c.firstElementChild.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - V * .42); if (d < bd) { bd = d; best = k; } });
-      if (best !== act) { act = best; cases.forEach((c, k) => c.classList.toggle('act', k === best)); gsap.to(q, { opacity: 0, duration: .2, onComplete() { q.textContent = QUOTES[best % QUOTES.length]; gsap.to(q, { opacity: 1, duration: .35 }); } }); } }
+      if (best !== act) { act = best; cases.forEach((c, k) => c.classList.toggle('act', k === best)); gsap.to(q, { opacity: 0, duration: .2, onComplete() { q.textContent = CASES[best][1]; gsap.to(q, { opacity: 1, duration: .35 }); } }); } }
     { const r = formsEl.getBoundingClientRect(), p = clamp((V - r.top) / (V * .9)), e = 1 - Math.pow(1 - p, 3), DX = [-28, 30, 22]; words.forEach((w, k) => { w.style.transform = `translateX(${(DX[k] * (1 - e)).toFixed(2)}vw)`; }); }
   }
   addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
@@ -401,15 +404,15 @@ window.preDone = new Promise(done => {
       if (best !== near) { const first_ = near < 0; near = best; if (first_) gsap.fromTo(ip, { attr: { 'stroke-dashoffset': 1 } }, { attr: { 'stroke-dashoffset': 0 }, duration: 1.4, ease: 'power2.inOut' }); else goal = nums[(k + best) % nums.length]; } };   // drawn once, then it flows from one form into the next behind each picture that comes to the middle
     let cur = nums[k].slice(), goal = null; (function flow() { if (!view.contains(ip)) return; if (goal) { let moved = false; cur.forEach((v, n) => { const d = goal[n] - v; if (Math.abs(d) > .01) { cur[n] = v + d * .07; moved = true; } }); if (moved) { let n = 0; ip.setAttribute('d', tpl.replace(/#/g, () => cur[n++].toFixed(2))); } } requestAnimationFrame(flow); })();
     track.addEventListener('scroll', redraw, { passive: true }); setTimeout(redraw, 300);
-    bendStrip(track, .6); }
+    bendStrip(track, .7); }
   function openCase(c) { const [n, t] = CASES[c];
     show(`<div class="head"><p class="h">${n}</p><p class="lab" style="margin-top:var(--s1)">${t}</p><div class="big" style="background-image:url('${SRC(c)}');background-position:${POS(c)}"></div></div><div class="txt"><p>${CASE_TEXT[c][0]}</p><p>${CASE_TEXT[c][1]}</p></div><div class="strip cover">${Array.from({ length: CASE_N[CASE_KEY[c]] - 1 }, (_, k) => `<i class="bend" style="background-image:url('${SRC(c, k + 1)}');background-position:${POS(c, k + 1)}"></i>`).join('')}</div>`);
-    bendStrip(view.querySelector('.strip'), .6); }
+    bendStrip(view.querySelector('.strip'), .7); }
 
   // order, as on the full page: the title on three shelves that turn when swiped, a tap lets the next work fall onto a free place on them, and a black silhouette stands in the text
   function openOrder() { const W = ['tattoo-relief-up', 'panel-eva', 'shelf-spine', 'mirror-beetles', 'bust', 'urban-angel', 'vase-brutskin', 'table-cubeball'];
-    show(`<div class="head" style="padding-bottom:var(--s3)"></div><div class="shelves"><div class="shelf"><span class="h">Order</span></div><div class="shelf"><span class="h">and</span></div><div class="shelf"><span class="h">cooperation</span></div></div><div class="txt otxt"><p>DirtyHands creates custom ceramic panels and art objects based on original sketches and technical specifications. We work with projects of any complexity, carefully immersing ourselves in the concept and architecture of the space.</p><p>We're open to collaboration with designers, decorators and architects. Together we create unique ceramic solutions for interiors and exteriors: entrances, facades, private and public spaces.</p><p>If your project needs more than decor, an expressive artistic accent, we'd love to hear from you.</p></div><button type="button" class="sil" aria-label="Put the next work on a shelf"></button><a class="mail" href="mailto:order@dirtyhands.ru"><span>order@dirtyhands.ru</span><svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true" style="margin-top:.3em"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a>`);
-    gsap.fromTo(view.querySelectorAll('.shelf .h'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .9, ease: EASE, stagger: .12, delay: .1 });
+    show(`<div class="head" style="padding-bottom:var(--s3)"></div><div class="shelves"><div class="shelf"><span class="h">Order</span></div><div class="shelf"><span class="h">and</span></div><div class="shelf"><span class="h">cooperation</span></div></div><div class="txt otxt"><p>DirtyHands creates custom ceramic panels and art objects based on original sketches and technical specifications. We work with projects of any complexity, carefully immersing ourselves in the concept and architecture of the space.</p><p>We're open to collaboration with designers, decorators and architects. Together we create unique ceramic solutions for interiors and exteriors: entrances, facades, private and public spaces.</p><p>If your project needs more than decor, an expressive artistic accent, we'd love to hear from you.</p></div><div class="foot"><a class="mail" href="mailto:order@dirtyhands.ru"><span>order@dirtyhands.ru</span><svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true" style="margin-top:.3em"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a><button type="button" class="sil" aria-label="Put the next work on a shelf"></button></div>`);
+    gsap.fromTo(view.querySelectorAll('.shelf .h'), { opacity: 0, x: (i, t) => (innerWidth / 2 - (t.offsetLeft + t.offsetWidth / 2)) }, { opacity: 1, x: 0, duration: 1.3, ease: 'power3.out', stagger: .12, delay: .15 });   // the three words open out from the middle of the screen to their places
     const shelves = [...view.querySelectorAll('.shelf')], SW = innerWidth, DIR = [1, -.8, .6], off = [0, 0, 0], to = [0, 0, 0], stood = [[], [], []]; let wi = 0;
     const wrap = (x, o) => ((x + o) % SW + SW) % SW;
     const place = () => shelves.forEach((s, b) => stood[b].forEach(it => { const xx = wrap(it.x, off[b]), e = Math.min(xx, SW - xx) / (SW * .18); it.el.style.left = (xx - it.el.offsetWidth / 2).toFixed(1) + 'px'; it.el.style.opacity = Math.min(1, e).toFixed(3); }));
@@ -431,6 +434,10 @@ window.preDone = new Promise(done => {
   if (location.hash === '#order') openOrder();
   document.addEventListener('click', e => { if (open) return; const c = e.target.closest('.cat, .tr'), p = e.target.closest('.pic'); if (c) openCat(+c.dataset.k, c.querySelector('i')); else if (p) openCase(+p.dataset.c); });
   view.addEventListener('scroll', () => { if (window.soundNudge) soundNudge(.2); }, { passive: true });
+
+  // scrolled to the very end and still pulling: the page starts over, as the full one loops
+  addEventListener('scroll', () => { const d = document.documentElement; if (open || d.scrollHeight - (scrollY + innerHeight) > 1) return;
+    const sb = d.style.scrollBehavior; d.style.scrollBehavior = 'auto'; scrollTo(0, 0); d.style.scrollBehavior = sb; }, { passive: true });
 
   makeClay();   // the clay, as on the full page: a finger leaves marks and smears them, also while the page scrolls (on the phone they dry sooner)
 })();
