@@ -215,13 +215,13 @@
   .sv-items { position: absolute; left: 0; top: calc(50vh + 70 * var(--u)); width: 100%; perspective: calc(2500 * var(--u)); perspective-origin: 50% calc(-300 * var(--u)); }
   .sv-item { display: none; position: absolute; top: 0; width: calc(210 * var(--u)); text-align: left; will-change: transform, opacity; }   /* the years sit on a sphere: the one in the middle faces us, the others turn away, shrink and fade */
   .sv-strip { position: absolute; top: calc(-12 * var(--u)); height: calc(420 * var(--u)); overflow: hidden; backface-visibility: hidden; }
-  .sv-in { position: absolute; top: calc(12 * var(--u)); width: calc(210 * var(--u)); text-align: left; }
+  .sv-in { position: absolute; top: calc(12 * var(--u)); width: calc(260 * var(--u)); text-align: left; }
   .sv-pin { position: absolute; top: 0; height: 100%; background: #eee center / cover no-repeat; }
   .sv-photo { position: absolute; left: 0; top: calc(-284 * var(--u)); width: 100%; height: calc(260 * var(--u)); background: #eee center / cover no-repeat; backface-visibility: hidden; }   /* the photographs are glued to the cylinder with the text */
   .sv-dot { position: absolute; left: 0; top: calc(4.5 * var(--u)); width: calc(5 * var(--u)); height: calc(5 * var(--u)); background: #000; opacity: .35; display: block; }
   .sv-year { position: absolute; left: calc(20 * var(--u)); top: 0; font-size: var(--t18); line-height: 1.15; letter-spacing: -.01em; opacity: .4; }   /* the square, and the date beside it */
   .sv-out { position: absolute; left: 0; top: calc(32 * var(--u)); font-size: var(--t18); line-height: 1.15; letter-spacing: -.01em; }   /* the outlet under them, black */
-  .sv-lead { position: absolute; left: calc(20 * var(--u)); top: calc(62 * var(--u)); width: calc(190 * var(--u)); }   /* the thesis stepped in, up to five lines */   /* the date, the outlet under it, then the thesis */
+  .sv-lead { position: absolute; left: calc(20 * var(--u)); top: calc(62 * var(--u)); width: calc(240 * var(--u)); }   /* the thesis stepped in, up to five lines */   /* the date, the outlet under it, then the thesis */
   .sv-more { display: none; position: absolute; left: 0; top: calc(116 * var(--u)); width: max-content; opacity: .6; text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; pointer-events: auto; }
   #caseView { overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; }
   #caseView .ov-scrim { position: fixed; }
@@ -279,12 +279,12 @@
 <div class="midstrip" aria-hidden="true"></div>
 <div class="tagline">Interior ceramics studio</div>
 <button type="button" class="snd" aria-pressed="false" aria-label="Sound"><svg viewBox="0 0 24 10" aria-hidden="true"><path d="M0 5H24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span>Sound</span></button>
-<div class="hc" data-i="0" style="left:calc(20 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-<div class="hc" data-i="1" style="left:calc(250.17 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-<div class="hc" data-i="2" style="left:calc(480.34 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-<div class="hc" data-i="3" style="left:calc(710.51 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-<div class="hc" data-i="4" style="left:calc(940.68 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-<div class="hc" data-i="5" style="left:calc(1170.85 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+<div class="hc" data-i="0" style="left:calc(20 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(10 * var(--u));"></div>
+<div class="hc" data-i="1" style="left:calc(250.17 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(10 * var(--u));"></div>
+<div class="hc" data-i="2" style="left:calc(480.34 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(10 * var(--u));"></div>
+<div class="hc" data-i="3" style="left:calc(710.51 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(10 * var(--u));"></div>
+<div class="hc" data-i="4" style="left:calc(940.68 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(10 * var(--u));"></div>
+<div class="hc" data-i="5" style="left:calc(1170.85 * var(--u));top:calc(20 * var(--u));width:calc(210.2 * var(--u));height:calc(10 * var(--u));"></div>
 
 <section class="s2">
   <div class="s2-in">
@@ -367,18 +367,20 @@
   <p class="t18 mdesc" style="left:calc(750 * var(--u));top:calc(4623 * var(--u));width:calc(280 * var(--u));">A 60 m² flat by Marina Troshina, with a DirtyHands ceramic panel over the bed.</p>
   <p class="t18" data-year="2025" style="left:calc(710 * var(--u));top:calc(4713 * var(--u));width:calc(210 * var(--u));">MyDecor</p>
   <p class="t18 mdesc" style="left:calc(750 * var(--u));top:calc(4713 * var(--u));width:calc(280 * var(--u));">Made in Russia Week 2025: twelve ceramic workshops of the country, DirtyHands among them.</p>
+  <p class="t18" data-year="2024" style="left:calc(710 * var(--u));top:calc(4713 * var(--u));width:calc(210 * var(--u));">Interior+Design</p>
+  <p class="t18 mdesc" style="left:calc(750 * var(--u));top:calc(4713 * var(--u));width:calc(280 * var(--u));">The Gold Edition 2024 party for the year’s best designers, with Karen and Lisa among the guests.</p>
   <a class="t18 more" style="display:none;left:calc(710 * var(--u));top:calc(5111 * var(--u));" href="#story">More →</a>
   <div class="dot" style="left:calc(613 * var(--u));top:calc(4519.5 * var(--u));"></div>
   <div class="dot" style="display:none;left:calc(613 * var(--u));top:calc(4594.5 * var(--u));"></div>
   <div class="eye" aria-hidden="true" style="top:calc(5189 * var(--u) + 100vh * 5 / 24);"><svg viewBox="164 14 680 368"><path pathLength="1" d="M408 372L408 240L484 240L484 176L408 176L408 70L354 70L354 190L354 24L298 24L298 190L298 40L240 40L240 190L240 100L186 100L186 240L200 372"/><path pathLength="1" d="M600 372L600 240L524 240L524 176L600 176L600 70L654 70L654 190L654 24L710 24L710 190L710 40L768 40L768 190L768 100L822 100L822 240L808 372"/></svg></div>
   <a class="t18 credit" style="left:50%;top:calc(5589 * var(--u) + 100vh * 5 / 24);white-space:nowrap;" href="https://skip.design" target="_blank" rel="noopener">Made by <img class="sfav" src="skip-fav.png" alt="" aria-hidden="true"> <span class="u">Skip Design</span></a>
   <p class="t18 credit" style="left:0;top:calc(5608 * var(--u) + 100vh * 5 / 24);width:100%;text-align:center;">With love for Dirty Hands ♥</p>
-  <div class="ph bar" style="--i:0;left:calc(20.00 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:1;left:calc(250.17 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:2;left:calc(480.34 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:3;left:calc(710.51 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:4;left:calc(940.68 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
-  <div class="ph bar" style="--i:5;left:calc(1170.85 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(20 * var(--u));"></div>
+  <div class="ph bar" style="--i:0;left:calc(20.00 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 10 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(10 * var(--u));"></div>
+  <div class="ph bar" style="--i:1;left:calc(250.17 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 10 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(10 * var(--u));"></div>
+  <div class="ph bar" style="--i:2;left:calc(480.34 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 10 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(10 * var(--u));"></div>
+  <div class="ph bar" style="--i:3;left:calc(710.51 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 10 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(10 * var(--u));"></div>
+  <div class="ph bar" style="--i:4;left:calc(940.68 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 10 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(10 * var(--u));"></div>
+  <div class="ph bar" style="--i:5;left:calc(1170.85 * var(--u));top:calc(5749 * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 10 * var(--u)) / 5);width:calc(210.2 * var(--u));height:calc(10 * var(--u));"></div>
 </section>
 
 <!-- extra scroll: the strip of pictures rises to 20 from the top, then the page starts over -->
@@ -838,7 +840,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const mEnd = top - 56, gTop = mEnd + (5749 - dy - mEnd - 205) / 2;   // the hands and the credit (205 high together) halfway between the last publication and the strip at the end: the same room above and below them (the half of the screen's share, 5/24 of its height, in the calc)
     if (hand) hand.style.top = `calc(${gTop.toFixed(1)} * var(--u) + 100vh * 5 / 24)`;
     if (cr[0]) cr[0].style.top = `calc(${(gTop + 167).toFixed(1)} * var(--u) + 100vh * 5 / 24)`; if (cr[1]) cr[1].style.top = `calc(${(gTop + 186).toFixed(1)} * var(--u) + 100vh * 5 / 24)`;
-    $('.rest > .bar').forEach(b => { b.style.top = `calc(${(5749 - dy).toFixed(1)} * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5)`; });
+    $('.rest > .bar').forEach(b => { b.style.top = `calc(${(5749 - dy).toFixed(1)} * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 10 * var(--u)) / 5)`; });
     one('.rest').style.height = `calc(${(5809 - dy).toFixed(1)} * var(--u))`;
   }
   function alignShop() {
@@ -970,7 +972,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   const pageEls = () => [one('.page'), ...$('.hc, .nav, .ct, .tagline, .midstrip, .ttl')];
 
   const SV = one('#storyView');
-  const MEDIA = [["Dec 2025", "Design Mate", "DirtyHands opens Art in the Hands in Moscow: a gallery of the founders’ ceramics, and a room for lessons in hand-building and on the wheel, and for talks on painting, psychology and interiors.", "photos/media/m01.jpg"], ["Aug 2025", "Interior+Design", "A 60 m² flat in a Stalin-era house near Sokol by Marina Troshina of Bellager Design: oak, stone and glass, and a DirtyHands ceramic panel over the bed.", "photos/media/m03.jpg"], ["Jun 2025", "MyDecor", "Made in Russia Week 2025: twelve ceramic workshops from across the country, each with a hand and a style of its own, DirtyHands among them.", "photos/media/m04.jpg"], ["Dec 2024", "Interior+Design", "The Gold Edition 2024 party, for the magazine’s issue on the year’s best designers and architects, with Karen and Lisa of DirtyHands among the guests.", "photos/media/m06.jpg"], ["Aug 2024", "Design Mate", "A flat for a film producer’s family by Valeria Vinogradova, built round the memories of childhood, with furniture made by DirtyHands.", "photos/media/m07.jpg"], ["Jan 2023", "TopDesignMag", "The Elements tables: ceramic coffee tables after air, moss, soil, ripples on water and the starry sky, which can be grouped together into new bases.", "photos/media/m09.jpg"], ["Jan 2023", "Interior+Design", "Wondercraft days, Episode II, at the Design Dealer concept store during the Moscow Design Festival, with a public talk on collectible design and fine craft.", "photos/media/m10.jpg"]];   // the latest from dirtyhands.ru/news: date, outlet, what it says, its picture
+  const MEDIA = [["Dec 2025", "Design Mate", "DirtyHands opens Art in the Hands, a creative space in Moscow conceived as more than a workshop. It holds a gallery of Lisa and Karen’s ceramics, panels and art objects among them, and a room for group and private lessons in hand-building and on the wheel, with talks on public speaking, painting, psychology, publishing and interior styling.", "photos/media/m01.jpg"], ["Aug 2025", "Interior+Design", "A 60 m² flat for a young lawyer in a Stalin-era house near Sokol, by Marina Troshina of Bellager Design. The redesign keeps the memory of the house and opens it up: glass partitions, a living room at the centre, oak parquet and stone. Over the bed hangs a DirtyHands ceramic panel.", "photos/media/m03.jpg"], ["Jun 2025", "MyDecor", "Made in Russia Week 2025: a guide to twelve ceramic workshops from across Russia, each with a hand and a style of its own. DirtyHands is among them, with panels, art objects and furniture shaped by hand, made for homes, restaurants and public interiors.", "photos/media/m04.jpg"], ["Dec 2024", "Interior+Design", "The INTERIOR+DESIGN Gold Edition party, held each December for the magazine’s main issue on the year’s best designers and architects. In 2024 it took a ski-slope theme at the Vorobyovy Hall restaurant, with Karen and Lisa of DirtyHands among the guests.", "photos/media/m06.jpg"], ["Aug 2024", "Design Mate", "A flat for a film producer’s family by Valeria Vinogradova, an interior built round the memories of childhood. Among the things that tell that story is furniture made by DirtyHands.", "photos/media/m07.jpg"], ["Jan 2023", "TopDesignMag", "The Elements: a collection of ceramic coffee tables by DirtyHands, each after a force of nature: air, wild nature, moss and soil, ripples on water, the starry sky. A table can stand alone, or several can be gathered under one top into a new base.", "photos/media/m09.jpg"], ["Jan 2023", "Interior+Design", "Wondercraft days, Episode II, at the Design Dealer concept store during the Moscow Design Festival: a show of contemporary Russian artists and designers working between art and craft, opened with a public talk on collectible design and fine craft. DirtyHands showed its ceramic tables.", "photos/media/m10.jpg"]];   // the latest from dirtyhands.ru/news: date, outlet, what it says, its picture
   function openStory() {
     if (!G || openView) return;
     const word = one('.tagged .big2'), r0 = word.getBoundingClientRect();
@@ -982,12 +984,12 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     tl.fromTo('#storyView .ov-scrim', { opacity: 0 }, { opacity: 1, duration: .45, ease: 'power2.out' }, 0.05);
     tl.fromTo(title, { x: r0.left - r1.left, y: r0.top - r1.top }, { x: 0, y: 0, duration: .95, ease: EASE }, 0.15);                 // the Story word stays: it only moves to its new place
     // an invisible cylinder with the text written on it, and a smaller one inside it with the photographs: both are cut into thin vertical strips, every strip stands on its own angle
-    const host = one('#storyView .sv-items'), SP = 270 * U, RAD = 930 * U, RP = RAD * 0.7, FP = RP / RAD, PGR = 1.12, N = data.length, CW = 210 * U, SW = 12 * U, KS = Math.ceil(CW / SW);
+    const host = one('#storyView .sv-items'), SP = 320 * U, TW = 260 * U, RAD = 930 * U, RP = RAD * 0.7, FP = RP / RAD, PGR = 1.12, N = data.length, CW = 210 * U, SW = 12 * U, KS = Math.ceil(CW / SW);
     const PW_ = [1, .8, 1.15, .9, 1.05, .85], PH_ = [260, 190, 320, 230, 290, 200], PG_ = [24, 80, 24, 120, 44, 96], strips = [];
     data.forEach((d, i) => {
       { const el = document.createElement('div'); el.className = 'sv-strip';   // the text layer: one card, whole, set on the drum (cut into strips the letters broke at every seam)
         el.innerHTML = `<div class="sv-in" style="left:0"><i class="sv-dot"></i><span class="sv-year">${d.date}</span><span class="sv-out">${d.out}</span><p class="t18 sv-lead">${d.lead}</p></div>`;
-        el.style.width = CW + 'px'; host.append(el); strips.push({ el, i, a: 0, R: RAD, w: CW }); }
+        el.style.width = TW + 'px'; host.append(el); strips.push({ el, i, a: 0, R: RAD, w: TW }); }   /* the text a little wider than the photos, so a fuller thesis still fits on the screen */
       for (let k = 0; k < KS; k++) {                                                                    // the photo layer: smaller, so the photographs sit further in
         const el = document.createElement('div'); el.className = 'sv-strip sv-ph';
         const wf = PW_[i % 6], hh = PH_[i % 6] * U * FP * PGR, gap = PG_[i % 6] * U + 36 * U, pw = CW * FP * wf * PGR, sw = SW * FP * wf * PGR;   // the photos a little bigger and higher       // every photo has its own size and its own height on the cylinder
@@ -1442,7 +1444,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const KEY = q < 1 ? SZ.map((v, i) => v * (1 - PM) + (1 - 2 * i / 5) * PM) : cards.map((_, i) => -DEPTH(i)), RANK = KEY.map((v, i) => KEY.filter((w, j) => w < v || (w === v && j > i)).length);   // on the ring the nearer cards are in front; in the pile and on the wheel the nearer to three o'clock, the higher (the two orders agree where the ring closes, so nothing jumps)
     const obs = [];
     cards.forEach((c, i) => {
-      const d = introDone ? 1 : drop((now - t0 - LEAD - i * GAP) / DUR), h = lerp(20, H0[i], d);
+      const d = introDone ? 1 : drop((now - t0 - LEAD - i * GAP) / DUR), h = lerp(10, H0[i], d);   /* the strips 10 high at first */
       const w = lerp(W0, PW, q), hh = lerp(h, PH, q);
       const fan = Math.atan2(Math.sin(ang[i]), Math.cos(ang[i])) * open;          // the pile lies at three o'clock, in the middle of the screen; opening, the cards run round the wheel to their places (up or down, whichever is shorter) and the top one stays where it is
       const sd = p - i, settle = q < 1 ? 1 : 0, leave = 0;   // the card in the middle lies straight; the others lie askew under it; the front one slides out to the left (first half) and comes back to the very back of the stack (second half)
