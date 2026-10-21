@@ -197,9 +197,9 @@
   .gray::before { left: 0; background-image: var(--imgL, none); background-size: var(--bgS, cover); background-position: var(--bgL, center); }
   .gray::after { right: 0; background-image: var(--imgR, none); background-size: var(--bgS, cover); background-position: var(--bgR, center); }
   .gray.no-left::before, .gray.no-right::after { opacity: 0; }
-  .gray > .card2 { z-index: 1; perspective: calc(1400 * var(--u)); perspective-origin: 50% 100%; }   /* a sheet on a table: it curls up from its lower edge */
+  .gray > .card2 { z-index: 1; perspective: calc(1400 * var(--u)); perspective-origin: 50% 50%; }   /* a sheet of paper, bowed a little towards us */
   .card2 > .curl { left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4; transform-style: preserve-3d; }
-  .curl-s { position: absolute; left: 0; width: 100%; overflow: hidden; background: #fff; transform-origin: 50% 100%; backface-visibility: hidden; will-change: transform; }
+  .curl-s { position: absolute; left: 0; width: 100%; overflow: hidden; background: #fff; transform-origin: 50% 50%; backface-visibility: hidden; will-change: transform; }
   .curl-in { position: absolute; left: 0; } .curl-in > * { position: absolute; }
   .card2.curled { background: transparent; } .card2.curled > :not(.curl) { visibility: hidden; }   /* the sheet itself is only seen through its strips */
   .card2 > .cmark { left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3; mix-blend-mode: difference; }   /* above the text, blended by difference: where the mark crosses the text, the text turns white */
@@ -587,7 +587,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   $('.hc').forEach((c, i) => { c._hs = []; for (let j = 0; j < HS; j++) { const st = document.createElement('div'); st.className = 'hs'; st.style.setProperty('--j', j); const im = document.createElement('i'); im.style.backgroundImage = HERO(i); if (CUTOUT.has(i)) im.style.backgroundSize = 'contain'; const ph = document.createElement('b'); ph.style.backgroundImage = `url("${HOVER_SRC[i]}")`; { const f = frameFor(i, 210.2, CARD_H[i]), px = f.w > 210.2 ? f.x / (210.2 - f.w) * 100 : 50, py = f.h > CARD_H[i] ? f.y / (CARD_H[i] - f.h) * 100 : 50; Object.assign(ph.style, { backgroundSize: `auto ${(f.h / CARD_H[i] * 100).toFixed(2)}%`, backgroundPosition: `${px.toFixed(2)}% ${py.toFixed(2)}%` }); } st.append(ph); st.append(im); c.append(st); c._hs.push(st); } });
   $('.bar').forEach((b, i) => { const f = frameFor(i, 210.2, CARD_H[i]); Object.assign(b.style, { backgroundImage: `url("${HOVER_SRC[i]}")`, backgroundSize: `calc(${f.w.toFixed(1)} * var(--u)) calc(${f.h.toFixed(1)} * var(--u))`, backgroundPosition: `calc(${f.x.toFixed(1)} * var(--u)) calc(${f.y.toFixed(1)} * var(--u))` }); });   // each end strip is the top edge of its card's photo, framed the same: when the page starts over, the card simply grows down out of it
   const CASE_KEY = ['brera', 'ava', 'greeks', 'novikov', 'rodina'], CASE_N = { greeks: 7, novikov: 5, brera: 7, ava: 6, rodina: 7 };   // the projects from dirtyhands.ru/projects
-  const CASE_FOCUS = { brera: [.62, .42, .22, .42, .18, .35, .5], greeks: [.6, .5, .5, .5, .5, .5, .5] };   // where to hold the crop, from the top of each photo, so the work itself stays in the frame (Brera: the triptych high on the wall; The Greeks: the slabs low on the bar)
+  const CASE_FOCUS = { brera: [.5, .42, .22, .42, .18, .35, .62], greeks: [.6, .5, .5, .5, .5, .5, .5] };   // where to hold the crop, from the top of each photo, so the work itself stays in the frame (Brera: the triptych high on the wall; The Greeks: the slabs low on the bar)
   const CASE_FY = (i, k = 0) => { const f = CASE_FOCUS[CASE_KEY[i]]; return f ? f[k % f.length] : .5; }, CASE_POS = (i, k = 0) => `50% ${(CASE_FY(i, k) * 100).toFixed(0)}%`;
   const CASE_SRC = (i, k = 0) => `photos/projects/${CASE_KEY[i]}-${k % CASE_N[CASE_KEY[i]] + 1}.jpg`;   // a case's k-th photo (0: its own)
   $('.pic').forEach((e, i) => { e.style.setProperty('--img', `url("${CASE_SRC(i)}")`); e.style.setProperty('--pos', CASE_POS(i)); });      // the big pictures: the image lives in ::before, inside the frame
@@ -669,9 +669,9 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   const glideTo = el => { const r = el.getBoundingClientRect(), to = r.top + scrollY - (el.classList.contains('pic') ? (innerHeight - r.height) / 2 : 20 * U), d = Math.min(2.6, 1.2 + Math.abs(to - scrollY) / innerHeight * 0.18);
     if (lenis) { lenis.scrollTo(to, { duration: d, easing: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2, force: true }); return; }   // through Lenis itself: a scroll set from outside fought its own glide and the page shook on the way
     const sc = { v: scrollY }; gsap.to(sc, { v: to, duration: d, ease: 'power3.inOut', overwrite: true, onUpdate() { scrollTo(0, sc.v); } }); };
-  // Karen's and Lisa's cards are sheets of paper on a table, never quite flat: each lies a little curled up from its lower edge; while the page moves the air lifts it into a deeper curl, and when it stops it settles back with a small sway.
+  // Karen's and Lisa's cards are sheets of paper, never quite flat: each is bowed a little towards us; while the page moves it bows more, Karen's first and Lisa's a moment after, and when it stops it settles back with a small sway.
   // A sheet is drawn as thin strips of itself set along the curve (a paper cannot bend as one flat plane): the strips hold copies of the card, made again whenever the card changes, and its clay mark is copied every frame.
-  { const N = 16, REST = .2;
+  { const N = 16, REST = .26;
     const sheets = $('.card2').map((card, k) => { const curl = document.createElement('div'); curl.className = 'curl'; card.append(curl); return { card, curl, k, a: REST, va: 0, dirty: true, pairs: [], strips: [], H: 0 }; });
     const mo = new MutationObserver(ms => ms.forEach(m => { if (m.target.closest && m.target.closest('.curl')) return; const s = sheets.find(s => s.card !== m.target && s.card.contains(m.target)); if (s) s.dirty = true; }));
     sheets.forEach(s => mo.observe(s.card, { subtree: true, attributes: true, childList: true, characterData: true }));
@@ -681,15 +681,15 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
         orig.forEach(o => { const c = o.cloneNode(true); c.removeAttribute('id'); inner.append(c); if (o.tagName === 'CANVAS') s.pairs.push([o, c]); else o.querySelectorAll('canvas').forEach((oc, q) => s.pairs.push([oc, c.querySelectorAll('canvas')[q]])); });
         st.append(inner); s.curl.append(st); s.strips.push(st); }
       s.pairs.forEach(([o, c]) => { c.width = o.width; c.height = o.height; }); card.classList.add('curled'); s.dirty = false; };
-    let lastY = scrollY, vs = 0, fr = 0, h1y = null; const h1el = one('.ttl .h1');
-    (function blow() { fr++; const v = lenis ? lenis.velocity : scrollY - lastY; lastY = scrollY; vs += (v - vs) * .2;
+    let lastY = scrollY, vs = 0, fr = 0, h1y = null; const hist = []; const h1el = one('.ttl .h1');
+    (function blow() { fr++; const v = lenis ? lenis.velocity : scrollY - lastY; lastY = scrollY; vs += (v - vs) * .2; hist.push(vs); if (hist.length > 12) hist.shift();
       if (typeof breeze === 'function') breeze(document.querySelector('.hc.bent') ? .35 + Math.min(.65, Math.abs(vs) * .03) : 0);   // a breeze while the cards are curled in the air and lie in the pile; it dies away once they have settled
       if (h1el && typeof whisper === 'function') { const y = parseFloat((h1el.style.translate || '0 0').split(' ')[1]) || 0; if (h1y !== null && Math.abs(y - h1y) > 1.5) whisper(Math.abs(y - h1y) / 25); h1y = y; }   // the title's letters going: a breath of air
       sheets.forEach(s => { const r = s.card.getBoundingClientRect(); if (r.bottom < -50 || r.top > innerHeight + 50) return;   // only the sheets on the screen
         if ((s.dirty && fr % 3 === 0) || s.H !== s.card.offsetHeight || !s.strips.length) build(s);
-        const target = REST + Math.min(.85, Math.abs(vs) * .02 * (s.k ? 1.2 : 1)); s.va += (target - s.a) * (s.k ? .06 : .08); s.va *= .87; s.a += s.va;   // the air lifts it; a spring lets it down again
+        const vk = s.k ? (hist[0] ?? vs) : vs, target = REST + Math.min(1, Math.abs(vk) * .02 * (s.k ? 1.2 : 1)); s.va += (target - s.a) * (s.k ? .06 : .08); s.va *= .87; s.a += s.va;   // Karen's sheet first, Lisa's a moment later (about a fifth of a second); the air bows it, a spring lets it down again
         const H = s.H, sh = H / N, c = Math.max(1e-4, s.a) / H;
-        s.strips.forEach((st, j) => { const d = H - (j + 1) * sh, dy = d - Math.sin(c * d) / c, dz = (1 - Math.cos(c * d)) / c; st.style.transform = `translate3d(0,${dy.toFixed(2)}px,${dz.toFixed(2)}px) rotateX(${(-c * d).toFixed(4)}rad)`; });   // each strip where the curve takes it, turned to follow it
+        s.strips.forEach((st, j) => { const u = (j + .5) * sh - H / 2, dy = Math.sin(c * u) / c - u, dz = -(1 - Math.cos(c * u)) / c; st.style.transform = `translate3d(0,${dy.toFixed(2)}px,${dz.toFixed(2)}px) rotateX(${(-c * u).toFixed(4)}rad)`; });   // each strip where the bow takes it, turned to follow it: the middle nearest, the edges falling away
         s.pairs.forEach(([o, cc]) => { if (cc.width !== o.width || cc.height !== o.height) { cc.width = o.width; cc.height = o.height; } const g = cc.getContext('2d'); g.clearRect(0, 0, cc.width, cc.height); g.drawImage(o, 0, 0); }); });
       requestAnimationFrame(blow); })(); }
   const anchor = h => h === '#about' ? one('.gray') : document.querySelector(h);   // About lands on the photo of Karen and Lisa, above the text
@@ -1520,7 +1520,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     one('.gray').style.setProperty('--py', ((gp - .5) * ((1080 + V) * .2 + 512) * U).toFixed(1) + 'px');   // the photo goes up 20% slower than it did, so the cards have time to come over it
     if (grayGL) grayGL.draw(gp);   // the light moves across them with the scroll
     lisa.style.top = (380 - (gp - 0.5) * 160) * U + 'px';                // (the #lisa card carries Karen's name: it is the first one)
-    karen.style.top = (600 - (gp - 0.5) * 240) * U + 'px';                // Lisa a little higher, and a little quicker than Karen
+    karen.style.top = (600 - (gp - 0.5) * 288) * U + 'px';                // Lisa a little higher, and a little quicker than Karen
     [[lisa, cardMarks[0]], [karen, cardMarks[1]]].forEach(([el, m]) => {
       const top = s3Top + parseFloat(el.style.top) / U - y;              // on the screen, design px
       drawMark(m, (V * 0.95 - top) / (V * 0.45));                        // the clay mark draws in while the card comes up
