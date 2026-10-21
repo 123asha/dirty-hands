@@ -23,7 +23,7 @@
      Type: CoFo Sans 15/19 for text, CoFo Cinema in capitals for headings. */
   @font-face { font-family: "CoFo Cinema"; src: url("CoFoCinema1909-Regular.otf") format("opentype"); font-weight: 400; font-display: swap; }
   @font-face { font-family: "CoFo Sans"; src: url("CoFoSans-Regular450.woff2") format("woff2"); font-weight: 400; font-display: swap; }
-  :root { --m: 16px; --g: 16px; --s1: 8px; --s2: 16px; --s3: 24px; --s4: 40px; --s5: 64px; --lh: 19px; --t: 15px; --h2: 15vw; --rule: #d9d9d9; --gray: #f2f2f2; --ease: cubic-bezier(.2,.8,.2,1); --col: calc((100vw - 2 * var(--m) - var(--g)) / 2); }
+  :root { --m: 16px; --g: 10px; --s1: 8px; --s2: 16px; --s3: 24px; --s4: 40px; --s5: 64px; --lh: 19px; --t: 15px; --h2: 15vw; --rule: #d9d9d9; --gray: #f2f2f2; --ease: cubic-bezier(.2,.8,.2,1); --col: calc((100vw - 2 * var(--m) - var(--g)) / 2); }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { color-scheme: light; } }
   :root[data-theme="dark"] { color-scheme: light; }
   * { box-sizing: border-box; }
@@ -84,9 +84,9 @@
 
   /* Karen and Lisa: the photo whole (no face cut) held in the middle of the screen, their two cards passing over it, Karen first, Lisa after her and a little quicker */
   .duo { position: relative; margin-top: var(--s5); }
-  .duo .photo { position: sticky; top: calc(50vh - 50vw); height: 100vw; overflow: hidden; z-index: 0; }
-  .duo .photo::before { content: ''; position: absolute; left: 50%; top: 50%; width: 100vw; height: 198vw; translate: -50% -50%; rotate: 90deg; background: url("photos/lisa-karen.jpg") center / 198vw auto no-repeat; }   /* the photo turned a quarter: it stands tall, and the cards pass over it */
-  .cards { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: var(--g); padding: 0 var(--m) 30vh; margin-top: 35vh; align-items: start; }
+  .duo .photo { position: sticky; top: 0; height: 100vh; overflow: hidden; z-index: 0; }   /* the whole screen: they stand full length behind the cards */
+  .duo .photo::before { content: ''; position: absolute; left: 50%; top: 50%; width: 100vh; height: 100vw; translate: -50% -50%; rotate: 90deg; background: url("photos/lisa-karen.jpg") center / contain no-repeat; }   /* the photo turned a quarter: whole, nothing cut at the sides, and the cards pass over it */
+  .cards { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: var(--g); padding: 0 var(--m) 30vh; margin-top: 55vh; align-items: start; }
   .card { background: #fff; padding: var(--s1) var(--s1) var(--s2); will-change: transform; }
   .card:nth-child(2) { margin-top: 28vh; }
   .card .r { display: block; padding: var(--s1) 0; border-top: 1px solid var(--rule); }
