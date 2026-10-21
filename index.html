@@ -728,7 +728,10 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   const X0 = i => 20 + 230.17 * i, W0 = 210.2, H0 = [262.7, 210, 262.7, 210, 262.7, 262.7];
   // the panel: its interior photo (int-panel-cut.jpg) has the very cut-out laid on the wall, at .5613/.358 of the photo, .1925 x .4994 of its size; in the pile the cut-out lies contained in 218.5 x 216, its own edges at 233..767 x 37..962 of 1000, so the photo is scaled and placed to put the relief exactly on its cut-out
   const TOP_FR = {}, PILE_FR = { 0: (() => { const s = 216 / 1000, ox = (218.5 - 216) / 2 + 234 * s, oy = 38 * s, oh = 923 * s, [, , ow0, oh0, iw, ih] = OBJ[0], h = oh / oh0, w = h * iw / ih; return { x: ox - (.5 - ow0 / 2) * w, y: oy - (.5 - oh0 / 2) * h, w, h }; })() };   // the panel's picture laid so the work sits exactly on its cut-out in the pile (the work's box is centred in its picture), never stretched
-  const MIDF = 0.44;                       // where the ruled line of the first screen stands, as a share of the screen height (the cards land on it, the menu starts under it)
+  let MIDF = 0.44;                         // where the ruled line of the first screen stands, as a share of the screen height: halfway between the bottom of the top row of cards and the top of the letters of the title
+  const placeMid = () => { const ch = document.querySelector('.ttl .h1') || document.querySelector('.ttl');   /* the line box, not the letters (they rise in during the intro) */ if (!ch) return; const r = ch.getBoundingClientRect(), fs = parseFloat(getComputedStyle(ch).fontSize) || 0, capTop = r.top + (r.height - fs * .7) / 2, cardsBottom = (20 + Math.max(...CARD_H)) * (document.documentElement.clientWidth / 1400);
+    if (capTop > cardsBottom) { MIDF = (cardsBottom + capTop) / 2 / innerHeight; one('.midstrip').style.top = (MIDF * 100).toFixed(2) + 'vh'; } };
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(placeMid); addEventListener('resize', placeMid);
   const PX = 700, PY0 = 34, PY1 = 1132;    // x of the work at three o'clock on the wheel; the y of the wheel's centre inside block 2 while it is held (design px), from the landing down to the last line (1132)
   const PW = 218.5, PH = 216;              // picture size
   const SHADE = [225, 212, 230, 216, 226, 210];
