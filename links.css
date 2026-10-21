@@ -4,8 +4,8 @@
 }
 .snd span { padding-bottom: 0; }   /* beside the sound line: no extra room, so the word does not move */
 .top nav a:hover, .nav a:hover, .top .back:hover, .top .ct:hover, a.ct:hover, .rest .shop:hover, .snd:hover span, .intro .btn:hover, .bar button:hover { background-size: 100% 1px; }
-#go, .credit .u { background: linear-gradient(currentColor, currentColor) 100% 100% / 100% 1px no-repeat; padding-bottom: .12em; text-decoration: none; transition: background-size .9s cubic-bezier(.4, 0, .2, 1); }   /* always underlined; pointed at, the line slowly goes, drawn back to the right */
-#go:hover, .credit:hover .u { background-size: 0 1px; }
+#go { background: linear-gradient(currentColor, currentColor) 100% 100% / 100% 1px no-repeat; padding-bottom: .12em; text-decoration: none; transition: background-size .9s cubic-bezier(.4, 0, .2, 1); }   /* always underlined; pointed at, the line slowly goes, drawn back to the right */
+#go:hover { background-size: 0 1px; }   /* (Skip Design in the credit has its own: no line at rest, it draws in when pointed at) */
 .top .ct:hover svg, a.ct:hover svg, .rest .shop:hover svg { animation: arrowSwap .55s cubic-bezier(.4, 0, .2, 1); }
 .top .back:hover svg { animation: arrowBack .55s cubic-bezier(.4, 0, .2, 1); }
 @keyframes arrowSwap { 0% { transform: none; opacity: 1; } 42% { transform: translate(120%, -120%); opacity: 0; } 43% { transform: translate(-120%, 120%); opacity: 0; } 100% { transform: none; opacity: 1; } }
