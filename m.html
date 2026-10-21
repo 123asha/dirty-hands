@@ -158,7 +158,9 @@
   .gal .ico path { fill: none; stroke: #c8c8c8; stroke-linejoin: round; stroke-linecap: round; }
   .track { position: relative; z-index: 1; display: flex; align-items: center; gap: var(--g); height: 100%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; padding: 0 22vw; scrollbar-width: none; perspective: 900px; }
   .track::-webkit-scrollbar { display: none; }
-  .track img { flex: none; width: auto; height: auto; max-height: 100%; max-width: 78vw; scroll-snap-align: center; }   /* whole, never wider than the screen allows: a wide photo simply gets lower */
+  .track .fr { flex: none; display: block; max-height: 100%; scroll-snap-align: center; isolation: isolate; }
+  .track .fr.grey { background: #f2f2f2; } .track .fr.grey img { mix-blend-mode: multiply; }   /* a photo on white stands on the cards' grey: the white multiplied into it, the work untouched */
+  .track img { width: auto; height: auto; max-height: 48vh; max-width: 78vw; }   /* whole, never wider than the screen allows: a wide photo simply gets lower */
   .cv .mid { flex: 1; display: grid; place-items: center; padding: var(--s2) var(--m); text-align: center; }
 
   /* order: the title on three shelves; the works stand on them and go round as the shelves are swiped; a tap lets the next work fall onto a free place; a black silhouette stands in the text and the lines bend round it */
@@ -354,16 +356,19 @@ window.preDone = new Promise(done => {
 
   // a category opens softly: its name rises, the picture that was tapped grows from its place into the slider, the others come in after it
   function openCat(k, from) { const key = KEYS[k], photos = [CUT[k], ...Array.from({ length: CAT_N[key] }, (_, n) => `photos/cat/${key}-${n + 1}.jpg`)];
-    show(`<div class="cv"><div class="head"><p class="h">${letters(CATS[k])}</p></div><div class="gal"><svg class="ico" viewBox="0 0 52 52" aria-hidden="true"><path pathLength="1" stroke-dasharray="1.04 1" stroke-dashoffset="1" d="${ICO[k]}"/></svg><div class="track">${photos.map((p, n) => `<img src="${p}" alt="" draggable="false"${n ? '' : ' class="cut"'}>`).join('')}</div></div><div class="mid"><p>${TEXT[k]}</p></div></div>`, true);
+    show(`<div class="cv"><div class="head"><p class="h">${letters(CATS[k])}</p></div><div class="gal"><svg class="ico" viewBox="0 0 52 52" aria-hidden="true"><path pathLength="1" stroke-dasharray="1.04 1" stroke-dashoffset="1" d="${ICO[k]}"/></svg><div class="track">${photos.map((p, n) => `<span class="fr bend"><img src="${p}" alt="" draggable="false"${n ? '' : ' class="cut"'}></span>`).join('')}</div></div><div class="mid"><p>${TEXT[k]}</p></div></div>`, true);
     const track = view.querySelector('.track'), ico = view.querySelector('.ico'), ip = ico.querySelector('path'), imgs = [...track.children];
+    const isWhite = im => { try { const c = document.createElement('canvas'); c.width = c.height = 16; const g = c.getContext('2d'); g.drawImage(im, 0, 0, 16, 16); const d = g.getImageData(0, 0, 16, 16).data, px = (x, y) => { const i = (y * 16 + x) * 4; return (d[i] + d[i + 1] + d[i + 2]) / 3; }; return [[0, 0], [15, 0], [0, 15], [15, 15], [8, 0]].every(([x, y]) => px(x, y) > 228); } catch (e) { return false; } };
+    imgs.slice(1).forEach(fr => { const im = fr.firstChild, mark = () => { if (isWhite(im)) fr.classList.add('grey'); }; if (im.complete) mark(); else im.addEventListener('load', mark, { once: true }); });
     ip.style.strokeWidth = (52 / ico.getBoundingClientRect().height).toFixed(4);   // one screen pixel
     gsap.fromTo(view.querySelectorAll('.head .ch'), { yPercent: 110 }, { yPercent: 0, duration: .8, ease: EASE, stagger: .035, delay: .1 });
     gsap.fromTo(view.querySelector('.mid p'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .8, ease: EASE, delay: .45 });
     imgs.slice(1).forEach((im, n) => gsap.fromTo(im, { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: .9, ease: EASE, delay: .25 + n * .06 }));
     const first = imgs[0], grow = () => { if (from) { const a = from.getBoundingClientRect(), b = first.getBoundingClientRect(); if (b.width) gsap.fromTo(first, { x: a.left + a.width / 2 - (b.left + b.width / 2), y: a.top + a.height / 2 - (b.top + b.height / 2), scale: a.height / b.height }, { x: 0, y: 0, scale: 1, duration: .8, ease: 'power3.inOut' }); } };
-    if (first.complete) grow(); else first.addEventListener('load', grow, { once: true });
+    if (first.firstChild.complete) grow(); else first.firstChild.addEventListener('load', grow, { once: true });
     let near = -1; const redraw = () => { const c = track.getBoundingClientRect().left + track.clientWidth / 2; let best = 0, bd = 1e9; imgs.forEach((im, n) => { const r = im.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - c); if (d < bd) { bd = d; best = n; } });
-      if (best !== near) { near = best; gsap.fromTo(ip, { attr: { 'stroke-dashoffset': 1 } }, { attr: { 'stroke-dashoffset': 0 }, duration: 1.4, ease: 'power2.inOut', overwrite: true }); } };   // the outline draws itself again behind each picture that comes to the middle
+      if (best !== near) { const first_ = near < 0; near = best; if (first_) gsap.fromTo(ip, { attr: { 'stroke-dashoffset': 1 } }, { attr: { 'stroke-dashoffset': 0 }, duration: 1.4, ease: 'power2.inOut' }); else goal = nums[(k + best) % nums.length]; } };   // drawn once, then it flows from one form into the next behind each picture that comes to the middle
+    let cur = nums[k].slice(), goal = null; (function flow() { if (!view.contains(ip)) return; if (goal) { let moved = false; cur.forEach((v, n) => { const d = goal[n] - v; if (Math.abs(d) > .01) { cur[n] = v + d * .07; moved = true; } }); if (moved) { let n = 0; ip.setAttribute('d', tpl.replace(/#/g, () => cur[n++].toFixed(2))); } } requestAnimationFrame(flow); })();
     track.addEventListener('scroll', redraw, { passive: true }); setTimeout(redraw, 300);
     bendStrip(track); }
   function openCase(c) { const [n, t] = CASES[c];
