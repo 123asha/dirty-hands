@@ -72,9 +72,9 @@
   .ph-line { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
   .ph-line path.ph-l { fill: none; stroke: #000; stroke-width: 6.5; stroke-linejoin: round; transition: opacity .3s var(--ease); }
   .ph-line .ph-fig { opacity: 0; transition: opacity .45s var(--ease); }
-  .ph-bg { position: absolute; inset: 0; background: center / cover no-repeat; opacity: 0; transition: opacity .35s var(--ease); pointer-events: none; }   /* 6.5 of the drawing's 1080 is about one screen pixel on the small picture */
+  .ph-bg { position: absolute; inset: 0; background: center / cover no-repeat; clip-path: inset(50% 0 50% 0); opacity: 0; transition: clip-path .35s var(--ease), opacity .2s linear .15s; pointer-events: none; }   /* the room opens like the cards do: from a thin strip on the middle line, up and down */   /* 6.5 of the drawing's 1080 is about one screen pixel on the small picture */
   .rest > .ph:not(.pic):not(.bar) { background-image: none !important; background-color: transparent; } .rest > .ph:not(.pic):not(.bar) .ph-line { opacity: 1; }   /* at rest: white, only the line drawing */
-  .rest > .ph:not(.pic):not(.bar):hover .ph-l { opacity: 0; } .rest > .ph:not(.pic):not(.bar):hover .ph-fig { opacity: 1; transition-delay: .1s; } .rest > .ph:not(.pic):not(.bar):hover .ph-bg { opacity: 1; transition: opacity .7s var(--ease) .55s; }   /* pointed at: the line goes, the vessels themselves come, then the room around them */
+  .rest > .ph:not(.pic):not(.bar):hover .ph-l { opacity: 0; } .rest > .ph:not(.pic):not(.bar):hover .ph-fig { opacity: 1; transition-delay: .1s; } .rest > .ph:not(.pic):not(.bar):hover .ph-bg { opacity: 1; clip-path: inset(0 0 0 0); transition: clip-path .8s cubic-bezier(.65, 0, .35, 1) .5s, opacity .15s linear .5s; }   /* pointed at: the line goes, the vessels themselves come, then the room around them */
   .rest > .ph:not(.pic):not(.bar) { cursor: pointer; }
   #about { scroll-margin-top: calc(52 * var(--u)); }   /* the About link brings the block up to its own top edge, not the heading flush against the screen's */
   /* menu: rises with the scroll from its place in the hero, then stays 20 from the top (top is set in tick); white + difference, like the title, so it stays readable over blocks */
