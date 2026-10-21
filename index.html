@@ -243,7 +243,7 @@
   .cat-strip::after { content: ''; position: absolute; inset: 0; background: #fff; opacity: var(--w, 0); }   /* the strips turning away go paler, as before, without being see-through */
   .cat-title { position: absolute; left: calc(20 * var(--u)); top: calc(20 * var(--u)); overflow: hidden; padding: 0 .05em .08em; }
   .cat-title .c { display: inline-block; white-space: pre; }   /* letter by letter: they come down from above, and go back up when the gallery closes */
-  .cat-ico { position: absolute; left: 50%; top: 45%; width: 70vh; height: 70vh; translate: -50% -50%; opacity: 0; pointer-events: none; }   /* the category's form, drawn as one grey line, large, behind its works */
+  .cat-ico { z-index: 5; position: absolute; left: 50%; top: 45%; width: 70vh; height: 70vh; translate: -50% -50%; opacity: 0; pointer-events: none; }   /* the category's form, drawn as one grey line, large, behind its works */
   .cat-ico svg { width: 100%; height: 100%; overflow: visible; }
   .cat-ico path { fill: none; stroke: #c8c8c8; stroke-linejoin: round; stroke-linecap: round; }   /* no non-scaling stroke here: it breaks the dash the line is drawn with into pieces */
   .cat-text { position: absolute; left: 50%; bottom: calc(20 * var(--u)); width: calc(210 * var(--u)); margin-left: calc(-105 * var(--u)); font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; text-align: center; z-index: 2; }   /* the body text, one column wide, centred, down at the bottom of the screen 20 above its edge */
@@ -1145,7 +1145,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       const g = document.createElement('div'); g.className = 'cat-ph'; g.style.zIndex = order[j] === 0 ? 2 : 1; host.append(g); const p = { g, d: order[j], strips: [], ph, tj }; photos.push(p);   // the clicked one lies on top: the others come out from under it
       for (let k = 0; k < KS; k++) {
         const el = document.createElement('div'); el.className = 'cat-strip';
-        el.innerHTML = `<i style="left:${1 - k * sj}px;width:${pw}px;height:${ph}px"></i>`; el.firstChild.style.backgroundImage = `url("${src}")`; if (j && CAT_WHITE[src]) { el.firstChild.style.backgroundColor = '#f2f2f2'; el.firstChild.style.backgroundBlendMode = 'multiply'; }
+        el.innerHTML = `<i style="left:${1 - k * sj}px;width:${pw}px;height:${ph}px"></i>`; el.firstChild.style.backgroundImage = `url("${src}")`; if (j) { el.firstChild.style.backgroundColor = '#f2f2f2'; el.firstChild.style.backgroundBlendMode = 'multiply'; }
         if (j === 0) { const f = frameFor(ci, pw, ph), cut = el.firstChild, card_ = document.createElement('b'); cut.style.backgroundImage = HERO(ci); cut.style.backgroundSize = 'contain';   /* in the gallery the work itself, cut out, with nothing behind it */
           card_.className = 'cat-card'; Object.assign(card_.style, { backgroundImage: `url("${src}")`, backgroundSize: `${f.w.toFixed(1)}px ${f.h.toFixed(1)}px`, backgroundPosition: `${f.x.toFixed(1)}px ${f.y.toFixed(1)}px` }); cut.append(card_); }   /* and over it the card as it is on the page (photo on grey), which melts away as it leaves the card and comes back as it lands */   // the clicked work stands in the middle of its frame, as in the card
         Object.assign(el.style, { left: cx - sj / 2 - 1 + 'px', top: tj + 'px', width: sj + 2 + 'px', height: ph + 'px' });
