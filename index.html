@@ -1202,7 +1202,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const tl = gsap.timeline({ onReverseComplete() { stop(); card.style.visibility = ''; if (scrollY < 4 && card.matches(':hover')) card.classList.add('hov');   /* still pointed at: the card shows the same photo the gallery folded back */ CATV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); tick(); } });
     tl.to(pageEls(), { opacity: 0, duration: .45, ease: 'power2.in' }, 0);
     tl.fromTo('#catView .ov-scrim', { opacity: 0 }, { opacity: 1, duration: .45, ease: 'power2.out' }, 0);
-    tl.fromTo(host, { x: ox, y: oy, scale: sc }, { x: 0, y: 0, scale: 1, duration: .75, ease: 'back.out(1.3)' }, 0);   // the picture comes straight at us from where it was clicked
+    tl.fromTo(host, { x: ox, y: oy, scale: sc }, { x: 0, y: 0, scale: 1, duration: .9, ease: 'power3.inOut' }, 0);   // one smooth move into place, no overshoot   // the picture comes straight at us from where it was clicked
     tl.fromTo(st, { bend: .08 }, { bend: 1, duration: .75, ease: 'power2.out' }, 0);
     // the clicked work keeps its card's ground in the gallery too   // the grey card melts into the cut-out work on the way out (and back on the way in)   /* flat at the card: it lands back flat, as the card is */                                    // already bulging on its way
     tl.to(st, { spread: 1, duration: 1.7, ease: 'power1.inOut' }, .5);                                           // the others come out round it
