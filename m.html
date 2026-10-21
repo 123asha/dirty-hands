@@ -163,7 +163,7 @@
   .cv { height: 100%; display: flex; flex-direction: column; }
   .cv .head { flex: none; }
   .gal { flex: none; position: relative; height: 48vh; margin-top: var(--s3); }
-  .gal .ico { position: absolute; left: 50%; top: 50%; width: 58vh; height: 58vh; translate: -50% -50%; overflow: visible; pointer-events: none; z-index: 0; }
+  .gal .ico { position: absolute; left: 50%; top: 50%; width: 58vh; height: 58vh; translate: -50% -50%; overflow: visible; pointer-events: none; z-index: 2; }   /* the outline over the pictures */
   .gal .ico path { fill: none; stroke: #c8c8c8; stroke-linejoin: round; stroke-linecap: round; }
   .track { position: relative; z-index: 1; display: flex; align-items: center; gap: var(--g); height: 100%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; padding: 0 22vw; scrollbar-width: none; perspective: 900px; }
   .track::-webkit-scrollbar { display: none; }
@@ -386,7 +386,7 @@ window.preDone = new Promise(done => {
     show(`<div class="cv"><div class="head"><p class="h">${letters(CATS[k])}</p></div><div class="gal"><svg class="ico" viewBox="0 0 52 52" aria-hidden="true"><path pathLength="1" stroke-dasharray="1.04 1" stroke-dashoffset="1" d="${ICO[k]}"/></svg><div class="track">${photos.map((p, n) => `<span class="fr bend"><img src="${p}" alt="" draggable="false"${n ? '' : ' class="cut"'}></span>`).join('')}</div></div><div class="mid"><p>${TEXT[k]}</p></div></div>`, true);
     const track = view.querySelector('.track'), ico = view.querySelector('.ico'), ip = ico.querySelector('path'), imgs = [...track.children];
     const isWhite = im => { try { const c = document.createElement('canvas'); c.width = c.height = 16; const g = c.getContext('2d'); g.drawImage(im, 0, 0, 16, 16); const d = g.getImageData(0, 0, 16, 16).data, px = (x, y) => { const i = (y * 16 + x) * 4; return (d[i] + d[i + 1] + d[i + 2]) / 3; }; return [[0, 0], [15, 0], [0, 15], [15, 15], [8, 0]].every(([x, y]) => px(x, y) > 228); } catch (e) { return false; } };
-    imgs.slice(1).forEach(fr => { const im = fr.firstChild, mark = () => { if (isWhite(im)) fr.classList.add('grey'); }; if (im.complete) mark(); else im.addEventListener('load', mark, { once: true }); });
+    imgs.slice(1).forEach(fr => { const im = fr.firstChild, mark = () => fr.classList.add('grey'); if (im.complete) mark(); else im.addEventListener('load', mark, { once: true }); });
     ip.style.strokeWidth = (52 / ico.getBoundingClientRect().height).toFixed(4);   // one screen pixel
     gsap.fromTo(view.querySelectorAll('.head .ch'), { yPercent: 110 }, { yPercent: 0, duration: .8, ease: EASE, stagger: .035, delay: .1 });
     gsap.fromTo(view.querySelector('.mid p'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .8, ease: EASE, delay: .45 });
