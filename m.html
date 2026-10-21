@@ -356,7 +356,7 @@ window.preDone = new Promise(done => {
   const letters = s => [...s].map(c => `<span class="ch">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
 
   // a category opens softly: its name rises, the picture that was tapped grows from its place into the slider, the others come in after it
-  function openCat(k, from) { const key = KEYS[k], photos = [CUT[k], ...CAT_FILES[key]];
+  function openCat(k, from) { const key = KEYS[k], photos = [PHOTO[k], ...CAT_FILES[key]];   /* the tapped work on its card's grey */
     show(`<div class="cv"><div class="head"><p class="h">${letters(CATS[k])}</p></div><div class="gal"><svg class="ico" viewBox="0 0 52 52" aria-hidden="true"><path pathLength="1" stroke-dasharray="1.04 1" stroke-dashoffset="1" d="${ICO[k]}"/></svg><div class="track">${photos.map((p, n) => `<span class="fr bend"><img src="${p}" alt="" draggable="false"${n ? '' : ' class="cut"'}></span>`).join('')}</div></div><div class="mid"><p>${TEXT[k]}</p></div></div>`, true);
     const track = view.querySelector('.track'), ico = view.querySelector('.ico'), ip = ico.querySelector('path'), imgs = [...track.children];
     const isWhite = im => { try { const c = document.createElement('canvas'); c.width = c.height = 16; const g = c.getContext('2d'); g.drawImage(im, 0, 0, 16, 16); const d = g.getImageData(0, 0, 16, 16).data, px = (x, y) => { const i = (y * 16 + x) * 4; return (d[i] + d[i + 1] + d[i + 2]) / 3; }; return [[0, 0], [15, 0], [0, 15], [15, 15], [8, 0]].every(([x, y]) => px(x, y) > 228); } catch (e) { return false; } };

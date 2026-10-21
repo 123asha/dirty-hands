@@ -1204,7 +1204,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     tl.fromTo('#catView .ov-scrim', { opacity: 0 }, { opacity: 1, duration: .45, ease: 'power2.out' }, 0);
     tl.fromTo(host, { x: ox, y: oy, scale: sc }, { x: 0, y: 0, scale: 1, duration: .75, ease: 'back.out(1.3)' }, 0);   // the picture comes straight at us from where it was clicked
     tl.fromTo(st, { bend: .08 }, { bend: 1, duration: .75, ease: 'power2.out' }, 0);
-    tl.fromTo(host.querySelectorAll('.cat-card'), { opacity: 1 }, { opacity: 0, duration: .5, ease: 'power2.inOut' }, .2);   // the grey card melts into the cut-out work on the way out (and back on the way in)   /* flat at the card: it lands back flat, as the card is */                                    // already bulging on its way
+    // the clicked work keeps its card's ground in the gallery too   // the grey card melts into the cut-out work on the way out (and back on the way in)   /* flat at the card: it lands back flat, as the card is */                                    // already bulging on its way
     tl.to(st, { spread: 1, duration: 1.7, ease: 'power1.inOut' }, .5);                                           // the others come out round it
     tl.fromTo(letters, { yPercent: -115 }, { yPercent: 0, duration: .6, ease: EASE, stagger: .04 }, .45);
     riseIn(tl, inT, { at: 1, each: .07, dur: .8 });                                                             // the text in front
