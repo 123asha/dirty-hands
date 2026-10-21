@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>if (innerWidth < 768) location.replace('m.html#order');   // phones get their own page</script>
 <title>Order — Dirty Hands</title>
 <meta name="description" content="Custom ceramic panels and art objects for interiors and facades, made to your sketch: Dirty Hands works with designers, decorators and architects.">
 <meta property="og:type" content="website">
@@ -97,7 +98,7 @@
 <div class="grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 <script>{ const grid = document.querySelector('.grid'); try { if (sessionStorage.getItem('grid') === '1') grid.classList.add('on'); } catch (e) {}   // the grid stays on or off from page to page
   addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.code === 'KeyG') { e.preventDefault(); if (!e.repeat) { const on = grid.classList.toggle('on'); try { sessionStorage.setItem('grid', on ? '1' : '0'); } catch (er) {} } } }); }</script>
-<script src="clay.js?v=4"></script>
+<script src="clay.js?v=5"></script>
 <script src="sound.js?v=12"></script>
 <script>
 (() => {

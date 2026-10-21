@@ -11,7 +11,8 @@ let S = 1, W = 0, H = 0, T = null, D = null, img = null;
 const TILE = 64;
 const tiles = new Map();
 const content = new Set();      // tiles that still hold clay and keep fading
-const HOLD = 1.75;              // seconds a fresh mark stays before it starts to fade
+const FAST = !!window.clayFast;   // on the phone the marks go sooner
+const HOLD = FAST ? .8 : 1.75;  // seconds a fresh mark stays before it starts to fade
 const FADE_STEP = 1 / 20;       // fading runs 20 times a second in small steps, so the marks melt away smoothly
 let lastFade = 0;
 const now = () => performance.now() / 1000;
@@ -566,7 +567,7 @@ function fade(t) {
         let v = T[i];
         if (v <= 0) continue;
         if (t - D[i] > HOLD) {
-          v = v * 0.913 - 0.0054;
+          v = FAST ? v * 0.86 - 0.009 : v * 0.913 - 0.0054;
           T[i] = v > 0.003 ? v : 0;
           changed = true;
         }

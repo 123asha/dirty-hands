@@ -51,6 +51,15 @@
   .bar .st { opacity: .6; }
 </style>
 <link rel="stylesheet" href="links.css">
+<style>
+  @media (max-width: 767px) {   /* on the phone: real sizes for the text, 16 px margins, the menu down to Sound, Back and Contact */
+    :root { --t18: 15px; --l18: 19px; }
+    .top { top: calc(16px + env(safe-area-inset-top)); } .top .snd { left: 16px; } .top .snd svg { width: 18px; height: 12px; } .top .back { left: 50%; translate: -50% 0; } .top nav { display: none; } .top .ct { right: 16px; }
+    .intro { left: 16px; right: 16px; width: auto; bottom: calc(64px + env(safe-area-inset-bottom)); }
+    .intro h1 { font-size: 64px; margin-bottom: 24px; } .intro p { text-indent: 24px; } .intro .btn { margin-top: 8px; } .intro .btn + .btn { margin-left: 16px; }
+    .bar { left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); gap: 16px; } .bar .acts { gap: 16px; }
+  }
+</style>
 </head>
 <body>
 <div class="top">
