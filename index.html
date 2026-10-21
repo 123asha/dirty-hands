@@ -19,6 +19,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
 <style>
+  h2, h3 { margin: 0; font-size: inherit; font-weight: 400; }   /* the headings keep the look of the type they stand for: their order is for search engines and screen readers */
   @font-face { font-family: "CoFo Cinema"; src: url("CoFoCinema1909-Regular.otf") format("opentype"); font-weight: 400; font-display: swap; }
   @font-face { font-family: "CoFo Sans"; src: url("CoFoSans-Regular450.woff2") format("woff2"); font-weight: 400; font-display: swap; }
   :root { --t18: min(18px, calc(18 * var(--u))); --l18: calc(18 * var(--u)); --bg: #fff; --ink: #000; --u: calc(var(--W, 100vw) / 1400); --ph: rgba(169,169,169,.15); --gray: #f2f2f2; --rule: #d9d9d9; --dur: .6s; --ease: cubic-bezier(.2,.8,.2,1); }
@@ -329,7 +330,7 @@
 </section>
 
 <section class="rest">
-  <div class="t18" id="about" style="left:calc(250 * var(--u));top:calc(52 * var(--u));width:calc(440 * var(--u));opacity:.4;line-height:1">Clay with something to say</div>
+  <h2 class="t18" id="about" style="left:calc(250 * var(--u));top:calc(52 * var(--u));width:calc(440 * var(--u));opacity:.4;line-height:1">Clay with something to say</h2>
   <p class="t18 lr" style="left:calc(710 * var(--u));top:calc(52 * var(--u));width:calc(440 * var(--u));padding-right:calc(40 * var(--u));">At DirtyHands, we create original design pieces — from tabletop art objects and wall panels to sculptural forms and interior accents that enhance spaces and set their emotional tone.</p>
   <div class="ph" style="left:calc(618 * var(--u));top:calc(272.25 * var(--u));width:calc(164 * var(--u));height:calc(157.5 * var(--u));"></div>
   <div class="stack" style="left:calc(940 * var(--u));top:calc(142 * var(--u));width:calc(440 * var(--u));">
@@ -341,11 +342,11 @@
     <p class="t18" style="left:calc(20 * var(--u));opacity:.4">Clients about us</p>
     <div class="quote" style="left:calc(250 * var(--u));width:calc(210 * var(--u));"><div class="rules" data-n="3" data-step="19" style="left:0;top:0;width:100%;height:calc(38 * var(--u));"></div><p class="t18 q" style="line-height:calc(19 * var(--u));"></p></div>
   </div></div>
-  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(621.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">Brera</span></p>
-  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(738.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">AVA</span></p>
-  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(855.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">The Greeks</span></p>
-  <p class="t name2 partner" style="left:calc(706 * var(--u));top:calc(972.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">Novikov</span></p>
-  <p class="t name2 partner" style="display:none;left:calc(706 * var(--u));top:calc(1099.8 * var(--u));width:calc(674 * var(--u));"><span class="pf">Rodina Moskva</span></p>
+  <h3 class="t name2 partner" style="left:calc(706 * var(--u));top:calc(621.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">Brera</span></h3>
+  <h3 class="t name2 partner" style="left:calc(706 * var(--u));top:calc(738.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">AVA</span></h3>
+  <h3 class="t name2 partner" style="left:calc(706 * var(--u));top:calc(855.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">The Greeks</span></h3>
+  <h3 class="t name2 partner" style="left:calc(706 * var(--u));top:calc(972.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">Novikov</span></h3>
+  <h3 class="t name2 partner" style="display:none;left:calc(706 * var(--u));top:calc(1099.8 * var(--u));width:calc(674 * var(--u));"><span class="pf">Rodina Moskva</span></h3>
 
   <div class="ph pic" id="cases" style="left:calc(20 * var(--u));top:calc(1295 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
   <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(1258 * var(--u))">Restaurant</span>
@@ -374,7 +375,7 @@
   <a class="t18 shop olink" href="shop.html" style="display:block;width:max-content;left:calc(940 * var(--u));top:calc(4256 * var(--u));">Order and cooperation<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a>
   <div class="bigrow" style="left:calc(480 * var(--u));top:calc(4147.7 * var(--u));height:calc(98 * var(--u));"><p class="t name2">forms</p></div>
 
-  <div class="tagged" style="left:calc(250 * var(--u));top:calc(4513 * var(--u));"><p class="t big2">Media</p><span class="yr" aria-hidden="true"></span></div>
+  <div class="tagged" style="left:calc(250 * var(--u));top:calc(4513 * var(--u));"><h2 class="t big2">Media</h2><span class="yr" aria-hidden="true"></span></div>
   <p class="t18" data-year="2025" style="left:calc(810 * var(--u));top:calc(4533 * var(--u));width:calc(210 * var(--u));">Design Mate</p>
   <p class="t18 mdesc" style="left:calc(830 * var(--u));top:calc(4533 * var(--u));width:calc(320 * var(--u));">DirtyHands opens Art in the Hands in Moscow: a gallery, and a place for lessons in clay.</p>
   <p class="t18" data-year="2025" style="left:calc(810 * var(--u));top:calc(4623 * var(--u));width:calc(210 * var(--u));">Interior+Design</p>
