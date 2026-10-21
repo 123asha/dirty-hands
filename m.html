@@ -17,167 +17,202 @@
 <script>if (innerWidth >= 768) location.replace(location.hash === '#order' ? 'shop.html' : './' + location.hash);   // the phone page: on a wide screen go to the full one</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <style>
-  /* Dirty Hands on the phone: the same content and principles as the full page, laid out in one column of a two-column grid.
-     Grid: 16 side margins, two columns, 16 gutter. Spacing scale: 8 · 16 · 24 · 40 · 64 (inside a group the smaller steps, between groups the larger).
-     Type: CoFo Sans 15/19 for text, CoFo Cinema in capitals for headings; text and its lines never closer than the line gap. */
+  /* Dirty Hands on the phone: the same content and the same behaviour as the full page, laid out for one hand.
+     Grid: 16 side margins, two columns, 16 gutter. Spacing scale: 8 · 16 · 24 · 40 · 64.
+     Type: CoFo Sans 15/19 for text, CoFo Cinema in capitals for headings. */
   @font-face { font-family: "CoFo Cinema"; src: url("CoFoCinema1909-Regular.otf") format("opentype"); font-weight: 400; font-display: swap; }
   @font-face { font-family: "CoFo Sans"; src: url("CoFoSans-Regular450.woff2") format("woff2"); font-weight: 400; font-display: swap; }
   :root { --m: 16px; --g: 16px; --s1: 8px; --s2: 16px; --s3: 24px; --s4: 40px; --s5: 64px; --lh: 19px; --t: 15px; --h2: 15vw; --rule: #d9d9d9; --gray: #f2f2f2; --ease: cubic-bezier(.2,.8,.2,1); --col: calc((100vw - 2 * var(--m) - var(--g)) / 2); }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { color-scheme: light; } }
   :root[data-theme="dark"] { color-scheme: light; }
   * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
-  [id] { scroll-margin-top: calc(var(--s5) + env(safe-area-inset-top)); }   /* About and Cases land under the bar, on the same step as the first screen */
-  body { margin: 0; background: #fff; color: #000; font-family: "CoFo Sans", -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: var(--t); line-height: var(--lh); letter-spacing: -.01em; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; overflow-x: clip; }
+  [id] { scroll-margin-top: calc(var(--s5) + env(safe-area-inset-top)); }
+  body { margin: 0; background: #fff; color: #000; font-family: "CoFo Sans", -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: var(--t); line-height: var(--lh); letter-spacing: -.01em; -webkit-font-smoothing: antialiased; overflow-x: clip; }
   a { color: inherit; text-decoration: none; }
   p { margin: 0; }
   button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+  img { display: block; }
   .wrap { padding: 0 var(--m); }
   .h { font-family: "CoFo Cinema", "CoFo Sans", sans-serif; font-weight: 400; text-transform: uppercase; line-height: .91; letter-spacing: -.01em; margin: 0; }
-  .lab { color: #999; }   /* grey as colour, not opacity: the reveal sets opacity */
-  .rule { border-top: 1px solid var(--rule); }
+  .lab { color: #999; }
   .sec { margin-top: var(--s5); }
+  .arr { display: inline-block; margin-left: .25em; vertical-align: .02em; }
+  @keyframes arrowSwap { 0% { transform: none; opacity: 1; } 42% { transform: translate(120%, -120%); opacity: 0; } 43% { transform: translate(-120%, 120%); opacity: 0; } 100% { transform: none; opacity: 1; } }
 
-  /* top bar: the sound switch on the left, the menu on the right, blended so it reads over pictures too */
-  .top { position: fixed; z-index: 50; left: 0; right: 0; top: 0; height: calc(48px + env(safe-area-inset-top)); padding: env(safe-area-inset-top) var(--m) 0; display: flex; justify-content: space-between; align-items: center; background: #fff; pointer-events: none; }   /* a plain white bar: on the phone the text scrolls under it, so it is not blended */
+  /* the preloader: a finger writes DH in clay on a white sheet, then the sheet goes and the clay soaks away */
+  .pre { position: fixed; inset: 0; z-index: 3000; background-color: #fff; } .pre canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+  /* top bar */
+  .top { position: fixed; z-index: 50; left: 0; right: 0; top: 0; height: calc(48px + env(safe-area-inset-top)); padding: env(safe-area-inset-top) var(--m) 0; display: flex; justify-content: space-between; align-items: center; background: #fff; pointer-events: none; }
   .top > * { pointer-events: auto; }
   .top nav { display: flex; gap: 12px; }
   .snd { display: flex; align-items: center; gap: var(--s1); }
-  .snd svg { width: 24px; height: 10px; overflow: visible; }
+  .snd svg { width: 20px; height: 10px; overflow: visible; }   /* a line 15% shorter than the 24 of the full page */
   .snd[aria-pressed="false"] span { opacity: .5; }
 
-  /* first screen: the six categories as photos on the grid, the title under them */
-  .hero { padding: calc(var(--s5) + env(safe-area-inset-top)) var(--m) 0; }
-  .cats { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s3) var(--g); }
-  .cat { display: block; text-align: left; }
-  .cat i { display: block; aspect-ratio: 4 / 5; background: #ecebe9 50% 48% / 170% auto no-repeat; }   /* the work about three quarters of the card wide, a touch above the middle, as on the full page */
+  /* first screen: the categories as a horizontal slider of signed pictures, then the title rising letter by letter */
+  .hero { padding: calc(var(--s5) + env(safe-area-inset-top)) 0 0; }
+  .strip { display: flex; gap: var(--g); overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 var(--m); scroll-padding: 0 var(--m); scrollbar-width: none; perspective: 900px; }
+  .strip::-webkit-scrollbar { display: none; }
+  .cat { flex: none; width: 46vw; scroll-snap-align: start; text-align: left; }
+  .cat i { display: block; aspect-ratio: 4 / 5; background: #ecebe9 50% 48% / 170% auto no-repeat; }
+  .cat:nth-child(2) i, .cat:nth-child(4) i { aspect-ratio: 1; }   /* as the cards on the full page: level at the top, stepped at the bottom (tall, short, tall, short, tall, tall) */
+  .strip#cats { align-items: flex-start; }
   .cat span { display: block; margin-top: var(--s1); }
-  .ttl { font-size: 21.6vw; margin-top: var(--s4); text-align: center; white-space: nowrap; }
-  .tag { margin-top: var(--s2); text-align: center; }
+  .bend { will-change: transform; transform-origin: 50% 50%; }
+  .ttl { font-size: 37vw; margin-top: var(--s4); text-align: center; }
+  .ttl { line-height: .8; }
+  .ttl .ln { display: block; overflow: hidden; padding: .03em 0 0; }   /* the two lines closer: half the gap they had */
+  .ttl .kR { margin-right: -.045em; }   /* the R a little closer to the T */
+  .ttl .ch { display: inline-block; }
+  .tag { margin-top: var(--s2); text-align: center; opacity: 0; }
 
-  /* the categories as a ruled list: number, the work cut out, a line of text */
+  /* the categories as a ruled list */
   .list { margin-top: var(--s5); }
   .row { display: grid; grid-template-columns: 24px 72px 1fr; gap: var(--g); align-items: start; padding: var(--s2) 0; border-top: 1px solid var(--rule); width: 100%; text-align: left; }
   .row:last-child { border-bottom: 1px solid var(--rule); }
   .row .n { opacity: .4; }
   .row i { display: block; height: 72px; background: center / contain no-repeat; }
 
-  /* Karen and Lisa */
-  .duo { margin-top: var(--s5); }
-  .duo .photo { height: 120vw; background: url("photos/lisa-karen.jpg") center / cover no-repeat; position: relative; }
-  .duo .photo::after { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  1 1 1 0 -1.2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E"); opacity: .09; mix-blend-mode: multiply; }
-  .cards { display: grid; grid-template-columns: 1fr; gap: var(--s4); margin-top: calc(-1 * var(--s5)); position: relative; }
-  .card { background: #fff; padding: var(--s2) var(--m) 0; }
-  .card .r { display: block; padding: var(--s1) 0; border-top: 1px solid var(--rule); }   /* the number on its own line, the text under it, as on the full page */
+  /* Karen and Lisa: the photo whole (no face cut) held in the middle of the screen, their two cards passing over it, Karen first, Lisa after her and a little quicker */
+  .duo { position: relative; margin-top: var(--s5); }
+  .duo .photo { position: sticky; top: calc(50vh - 25.3vw); height: 50.6vw; background: url("photos/lisa-karen.jpg") center / 100% auto no-repeat; z-index: 0; }
+  .cards { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: var(--g); padding: 0 var(--m) 30vh; margin-top: 35vh; align-items: start; }
+  .card { background: #fff; padding: var(--s1) var(--s1) var(--s2); will-change: transform; }
+  .card:nth-child(2) { margin-top: 28vh; }
+  .card .r { display: block; padding: var(--s1) 0; border-top: 1px solid var(--rule); }
   .card .r .n { display: block; opacity: .4; }
+  .card .h { font-size: 11vw; margin-top: var(--s3); }
   .card .cf { margin-top: var(--s1); color: #999; }
-  .card .h { font-size: var(--h2); margin-top: var(--s3); }
 
   /* about */
   .about p + p { margin-top: var(--lh); }
-  .about .pic-s { width: var(--col); aspect-ratio: 1; margin: var(--s4) 0; background: url("photos/white-pots.jpg") center / cover no-repeat; }
+  .about .shift { padding-left: calc(100vw / 3); }   /* the second paragraph a third of the screen in */
+  .pots { position: relative; width: var(--col); aspect-ratio: 1; margin: var(--s4) 0; }
+  .pots i { position: absolute; inset: 0; background: url("photos/white-pots.jpg") center / cover no-repeat; opacity: 0; }
+  .pots svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .pots path { fill: none; stroke: #000; stroke-width: 1.4; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
   .lnk { display: inline-flex; gap: .25em; align-items: flex-start; }
   .lnk svg { margin-top: .3em; }
 
-  /* clients and their cases: each name, what the place is, its photo and a line */
+  /* clients: the label and the client's words held at the top, the names going black as each reaches the middle */
+  .chead { position: sticky; top: calc(48px + env(safe-area-inset-top)); z-index: 2; background: #fff; padding: var(--s1) 0 var(--s2); }
+  .quote { margin-top: var(--s1); min-height: calc(2 * var(--lh)); }
   .case { margin-top: var(--s4); }
-  .case .h { font-size: var(--h2); }
+  .case .h { font-size: var(--h2); color: #d0d0d0; transition: color .5s var(--ease); }
+  .case.act .h { color: #000; }
   .case .type { margin-top: var(--s1); }
   .case .pic { display: block; width: 100%; aspect-ratio: 5 / 4; margin-top: var(--s2); background: var(--gray) center / cover no-repeat; }
-  .case .cap { margin-top: var(--s2); padding: 0; }
+  .case .cap { margin-top: var(--s2); }
   .case .cap span { display: block; border-top: 1px solid var(--rule); padding-top: var(--s1); }
-  .quote { margin-top: var(--s2); }
 
-  /* unconventional ceramic forms: the three words stacked, a form drawn in one line over them */
-  .forms { position: relative; margin-top: var(--s5); padding: 0 var(--m); }
-  .forms .h { font-size: var(--h2); display: block; border-bottom: 1px solid var(--rule); padding: 4px 0 2px; }
-  .forms .h:nth-child(2) { text-align: right; } .forms .h:nth-child(3) { text-align: center; }
-  .forms svg { position: absolute; left: 50%; top: 50%; width: 46vw; height: 46vw; translate: -50% -50%; overflow: visible; mix-blend-mode: difference; pointer-events: none; }
+  /* unconventional ceramic forms: the first word where it is, the second from the middle, the third from the left; they slide to their places with the scroll, and a form drawn in one line turns from one work into the next over them, bigger than the block */
+  .forms { position: relative; margin-top: var(--s5); padding: var(--s5) var(--m); overflow-x: clip; }   /* the words slide in from the sides without widening the page; the form may still reach above and below */
+  .forms .h { font-size: var(--h2); display: block; border-bottom: 1px solid var(--rule); padding: 4px 0 2px; will-change: transform; }
+  .forms .h:nth-child(2) { padding-left: 50%; }
+  .forms svg { position: absolute; left: 50%; top: 50%; width: 92vw; height: 92vw; translate: -50% -50%; overflow: visible; mix-blend-mode: difference; pointer-events: none; }
   .forms svg path { fill: none; stroke: #fff; stroke-width: 1.4; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
 
   /* media */
   .media .h { font-size: var(--h2); }
   .mi { display: grid; grid-template-columns: 72px 1fr; gap: var(--g); padding: var(--s2) 0; border-top: 1px solid var(--rule); }
-  .mi i { display: block; aspect-ratio: 4 / 3; background: var(--gray) center / cover no-repeat; margin-bottom: var(--s1); }   /* the publication's picture over its words */
+  .mi i { display: block; width: 60%; aspect-ratio: 4 / 3; background: var(--gray) 50% 30% / cover no-repeat; margin-bottom: var(--s2); }   /* smaller, and held a little high so heads are never cut */
   .mi:last-child { border-bottom: 1px solid var(--rule); }
   .mi .d { opacity: .4; }
-  .mi b { font-weight: 400; display: block; }
+  .mi b { font-weight: 400; display: block; margin-bottom: var(--s1); }   /* room between the outlet and what it says */
   .mi.more { display: none; } .media.all .mi.more { display: grid; }
   .allbtn { margin-top: var(--s2); text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
 
-  .hands { display: block; width: 136px; height: 74px; margin: var(--s5) auto 0; overflow: visible; }   /* the two hands over the credit, a thin outline drawn in once seen */
-  .hands path { fill: none; stroke: #000; stroke-width: 4.6; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 2.4s cubic-bezier(.4, 0, .2, 1); } .hands.on path { stroke-dashoffset: 0; } .hands.on path + path { transition-delay: .5s; }
+  .hands { display: block; width: 136px; height: 74px; margin: var(--s5) auto 0; overflow: visible; }
+  .hands path { fill: none; stroke: #000; stroke-width: 4.6; stroke-linejoin: miter; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 2.4s cubic-bezier(.4, 0, .2, 1); } .hands.on path { stroke-dashoffset: 0; } .hands.on path + path { transition-delay: .5s; }
   .credit { margin: var(--s4) 0 calc(var(--s5) + env(safe-area-inset-bottom)); text-align: center; }
   .credit .sfav { display: inline-block; height: .83em; width: auto; vertical-align: -.07em; }
+  .credit .u { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; padding-bottom: .12em; transition: background-size .4s var(--ease); } .credit a:hover .u { background-size: 100% 1px; } .credit a:hover .arr { animation: arrowSwap .55s cubic-bezier(.4, 0, .2, 1); }
 
-  /* the simple way things come in on the phone: up a little and into view, once */
+  /* the simple way things come in: up a little, once */
   .in { opacity: 0; transform: translateY(16px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
   .in.on { opacity: 1; transform: none; }
 
-  /* the views (a category, a case): over the page, with a cross to close them */
-  .ov { position: fixed; inset: 0; z-index: 60; background: #fff; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; visibility: hidden; opacity: 0; transition: opacity .35s var(--ease), visibility 0s .35s; }
-  .ov.open { visibility: visible; opacity: 1; transition: opacity .35s var(--ease); }
-  .x { position: fixed; z-index: 61; top: calc(var(--s1) + env(safe-area-inset-top)); right: calc(var(--m) - 6px); width: 32px; height: 32px; display: grid; place-items: center; color: #fff; mix-blend-mode: difference; }   /* reads over the pictures as well */
+  /* the views: over the page, with a cross to close them */
+  .ov { position: fixed; inset: 0; z-index: 60; background: #fff; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; visibility: hidden; opacity: 0; transition: opacity .45s var(--ease), visibility 0s .45s; }
+  .ov.open { visibility: visible; opacity: 1; transition: opacity .45s var(--ease); }
+  .ov.fit { overflow: hidden; }
+  .x { position: fixed; z-index: 61; top: calc(var(--s1) + env(safe-area-inset-top)); right: calc(var(--m) - 6px); width: 32px; height: 32px; display: grid; place-items: center; color: #fff; mix-blend-mode: difference; }
   .x[hidden] { display: none; }
   .x svg { width: 14px; height: 14px; }
   .ov .head { padding: calc(var(--s5) + env(safe-area-inset-top)) var(--m) 0; }
   .ov .head .h { font-size: var(--h2); }
-  .ov .ttl3 .h { font-size: var(--h2); display: block; border-bottom: 1px solid var(--rule); padding: 4px 0 2px; }
-  .ov .ttl3 { border-top: 1px solid var(--rule); margin-top: 0; }
-  .ov .ttl3 .h:nth-child(2) { text-align: center; }
-  .works { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s3) var(--g); padding: 0 var(--m); }
-  .works i { display: block; aspect-ratio: 1; background: center / contain no-repeat; }
-  .works span { display: block; margin-top: var(--s1); }
-  .ov .mail { display: block; text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; padding: var(--s4) var(--m) calc(var(--s5) + env(safe-area-inset-bottom)); }
-  .strip { display: flex; gap: var(--g); overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 var(--m); padding: var(--s3) var(--m) 0; scrollbar-width: none; }
-  .strip::-webkit-scrollbar { display: none; }
-  .strip i { flex: none; width: 78vw; aspect-ratio: 4 / 5; background: left center / contain no-repeat; scroll-snap-align: start; }   /* left on the margin, like everything else */
-  .strip.cover i { background-size: cover; background-color: var(--gray); }
+  .ov .head .h .ch { display: inline-block; }
   .ov .txt { padding: var(--s3) var(--m) var(--s5); }
   .ov .txt p + p { margin-top: var(--lh); }
   .ov .big { width: 100%; aspect-ratio: 5 / 4; background: var(--gray) center / cover no-repeat; margin-top: var(--s3); }
-  .credit a, a.credit { text-decoration: none; } .credit .u { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; padding-bottom: .12em; transition: background-size .4s var(--ease, cubic-bezier(.2,.8,.2,1)); } .credit a:hover .u, a.credit:hover .u { background-size: 100% 1px; } .credit .arr { margin-left: .25em; vertical-align: .02em; } .credit a:hover .arr, a.credit:hover .arr { animation: arrowSwap .55s cubic-bezier(.4, 0, .2, 1); }   /* Skip Design: an arrow as on the other links; on hover a line draws in under the name and the arrow flies off and comes back */
-  @keyframes arrowSwap { 0% { transform: none; opacity: 1; } 42% { transform: translate(120%, -120%); opacity: 0; } 43% { transform: translate(-120%, 120%); opacity: 0; } 100% { transform: none; opacity: 1; } }
+  .ov .strip.cover { padding-bottom: var(--s5); }
+  .ov .strip.cover i { flex: none; width: 78vw; aspect-ratio: 4 / 5; background: var(--gray) center / cover no-repeat; scroll-snap-align: start; }
+
+  /* a category: its name, the slider of its works in the middle of the screen (the clicked one cut out, nothing behind it), the category's outline drawn behind the picture in the middle, and the text in the middle of the room left below */
+  .cv { height: 100%; display: flex; flex-direction: column; }
+  .cv .head { flex: none; }
+  .gal { flex: none; position: relative; height: 48vh; margin-top: var(--s3); }
+  .gal .ico { position: absolute; left: 50%; top: 50%; width: 58vh; height: 58vh; translate: -50% -50%; overflow: visible; pointer-events: none; z-index: 0; }
+  .gal .ico path { fill: none; stroke: #c8c8c8; stroke-linejoin: round; stroke-linecap: round; }
+  .track { position: relative; z-index: 1; display: flex; align-items: center; gap: var(--g); height: 100%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; padding: 0 22vw; scrollbar-width: none; perspective: 900px; }
+  .track::-webkit-scrollbar { display: none; }
+  .track img { flex: none; width: auto; height: auto; max-height: 100%; max-width: 78vw; scroll-snap-align: center; }   /* whole, never wider than the screen allows: a wide photo simply gets lower */
+  .cv .mid { flex: 1; display: grid; place-items: center; padding: var(--s2) var(--m); text-align: center; }
+
+  /* order: the title on three shelves; the works stand on them and go round as the shelves are swiped; a tap lets the next work fall onto a free place; a black silhouette stands in the text and the lines bend round it */
+  .shelves { border-top: 1px solid var(--rule); margin-top: 0; touch-action: pan-y; }
+  .shelf { position: relative; height: 17vw; border-bottom: 1px solid var(--rule); overflow: hidden; }
+  .shelf .h { position: absolute; top: 50%; translate: 0 -50%; font-size: var(--h2); white-space: nowrap; z-index: 2; }
+  .shelf:nth-child(1) .h { left: var(--m); } .shelf:nth-child(2) .h { right: var(--m); } .shelf:nth-child(3) .h { left: var(--m); }
+  .shelf .w { position: absolute; bottom: 1px; width: 14vw; height: 14vw; background: center bottom / contain no-repeat; z-index: 1; }
+  .sil { position: fixed; z-index: 62; right: var(--m); bottom: calc(var(--s3) + env(safe-area-inset-bottom)); width: 14vw; height: 14vw; background: center bottom / contain no-repeat; filter: brightness(0); transition: transform .25s var(--ease); }   /* the next work, a black silhouette at the bottom right: a tap sends it flying onto a shelf */
+  .sil:active { transform: scale(.9); }
+  .fall { filter: brightness(0); } .shelf .w { transition: filter .7s var(--ease); } .shelf .w.dark { filter: brightness(0); }
+  .fall { position: fixed; z-index: 70; width: 14vw; height: 14vw; background: center bottom / contain no-repeat; pointer-events: none; }
+  .ov .mail { display: inline-flex; gap: .25em; align-items: flex-start; padding: 0 var(--m) calc(var(--s5) + env(safe-area-inset-bottom)); }
+  .ov .mail span { background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat; padding-bottom: .12em; }
 </style>
 </head>
 <body>
+<div class="pre" aria-hidden="true"><canvas></canvas></div>
 <div class="top">
-  <button type="button" class="snd" aria-pressed="false" aria-label="Sound"><svg viewBox="0 0 24 10" aria-hidden="true"><path d="M0 5H24" fill="none" stroke="currentColor" stroke-width="1.1"/></svg><span>Sound</span></button>
-  <nav><a href="#about">About</a><a href="#cases">Cases</a><a href="#order" id="ordlink">Order</a><a href="mailto:order@dirtyhands.ru">Contact</a></nav>
+  <button type="button" class="snd" aria-pressed="false" aria-label="Sound"><svg viewBox="0 0 20 10" aria-hidden="true"><path d="M0 5H20" fill="none" stroke="currentColor" stroke-width="1.1"/></svg><span>Sound</span></button>
+  <nav><a href="#about">About</a><a href="#cases">Cases</a><a href="#order" class="ord">Order</a><a class="lnk" href="mailto:order@dirtyhands.ru">Contact<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a></nav>
 </div>
 
 <header class="hero">
-  <div class="cats" id="cats"></div>
-  <h1 class="h ttl in">Dirty Hands</h1>
-  <p class="tag in">Interior ceramics studio</p>
+  <div class="strip" id="cats"></div>
+  <h1 class="h ttl" aria-label="Dirty Hands"><span class="ln">Dirty</span><span class="ln">Hands</span></h1>
+  <p class="tag">Interior ceramics studio</p>
 </header>
 
 <section class="wrap list" id="list"></section>
 
-<section class="duo">
+<section class="duo" id="duo">
   <div class="photo" role="img" aria-label="Karen and Lisa"></div>
   <div class="cards">
-    <div class="card in"><div class="r"><span class="n">01</span><p>Designer and entrepreneur, one of the two founders of DirtyHands.</p></div><div class="r"><span class="n">02</span><p>Pairs professional design with artistic intuition to bring unconventional ideas to life.</p></div><p class="h">Karen</p><p class="cf">Co-founder, Dirty Hands</p></div>
-    <div class="card in"><div class="r"><span class="n">01</span><p>Designer and entrepreneur, co-founder of DirtyHands together with Karen.</p></div><div class="r"><span class="n">02</span><p>Sees ceramics beyond plates and pots, as objects that shape the mood and character of a room.</p></div><p class="h">Lisa</p><p class="cf">Co-founder, Dirty Hands</p></div>
+    <div class="card"><div class="r"><span class="n">01</span><p>Designer and entrepreneur, one of the two founders of DirtyHands.</p></div><div class="r"><span class="n">02</span><p>Pairs professional design with artistic intuition to bring unconventional ideas to life.</p></div><p class="h">Karen</p><p class="cf">Co-founder, Dirty Hands</p></div>
+    <div class="card" id="lisa"><div class="r"><span class="n">01</span><p>Designer and entrepreneur, co-founder of DirtyHands together with Karen.</p></div><div class="r"><span class="n">02</span><p>Sees ceramics beyond plates and pots, as objects that shape the mood and character of a room.</p></div><p class="h">Lisa</p><p class="cf">Co-founder, Dirty Hands</p></div>
   </div>
 </section>
 
 <section class="wrap sec about" id="about">
   <p class="lab in">Clay with something to say</p>
   <p class="in" style="margin-top:var(--s2)">At DirtyHands, we create original design pieces — from tabletop art objects and wall panels to sculptural forms and interior accents that enhance spaces and set their emotional tone.</p>
-  <div class="pic-s in"></div>
-  <p class="in">The studio was founded by designers and entrepreneurs Lisa and Karen, who combine professional expertise with artistic intuition to bring unconventional ideas to life. Their approach reimagines ceramics, moving beyond functional plates and pots towards an artistic language that expresses the style, mood, and character of a space.</p>
-  <p class="in" style="margin-top:var(--s3)"><a class="lnk" href="https://dirtyhands.ru" target="_blank" rel="noopener">Shop now<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a></p>
+  <div class="pots" id="pots"><i></i><svg viewBox="0 0 1080 1080" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M212 975L210 835L198 832L196 540C120 540 50 500 40 385L108 375C112 430 140 465 192 470L186 395L222 395L225 352L248 345L246 175C260 150 345 150 358 180L360 345L382 352L385 395L410 395L440 400L500 440L535 500L545 580L530 660L538 720L505 770L440 790L405 800L400 832L385 835L383 975C340 990 250 990 212 975Z M718 975L715 785L640 795L595 760L580 690L556 620L570 520L610 465L690 440L688 425L735 425L735 395C735 370 750 345 752 330L752 255L770 250L785 262L800 248L830 258L850 250L852 345L865 350L868 425L925 425L928 520C950 525 960 510 962 480L962 430L1052 428L1050 470C1045 540 990 560 930 560L925 780L885 785L882 975C840 990 760 990 718 975Z"/></svg></div>
+  <p class="in shift">The studio was founded by designers and entrepreneurs Lisa and Karen, who combine professional expertise with artistic intuition to bring unconventional ideas to life. Their approach reimagines ceramics, moving beyond functional plates and pots towards an artistic language that expresses the style, mood, and character of a space.</p>
+  <p class="in shift" style="margin-top:var(--s3)"><a class="lnk ord" href="#order">Shop now<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a></p>
 </section>
 
 <section class="wrap sec" id="cases">
-  <p class="lab in">Clients about us</p>
-  <p class="quote in" id="quote"></p>
+  <div class="chead"><p class="lab">Clients about us</p><p class="quote" id="quote"></p></div>
   <div id="caselist"></div>
 </section>
 
-<section class="wrap forms" aria-label="Unconventional ceramic forms">
-  <span class="h in">Unconventional</span><span class="h in">ceramic</span><span class="h in">forms</span>
+<section class="forms" aria-label="Unconventional ceramic forms">
+  <span class="h">Unconventional</span><span class="h">ceramic</span><span class="h">forms</span>
   <svg viewBox="0 0 52 52" aria-hidden="true"><path id="form" d=""/></svg>
 </section>
 
@@ -187,18 +222,60 @@
   <button type="button" class="allbtn" id="allmedia">All publications</button>
 </section>
 
-<svg class="hands" viewBox="164 14 680 368" aria-hidden="true"><path pathLength="1" d="M408 372L408.0 254.0Q408 240 422.0 240.0L470.0 240.0Q484 240 484.0 226.0L484.0 190.0Q484 176 470.0 176.0L422.0 176.0Q408 176 408.0 162.0L408.0 84.0Q408 70 394.0 70.0L368.0 70.0Q354 70 354.0 84.0L354 190L354.0 38.0Q354 24 340.0 24.0L312.0 24.0Q298 24 298.0 38.0L298 190L298.0 54.0Q298 40 284.0 40.0L254.0 40.0Q240 40 240.0 54.0L240 190L240.0 114.0Q240 100 226.0 100.0L200.0 100.0Q186 100 186.0 114.0L186 240L200 372"/><path pathLength="1" d="M600 372L600.0 254.0Q600 240 586.0 240.0L538.0 240.0Q524 240 524.0 226.0L524.0 190.0Q524 176 538.0 176.0L586.0 176.0Q600 176 600.0 162.0L600.0 84.0Q600 70 614.0 70.0L640.0 70.0Q654 70 654.0 84.0L654 190L654.0 38.0Q654 24 668.0 24.0L696.0 24.0Q710 24 710.0 38.0L710 190L710.0 54.0Q710 40 724.0 40.0L754.0 40.0Q768 40 768.0 54.0L768 190L768.0 114.0Q768 100 782.0 100.0L808.0 100.0Q822 100 822.0 114.0L822 240L808 372"/></svg>
-<p class="credit"><a href="https://skip.design" target="_blank" rel="noopener">Made by <img class="sfav" src="skip-fav.png" alt="" aria-hidden="true"> <span class="u">Skip Design</span><svg class="arr" viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a><br>With love for Dirty Hands ♥</p>
+<svg class="hands" viewBox="164 14 680 368" aria-hidden="true"><path pathLength="1" d="M408.0 372.0L410.4 357.3L408.2 342.7L407.7 328.0L409.6 313.3L408.8 298.7L405.9 284.0L406.4 269.3L408.5 254.7L408.0 240.0L423.2 238.0L438.4 240.4L453.6 242.2L468.8 240.4L484.0 240.0L485.8 224.0L485.5 208.0L482.5 192.0L484.0 176.0L468.8 175.6L453.6 176.7L438.4 178.4L423.2 176.3L408.0 176.0L408.3 160.9L407.6 145.7L409.9 130.6L410.1 115.4L407.2 100.3L406.7 85.1L408.0 70.0L390.0 70.4L372.0 72.6L354.0 70.0L352.7 85.0L353.8 100.0L354.7 115.0L352.3 130.0L351.5 145.0L354.2 160.0L355.0 175.0L354.0 190.0L354.0 174.9L351.5 159.8L352.5 144.7L354.9 129.6L353.9 114.5L352.8 99.5L355.2 84.4L356.6 69.3L354.3 54.2L353.3 39.1L354.0 24.0L340.0 23.4L326.0 26.2L312.0 25.8L298.0 24.0L298.3 39.1L299.7 54.2L297.4 69.3L295.5 84.4L297.4 99.5L298.5 114.5L296.5 129.6L296.8 144.7L299.7 159.8L299.8 174.9L298.0 190.0L297.6 175.0L295.9 160.0L297.9 145.0L300.2 130.0L298.7 115.0L297.6 100.0L299.6 85.0L299.9 70.0L296.9 55.0L298.0 40.0L283.5 39.7L269.0 40.3L254.5 42.4L240.0 40.0L238.3 55.0L239.4 70.0L240.6 85.0L238.5 100.0L237.6 115.0L240.4 130.0L241.4 145.0L239.5 160.0L240.1 175.0L240.0 190.0L238.5 175.0L241.1 160.0L240.4 145.0L239.1 130.0L241.2 115.0L240.0 100.0L222.0 99.8L204.0 101.0L186.0 100.0L185.6 114.0L188.3 128.0L187.9 142.0L185.3 156.0L185.9 170.0L187.3 184.0L185.3 198.0L183.4 212.0L185.3 226.0L186.0 240.0L186.5 254.8L188.1 269.4L192.6 283.8L194.3 298.4L193.5 313.4L195.4 328.0L198.7 342.5L198.4 357.3L200.0 372.0"/><path pathLength="1" d="M600.0 372.0L598.3 357.3L597.6 342.7L600.2 328.0L600.7 313.3L598.9 298.7L600.0 284.0L602.5 269.3L601.4 254.7L600.0 240.0L584.8 239.6L569.6 238.6L554.4 241.2L539.2 242.5L524.0 240.0L524.4 224.0L522.5 208.0L523.3 192.0L524.0 176.0L539.2 177.6L554.4 175.5L569.6 176.6L584.8 177.9L600.0 176.0L597.7 160.9L599.6 145.7L600.3 130.6L598.3 115.4L598.7 100.3L601.6 85.1L600.0 70.0L618.0 69.6L636.0 70.6L654.0 70.0L653.8 85.0L656.0 100.0L654.4 115.0L653.6 130.0L655.8 145.0L655.9 160.0L653.0 175.0L654.0 190.0L653.5 174.9L654.5 159.8L656.5 144.7L654.9 129.6L652.5 114.5L653.7 99.5L654.6 84.4L652.3 69.3L651.6 54.2L654.3 39.1L654.0 24.0L668.0 23.3L682.0 24.1L696.0 26.6L710.0 24.0L711.0 39.1L710.0 54.2L708.9 69.3L711.3 84.4L712.6 99.5L710.2 114.5L709.2 129.6L711.1 144.7L710.5 159.8L707.7 174.9L710.0 190.0L709.4 175.0L710.2 160.0L711.5 145.0L709.3 130.0L707.4 115.0L709.4 100.0L710.5 85.0L708.6 70.0L708.9 55.0L710.0 40.0L724.5 41.9L739.0 39.7L753.5 40.4L768.0 40.0L768.0 55.0L770.3 70.0L768.7 85.0L767.6 100.0L769.5 115.0L769.7 130.0L766.8 145.0L766.2 160.0L768.3 175.0L768.0 190.0L770.3 175.0L768.7 160.0L766.2 145.0L767.3 130.0L768.5 115.0L768.0 100.0L786.0 97.7L804.0 100.5L822.0 100.0L822.4 114.0L821.9 128.0L819.5 142.0L820.7 156.0L823.3 170.0L822.5 184.0L821.2 198.0L823.3 212.0L824.6 226.0L822.0 240.0L819.3 254.5L819.5 269.4L817.6 284.0L813.4 298.4L812.4 313.1L813.4 328.1L811.3 342.7L808.4 357.2L808.0 372.0"/></svg>
+<p class="credit"><a href="https://skip.design" target="_blank" rel="noopener">Made by <img class="sfav" src="skip-fav.png" alt="" aria-hidden="true" style="display:inline-block"> <span class="u">Skip Design</span><svg class="arr" viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a><br>With love for Dirty Hands ♥</p>
 
 <div class="ov" id="view" aria-hidden="true"></div>
 <button type="button" class="x" id="close" aria-label="Close" hidden><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1 1 13" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></button>
 
 <script>window.clayFast = true;   // on the phone the marks dry sooner</script>
-<script src="clay.js?v=5"></script>
-<script src="sound.js?v=12"></script>
+<script src="clay.js?v=6"></script>
+<script src="sound.js?v=13"></script>
+<script>
+// the preloader: a white sheet; one finger loaded with clay is drawn across it from left to right, then the sheet fades away and the page begins as it always does
+window.preDone = new Promise(done => {
+  const pre = document.querySelector('.pre'); if (!pre || typeof makeClay !== 'function') { if (pre) pre.remove(); return done(); }
+  document.documentElement.style.overflow = 'hidden'; window.preDone && 0;   // no scrolling under the sheet (a lock that leaves the scrollbar alone, so nothing shifts when it lifts)
+  const S = 0.5, cv = pre.querySelector('canvas'), w = Math.round(innerWidth * S), h = Math.round(innerHeight * S), c = makeClay({ cv, w, h });   // made at half size and stretched: soft clay loses nothing, and it is ready six times sooner
+  // a finger writes D and H in clay across the middle of the sheet, stroke by stroke, lifting between them (sizes in css px)
+  const LH = Math.min(168, innerHeight * .2, innerWidth / 3),   /* sweeping, as if drawn across the sheet with a whole finger, but not too big */ BW = LH * .95, GAP = LH * .48,   /* wide letters (the strokes as thick as before) */ x0 = (innerWidth - (BW * 2 + GAP)) / 2, yT = innerHeight / 2 - LH / 2, yB = yT + LH;
+  // written by hand, not drawn: each letter a little askew, every stroke wobbling and running on past its end, the clay thinning out as it goes, so the ends are rubbed and dry
+  // written by hand, quickly and badly, as a finger would: every stroke leaning its own way, starting and stopping a little off, running on well past its end, wobbling, the clay thinning out so the ends are dry and rubbed
+  const R = (a, b) => a + Math.random() * (b - a), j = () => R(-.14, .14) * LH;
+  const wob = () => { const p1 = R(0, 6.3), p2 = R(0, 6.3), a1 = R(4, 9), a2 = R(2, 5); return t => [Math.sin(t * 5.1 + p1) * a1 + Math.sin(t * 11 + p2) * a2 * .5, Math.cos(t * 4.3 + p2) * a1 * .7]; };
+  const turn = (P, ang) => { const ox = P[0][0], oy = P[0][1]; return P.map(([x, y]) => { const dx = x - ox, dy = y - oy; return [ox + dx * Math.cos(ang) - dy * Math.sin(ang), oy + dx * Math.sin(ang) + dy * Math.cos(ang)]; }); };
+  const hand = (P, over) => { const w = wob(), n = P.length, [ax, ay] = P[n - 2], [bx, by] = P[n - 1], d = Math.hypot(bx - ax, by - ay) || 1, ext = Array.from({ length: 4 }, (_, i) => [bx + (bx - ax) / d * over * (i + 1) / 4, by + (by - ay) / d * over * (i + 1) / 4]);   // it runs on past the end
+    return turn([...P, ...ext], R(-.2, .2)).map(([x, y], i, A) => { const [jx, jy] = w(i / A.length); return [x + jx, y + jy]; }); };
+  const line = (ax, ay, bx, by) => { const n = Math.max(2, Math.ceil(Math.hypot(bx - ax, by - ay) / 10)); return Array.from({ length: n + 1 }, (_, i) => [ax + (bx - ax) * i / n, ay + (by - ay) * i / n]); };
+  const bowl = (cx, cy, rx, ry) => { const k1 = R(.85, 1.15), k2 = R(.8, 1.1); return Array.from({ length: 25 }, (_, i) => { const t = -Math.PI / 2 + Math.PI * i / 24, kk = i < 12 ? k1 : k2; return [cx + Math.cos(t) * rx * kk, cy + Math.sin(t) * ry * R(.95, 1.05)]; }); };
+  const hx = x0 + BW + GAP;
+  const D = [line(x0 + j(), yT + j(), x0 + j(), yB + j()), [[x0 + j(), yT + j()], ...bowl(x0 + BW * .1, yT + LH / 2 + j() * .5, BW * R(.8, 1), LH / 2)]];
+  const by = yT + LH * R(.35, .62);   // the bar of the H, never quite in the middle
+  const Hh = [line(hx + j(), yT + j(), hx + j(), yB + j() + R(0, .25) * LH), line(hx + BW + j(), yT + j() - R(0, .25) * LH, hx + BW + j(), yB + j() + R(0, .3) * LH), line(hx - R(10, 40), by + j() * .4, hx + BW + R(10, 50), by + j() * .6)];
+  const SLANT = .2, strokes = [...D, ...Hh].map(P => hand(P, R(18, 70)).map(([x, y]) => [x + (innerHeight / 2 - y) * SLANT, y]));   // D: stem, then the bowl; H: two stems and the bar; the whole mark leaning to the right, as written in a hurry
+  { let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; [...D, ...Hh].forEach(P => P.forEach(([x, y]) => { x += (innerHeight / 2 - y) * SLANT; x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }));   // the letters themselves in the middle of the screen (not the dry tails running on past them, which would pull it aside)
+    const mx = innerWidth / 2 - (x0 + x1) / 2, my = innerHeight / 2 - (y0 + y1) / 2; strokes.forEach(P => P.forEach(q => { q[0] += mx; q[1] += my; })); }
+  const lens = strokes.map(p => p.slice(1).reduce((a, q, i) => a + Math.hypot(q[0] - p[i][0], q[1] - p[i][1]), 0)), total = lens.reduce((a, b) => a + b, 0);
+  let si = 0, pi = 0, f = null, done_ = 0;   // where the finger is: stroke, point, and how much of the way is written
+  const advance = to => {                    // smear on along the strokes until 'to' css px of the way are written
+    while (si < strokes.length && done_ < to) {
+      const P = strokes[si];
+      if (pi === 0) { f = c.finger(P[0][0] * S, P[0][1] * S, { size: (1 + Math.random() * .25) * S * LH / 170, load: 1.6 + Math.random() * .4, ang: (Math.random() - .5) * .5 }); c.print(f); pi = 1; }   // the finger comes down, never quite the same way
+      const [ax, ay] = P[pi - 1], [bx, by] = P[pi], d = Math.hypot(bx - ax, by - ay);
+      if (d > 0) { f.x = ax * S; f.y = ay * S; f = c.autoSmear(f, (bx - ax) / d, (by - ay) / d, Math.max(2, d * S), 0.986); }   // the clay runs out along the stroke: a dry, rubbed end
+      done_ += d; pi++; if (pi >= P.length) { si++; pi = 0; }   // the end of a stroke: it lifts
+    }
+  };
+  const t1 = performance.now(), DUR = 1500;
+  (function step(now) { const k = Math.min(1, (now - t1) / DUR), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;   // slow in, slow out
+    advance(e * total + (k >= 1 ? 1 : 0)); c.render();
+    if (k < 1) return requestAnimationFrame(step);
+    setTimeout(() => { pre.style.pointerEvents = 'none'; pre.style.transition = 'background-color .6s cubic-bezier(.4, 0, .2, 1)'; pre.style.backgroundColor = 'transparent'; document.documentElement.style.overflow = ''; done(); if (c.soak) c.soak(0, () => pre.remove()); else { pre.style.transition = 'opacity 1.2s ease'; pre.style.opacity = 0; setTimeout(() => pre.remove(), 1300); } }, 250); })(t1);   // (an older clay.js from the cache: it simply fades)   // the sheet goes and the page appears; the DH soaks away like any clay mark, gone by the time the top row has come in   // the sheet goes and the page appears; the DH stays and soaks away by itself, as every clay mark on the site does
+});
+</script>
 <script>
 (() => {
-  const $ = q => [...document.querySelectorAll(q)], one = q => document.querySelector(q);
+  const $ = q => [...document.querySelectorAll(q)], one = q => document.querySelector(q), clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
   const CATS = ['Panels', 'Mirrors', 'Tables', 'Sculptures', 'Urbans', 'Vases'], KEYS = ['panels', 'mirrors', 'tables', 'sculptures', 'urbans', 'vases'], CAT_N = { panels: 9, mirrors: 8, tables: 9, sculptures: 9, urbans: 9, vases: 9 }, SAME = {};
   const PHOTO = ['photos/card-panel.jpg', 'photos/card-mirror.jpg', 'photos/card-table.jpg', 'photos/card-sculpture.jpg', 'photos/card-urban.jpg', 'photos/card-vase.jpg'];   // every work cut out on light grey, as on the full page
   const CUT = ['photos/tattoo-relief-up.webp', 'photos/mirror-beetles.webp', 'photos/table-cubeball.webp', 'photos/bust.webp', 'photos/urban-angel.webp', 'photos/vase-brutskin.webp'];
@@ -216,48 +293,110 @@
   const QUOTES = ['Our dining room became a quiet gallery.', 'Every plate feels made for this table.', 'The mood of the whole room has changed.', 'Guests ask about the plates first.', 'Handmade, and it shows in the best way.'];
   const MEDIA = [["Dec 2025", "Design Mate", "DirtyHands opens Art in the Hands, a creative space in Moscow conceived as more than a workshop. It holds a gallery of Lisa and Karen’s ceramics, panels and art objects among them, and a room for group and private lessons in hand-building and on the wheel, with talks on public speaking, painting, psychology, publishing and interior styling.", "photos/media/m01.jpg"], ["Aug 2025", "Interior+Design", "A 60 m² flat for a young lawyer in a Stalin-era house near Sokol, by Marina Troshina of Bellager Design. The redesign keeps the memory of the house and opens it up: glass partitions, a living room at the centre, oak parquet and stone. Over the bed hangs a DirtyHands ceramic panel.", "photos/media/m03.jpg"], ["Jun 2025", "MyDecor", "Made in Russia Week 2025: a guide to twelve ceramic workshops from across Russia, each with a hand and a style of its own. DirtyHands is among them, with panels, art objects and furniture shaped by hand, made for homes, restaurants and public interiors.", "photos/media/m04.jpg"], ["Dec 2024", "Interior+Design", "The INTERIOR+DESIGN Gold Edition party, held each December for the magazine’s main issue on the year’s best designers and architects. In 2024 it took a ski-slope theme at the Vorobyovy Hall restaurant, with Karen and Lisa of DirtyHands among the guests.", "photos/media/m06.jpg"], ["Aug 2024", "Design Mate", "A flat for a film producer’s family by Valeria Vinogradova, an interior built round the memories of childhood. Among the things that tell that story is furniture made by DirtyHands.", "photos/media/m07.jpg"], ["Jan 2023", "TopDesignMag", "The Elements: a collection of ceramic coffee tables by DirtyHands, each after a force of nature: air, wild nature, moss and soil, ripples on water, the starry sky. A table can stand alone, or several can be gathered under one top into a new base.", "photos/media/m09.jpg"], ["Jan 2023", "Interior+Design", "Wondercraft days, Episode II, at the Design Dealer concept store during the Moscow Design Festival: a show of contemporary Russian artists and designers working between art and craft, opened with a public talk on collectible design and fine craft. DirtyHands showed its ceramic tables.", "photos/media/m10.jpg"]];   // date, outlet, what it says, its picture
   const ICO = ["M27.4 2.0Q28.2 2.0 29.0 2.1Q29.8 2.2 30.6 2.1Q31.4 2.0 32.2 2.2Q32.9 2.4 33.7 2.5Q34.5 2.6 35.2 3.0Q35.8 3.4 36.1 4.1Q36.4 4.9 36.7 5.5Q37.0 6.2 37.4 6.9Q37.8 7.6 37.8 8.4Q37.8 9.2 37.5 10.0Q37.2 10.7 37.7 11.3Q38.2 11.9 38.6 12.6Q38.9 13.3 39.2 14.0Q39.5 14.7 39.6 15.5Q39.6 16.3 39.5 17.1Q39.3 17.9 39.1 18.6Q38.8 19.3 38.5 20.0Q38.2 20.8 37.9 21.4Q37.5 22.1 36.9 22.7Q36.4 23.2 36.6 24.0Q36.8 24.7 36.7 25.5Q36.6 26.3 36.5 27.1Q36.3 27.9 36.8 28.3Q37.3 28.8 37.8 29.4Q38.2 30.0 38.5 30.7Q38.8 31.4 39.0 32.2Q39.2 33.0 39.2 33.8Q39.2 34.6 39.4 35.4Q39.6 36.1 39.2 36.7Q38.8 37.2 39.0 37.9Q39.2 38.7 39.1 39.5Q39.0 40.3 38.8 41.0Q38.6 41.8 38.5 42.5Q38.3 43.3 38.0 44.0Q37.7 44.7 37.3 45.4Q36.9 46.1 36.3 46.4Q35.6 46.8 34.8 47.0Q34.1 47.2 33.3 47.3Q32.5 47.4 31.7 47.3Q30.9 47.2 30.1 47.3Q29.4 47.4 28.7 47.1Q27.9 46.7 27.5 47.2Q27.0 47.6 26.5 48.1Q25.9 48.7 25.2 49.1Q24.6 49.4 23.8 49.6Q23.0 49.8 22.2 49.8Q21.4 49.8 20.6 49.7Q19.8 49.6 19.0 49.4Q18.3 49.2 17.5 49.0Q16.8 48.8 16.1 48.4Q15.4 48.0 15.0 47.4Q14.6 46.7 14.4 46.0Q14.2 45.2 14.2 44.4Q14.2 43.6 14.4 42.8Q14.6 42.1 14.5 41.3Q14.4 40.5 14.4 39.7Q14.4 39.0 14.2 38.2Q14.0 37.5 13.7 36.8Q13.5 36.1 13.1 35.3Q12.8 34.6 12.8 33.8Q12.8 33.0 13.0 32.3Q13.3 31.5 13.5 30.8Q13.8 30.1 14.1 29.4Q14.4 28.6 15.0 28.2Q15.7 27.8 15.7 27.3Q15.7 26.7 15.1 26.2Q14.5 25.7 14.1 25.0Q13.8 24.4 13.6 23.6Q13.4 22.8 13.5 22.0Q13.6 21.2 13.6 20.5Q13.6 19.8 13.3 19.1Q13.0 18.3 13.1 17.6Q13.2 16.8 13.0 16.0Q12.8 15.3 12.8 14.4Q12.8 13.6 12.6 12.9Q12.4 12.1 12.3 11.3Q12.2 10.5 12.6 9.9Q13.1 9.3 13.2 8.7Q13.4 8.0 13.4 7.1Q13.4 6.3 13.7 5.6Q14.1 4.9 14.6 4.5Q15.2 4.0 16.0 4.0Q16.7 3.9 17.3 3.4Q17.8 3.0 18.6 3.0Q19.4 3.0 20.2 3.0Q21.0 3.0 21.8 2.9Q22.6 2.8 23.4 2.8Q24.1 2.7 24.7 2.9Q25.4 3.0 26.0 2.5Q26.6 2.0 27.4 2.0Z", "M13.4 2.5Q14.3 3.1 14.8 4.0Q15.2 4.8 15.9 4.9Q16.6 5.0 17.4 4.4Q18.2 3.8 18.6 4.7Q19.0 5.6 20.1 5.6Q21.1 5.6 22.2 5.6Q23.3 5.6 24.3 5.6Q25.4 5.6 26.5 5.6Q27.5 5.6 28.6 5.6Q29.6 5.6 30.7 5.6Q31.8 5.6 32.8 5.6Q33.9 5.6 34.9 5.3Q35.8 5.0 36.6 4.9Q37.4 4.8 37.5 5.8Q37.5 6.7 38.3 6.6Q39.1 6.5 40.0 6.2Q40.9 5.8 41.7 5.3Q42.6 4.8 43.5 4.4Q44.4 4.0 45.4 4.2Q46.4 4.4 46.6 5.2Q46.9 6.1 46.9 7.1Q46.8 8.2 46.8 9.2Q46.8 10.3 46.8 11.4Q46.8 12.4 46.8 13.5Q46.8 14.6 46.8 15.6Q46.8 16.7 46.7 17.7Q46.6 18.8 47.3 19.4Q47.9 20.1 48.3 21.0Q48.6 22.0 48.1 22.8Q47.5 23.7 47.5 24.6Q47.4 25.6 47.3 26.6Q47.2 27.6 46.8 28.5Q46.4 29.4 46.4 30.5Q46.4 31.5 46.4 32.6Q46.4 33.7 46.3 34.7Q46.2 35.7 46.2 36.8Q46.2 37.9 46.2 38.9Q46.2 40.0 46.5 40.9Q46.8 41.9 46.8 42.9Q46.8 44.0 46.8 45.1Q46.8 46.1 46.7 47.2Q46.6 48.2 45.8 48.2Q44.9 48.3 43.9 48.0Q43.0 47.8 41.9 47.8Q40.8 47.8 39.8 47.8Q38.7 47.8 37.7 47.7Q36.7 47.6 35.6 47.6Q34.5 47.6 33.5 47.6Q32.4 47.6 31.3 47.6Q30.3 47.6 29.2 47.6Q28.1 47.6 27.1 47.6Q26.0 47.6 24.9 47.6Q23.9 47.6 22.8 47.5Q21.8 47.4 20.7 47.4Q19.7 47.4 18.6 47.4Q17.5 47.4 16.5 47.4Q15.4 47.4 14.3 47.4Q13.3 47.4 12.3 47.6Q11.3 47.7 10.7 48.6Q10.2 49.4 9.7 48.9Q9.2 48.3 8.7 47.8Q8.2 47.2 7.2 47.2Q6.1 47.2 5.1 47.0Q4.1 46.8 3.9 46.0Q3.6 45.2 4.0 44.2Q4.4 43.3 4.4 42.3Q4.4 41.2 4.4 40.1Q4.4 39.1 4.4 38.0Q4.4 36.9 4.4 35.9Q4.4 34.8 4.3 33.8Q4.2 32.8 4.2 31.7Q4.2 30.6 4.2 29.6Q4.2 28.5 4.2 27.4Q4.2 26.4 4.2 25.3Q4.2 24.2 4.2 23.2Q4.2 22.1 4.2 21.0Q4.2 20.0 4.2 18.9Q4.2 17.8 4.2 16.8Q4.2 15.7 4.1 14.7Q4.0 13.6 3.8 12.6Q3.7 11.7 3.9 10.9Q4.2 10.1 4.2 9.0Q4.2 8.0 4.3 7.0Q4.5 6.0 5.5 5.9Q6.5 5.8 7.5 5.5Q8.4 5.3 9.0 4.9Q9.5 4.5 10.4 5.1Q11.2 5.6 11.3 4.5Q11.4 3.5 12.0 2.8Q12.6 2.0 13.4 2.5Z", "M37.1 6.8Q37.9 6.8 38.7 7.0Q39.5 7.2 40.3 7.3Q41.1 7.4 41.8 7.6Q42.6 7.8 43.3 8.2Q44.0 8.6 44.6 9.2Q45.1 9.7 45.7 10.4Q46.2 11.0 46.7 11.6Q47.3 12.3 47.6 12.9Q48.0 13.6 48.4 14.4Q48.7 15.1 48.9 15.8Q49.2 16.6 49.4 17.3Q49.6 18.1 49.7 18.9Q49.8 19.7 49.6 20.5Q49.4 21.3 49.3 22.1Q49.1 22.9 48.8 23.6Q48.5 24.3 48.1 25.0Q47.8 25.7 47.3 26.3Q46.9 26.9 46.3 27.5Q45.7 28.1 45.2 28.6Q44.6 29.2 44.0 29.7Q43.3 30.2 42.6 30.6Q42.0 31.0 41.6 31.5Q41.2 32.0 42.0 31.7Q42.7 31.5 43.4 31.3Q44.2 31.2 44.4 31.7Q44.7 32.3 44.0 32.6Q43.2 33.0 42.6 33.3Q41.9 33.6 41.1 33.7Q40.3 33.8 39.5 34.0Q38.7 34.2 38.3 34.7Q37.9 35.1 38.3 35.9Q38.6 36.6 38.7 37.4Q38.8 38.2 38.4 38.7Q38.1 39.1 37.4 39.5Q36.7 39.8 35.9 40.0Q35.1 40.2 34.3 40.3Q33.5 40.4 32.6 40.4Q31.8 40.4 30.9 40.4Q30.1 40.4 29.3 40.5Q28.5 40.7 27.9 41.2Q27.2 41.8 26.6 42.3Q26.0 42.8 25.4 43.4Q24.8 44.0 24.1 44.5Q23.4 45.0 22.6 44.9Q21.8 44.8 21.1 44.5Q20.4 44.2 19.7 43.8Q19.0 43.4 18.3 43.0Q17.6 42.6 16.9 42.2Q16.2 41.8 15.5 41.4Q14.8 41.0 14.2 40.6Q13.5 40.1 12.8 39.8Q12.1 39.4 11.4 39.0Q10.7 38.7 10.0 38.2Q9.4 37.8 8.7 37.3Q8.0 36.8 7.4 36.3Q6.9 35.9 6.6 35.1Q6.4 34.3 6.4 33.6Q6.4 32.8 6.3 32.0Q6.2 31.2 6.0 30.4Q5.8 29.6 5.8 28.8Q5.9 28.1 5.8 27.2Q5.8 26.4 5.6 25.6Q5.4 24.8 5.3 24.0Q5.2 23.2 5.1 22.4Q5.0 21.6 4.9 20.8Q4.8 20.0 4.7 19.1Q4.6 18.3 4.5 17.5Q4.4 16.7 5.0 16.2Q5.5 15.7 6.2 15.4Q6.9 15.1 7.7 14.7Q8.4 14.4 9.1 14.1Q9.8 13.8 10.6 13.5Q11.3 13.3 12.1 13.0Q12.8 12.8 13.5 12.4Q14.2 12.0 15.0 11.7Q15.7 11.4 16.5 11.2Q17.2 11.0 17.9 10.7Q18.7 10.3 19.4 10.1Q20.1 9.8 20.9 9.8Q21.7 9.8 22.5 10.0Q23.2 10.2 23.9 10.5Q24.7 10.9 25.3 10.7Q25.9 10.5 26.6 9.9Q27.2 9.4 27.9 8.9Q28.5 8.5 29.2 8.2Q30.0 7.8 30.7 7.6Q31.5 7.4 32.3 7.2Q33.0 7.0 33.8 7.1Q34.7 7.2 35.4 7.0Q36.2 6.8 37.1 6.8Z", "M38.0 2.8Q38.2 3.5 38.2 4.4Q38.2 5.4 38.5 6.2Q38.8 7.0 38.8 7.9Q38.8 8.8 38.9 9.7Q39.0 10.6 39.0 11.5Q39.0 12.3 39.0 13.2Q39.0 14.0 38.8 14.9Q38.6 15.7 38.3 16.5Q38.1 17.3 38.0 18.2Q37.9 19.1 37.6 20.0Q37.4 20.8 36.9 21.5Q36.4 22.2 35.8 22.9Q35.2 23.6 34.6 24.3Q34.0 25.0 33.9 25.8Q33.8 26.6 34.0 27.4Q34.2 28.3 34.4 29.1Q34.6 30.0 34.9 30.8Q35.2 31.6 35.8 32.3Q36.4 33.0 37.1 33.3Q37.9 33.7 38.7 34.1Q39.5 34.4 40.3 34.8Q41.0 35.2 41.7 35.7Q42.5 36.3 42.9 37.0Q43.4 37.7 43.8 38.5Q44.2 39.2 44.5 40.1Q44.7 40.9 44.9 41.8Q45.0 42.7 45.0 43.6Q45.0 44.5 44.9 45.3Q44.8 46.1 44.5 46.9Q44.2 47.7 43.5 48.3Q42.8 48.8 42.0 49.1Q41.2 49.4 40.3 49.4Q39.3 49.4 38.5 49.6Q37.6 49.8 36.7 49.8Q35.8 49.8 34.8 49.8Q33.9 49.8 33.1 49.6Q32.2 49.4 31.4 49.2Q30.5 48.9 29.7 48.9Q28.9 48.8 28.0 48.8Q27.0 48.8 26.2 48.7Q25.3 48.6 24.4 48.4Q23.6 48.2 22.8 47.9Q22.0 47.6 21.2 47.2Q20.4 46.8 19.6 46.5Q18.8 46.2 18.0 46.0Q17.1 45.7 16.4 45.4Q15.6 45.0 14.8 44.5Q14.1 44.1 13.3 43.7Q12.5 43.4 11.8 42.9Q11.1 42.3 10.5 41.7Q9.8 41.1 9.7 40.3Q9.5 39.5 9.8 38.6Q10.0 37.8 10.3 37.0Q10.6 36.2 11.1 35.5Q11.6 34.8 12.2 34.0Q12.7 33.3 13.3 32.7Q14.0 32.0 13.3 31.7Q12.6 31.4 11.8 31.0Q11.1 30.7 10.8 29.8Q10.6 29.0 10.7 28.2Q10.8 27.4 10.7 26.5Q10.6 25.6 10.6 24.7Q10.6 23.7 10.6 22.9Q10.6 22.0 10.0 21.5Q9.5 20.9 8.6 20.7Q7.8 20.6 7.3 19.9Q6.8 19.3 7.1 18.5Q7.4 17.7 7.6 16.9Q7.8 16.0 8.0 15.2Q8.3 14.3 8.6 13.6Q9.0 12.8 9.1 12.0Q9.2 11.2 9.9 10.7Q10.6 10.2 11.2 9.5Q11.8 8.8 12.4 8.3Q13.1 7.7 13.9 7.3Q14.7 7.0 15.5 6.7Q16.3 6.3 17.0 5.8Q17.7 5.3 18.5 5.0Q19.3 4.7 20.2 4.6Q21.1 4.5 22.0 4.5Q22.8 4.6 23.7 4.4Q24.6 4.2 25.4 4.3Q26.3 4.4 27.2 4.5Q28.1 4.6 29.0 4.7Q29.9 4.8 30.8 4.9Q31.7 5.0 32.6 5.1Q33.5 5.2 34.2 4.8Q35.0 4.4 35.7 3.9Q36.4 3.4 37.1 2.8Q37.8 2.2 38.0 2.8Z", "M20.4 2.5Q20.9 3.0 21.3 3.5Q21.8 4.1 22.2 4.7Q22.6 5.3 23.0 5.8Q23.5 6.4 23.9 7.0Q24.3 7.6 24.6 8.1Q25.0 8.7 25.5 9.3Q25.9 9.9 26.3 10.4Q26.7 11.0 27.3 11.5Q27.8 12.0 28.5 12.0Q29.1 12.0 29.9 11.9Q30.6 11.8 31.2 12.0Q31.9 12.2 32.6 12.4Q33.2 12.6 33.8 13.0Q34.4 13.3 35.0 13.6Q35.7 14.0 36.2 14.3Q36.8 14.7 37.2 15.3Q37.6 15.9 37.9 16.5Q38.1 17.2 38.3 17.8Q38.6 18.5 38.7 19.2Q38.9 19.9 39.1 20.5Q39.3 21.2 39.2 21.9Q39.1 22.6 38.8 23.2Q38.5 23.8 38.4 24.6Q38.3 25.3 38.2 26.0Q38.1 26.7 37.8 27.2Q37.5 27.8 36.9 28.2Q36.3 28.6 36.2 29.3Q36.1 30.0 35.8 30.6Q35.5 31.2 35.0 31.8Q34.6 32.3 33.9 32.6Q33.3 32.8 32.6 32.7Q31.8 32.6 31.2 32.6Q30.5 32.6 30.2 33.2Q29.9 33.8 29.8 34.5Q29.7 35.2 29.7 36.0Q29.7 36.7 29.8 37.4Q29.9 38.2 29.9 38.9Q29.9 39.7 30.0 40.4Q30.0 41.1 30.1 41.8Q30.1 42.6 30.1 43.3Q30.1 44.1 30.2 44.8Q30.3 45.5 30.2 46.2Q30.2 46.9 29.8 47.5Q29.4 48.1 28.8 48.4Q28.2 48.7 27.5 49.0Q26.9 49.2 26.2 49.3Q25.5 49.4 24.8 49.5Q24.0 49.6 23.3 49.7Q22.6 49.8 21.9 49.7Q21.2 49.7 20.5 49.5Q19.8 49.4 19.1 49.3Q18.4 49.2 17.7 49.0Q17.1 48.8 16.7 48.3Q16.2 47.7 16.1 47.1Q15.9 46.4 15.8 45.7Q15.7 45.0 15.7 44.2Q15.6 43.5 15.6 42.8Q15.5 42.1 15.5 41.3Q15.5 40.6 15.5 39.8Q15.5 39.1 15.6 38.4Q15.7 37.7 15.7 36.9Q15.7 36.2 15.6 35.5Q15.5 34.7 15.5 34.0Q15.5 33.3 15.0 32.8Q14.5 32.4 13.9 32.1Q13.3 31.9 13.2 31.2Q13.1 30.5 13.1 29.7Q13.1 29.0 13.1 28.2Q13.1 27.5 13.0 26.8Q12.9 26.1 12.9 25.3Q12.9 24.6 12.9 23.8Q12.9 23.1 12.9 22.3Q12.9 21.6 12.9 20.8Q12.9 20.1 12.9 19.3Q12.9 18.6 12.9 17.8Q12.9 17.1 12.9 16.3Q12.9 15.6 12.8 14.9Q12.7 14.2 12.7 13.4Q12.7 12.7 12.8 12.0Q12.9 11.3 13.5 11.0Q14.1 10.7 14.0 10.1Q13.8 9.5 13.4 8.9Q13.0 8.3 13.1 7.7Q13.1 7.0 13.6 6.4Q14.0 5.9 14.6 5.4Q15.1 5.0 15.7 4.6Q16.3 4.2 16.9 3.7Q17.4 3.3 18.0 3.0Q18.7 2.6 19.3 2.3Q19.9 2.0 20.4 2.5Z", "M24.9 5.2Q25.7 5.2 26.6 5.2Q27.4 5.2 28.3 5.2Q29.2 5.2 30.0 5.2Q30.9 5.2 31.7 5.3Q32.5 5.4 33.3 5.5Q34.2 5.6 35.0 5.7Q35.8 5.8 36.6 5.9Q37.4 6.0 38.3 6.1Q39.1 6.2 39.9 6.4Q40.6 6.6 41.4 6.8Q42.2 7.0 43.0 7.2Q43.7 7.4 44.5 7.7Q45.2 8.0 46.0 8.3Q46.7 8.5 47.4 9.0Q48.1 9.5 48.6 10.1Q49.1 10.7 49.3 11.5Q49.4 12.3 49.3 13.2Q49.2 14.0 49.3 14.8Q49.4 15.6 49.6 16.4Q49.8 17.2 49.6 17.9Q49.3 18.7 49.0 19.4Q48.6 20.1 48.0 20.7Q47.4 21.2 46.7 21.8Q46.1 22.3 45.4 22.7Q44.7 23.1 44.4 23.8Q44.0 24.5 44.1 25.3Q44.2 26.2 44.2 27.0Q44.2 27.9 44.0 28.6Q43.8 29.4 43.4 30.1Q43.0 30.8 42.4 31.4Q41.9 31.9 41.2 32.4Q40.5 32.8 40.0 33.5Q39.6 34.1 39.5 34.9Q39.4 35.8 39.0 36.5Q38.6 37.2 38.1 37.7Q37.5 38.3 37.4 39.1Q37.2 39.9 37.1 40.7Q37.1 41.5 36.7 42.2Q36.3 42.9 35.6 43.5Q35.0 44.0 34.3 44.4Q33.6 44.8 32.9 45.1Q32.1 45.5 31.4 45.7Q30.6 46.0 29.8 46.1Q29.0 46.2 28.2 46.3Q27.4 46.4 26.6 46.5Q25.7 46.6 24.9 46.5Q24.1 46.4 23.3 46.3Q22.5 46.2 21.7 46.0Q20.9 45.9 20.1 45.7Q19.3 45.6 18.5 45.3Q17.8 45.0 17.1 44.5Q16.5 44.1 15.9 43.5Q15.3 42.9 15.1 42.2Q14.8 41.4 14.7 40.6Q14.6 39.8 14.6 38.9Q14.6 38.1 14.3 37.3Q14.0 36.6 13.4 36.1Q12.7 35.5 12.0 35.3Q11.2 35.0 10.5 34.7Q9.7 34.4 9.3 33.8Q8.8 33.2 8.6 32.4Q8.4 31.6 8.4 30.8Q8.5 29.9 8.6 29.1Q8.8 28.3 8.5 27.6Q8.2 26.8 7.9 26.1Q7.6 25.4 7.3 24.6Q7.0 23.9 6.5 23.2Q6.0 22.6 5.3 22.1Q4.7 21.7 4.2 21.0Q3.8 20.3 3.6 19.5Q3.4 18.7 3.6 18.0Q3.8 17.2 3.6 16.4Q3.4 15.6 3.0 14.9Q2.6 14.2 2.3 13.5Q2.0 12.8 2.3 12.0Q2.5 11.3 3.1 10.7Q3.7 10.2 4.4 9.8Q5.1 9.4 5.8 9.0Q6.5 8.7 7.3 8.4Q8.0 8.2 8.8 7.9Q9.5 7.6 10.3 7.4Q11.1 7.2 11.8 7.0Q12.6 6.8 13.4 6.6Q14.2 6.4 15.0 6.3Q15.8 6.2 16.6 6.1Q17.4 6.0 18.3 5.9Q19.1 5.8 19.9 5.7Q20.7 5.6 21.6 5.6Q22.4 5.6 23.2 5.4Q24.0 5.2 24.9 5.2Z"];
+  const EASE = 'power3.out';
 
-  // the first screen: six categories
-  one('#cats').innerHTML = CATS.map((n, k) => `<button type="button" class="cat in" data-k="${k}"><i style="background-image:url('${PHOTO[k]}')"></i><span>${n}</span></button>`).join('');
+  // the first screen: the categories as a slider of signed pictures
+  one('#cats').innerHTML = CATS.map((n, k) => `<button type="button" class="cat bend" data-k="${k}"><i style="background-image:url('${PHOTO[k]}')"></i><span>${n}</span></button>`).join('');
+  // the title: each letter rises from below once the preloader has gone, as on the full page
+  $('.ttl .ln').forEach(l => { l.innerHTML = [...l.textContent].map(c => `<span class="ch${c === 'r' ? ' kR' : ''}">${c}</span>`).join(''); }); gsap.set('.ttl .ch', { yPercent: 110 }); gsap.set('#cats .cat', { opacity: 0 });
+  (window.preDone || Promise.resolve()).then(() => {
+    gsap.fromTo('#cats .cat', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .9, ease: EASE, stagger: .07 });
+    gsap.to('.ttl .ch', { yPercent: 0, duration: 1.1, ease: EASE, stagger: .05, delay: .25 });
+    gsap.to('.tag', { opacity: 1, duration: .8, delay: .9 });
+  });
   // the ruled list
   one('#list').innerHTML = CATS.map((n, k) => `<button type="button" class="row in" data-k="${k}"><span class="n">0${k + 1}</span><i style="background-image:url('${CUT[k]}')"></i><p>${TEXT[k]}</p></button>`).join('');
   // the cases, under the clients' names
-  one('#caselist').innerHTML = CASES.map(([n, t, cap], k) => `<article class="case"><h3 class="h in">${n}</h3><p class="type lab in">${t}</p><button type="button" class="pic in" data-c="${k}" style="background-image:url('${SRC(k)}');background-position:${POS(k)}" aria-label="${n}"></button><p class="cap in"><span>${cap}</span></p></article>`).join('');
-  // the media: four, and the rest behind a button; each with its picture
+  one('#caselist').innerHTML = CASES.map(([n, t, cap], k) => `<article class="case" data-c="${k}"><h3 class="h">${n}</h3><p class="type lab">${t}</p><button type="button" class="pic" data-c="${k}" style="background-image:url('${SRC(k)}');background-position:${POS(k)}" aria-label="${n}"></button><p class="cap"><span>${cap}</span></p></article>`).join('');
+  // the media: four, the rest behind a button
   one('#medialist').innerHTML = MEDIA.map(([d, o, t, im], k) => `<div class="mi in${k > 3 ? ' more' : ''}"><span class="d">${d}</span><div><i style="background-image:url('${im}')"></i><p><b>${o}</b>${t}</p></div></div>`).join('');
   one('#allmedia').addEventListener('click', e => { const m = one('#media'); m.classList.toggle('all'); e.currentTarget.textContent = m.classList.contains('all') ? 'Fewer' : 'All publications'; reveal(); });
-  // a client's words, one after another
-  let qi = 0; const q = one('#quote'); q.textContent = QUOTES[0]; setInterval(() => { qi = (qi + 1) % QUOTES.length; gsap.to(q, { opacity: 0, duration: .3, onComplete() { q.textContent = QUOTES[qi]; gsap.to(q, { opacity: 1, duration: .4 }); } }); }, 4000);
 
-  // coming into view: a short rise, once, a little after one another
+  // coming into view: a short rise, once
   const io = new IntersectionObserver(es => { let d = 0; es.forEach(e => { if (e.isIntersecting) { e.target.style.transitionDelay = (d++ * 60) + 'ms'; e.target.classList.add('on'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px' });
   const reveal = () => $('.in:not(.on)').forEach(el => io.observe(el));
   reveal();
   { const hd = one('.hands'), ho = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { hd.classList.add('on'); ho.disconnect(); } }, { threshold: .9 }); ho.observe(hd); }
+
+  // a slider swiped: the pictures bow round a little while it moves, as on a drum, and lie flat again when it stops (the browser's own glide gives the inertia)
+  function bendStrip(el) { let last = el.scrollLeft, lt = performance.now(), amt = 0, goal = 0, run = false;
+    const items = () => [...el.children].filter(c => c.classList.contains('bend') || c.tagName === 'IMG');
+    const frame = () => { amt += (goal - amt) * .14; goal *= .9; const W = el.clientWidth, c0 = el.getBoundingClientRect().left + W / 2;
+      items().forEach(it => { const r = it.getBoundingClientRect(), d = (r.left + r.width / 2 - c0) / W; it.style.transform = amt > .002 ? `rotateY(${(-d * 38 * amt).toFixed(2)}deg) translateZ(${(-Math.abs(d) * 70 * amt).toFixed(1)}px)` : ''; });
+      if (amt > .002 || goal > .002) requestAnimationFrame(frame); else run = false; };
+    el.addEventListener('scroll', () => { const t = performance.now(), v = Math.abs(el.scrollLeft - last) / Math.max(8, t - lt); last = el.scrollLeft; lt = t; goal = Math.min(1, Math.max(goal, v * .9)); if (!run) { run = true; requestAnimationFrame(frame); } if (window.soundNudge) soundNudge(Math.min(.6, v * .3)); }, { passive: true }); }
+  bendStrip(one('#cats'));
+
+  // the scroll: Lisa's card a little quicker than Karen's; the pots from line to photo; clients lit in turn; the forms' words sliding to their places
+  const lisa = one('#lisa'), duo = one('#duo'), pots = one('#pots'), cases = $('.case'), q = one('#quote'), words = $('.forms .h'), formsEl = one('.forms');
+  let act = -1;
+  function onScroll() { const V = innerHeight;
+    { const r = duo.getBoundingClientRect(), p = clamp(-r.top / Math.max(1, r.height - V)); lisa.style.transform = `translateY(${(-p * 14).toFixed(2)}vh)`; }
+    { const r = pots.getBoundingClientRect(), p = clamp((V * .85 - r.top) / (V * .5)); pots.firstElementChild.style.opacity = p.toFixed(3); pots.lastElementChild.style.opacity = (1 - p).toFixed(3); }   // a line drawing first, the photo as it comes up
+    { let best = 0, bd = 1e9; cases.forEach((c, k) => { const r = c.firstElementChild.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - V * .42); if (d < bd) { bd = d; best = k; } });
+      if (best !== act) { act = best; cases.forEach((c, k) => c.classList.toggle('act', k === best)); gsap.to(q, { opacity: 0, duration: .2, onComplete() { q.textContent = QUOTES[best % QUOTES.length]; gsap.to(q, { opacity: 1, duration: .35 }); } }); } }
+    { const r = formsEl.getBoundingClientRect(), p = clamp((V - r.top) / (V * .9)), e = 1 - Math.pow(1 - p, 3), DX = [-28, 30, 22]; words.forEach((w, k) => { w.style.transform = `translateX(${(DX[k] * (1 - e)).toFixed(2)}vw)`; }); }
+  }
+  addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
 
   // the forms: one grey line that slowly turns from one work into the next (all outlines share the same points)
   const nums = ICO.map(d => d.match(/-?\d+(\.\d+)?/g).map(Number)), path = one('#form'), tpl = ICO[0].replace(/-?\d+(\.\d+)?/g, '#');
   (function morph(now) { const per = 3200, t = now / per, i = Math.floor(t) % nums.length, j = (i + 1) % nums.length, f = Math.min(1, Math.max(0, (t % 1 - .45) / .55)), e = f * f * (3 - 2 * f);
     let k = 0; path.setAttribute('d', tpl.replace(/#/g, () => { const v = nums[i][k] + (nums[j][k] - nums[i][k]) * e; k++; return v.toFixed(1); })); requestAnimationFrame(morph); })(0);
 
-  // the views, with a cross to close them
+  // the views
   const view = one('#view'), x = one('#close'); let open = false;
   window.clayBlocked = () => open;
-  function show(html) { view.innerHTML = html; view.scrollTop = 0; view.classList.add('open'); view.setAttribute('aria-hidden', 'false'); x.hidden = false; open = true; document.body.style.overflow = 'hidden'; if (window.muffle) muffle(true); }
+  function show(html, fit) { view.innerHTML = html; view.scrollTop = 0; view.classList.toggle('fit', !!fit); view.classList.add('open'); view.setAttribute('aria-hidden', 'false'); x.hidden = false; open = true; document.body.style.overflow = 'hidden'; if (window.muffle) muffle(true); }
   function hide() { view.classList.remove('open'); view.setAttribute('aria-hidden', 'true'); x.hidden = true; open = false; document.body.style.overflow = ''; if (location.hash === '#order') history.replaceState(null, '', location.pathname); if (window.muffle) muffle(false); }
   x.addEventListener('click', hide); addEventListener('keydown', e => { if (e.key === 'Escape' && open) hide(); });
-  function openCat(k) { const key = KEYS[k], photos = [PHOTO[k], ...Array.from({ length: CAT_N[key] }, (_, n) => n + 1).filter(n => SAME[key] !== n).map(n => `photos/cat/${key}-${n}.jpg`)];
-    show(`<div class="head"><p class="h">${CATS[k]}</p></div><div class="strip">${photos.map(p => `<i style="background-image:url('${p}')"></i>`).join('')}</div><div class="txt"><p>${TEXT[k]}</p></div>`); }
+  const letters = s => [...s].map(c => `<span class="ch">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+
+  // a category opens softly: its name rises, the picture that was tapped grows from its place into the slider, the others come in after it
+  function openCat(k, from) { const key = KEYS[k], photos = [CUT[k], ...Array.from({ length: CAT_N[key] }, (_, n) => `photos/cat/${key}-${n + 1}.jpg`)];
+    show(`<div class="cv"><div class="head"><p class="h">${letters(CATS[k])}</p></div><div class="gal"><svg class="ico" viewBox="0 0 52 52" aria-hidden="true"><path pathLength="1" stroke-dasharray="1.04 1" stroke-dashoffset="1" d="${ICO[k]}"/></svg><div class="track">${photos.map((p, n) => `<img src="${p}" alt="" draggable="false"${n ? '' : ' class="cut"'}>`).join('')}</div></div><div class="mid"><p>${TEXT[k]}</p></div></div>`, true);
+    const track = view.querySelector('.track'), ico = view.querySelector('.ico'), ip = ico.querySelector('path'), imgs = [...track.children];
+    ip.style.strokeWidth = (52 / ico.getBoundingClientRect().height).toFixed(4);   // one screen pixel
+    gsap.fromTo(view.querySelectorAll('.head .ch'), { yPercent: 110 }, { yPercent: 0, duration: .8, ease: EASE, stagger: .035, delay: .1 });
+    gsap.fromTo(view.querySelector('.mid p'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .8, ease: EASE, delay: .45 });
+    imgs.slice(1).forEach((im, n) => gsap.fromTo(im, { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: .9, ease: EASE, delay: .25 + n * .06 }));
+    const first = imgs[0], grow = () => { if (from) { const a = from.getBoundingClientRect(), b = first.getBoundingClientRect(); if (b.width) gsap.fromTo(first, { x: a.left + a.width / 2 - (b.left + b.width / 2), y: a.top + a.height / 2 - (b.top + b.height / 2), scale: a.height / b.height }, { x: 0, y: 0, scale: 1, duration: .8, ease: 'power3.inOut' }); } };
+    if (first.complete) grow(); else first.addEventListener('load', grow, { once: true });
+    let near = -1; const redraw = () => { const c = track.getBoundingClientRect().left + track.clientWidth / 2; let best = 0, bd = 1e9; imgs.forEach((im, n) => { const r = im.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - c); if (d < bd) { bd = d; best = n; } });
+      if (best !== near) { near = best; gsap.fromTo(ip, { attr: { 'stroke-dashoffset': 1 } }, { attr: { 'stroke-dashoffset': 0 }, duration: 1.4, ease: 'power2.inOut', overwrite: true }); } };   // the outline draws itself again behind each picture that comes to the middle
+    track.addEventListener('scroll', redraw, { passive: true }); setTimeout(redraw, 300);
+    bendStrip(track); }
   function openCase(c) { const [n, t] = CASES[c];
-    show(`<div class="head"><p class="h">${n}</p><p class="lab" style="margin-top:var(--s1)">${t}</p><div class="big" style="background-image:url('${SRC(c)}');background-position:${POS(c)}"></div></div><div class="txt"><p>${CASE_TEXT[c][0]}</p><p>${CASE_TEXT[c][1]}</p></div><div class="strip cover" style="padding-top:0;padding-bottom:var(--s5)">${Array.from({ length: CASE_N[CASE_KEY[c]] - 1 }, (_, k) => `<i style="background-image:url('${SRC(c, k + 1)}');background-position:${POS(c, k + 1)}"></i>`).join('')}</div>`); }
-  function openOrder() { const W = [['tattoo-relief-up', 'Tattooed relief'], ['panel-eva', 'Eva panel'], ['shelf-spine', 'Spine shelf'], ['mirror-beetles', 'Beetles mirror'], ['bust', 'Bust'], ['urban-angel', 'Angel urban']];
-    show(`<div class="head"><div class="ttl3"><span class="h">Order</span><span class="h">and</span><span class="h">cooperation</span></div></div><div class="txt"><p>DirtyHands creates custom ceramic panels and art objects based on original sketches and technical specifications. We work with projects of any complexity, carefully immersing ourselves in the concept and architecture of the space.</p><p>We're open to collaboration with designers, decorators and architects. Together we create unique ceramic solutions for interiors and exteriors: entrances, facades, private and public spaces.</p><p>If your project needs more than decor, an expressive artistic accent, we'd love to hear from you.</p></div><div class="works">${W.map(([f, n]) => `<div><i style="background-image:url('photos/${f}.webp')"></i><span>${n}</span></div>`).join('')}</div><a class="mail lnk" href="mailto:order@dirtyhands.ru">order@dirtyhands.ru</a>`); }
-  one('#ordlink').addEventListener('click', e => { e.preventDefault(); openOrder(); });
+    show(`<div class="head"><p class="h">${n}</p><p class="lab" style="margin-top:var(--s1)">${t}</p><div class="big" style="background-image:url('${SRC(c)}');background-position:${POS(c)}"></div></div><div class="txt"><p>${CASE_TEXT[c][0]}</p><p>${CASE_TEXT[c][1]}</p></div><div class="strip cover">${Array.from({ length: CASE_N[CASE_KEY[c]] - 1 }, (_, k) => `<i class="bend" style="background-image:url('${SRC(c, k + 1)}');background-position:${POS(c, k + 1)}"></i>`).join('')}</div>`);
+    bendStrip(view.querySelector('.strip')); }
+
+  // order, as on the full page: the title on three shelves that turn when swiped, a tap lets the next work fall onto a free place on them, and a black silhouette stands in the text
+  function openOrder() { const W = ['tattoo-relief-up', 'panel-eva', 'shelf-spine', 'mirror-beetles', 'bust', 'urban-angel', 'vase-brutskin', 'table-cubeball'];
+    show(`<div class="head" style="padding-bottom:var(--s3)"></div><div class="shelves"><div class="shelf"><span class="h">Order</span></div><div class="shelf"><span class="h">and</span></div><div class="shelf"><span class="h">cooperation</span></div></div><div class="txt otxt"><p>DirtyHands creates custom ceramic panels and art objects based on original sketches and technical specifications. We work with projects of any complexity, carefully immersing ourselves in the concept and architecture of the space.</p><p>We're open to collaboration with designers, decorators and architects. Together we create unique ceramic solutions for interiors and exteriors: entrances, facades, private and public spaces.</p><p>If your project needs more than decor, an expressive artistic accent, we'd love to hear from you.</p></div><button type="button" class="sil" aria-label="Put the next work on a shelf"></button><a class="mail" href="mailto:order@dirtyhands.ru"><span>order@dirtyhands.ru</span><svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true" style="margin-top:.3em"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a>`);
+    gsap.fromTo(view.querySelectorAll('.shelf .h'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .9, ease: EASE, stagger: .12, delay: .1 });
+    const shelves = [...view.querySelectorAll('.shelf')], SW = innerWidth, DIR = [1, -.8, .6], off = [0, 0, 0], to = [0, 0, 0], stood = [[], [], []]; let wi = 0;
+    const wrap = (x, o) => ((x + o) % SW + SW) % SW;
+    const place = () => shelves.forEach((s, b) => stood[b].forEach(it => { const xx = wrap(it.x, off[b]), e = Math.min(xx, SW - xx) / (SW * .18); it.el.style.left = (xx - it.el.offsetWidth / 2).toFixed(1) + 'px'; it.el.style.opacity = Math.min(1, e).toFixed(3); }));
+    (function spin() { if (!open) return; let moving = false; off.forEach((v, b) => { off[b] += (to[b] - v) * .1; if (Math.abs(to[b] - off[b]) > .3) moving = true; }); if (moving) place(); requestAnimationFrame(spin); })();
+    let sx = null, last = 0; const box = view.querySelector('.shelves');
+    box.addEventListener('touchstart', e => { sx = e.touches[0].clientX; last = sx; }, { passive: true });
+    box.addEventListener('touchmove', e => { const xx = e.touches[0].clientX, d = xx - last; last = xx; to.forEach((v, b) => { to[b] += d * DIR[b] * 1.4; }); if (window.soundNudge) soundNudge(Math.min(1, Math.abs(d) / 20)); }, { passive: true });   // a swipe turns the shelves, each its own way, and they glide on a little after the finger
+    box.addEventListener('touchend', () => { const v = last - (sx ?? last); to.forEach((_, b) => { to[b] += v * DIR[b] * .6; }); sx = null; }, { passive: true });
+    const free = () => { for (let tries = 0; tries < 60; tries++) { const b = (Math.random() * 3) | 0, xx = Math.random() * SW, h = shelves[b].querySelector('.h').getBoundingClientRect(), sx_ = wrap(xx, off[b]);
+        if (sx_ > h.left - 40 && sx_ < h.right + 40) continue; if (stood[b].some(it => Math.abs(wrap(it.x, off[b]) - sx_) < innerWidth * .16)) continue; return { b, x: xx }; } return null; };
+    const sil = view.querySelector('.sil'), nextSrc = () => `photos/${W[wi % W.length]}.webp`; sil.style.backgroundImage = `url('${nextSrc()}')`;
+    sil.addEventListener('click', () => { const spot = free(); if (!spot) { gsap.fromTo(sil, { x: -4 }, { x: 0, duration: .4, ease: 'elastic.out(1, .3)' }); return; }   // the shelves are full: it only shakes
+      const src = nextSrc(); wi++; sil.style.backgroundImage = `url('${nextSrc()}')`; const a = sil.getBoundingClientRect(), f = document.createElement('i'); f.className = 'fall'; f.style.backgroundImage = `url('${src}')`; document.body.append(f);
+      const s = shelves[spot.b], sr = s.getBoundingClientRect(), tx = wrap(spot.x, off[spot.b]) - innerWidth * .07, ty = sr.bottom - 1 - innerWidth * .14, lift = Math.min(a.top, sr.top) - 80;
+      const pt = { t: 0 }; gsap.to(pt, { t: 1, duration: .9, ease: 'power1.inOut', onUpdate() { const t = pt.t, u = 1 - t; f.style.left = (u * u * a.left + 2 * u * t * ((a.left + tx) / 2) + t * t * tx).toFixed(1) + 'px'; f.style.top = (u * u * a.top + 2 * u * t * lift + t * t * ty).toFixed(1) + 'px'; f.style.transform = `rotate(${(Math.sin(t * Math.PI) * 25).toFixed(1)}deg)`; },   // it flies up out of the silhouette in an arc and comes down on its place
+        onComplete() { f.remove(); const el = document.createElement('i'); el.className = 'w dark'; el.style.backgroundImage = `url('${src}')`; s.append(el); stood[spot.b].push({ el, x: spot.x }); place(); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove('dark'))); gsap.fromTo(el, { y: -6 }, { y: 0, duration: .4, ease: 'bounce.out' }); if (window.placeSound) placeSound(); } }); });   // set down, it takes its own colours
+  }
+  $('.ord').forEach(a => a.addEventListener('click', e => { e.preventDefault(); openOrder(); }));
   if (location.hash === '#order') openOrder();
-  document.addEventListener('click', e => { const c = e.target.closest('.cat, .row'), p = e.target.closest('.pic'); if (c) openCat(+c.dataset.k); else if (p) openCase(+p.dataset.c); });
+  document.addEventListener('click', e => { if (open) return; const c = e.target.closest('.cat, .row'), p = e.target.closest('.pic'); if (c) openCat(+c.dataset.k, c.querySelector('i')); else if (p) openCase(+p.dataset.c); });
   view.addEventListener('scroll', () => { if (window.soundNudge) soundNudge(.2); }, { passive: true });
 
-  makeClay();   // the clay, as on the full page (on the phone the marks dry sooner: see clayFast above)
+  makeClay();   // the clay, as on the full page: a finger leaves marks and smears them, also while the page scrolls (on the phone they dry sooner)
 })();
 </script>
 <script src="cookies.js"></script>

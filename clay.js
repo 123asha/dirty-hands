@@ -12,7 +12,7 @@ const TILE = 64;
 const tiles = new Map();
 const content = new Set();      // tiles that still hold clay and keep fading
 const FAST = !!window.clayFast;   // on the phone the marks go sooner
-const HOLD = FAST ? .8 : 1.75;  // seconds a fresh mark stays before it starts to fade
+const HOLD = FAST ? .6 : 1.75;  // seconds a fresh mark stays before it starts to fade
 const FADE_STEP = 1 / 20;       // fading runs 20 times a second in small steps, so the marks melt away smoothly
 let lastFade = 0;
 const now = () => performance.now() / 1000;
@@ -554,6 +554,16 @@ function release(e) {
 }
 addEventListener('pointerup', release);
 addEventListener('pointercancel', release);
+// On a phone the browser takes the touch for scrolling and cancels the pointer: the finger still smears, through touch events, which go on while the page scrolls
+if (FAST) {
+  const tid = t => 't' + t.identifier;
+  addEventListener('touchmove', e => { if (window.clayBlocked && window.clayBlocked()) return;
+    for (const t of e.changedTouches) { let h = hands.get(tid(t));
+      if (!h) { h = { fs: [finger(t.clientX, t.clientY, { load: rnd(1.5, 1.9) })], sx: t.clientX, sy: t.clientY, x: t.clientX, y: t.clientY, smearing: true }; hands.set(tid(t), h); }
+      h.tx = t.clientX; h.ty = t.clientY; } }, { passive: true });
+  const tEnd = e => { for (const t of e.changedTouches) release({ pointerId: tid(t) }); };
+  addEventListener('touchend', tEnd, { passive: true }); addEventListener('touchcancel', tEnd, { passive: true });
+}
 
 // Marks slowly sink away: after HOLD seconds each pixel thins out until the sheet is white again.
 function fade(t) {
@@ -567,7 +577,7 @@ function fade(t) {
         let v = T[i];
         if (v <= 0) continue;
         if (t - D[i] > HOLD) {
-          v = FAST ? v * 0.86 - 0.009 : v * 0.913 - 0.0054;
+          v = FAST ? v * 0.82 - 0.012 : v * 0.913 - 0.0054;
           T[i] = v > 0.003 ? v : 0;
           changed = true;
         }

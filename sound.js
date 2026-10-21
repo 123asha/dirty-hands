@@ -116,7 +116,8 @@ function muffle(on) { sInside = on; if (!sLp) return; const t = actx.currentTime
   sInG.gain.cancelScheduledValues(t); sInG.gain.setValueAtTime(sInG.gain.value, t); sInG.gain.linearRampToValueAtTime(0, t + 2); }   // inside: softer and closer, an octave lower, with a warm fifth under it
 const wave = sndBtn.querySelector('path');
 function waveLoop(now = performance.now()) {                            // the line moves like a slow wave while the sound plays and lies flat again when it stops
-  let d = 'M0 5'; const amp = sOn ? 2.6 : 0; for (let x = 2; x <= 24; x += 2) d += `L${x} ${(5 + amp * Math.sin(x / 24 * Math.PI * 2 - now / 420) * Math.sin(x / 24 * Math.PI)).toFixed(2)}`;
+  const L = (wave.ownerSVGElement && wave.ownerSVGElement.viewBox.baseVal.width) || 24;   // as long as its icon
+  let d = 'M0 5'; const amp = sOn ? 2.6 : 0; for (let x = 2; x <= L; x += 2) d += `L${x} ${(5 + amp * Math.sin(x / L * Math.PI * 2 - now / 420) * Math.sin(x / L * Math.PI)).toFixed(2)}`;
   wave.setAttribute('d', d); if (sOn) requestAnimationFrame(waveLoop);
 }
 // the sound of the page: no notes, only soft rustles of air when something is pointed at, scrolled or opened (and inside a view the filter lies over them too)
