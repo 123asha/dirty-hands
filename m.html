@@ -74,7 +74,7 @@
   /* the categories as a ruled list */
   .list { margin-top: var(--s5); }
   /* block 2, as on the full page: the cards of the top slider fly together into a pile in the middle of the screen and turn over into the works cut out; under them the table, its ruled lines and numbered paragraphs; the work of the paragraph in front stands on top of the pile */
-  .tbl { position: relative; margin-top: 30vh; padding: calc(16 * var(--lh)) var(--m) 20vh; background: repeating-linear-gradient(to bottom, var(--rule) 0 1px, transparent 1px var(--lh)); }
+  .tbl { position: relative; margin-top: 0; padding: calc(6 * var(--lh)) var(--m) calc(4 * var(--lh)); background: repeating-linear-gradient(to bottom, var(--rule) 0 1px, transparent 1px var(--lh)); }
   .tr { display: grid; grid-template-columns: 28px 1fr; gap: var(--s1); margin-bottom: calc(2 * var(--lh)); }   /* full width; where the work stands, its lines go round it on both sides (pretext, as on the full page) */
   .tr p.flow > .fl { position: relative; display: block; height: var(--lh); } .tr p.flow > .fl > span { position: absolute; top: 0; white-space: nowrap; }
   .tr .n { opacity: .4; } .tr p { line-height: var(--lh); }
@@ -92,7 +92,9 @@
   .duo .photo { position: sticky; top: 0; height: 100vh; overflow: hidden; z-index: 0; }   /* the whole screen: they stand full length behind the cards */
   .duo .photo::before { content: ''; position: absolute; left: 50%; top: 50%; width: 100vh; height: 100vw; translate: -50% calc(-50% + var(--py, 0px)); rotate: 90deg; scale: 1.16; background: url("photos/lisa-karen.jpg") center / contain no-repeat; }   /* the photo turned a quarter: whole, nothing cut at the sides, and the cards pass over it */
   .cards { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 45vh; padding: 0 0 40vh; margin-top: 55vh; }   /* one after another down the middle of the screen */
-  .card { width: calc(100vw * 2 / 3); background: #fff; padding: var(--s1) var(--s1) var(--s2); will-change: transform; }
+  .card { width: calc(100vw * 2 / 3); aspect-ratio: 5 / 7; display: flex; flex-direction: column; background: #fff; padding: var(--s1) var(--s1) var(--s2); will-change: transform; }   /* upright: the name drops to the foot of the card */
+  .card:first-child { align-self: flex-start; margin-left: var(--m); } .card:last-child { align-self: flex-end; margin-right: var(--m); }   /* Karen on the left line, Lisa on the right */
+  .card .h { margin-top: auto !important; }
   .card .r { display: block; padding: var(--s1) 0; border-top: 1px solid var(--rule); }
   .card .r .n { display: block; opacity: .4; }
   .card .h { font-size: 11vw; margin-top: var(--s3); }
@@ -112,12 +114,13 @@
   /* clients: the label and the client's words held at the top, the names going black as each reaches the middle */
   .chead { text-align: right; }
   .names { position: sticky; top: calc(48px + env(safe-area-inset-top)); z-index: 40; margin-top: var(--s2); text-align: right; color: #fff; mix-blend-mode: difference; pointer-events: none; }   /* the four clients, as on the full page, held under the menu over the pictures, inverted against whatever passes under them */
-  .names .h { font-size: var(--h2); opacity: .35; transition: opacity .5s var(--ease); } .names .h.act { opacity: 1; }
+  .names .h { position: relative; font-size: var(--h2); height: .95em; overflow: hidden; }   /* only the client in front; the next one rolls in letter by letter from below */
+  .names .w { position: absolute; right: 0; bottom: 0; white-space: nowrap; } .names .ch { display: inline-block; }
   .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .case { margin-top: var(--s5); }
-  .case .pic { display: block; width: 100%; aspect-ratio: 5 / 4; margin-top: var(--s1); background: var(--gray) center / cover no-repeat; }   /* the kind of place over the picture, what was made under it on the left */
-  .case .cap { margin-top: var(--s2); }
-  .case .cap span { display: block; border-top: 1px solid var(--rule); padding-top: var(--s1); }
+  .case .pic { display: block; width: 100%; aspect-ratio: 5 / 4; margin-top: 0; background: var(--gray) center / cover no-repeat; }   /* the kind of place over the picture, what was made under it on the left */
+  .case .meta { display: grid; grid-template-columns: 1fr 1fr; gap: var(--g); margin-top: var(--s2); border-top: 1px solid var(--rule); padding-top: var(--s1); }   /* under the picture: the kind of place on the left, what was made on the right */
+  .case .cap span { display: block; }
   .case .cap span span:not(.ln-in) { display: inline; border: 0; padding: 0; }   /* the words while the caption is measured into lines stay in the line (as blocks they fell one under another) */
   .case .cap > span > .ln-in { border: 0; padding: 0; }   /* one ruled line over the caption, not one over every line of it */
 
@@ -138,9 +141,12 @@
   .mi.more { display: none; } .media.all .mi.more { display: grid; }
   .allbtn { margin-top: var(--s2); text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
 
-  .hands { display: block; width: 136px; height: 74px; margin: var(--s5) auto 0; overflow: visible; }
+  .fin { height: 160svh; margin-top: var(--s5); }   /* the end: the hands and the credit stop in the middle of the screen a while before the page starts over */
+  .fin-in { position: sticky; top: 0; height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .veil { position: fixed; inset: 0; z-index: 2500; background: #fff; opacity: 0; pointer-events: none; transition: opacity .6s var(--ease); }
+  .hands { display: block; width: 136px; height: 74px; margin: 0 auto; overflow: visible; }
   .hands path { fill: none; stroke: #000; stroke-width: 4.6; stroke-linejoin: miter; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 2.4s cubic-bezier(.4, 0, .2, 1); } .hands.on path { stroke-dashoffset: 0; } .hands.on path + path { transition-delay: .5s; }
-  .credit { margin: var(--s4) 0 calc(var(--s5) + env(safe-area-inset-bottom)); text-align: center; }
+  .credit { margin: var(--s4) 0 0; text-align: center; }
   .credit .sfav { display: inline-block; height: .83em; width: auto; vertical-align: -.07em; }
   .credit .u { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; padding-bottom: .12em; transition: background-size .4s var(--ease); } .credit a:hover .u { background-size: 100% 1px; } .credit a:hover .arr { animation: arrowSwap .55s cubic-bezier(.4, 0, .2, 1); }
 
@@ -236,7 +242,7 @@
 
 <section class="wrap sec" id="cases">
   <div class="chead"><p class="lab">Our clients</p></div>
-  <div class="names" aria-hidden="true"><p class="h">Brera</p><p class="h">AVA</p><p class="h">The Greeks</p><p class="h">Novikov</p></div>
+  <div class="names" aria-hidden="true"><p class="h"></p></div>
   <div id="caselist"></div>
 </section>
 
@@ -251,8 +257,11 @@
   <button type="button" class="allbtn" id="allmedia">All publications</button>
 </section>
 
+<section class="fin"><div class="fin-in">
 <svg class="hands" viewBox="164 14 680 368" aria-hidden="true"><path pathLength="1" d="M408.0 372.0L410.4 357.3L408.2 342.7L407.7 328.0L409.6 313.3L408.8 298.7L405.9 284.0L406.4 269.3L408.5 254.7L408.0 240.0L423.2 238.0L438.4 240.4L453.6 242.2L468.8 240.4L484.0 240.0L485.8 224.0L485.5 208.0L482.5 192.0L484.0 176.0L468.8 175.6L453.6 176.7L438.4 178.4L423.2 176.3L408.0 176.0L408.3 160.9L407.6 145.7L409.9 130.6L410.1 115.4L407.2 100.3L406.7 85.1L408.0 70.0L390.0 70.4L372.0 72.6L354.0 70.0L352.7 85.0L353.8 100.0L354.7 115.0L352.3 130.0L351.5 145.0L354.2 160.0L355.0 175.0L354.0 190.0L354.0 174.9L351.5 159.8L352.5 144.7L354.9 129.6L353.9 114.5L352.8 99.5L355.2 84.4L356.6 69.3L354.3 54.2L353.3 39.1L354.0 24.0L340.0 23.4L326.0 26.2L312.0 25.8L298.0 24.0L298.3 39.1L299.7 54.2L297.4 69.3L295.5 84.4L297.4 99.5L298.5 114.5L296.5 129.6L296.8 144.7L299.7 159.8L299.8 174.9L298.0 190.0L297.6 175.0L295.9 160.0L297.9 145.0L300.2 130.0L298.7 115.0L297.6 100.0L299.6 85.0L299.9 70.0L296.9 55.0L298.0 40.0L283.5 39.7L269.0 40.3L254.5 42.4L240.0 40.0L238.3 55.0L239.4 70.0L240.6 85.0L238.5 100.0L237.6 115.0L240.4 130.0L241.4 145.0L239.5 160.0L240.1 175.0L240.0 190.0L238.5 175.0L241.1 160.0L240.4 145.0L239.1 130.0L241.2 115.0L240.0 100.0L222.0 99.8L204.0 101.0L186.0 100.0L185.6 114.0L188.3 128.0L187.9 142.0L185.3 156.0L185.9 170.0L187.3 184.0L185.3 198.0L183.4 212.0L185.3 226.0L186.0 240.0L186.5 254.8L188.1 269.4L192.6 283.8L194.3 298.4L193.5 313.4L195.4 328.0L198.7 342.5L198.4 357.3L200.0 372.0"/><path pathLength="1" d="M600.0 372.0L598.3 357.3L597.6 342.7L600.2 328.0L600.7 313.3L598.9 298.7L600.0 284.0L602.5 269.3L601.4 254.7L600.0 240.0L584.8 239.6L569.6 238.6L554.4 241.2L539.2 242.5L524.0 240.0L524.4 224.0L522.5 208.0L523.3 192.0L524.0 176.0L539.2 177.6L554.4 175.5L569.6 176.6L584.8 177.9L600.0 176.0L597.7 160.9L599.6 145.7L600.3 130.6L598.3 115.4L598.7 100.3L601.6 85.1L600.0 70.0L618.0 69.6L636.0 70.6L654.0 70.0L653.8 85.0L656.0 100.0L654.4 115.0L653.6 130.0L655.8 145.0L655.9 160.0L653.0 175.0L654.0 190.0L653.5 174.9L654.5 159.8L656.5 144.7L654.9 129.6L652.5 114.5L653.7 99.5L654.6 84.4L652.3 69.3L651.6 54.2L654.3 39.1L654.0 24.0L668.0 23.3L682.0 24.1L696.0 26.6L710.0 24.0L711.0 39.1L710.0 54.2L708.9 69.3L711.3 84.4L712.6 99.5L710.2 114.5L709.2 129.6L711.1 144.7L710.5 159.8L707.7 174.9L710.0 190.0L709.4 175.0L710.2 160.0L711.5 145.0L709.3 130.0L707.4 115.0L709.4 100.0L710.5 85.0L708.6 70.0L708.9 55.0L710.0 40.0L724.5 41.9L739.0 39.7L753.5 40.4L768.0 40.0L768.0 55.0L770.3 70.0L768.7 85.0L767.6 100.0L769.5 115.0L769.7 130.0L766.8 145.0L766.2 160.0L768.3 175.0L768.0 190.0L770.3 175.0L768.7 160.0L766.2 145.0L767.3 130.0L768.5 115.0L768.0 100.0L786.0 97.7L804.0 100.5L822.0 100.0L822.4 114.0L821.9 128.0L819.5 142.0L820.7 156.0L823.3 170.0L822.5 184.0L821.2 198.0L823.3 212.0L824.6 226.0L822.0 240.0L819.3 254.5L819.5 269.4L817.6 284.0L813.4 298.4L812.4 313.1L813.4 328.1L811.3 342.7L808.4 357.2L808.0 372.0"/></svg>
 <p class="credit"><a href="https://skip.design" target="_blank" rel="noopener">Made by <img class="sfav" src="skip-fav.png" alt="" aria-hidden="true" style="display:inline-block"> <span class="u">Skip Design</span><svg class="arr" viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a><br>With love for Dirty Hands ♥</p>
+</div></section>
+<div class="veil" aria-hidden="true"></div>
 
 <div class="ov" id="view" aria-hidden="true"></div>
 <button type="button" class="x" id="close" aria-label="Close" hidden><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1 1 13" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></button>
@@ -356,7 +365,7 @@ window.preDone = new Promise(done => {
   pcs.forEach((el, k) => el.style.backgroundImage = `url('${PHOTO[k]}')`);
   addEventListener('scroll', () => requestAnimationFrame(pileTick), { passive: true }); addEventListener('resize', pileTick); one('#cats').addEventListener('scroll', pileTick, { passive: true }); pileTick();
   // the cases, under the clients' names
-  one('#caselist').innerHTML = CASES.map(([n, t, cap], k) => `<article class="case" data-c="${k}"><h3 class="vh">${n}</h3><p class="type lab">${t}</p><button type="button" class="pic" data-c="${k}" style="background-image:url('${SRC(k)}');background-position:${POS(k)}" aria-label="${n}"></button><p class="cap"><span>${cap}</span></p></article>`).join('');
+  one('#caselist').innerHTML = CASES.map(([n, t, cap], k) => `<article class="case" data-c="${k}"><h3 class="vh">${n}</h3><button type="button" class="pic" data-c="${k}" style="background-image:url('${SRC(k)}');background-position:${POS(k)}" aria-label="${n}"></button><div class="meta"><p class="type lab">${t}</p><p class="cap"><span>${cap}</span></p></div></article>`).join('');
   // the media: four, the rest behind a button
   one('#medialist').innerHTML = MEDIA.map(([d, o, t, im], k) => `<div class="mi in${k > 3 ? ' more' : ''}"><span class="d">${d}</span><div><i style="background-image:url('${im}')"></i><p><b>${o}</b>${t}</p></div></div>`).join('');
   one('#allmedia').addEventListener('click', e => { const m = one('#media'); m.classList.toggle('all'); e.currentTarget.textContent = m.classList.contains('all') ? 'Fewer' : 'All publications'; reveal(); });
@@ -424,13 +433,20 @@ window.preDone = new Promise(done => {
         const h = r.map(([x, t]) => `<span style="left:${x.toFixed(1)}px">${t.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</span>`).join(''); if (ln._h !== h) { ln._h = h; ln.innerHTML = h; } }); }); }
 
   // the scroll: Lisa's card a little quicker than Karen's; the pots from line to photo; clients lit in turn; the forms' words sliding to their places
-  const lisa = one('#lisa'), duo = one('#duo'), pots = one('#pots'), cases = $('.case'), names = $('.names .h'), words = $('.forms .h'), formsEl = one('.forms');
-  let act = -1;
+  const lisa = one('#lisa'), duo = one('#duo'), pots = one('#pots'), cases = $('.case'), nameBox = one('.names .h'), words = $('.forms .h'), formsEl = one('.forms');
+  let nameEl = null;
+  function showName(k) { const w = document.createElement('span'); w.className = 'w'; w.innerHTML = [...CASES[k][0]].map(c => `<span class="ch">${c === ' ' ? '&nbsp;' : c}</span>`).join(''); nameBox.append(w);
+    const old = nameEl; nameEl = w; gsap.fromTo(w.children, { yPercent: 110 }, { yPercent: 0, duration: .7, ease: EASE, stagger: .03, delay: old ? .12 : 0 });
+    if (old) gsap.to(old.children, { yPercent: -110, duration: .45, ease: 'power2.in', stagger: .02, onComplete() { old.remove(); } }); }   // the old name goes up and out as the new one comes up after it
+  let act = -1, duoT = 0, duoC = 0, duoRaf = 0, duoLt = 0; const karen = one('.card');
+  function duoGlide(now) { const dt = Math.min(50, now - (duoLt || now)) || 16.7; duoLt = now; duoC += (duoT - duoC) * (1 - Math.pow(1 - .09, dt / 16.7));   // one soft follower for the whole pair: no hanging, no jump
+    const V = innerHeight / 100; karen.style.transform = `translate3d(0,${(-duoC * 6 * V).toFixed(2)}px,0)`; lisa.style.transform = `translate3d(0,${(-duoC * 16 * V).toFixed(2)}px,0)`; duo.style.setProperty('--py', `${((.5 - duoC) * 14 * V).toFixed(2)}px`);   // Lisa a little quicker than Karen, the photo slower than both
+    if (Math.abs(duoT - duoC) > .0004) duoRaf = requestAnimationFrame(duoGlide); else { duoRaf = 0; duoLt = 0; } }
   function onScroll() { const V = innerHeight;
-    { const r = duo.getBoundingClientRect(), p = clamp(-r.top / Math.max(1, r.height - V)); lisa.style.transform = `translateY(${(-p * 14).toFixed(2)}vh)`; duo.style.setProperty('--py', `${((.5 - p) * 14).toFixed(2)}vh`); }   // the photo drifts up too, much slower than the cards over it
+    { const r = duo.getBoundingClientRect(), p = clamp(-r.top / Math.max(1, r.height - V)); duoT = p; if (!duoRaf) duoRaf = requestAnimationFrame(duoGlide); }   // the cards and the photo follow the scroll a little late (see duoGlide)
     { const r = pots.getBoundingClientRect(), p = clamp((V * .85 - r.top) / (V * .5)); pots.querySelectorAll('.pp').forEach((el, k) => { const e = clamp(p * 1.6 - k * .2); el.style.transform = `rotateY(${(-(1 - e) * 92).toFixed(1)}deg)`; el.style.opacity = e > 0 ? 1 : 0; }); pots.lastElementChild.style.opacity = clamp(1 - p * 1.4).toFixed(3); }   // a line drawing first, the photo as it comes up
     { let best = 0, bd = 1e9; cases.forEach((c, k) => { const r = c.firstElementChild.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - V * .42); if (d < bd) { bd = d; best = k; } });
-      if (best !== act) { act = best; cases.forEach((c, k) => c.classList.toggle('act', k === best)); names.forEach((n, k) => n.classList.toggle('act', k === best)); } }   // the client in front stands out in the list held under the menu
+      if (best !== act) { act = best; cases.forEach((c, k) => c.classList.toggle('act', k === best)); showName(best); } }   // the client in front, held under the menu
     { const r = formsEl.getBoundingClientRect(), p = clamp((V - r.top) / (V * .9)), e = 1 - Math.pow(1 - p, 3), DX = [-28, 30, 22]; words.forEach((w, k) => { w.style.transform = `translateX(${(DX[k] * (1 - e)).toFixed(2)}vw)`; }); }
   }
   addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
@@ -496,8 +512,10 @@ window.preDone = new Promise(done => {
   view.addEventListener('scroll', () => { if (window.soundNudge) soundNudge(.2); }, { passive: true });
 
   // scrolled to the very end and still pulling: the page starts over, as the full one loops
-  addEventListener('scroll', () => { const d = document.documentElement; if (open || d.scrollHeight - (scrollY + innerHeight) > 1) return;
-    const sb = d.style.scrollBehavior; d.style.scrollBehavior = 'auto'; scrollTo(0, 0); d.style.scrollBehavior = sb; }, { passive: true });
+  const veil = one('.veil'); let endT = 0;
+  addEventListener('scroll', () => { const d = document.documentElement; if (open || d.scrollHeight - (scrollY + innerHeight) > 2) { clearTimeout(endT); endT = 0; return; }
+    if (endT) return; endT = setTimeout(() => { veil.style.opacity = 1;   // held at the end a moment: the page goes white, starts over at the top, and comes back
+      setTimeout(() => { scrollTo({ top: 0, behavior: 'instant' }); requestAnimationFrame(() => requestAnimationFrame(() => { veil.style.opacity = 0; endT = 0; })); }, 650); }, 700); }, { passive: true });   // the jump at once, never a glide through the whole page
 
   makeClay();   // the clay, as on the full page: a finger leaves marks and smears them, also while the page scrolls (on the phone they dry sooner)
 })();
