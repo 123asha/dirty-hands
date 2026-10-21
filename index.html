@@ -1509,7 +1509,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
         if (live) {                                                 // cut into strips and bent: a picture glued inside a cylinder, turned a little towards the middle of the ring, later of the wheel
           const turn = 38 * (ring * sx + (1 - wOut) * bend * Math.max(-1, Math.min(1, (cx - PX) / R))), wpx = w * U, Rc = wpx / (Math.max(bend, 0.0008) * 1.15);
           const br = far > 0.01 ? `brightness(${(1 - 0.3 * far).toFixed(3)})` : '';
-          c.style.transform = `perspective(${1100 * U}px) translateZ(${Z.toFixed(1)}px) rotate(${rot.toFixed(2)}deg) rotateY(${(turn + flipY).toFixed(1)}deg)`;
+          c.style.transform = `perspective(${1100 * U}px) translateZ(${Z.toFixed(1)}px) rotate(${rot.toFixed(2)}deg) rotateY(${(turn + flipY).toFixed(1)}deg) scale(${(c._flow || 1).toFixed(3)})`;   // the same scale as once it has landed, so it never jumps there
           c.style.setProperty('--cw', wpx + 'px'); c.style.setProperty('--sw', wpx / HS + 'px');
           c._hs.forEach((st, j) => { const u = ((j + .5) / HS - .5) * wpx, al = u / Rc; st.style.transform = `translate3d(${(Rc * Math.sin(al) - u).toFixed(2)}px,0,${(-Rc * (1 - Math.cos(al))).toFixed(2)}px) rotateY(${al.toFixed(4)}rad)`; st.style.filter = br; });
         } else c.style.transform = `${flipY ? `perspective(${1100 * U}px) rotateY(${flipY.toFixed(1)}deg) ` : ''}${rot ? `rotate(${rot.toFixed(2)}deg) ` : ''}scale(${(c._flow || 1).toFixed(3)})`;
@@ -1519,7 +1519,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
         const uPrev = i === 0 ? 1 : ease(clamp((p - (i - 1) - 0.25) / 0.5)), uNext = i === cards.length - 1 ? 0 : ease(clamp((p - i - 0.25) / 0.5)), w = uPrev * (1 - uNext), hide = t < 0.72 ? 0 : 1;   // until the pile has formed they are all there
         c.style.opacity = lerp(1, ease(clamp(w * 1.6)), hide).toFixed(3);
         c.style.filter = hide > 0.01 && w < 0.999 ? `blur(${((1 - w) * hide * 18 * U).toFixed(1)}px)` : '';
-        c._flow = 1 + (-sd) * 0.09 * hide;
+        { const goal = 1 + (-sd) * 0.09 * hide; c._flow = c._flow == null ? goal : c._flow + (goal - c._flow) * .2; }   // eased, never a step
       }
       const g = Math.round(landed ? SHADE[i] : lerp(242, 225, t));
       c.style.backgroundColor = CUTOUT.has(i) ? 'transparent' : `rgb(${g},${g},${g})`;   // cut out: no box behind them, the text runs along their outlines
