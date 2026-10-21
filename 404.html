@@ -3,98 +3,225 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="/dirty-hands/">
 <title>Not found — Dirty Hands</title>
+<meta name="robots" content="noindex">
 <style>
-  :root { --u: calc(100vw / 1400); --t18: min(18px, calc(18 * var(--u))); }
-  html, body { margin: 0; height: 100%; background: #fff; color: #000; overflow: hidden; }
-  body { font-family: "CoFo Sans", -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: var(--t18); -webkit-font-smoothing: antialiased; }
-  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
-  .big { position: fixed; left: 0; right: 0; bottom: calc(22 * var(--u)); text-align: center; font-family: "CoFo Cinema", "CoFo Sans", sans-serif; font-size: calc(420 * var(--u)); line-height: .8; letter-spacing: -.01em; pointer-events: none; mix-blend-mode: difference; color: #fff; }
-  .top { position: fixed; left: calc(20 * var(--u)); right: calc(20 * var(--u)); top: calc(20 * var(--u)); display: flex; justify-content: space-between; line-height: .91; letter-spacing: -.01em; }
-  .top a { color: inherit; text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
-  .note { opacity: .4; }
+  @font-face { font-family: "CoFo Cinema"; src: url("CoFoCinema1909-Regular.otf") format("opentype"); font-weight: 400; font-display: swap; }
+  @font-face { font-family: "CoFo Sans"; src: url("CoFoSans-Regular450.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+  :root { --u: calc(100vw / 1400); --t18: min(18px, calc(18 * var(--u))); --l18: calc(19 * var(--u)); --ease: cubic-bezier(.2,.8,.2,1); }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #fff; color: #000; }
+  body { font-family: "CoFo Sans", -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: var(--t18); -webkit-font-smoothing: antialiased; user-select: none; }
+  a { color: inherit; text-decoration: none; }
+  /* the menu, as on the other pages */
+  .top { position: fixed; top: calc(20 * var(--u)); left: 0; right: 0; height: 1em; z-index: 5; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; }
+  .top .snd { position: absolute; left: calc(20 * var(--u)); display: flex; align-items: center; gap: calc(8 * var(--u)); padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; }
+  .top .snd svg { width: calc(18 * var(--u)); height: calc(12 * var(--u)); overflow: visible; }   /* the line as heavy as the letters beside it */
+  .top .snd[aria-pressed="false"] span { opacity: .5; }
+  .top .back { position: absolute; left: calc(250 * var(--u)); display: inline-flex; gap: .3em; align-items: center; }   /* back to the main page, top left, where the sound switch stands there */
+  .top .tag { position: absolute; left: 50%; translate: -50% 0; white-space: nowrap; }
+  .top nav { position: absolute; left: calc(941 * var(--u)); display: flex; gap: calc(12 * var(--u)); }
+  .top nav a[aria-current] { opacity: .4; }
+  .top .ct { position: absolute; right: calc(20 * var(--u)); display: inline-flex; gap: .25em; align-items: flex-start; }
+  .top .ct svg { margin-top: .12em; }
+  .grid { position: fixed; inset: 0; z-index: 1000; pointer-events: none; display: grid; grid-template-columns: repeat(6, 1fr); column-gap: calc(20 * var(--u)); padding: 0 calc(20 * var(--u)); opacity: 0; }
+  .grid.on { opacity: 1; }
+  .grid i { background: rgba(255, 0, 80, .08); box-shadow: inset 1px 0 rgba(255, 0, 80, .35), inset -1px 0 rgba(255, 0, 80, .35); }   /* the six columns, as on the main page: Cmd/Ctrl+G */
+  /* the camera is only read, never shown: what the visitor sees is the clay */
+  video { position: fixed; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+  .gl { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 2; touch-action: none; cursor: pointer; display: block; }   /* the slab of clay, the whole screen */
+  .intro .btn + .btn { margin-left: calc(20 * var(--u)); }
+  #go { background-size: 100% 1px; }   /* the camera's switch is always underlined: the one thing to press */
+  .bar .acts { display: flex; gap: calc(20 * var(--u)); } .bar .acts [hidden] { display: none; }
+  .tip { position: fixed; left: 0; top: 0; z-index: 3; width: calc(22 * var(--u)); height: calc(22 * var(--u)); margin: calc(-11 * var(--u)) 0 0 calc(-11 * var(--u)); border: 1.5px solid #fff; border-radius: 50%; mix-blend-mode: difference; pointer-events: none; opacity: 0; transition: opacity .2s, scale .15s; }
+  .tip.on { opacity: 1; } .tip.down { scale: .55; background: #fff; }   /* where a finger is; small and filled while it presses or pulls */
+  /* the title and a few words at the bottom left, on the grid */
+  .intro { position: fixed; left: calc(20 * var(--u)); bottom: calc(80 * var(--u)); width: calc(440 * var(--u)); z-index: 4; color: #fff; mix-blend-mode: difference; transition: opacity .6s var(--ease); pointer-events: none; }   /* at the bottom left, two columns wide, over the clay */
+  .intro .btn { pointer-events: auto; }   /* the text stays on the screen the whole time */
+  .intro.off { opacity: 0; pointer-events: none; }
+  .intro h1 { margin: 0 0 calc(36 * var(--u)); font-family: "CoFo Cinema", "CoFo Sans", sans-serif; font-weight: 400; font-size: calc(72 * var(--u)); line-height: .91; letter-spacing: -.01em; text-transform: uppercase; }
+  .intro p { margin: 0 0 var(--l18); font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; text-indent: calc(40 * var(--u)); }
+  .btn { all: unset; cursor: pointer; display: inline-flex; gap: .3em; align-items: center; margin-top: calc(18 * var(--u)); font-size: var(--t18); line-height: .91; letter-spacing: -.01em; }
+  .btn:focus-visible { outline: 1px solid currentColor; outline-offset: 4px; }
+  /* at the bottom: what is happening, and a clean sheet */
+  .bar { position: fixed; left: calc(20 * var(--u)); right: calc(20 * var(--u)); bottom: calc(20 * var(--u)); z-index: 5; display: flex; justify-content: space-between; align-items: flex-end; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; pointer-events: none; }
+  .bar button { all: unset; cursor: pointer; pointer-events: auto; }
+  .btn, .bar button { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; padding-bottom: .12em; transition: background-size .4s var(--ease); }   /* as the menu: on hover a line draws in under the word */
+  .btn:hover, .bar button:hover { background-size: 100% 1px; }
+  .bar .st { opacity: .6; }
 </style>
+<link rel="stylesheet" href="links.css">
 </head>
 <body>
-<canvas id="c" aria-hidden="true"></canvas>
-<div class="top"><span class="note">This page has gone back to clay</span><a id="home" href="./">Back to Dirty Hands</a></div>
-<div class="big" aria-label="404">404</div>
-<script>
-  // the site lives at /dirty-hands/ on GitHub Pages and at / locally: fonts and the way home follow it
-  const BASE = location.pathname.startsWith('/dirty-hands') ? '/dirty-hands/' : '/';
-  document.getElementById('home').href = BASE;
-  [['CoFo Sans', 'CoFoSans-Regular450.woff2'], ['CoFo Cinema', 'CoFoCinema1909-Regular.otf']].forEach(([n, f]) => { const ff = new FontFace(n, `url(${BASE}${f})`); ff.load().then(x => document.fonts.add(x)).catch(() => {}); });
-</script>
+<div class="top">
+  <button type="button" class="snd" aria-pressed="false" aria-label="Sound"><svg viewBox="0 0 24 10" aria-hidden="true"><path d="M0 5H24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span>Sound</span></button>
+  <a class="back" href="./"><svg viewBox="0 0 13 10" width="11.7" height="9" aria-hidden="true"><path d="M11.4 5H1.5M5 1.5 1.5 5 5 8.5" fill="none" stroke="currentColor" stroke-width="1.1"/></svg>Back</a>
+  <nav><a href="./#about">About</a><a href="./#cases">Cases</a><a href="shop.html">Order</a></nav>
+  <a class="ct" href="mailto:order@dirtyhands.ru">Contact<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a>
+</div>
+<video playsinline muted aria-hidden="true"></video>
+<canvas class="gl" aria-label="A slab of wet clay that takes your shape"></canvas>
+<div class="intro">
+  <h1>404</h1>
+  <p>This page is not here: it has gone back to clay.</p>
+  <p>While you are here, the clay can take your hands and your eyes, larger than life, as on our panels. Turn on the camera, or press the clay with the mouse or a finger. Fire it when you like it, and keep the tile.</p>
+  <button type="button" class="btn" id="go">Turn on the camera</button><a class="btn" href="./">Back to Dirty Hands</a>
+</div>
+<div class="bar"><span class="st" aria-live="polite">Nothing from the camera leaves your computer.</span><span class="acts"><button type="button" id="fire">Fire</button><button type="button" id="keep" hidden>Keep it</button><button type="button" id="again" hidden>Again</button></span></div>
+<div class="grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<script>{ const grid = document.querySelector('.grid'); try { if (sessionStorage.getItem('grid') === '1') grid.classList.add('on'); } catch (e) {}   // the grid stays on or off from page to page
+  addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.code === 'KeyG') { e.preventDefault(); if (!e.repeat) { const on = grid.classList.toggle('on'); try { sessionStorage.setItem('grid', on ? '1' : '0'); } catch (er) {} } } }); }</script>
+<script src="sound.js?v=12"></script>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
 <script type="module">
-  // two hands of wet clay, cupped round a lump they are shaping: built from soft rounded pieces and roughened by noise, so they read as modelled by hand
+  // ---- the clay mirror: a slab of wet clay the whole screen wide; seen by the camera, the visitor's hands and eyes (only those) rise out of it in relief, as on the studio's panels, and moves in it, a little late, as wet clay would; fired, it becomes a glazed tile to keep. Without the camera, the pointer presses into it. Nothing leaves the computer.
   import * as THREE from 'three';
-  import { mergeVertices } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/utils/BufferGeometryUtils.js';
-  import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
+  import { RoomEnvironment } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/environments/RoomEnvironment.js';
+  const cv = document.querySelector('.gl'), st = document.querySelector('.st'), video = document.querySelector('video'), fireBtn = document.getElementById('fire'), keepBtn = document.getElementById('keep'), againBtn = document.getElementById('again'); let tileNo = '';
+  const say = t => { st.textContent = t; }, nudge = v => { if (typeof soundNudge === 'function') soundNudge(v); };
+  const R = new THREE.WebGLRenderer({ canvas: cv, antialias: true, preserveDrawingBuffer: true });
+  R.setPixelRatio(Math.min(2, devicePixelRatio)); R.outputColorSpace = THREE.SRGBColorSpace; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = 1.1; R.setClearColor(0xffffff);
+  const S = new THREE.Scene(), CAM = new THREE.PerspectiveCamera(30, 1, .1, 50);
+  S.add(new THREE.HemisphereLight(0xffffff, 0x8a7f74, .42));
+  const key = new THREE.DirectionalLight(0xfff3e6, 3); key.position.set(-2.6, 2.2, 1.5); S.add(key);   // low and from the upper left: every rise throws its shadow, as in the photographs of the panels
+  const fill = new THREE.DirectionalLight(0xdfe8ff, .35); fill.position.set(2, -1, 2); S.add(fill);
+  S.environment = new THREE.PMREMGenerator(R).fromScene(new RoomEnvironment(), .04).texture;   // a soft room around it, for the glaze to shine with once fired
 
-  const cv = document.getElementById('c');
-  const R = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
-  R.setPixelRatio(Math.min(2, devicePixelRatio)); R.outputColorSpace = THREE.SRGBColorSpace; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = 1.05;
-  const S = new THREE.Scene(), CAM = new THREE.PerspectiveCamera(32, 1, .1, 100); CAM.position.set(0, .4, 9.5);
-  S.add(new THREE.HemisphereLight(0xfff4ea, 0x6b5143, 1.1));
-  const key = new THREE.DirectionalLight(0xffffff, 2.4); key.position.set(-3, 5, 4); S.add(key);
-  const rim = new THREE.DirectionalLight(0xffe0c8, 1.2); rim.position.set(4, 1, -3); S.add(rim);
+  // value noise, for the grain of the clay and the crackle of the glaze
+  const hash = (x, y) => { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); };
+  const sm = t => t * t * (3 - 2 * t);
+  const noise = (x, y) => { const xi = Math.floor(x), yi = Math.floor(y), xf = sm(x - xi), yf = sm(y - yi); return (hash(xi, yi) * (1 - xf) + hash(xi + 1, yi) * xf) * (1 - yf) + (hash(xi, yi + 1) * (1 - xf) + hash(xi + 1, yi + 1) * xf) * yf; };
 
-  // value noise for the clay surface
-  const hash = (x, y, z) => { const s = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453; return s - Math.floor(s); };
-  const smooth = t => t * t * (3 - 2 * t);
-  function noise(x, y, z) { const xi = Math.floor(x), yi = Math.floor(y), zi = Math.floor(z), xf = smooth(x - xi), yf = smooth(y - yi), zf = smooth(z - zi); let v = 0;
-    for (let a = 0; a < 2; a++) for (let b = 0; b < 2; b++) for (let c = 0; c < 2; c++) v += hash(xi + a, yi + b, zi + c) * (a ? xf : 1 - xf) * (b ? yf : 1 - yf) * (c ? zf : 1 - zf); return v; }
-  const fbm = (x, y, z) => noise(x, y, z) * .55 + noise(x * 2.1, y * 2.1, z * 2.1) * .3 + noise(x * 4.7, y * 4.7, z * 4.7) * .15;
-  function clayify(g, amp, freq, seed = 0) {               // push every vertex along its normal by a little noise: thumb marks and lumps; darker where it sinks
-    g.deleteAttribute('normal'); g.deleteAttribute('uv'); g = mergeVertices(g, 1e-4); g.computeVertexNormals();   // one vertex per point, so the surface stays closed and smooth when it is pushed
-    const p = g.attributes.position, n = g.attributes.normal, col = new Float32Array(p.count * 3);
-    for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i), z = p.getZ(i), f = fbm(x * freq + seed, y * freq, z * freq) - .5, d = f * amp;
-      p.setXYZ(i, x + n.getX(i) * d, y + n.getY(i) * d, z + n.getZ(i) * d); const k = .86 + f * .55; col[i * 3] = k; col[i * 3 + 1] = k; col[i * 3 + 2] = k; }
-    g.setAttribute('color', new THREE.BufferAttribute(col, 3)); g.computeVertexNormals(); return g;
+  // the grids: the height the clay is pushed to (small, from the camera or the pointer) and the surface it is drawn with (twice as fine, with grain)
+  let HW, HH, NW, NH, T, H, Pd, GR, CR, hCv, hCx, hImg, nCv, nCx, nImg, dispTex, normTex, plane, mesh, vw = 2, vh = 2;
+  const mat = new THREE.MeshStandardMaterial({ color: 0x6d6760, roughness: .82, metalness: 0, envMapIntensity: .25, displacementScale: .3, displacementBias: -.18 });   // dark grey stoneware, wet
+  // the skin of the clay, finer than any relief could carry: mottled colour, grit, small pits, drawn once and repeated; also used for how rough each grain is
+  const skin = (() => { const n = 1024, c = Object.assign(document.createElement('canvas'), { width: n, height: n }), g = c.getContext('2d'), im = g.createImageData(n, n);
+    const tn = (x, y, cell) => { const P = n / cell, fx = x / cell, fy = y / cell, xi = Math.floor(fx), yi = Math.floor(fy), xf = sm(fx - xi), yf = sm(fy - yi), H = (a, b) => hash(((a % P) + P) % P, ((b % P) + P) % P);   // value noise that wraps round the tile, so the repeats never show a seam
+      return (H(xi, yi) * (1 - xf) + H(xi + 1, yi) * xf) * (1 - yf) + (H(xi, yi + 1) * (1 - xf) + H(xi + 1, yi + 1) * xf) * yf; };
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { const i = (y * n + x) * 4, m = tn(x, y, 128) * .5 + tn(x, y, 32) * .3 + tn(x, y, 8) * .2, gr = hash(x * 1.7, y * 1.3), pit = hash(x * .37 + 11, y * .53) > .993 ? 1 : 0;
+      const v = Math.max(0, Math.min(255, 200 + (m - .5) * 36 + (gr - .5) * 30 - pit * 60)); im.data[i] = v; im.data[i + 1] = v * .985; im.data[i + 2] = v * .965; im.data[i + 3] = 255; }   // a quiet mottle, grit and a few small pits
+    g.putImageData(im, 0, 0); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; })();
+  mat.map = skin; mat.roughnessMap = skin;
+  function build() {
+    const a = innerWidth / innerHeight, cell = Math.max(4, innerWidth / 240); HW = Math.round(innerWidth / cell); HH = Math.round(innerHeight / cell); NW = HW * 2; NH = HH * 2;   // a cell of height about every 4 to 6 px, on the phone as on a wide screen
+    T = new Float32Array(HW * HH); H = new Float32Array(HW * HH); Pd = new Float32Array(HW * HH);
+    GR = new Float32Array(NW * NH); CR = new Float32Array(NW * NH);
+    for (let y = 0; y < NH; y++) for (let x = 0; x < NW; x++) { const i = y * NW + x;
+      GR[i] = noise(x * .45, y * .45) * .45 + noise(x * 1.3, y * 1.3) * .35 + (hash(x, y) - .5) * .4;   // the grain of the clay, fixed: lumps, finer grit, single grains
+      const c = Math.abs(noise(x * .06 + 3, y * .06) - .5) + Math.abs(noise(x * .13, y * .13 + 7) - .5) * .5; CR[i] = c < .045 ? 1 - c / .045 : 0; }   // fine crackle lines for the glaze, shown only once it is fired
+    hCv = Object.assign(document.createElement('canvas'), { width: HW, height: HH }); hCx = hCv.getContext('2d'); hImg = hCx.createImageData(HW, HH);
+    nCv = Object.assign(document.createElement('canvas'), { width: NW, height: NH }); nCx = nCv.getContext('2d'); nImg = nCx.createImageData(NW, NH);
+    dispTex && dispTex.dispose(); normTex && normTex.dispose();
+    dispTex = new THREE.CanvasTexture(hCv); normTex = new THREE.CanvasTexture(nCv); mat.displacementMap = dispTex; mat.normalMap = normTex; mat.normalScale.set(1, 1); mat.needsUpdate = true;
+    const D = 5; CAM.aspect = a; CAM.position.set(0, 0, D); CAM.lookAt(0, 0, 0); CAM.updateProjectionMatrix();
+    vh = 2 * D * Math.tan(THREE.MathUtils.degToRad(CAM.fov / 2)) * 1.08; vw = vh * a;   // the slab a little larger than the screen, so the slight parallax never shows its edge
+    if (mesh) { S.remove(mesh); plane.dispose(); }
+    plane = new THREE.PlaneGeometry(vw, vh, Math.round(innerWidth / 4), Math.round(innerHeight / 4)); mesh = new THREE.Mesh(plane, mat); S.add(mesh);
+    skin.repeat.set(innerWidth / 520, innerHeight / 520);   // the skin about 520 px to a repeat, the same grain on any screen
+    R.setSize(innerWidth, innerHeight, false);
   }
-    const wet = new THREE.MeshStandardMaterial({ color: 0x8f5c3f, roughness: .55, metalness: 0, vertexColors: true });
+  build(); addEventListener('resize', () => { if (!fired) build(); });
 
-  // a clay skin for the hands: lumps and finger marks as a bump map, darker smears as colour, both drawn once on a canvas
-  function clayTex(seed) {
-    const n = 512, c = document.createElement('canvas'); c.width = c.height = n; const g = c.getContext('2d'), im = g.createImageData(n, n);
-    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { const v = fbm(x / 38 + seed, y / 38, seed) * .7 + fbm(x / 9, y / 9, seed + 3) * .3, k = (y * n + x) * 4, sm = smooth(Math.max(0, Math.min(1, (fbm(x / 70 + 11, y / 70, seed + 7) - .48) * 6))), b = Math.max(0, Math.min(255, (170 + v * 90) * (1 - .45 * sm)));   /* dried clay, and darker wet smears where it was pushed */ im.data[k] = im.data[k + 1] = im.data[k + 2] = b; im.data[k + 3] = 255; }
-    g.putImageData(im, 0, 0); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(3, 3); return t;
-  }
-  const bump = clayTex(1), skinCol = clayTex(5); skinCol.colorSpace = THREE.SRGBColorSpace;
-  const handMat = new THREE.MeshStandardMaterial({ color: 0xb0704c, map: skinCol, bumpMap: bump, bumpScale: 1.8, roughness: .88, metalness: 0 });
+  // ---- the pointer presses: a soft round dent that deepens while held and runs into a groove when dragged; the clay fills back in by itself
+  const press = { on: false, x: 0, y: 0 };
+  const toCell = (x, y) => [x / innerWidth * HW, y / innerHeight * HH];
+  function stamp(cx, cy, amt) { const r = Math.max(4, HW * .035), r2 = r * r;
+    for (let y = Math.max(0, Math.floor(cy - r * 2)); y < Math.min(HH, cy + r * 2); y++) for (let x = Math.max(0, Math.floor(cx - r * 2)); x < Math.min(HW, cx + r * 2); x++) {
+      const d2 = (x - cx) ** 2 + (y - cy) ** 2; if (d2 > r2 * 4) continue; const i = y * HW + x; Pd[i] = Math.min(1, Pd[i] + amt * Math.exp(-d2 / r2)); } }
+  cv.addEventListener('pointerdown', e => { if (fired) return; try { cv.setPointerCapture(e.pointerId); } catch (er) {} press.on = true; press.x = e.clientX; press.y = e.clientY; nudge(.3); });
+  addEventListener('pointermove', e => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; if (!press.on) return;
+    const [ax, ay] = toCell(press.x, press.y), [bx, by] = toCell(e.clientX, e.clientY), n = Math.ceil(Math.hypot(bx - ax, by - ay) / 1.5);
+    for (let k = 1; k <= n; k++) stamp(ax + (bx - ax) * k / n, ay + (by - ay) * k / n, .12); press.x = e.clientX; press.y = e.clientY; nudge(.08); });
+  const lift = () => { press.on = false; }; addEventListener('pointerup', lift); addEventListener('pointercancel', lift);
+  let mx = 0, my = 0;
 
-  // the hands: an anatomical hand (the generic hand of WebXR, with all the bones of the fingers), covered in clay and posed round the lump
-  const BASE = location.pathname.startsWith('/dirty-hands') ? '/dirty-hands/' : '/';
-  const pair = new THREE.Group(); S.add(pair); const hands = [];
-  const lumpG = clayify(new THREE.IcosahedronGeometry(1, 5), .35, 1.4, 7); const lump = new THREE.Mesh(lumpG, wet); lump.scale.set(.95, .8, .9); lump.position.y = -.25; pair.add(lump);
-  const loader = new GLTFLoader();
-  ['left', 'right'].forEach((side, k) => loader.load(`${BASE}models/hand-${side}.glb`, gl => {
-    const root = gl.scene; root.traverse(o => { if (o.isMesh) { o.material = handMat; o.frustumCulled = false; } });
-    const bones = {}; root.traverse(o => { if (o.isBone || o.type === 'Object3D') bones[o.name] = o; });
-    Object.values(bones).forEach(b => { b.userData.q0 = b.quaternion.clone(); });
-    root.scale.setScalar(22); pair.add(root); hands[k] = { root, bones, side: k ? 1 : -1 }; place();
-  }));
-  function place() {                                        // the two hands cupped round the lump, palms facing it
-    hands.forEach(h => { if (!h) return; const s = h.side; h.root.position.set(s * 1.55, -1.6, 0); h.root.rotation.set(.3, s * 2.0, s * Math.PI * .8); });
+  // ---- the camera: the clay keeps only the hands and the eyes, nothing else of the person (hand and face landmarks from MediaPipe, in the browser)
+  let hands = null, face = null, camOn = false, seen = -1;
+  const tCv = document.createElement('canvas'), tCx = tCv.getContext('2d', { willReadFrequently: true });
+  const BONES = [[0, 1], [1, 2], [2, 3], [3, 4], [0, 5], [5, 6], [6, 7], [7, 8], [5, 9], [9, 10], [10, 11], [11, 12], [9, 13], [13, 14], [14, 15], [15, 16], [13, 17], [17, 18], [18, 19], [19, 20], [0, 17]];
+  const EYES = [[33, 7, 163, 144, 145, 153, 154, 155, 133, 173, 157, 158, 159, 160, 161, 246, 468], [362, 382, 381, 380, 374, 373, 390, 249, 263, 466, 388, 387, 386, 385, 384, 398, 473]];   // the outline of each eye, then the middle of its iris
+  const rCv = document.createElement('canvas'), rCx = rCv.getContext('2d', { willReadFrequently: true });
+  function fromCamera(hs, fs) {   // the hands and eyes rise out of the clay, larger than life, modelled round as on the panels: a crisp edge and a full, rounded body
+    const vw0 = video.videoWidth, vh0 = video.videoHeight, k = Math.max(HW / vw0, HH / vh0), w = vw0 * k, h = vh0 * k, ox = (HW - w) / 2, oy = (HH - h) / 2;
+    const at = p => [HW - (ox + p.x * w), oy + p.y * h];   // a landmark in the cells, mirrored as a looking-glass
+    tCv.width = rCv.width = HW; tCv.height = rCv.height = HH; const g = tCx; g.fillStyle = '#000'; g.fillRect(0, 0, HW, HH); g.filter = 'blur(.7px)'; g.lineCap = 'round'; g.lineJoin = 'round';
+    const grow = (P, c, s) => P.map(([x, y]) => [c[0] + (x - c[0]) * s, c[1] + (y - c[1]) * s]);
+    const FING = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16], [17, 18, 19, 20]], WID = [.34, .3, .26, .22];
+    (hs || []).forEach(L => { let P = L.map(at); const c = [(P[0][0] + P[9][0]) / 2, (P[0][1] + P[9][1]) / 2]; P = grow(P, c, 1.35);   // a hand a third larger than it is, grown from the middle of the palm
+      const size = Math.hypot(P[0][0] - P[9][0], P[0][1] - P[9][1]);
+      g.fillStyle = g.strokeStyle = 'rgb(225,225,225)'; g.beginPath(); [0, 1, 2, 5, 9, 13, 17].forEach((i, n) => n ? g.lineTo(...P[i]) : g.moveTo(...P[i])); g.closePath(); g.fill(); g.lineWidth = size * .2; g.stroke();   // the palm
+      FING.forEach((f, n) => f.slice(0, -1).forEach((j, q) => { g.lineWidth = size * WID[q] * (n === 4 ? .85 : n === 0 ? 1.08 : 1); g.strokeStyle = '#fff'; g.beginPath(); g.moveTo(...P[j]); g.lineTo(...P[f[q + 1]]); g.stroke(); })); });   // fingers, full and rounded, narrowing to their tips
+    (fs || []).forEach(F => EYES.forEach(E => { const pts0 = E.slice(0, -1).map(i => at(F[i])), c0 = at(F[E[E.length - 1]]);
+      const cx = pts0.reduce((a, p) => a + p[0], 0) / pts0.length, cy = pts0.reduce((a, p) => a + p[1], 0) / pts0.length, B = grow(pts0, [cx, cy], 1.75), [ix, iy] = grow([c0], [cx, cy], 1.75)[0];   // an eye nearly twice its size, still clear of the other
+      const ew = Math.hypot(B[0][0] - B[8][0], B[0][1] - B[8][1]), upper = [B[8], ...B.slice(9), B[0]];
+      const line = (P, wd, col) => { g.strokeStyle = col; g.lineWidth = Math.max(.8, wd); g.beginPath(); P.forEach((p, n) => n ? g.lineTo(...p) : g.moveTo(...p)); g.stroke(); };
+      g.fillStyle = 'rgb(95,95,95)'; g.beginPath(); B.forEach((p, n) => n ? g.lineTo(...p) : g.moveTo(...p)); g.closePath(); g.fill();   // the eyeball, a low swell
+      line([...B, B[0]], ew * .1, 'rgb(205,205,205)');   // the lids, a raised rim all round
+      line(upper.map(([x, y]) => [x + (x - cx) * .1, y - ew * .26 + Math.abs(x - cx) / ew * ew * .1]), ew * .07, 'rgb(170,170,170)');   // the fold of the lid above
+      upper.forEach(([x, y], n) => { if (n % 2 || n === 0 || n === upper.length - 1) return; const dx = x - cx, dy = y - cy, l = Math.hypot(dx, dy) || 1; line([[x, y], [x + dx / l * ew * .22, y + dy / l * ew * .22]], ew * .045, 'rgb(200,200,200)'); });   // lashes, standing out along the upper lid
+      g.fillStyle = '#fff'; g.beginPath(); g.arc(ix, iy, ew * .24, 0, 7); g.fill();   // the iris, a dome
+      g.fillStyle = 'rgb(60,60,60)'; g.beginPath(); g.arc(ix, iy, ew * .08, 0, 7); g.fill(); }));   // and the pupil pressed into it
+    g.filter = 'none'; rCx.filter = 'blur(3px)'; rCx.drawImage(tCv, 0, 0); rCx.filter = 'none';
+    const d = g.getImageData(0, 0, HW, HH).data, r = rCx.getImageData(0, 0, HW, HH).data;
+    for (let i = 0; i < HW * HH; i++) { const m = d[i * 4] / 255, b = r[i * 4] / 255; T[i] = .3 * m + .7 * Math.sqrt(b) * Math.min(1, m * 3 + b); }   // a crisp edge, and a full body that swells towards the middle
   }
-  const F = ['index', 'middle', 'ring', 'pinky'], Q = new THREE.Quaternion(), AX = new THREE.Vector3(1, 0, 0);
-  function pose(h, t, ph) {                                 // every finger curls at its three joints, a moment after the one before: slow kneading
-    F.forEach((f, k) => { const c = .55 + .2 * Math.sin(t * .9 + ph + k * .4);
-      ['phalanx-proximal', 'phalanx-intermediate', 'phalanx-distal'].forEach((j, i) => { const b = h.bones[`${f}-finger-${j}`]; if (!b) return; b.quaternion.copy(b.userData.q0).multiply(Q.setFromAxisAngle(AX, -c * (.75 + i * .2))); }); });
-    ['thumb-phalanx-proximal', 'thumb-phalanx-distal'].forEach((j, i) => { const b = h.bones[j]; if (!b) return; b.quaternion.copy(b.userData.q0).multiply(Q.setFromAxisAngle(AX, -(.35 + .15 * Math.sin(t * .9 + ph + 1.5)) * (1 + i * .3))); });
+  document.getElementById('go').addEventListener('click', async () => {
+    say('Asking for the camera…');
+    let stream; try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 960 }, height: { ideal: 540 } }, audio: false }); }
+    catch (e) { say(window.top !== window ? 'The camera is closed inside this preview: open the page on the site itself. The clay still takes the mouse.' : 'No camera: allow it in the address bar and press the button again. The clay still takes the mouse.'); return; }
+    video.srcObject = stream; await video.play();
+    say('Waking the clay…');
+    try {
+      const { FilesetResolver, HandLandmarker, FaceLandmarker } = await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs');
+      const files = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm');
+      [hands, face] = await Promise.all([
+        HandLandmarker.createFromOptions(files, { baseOptions: { modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task', delegate: 'GPU' }, runningMode: 'VIDEO', numHands: 2 }),
+        FaceLandmarker.createFromOptions(files, { baseOptions: { modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task', delegate: 'GPU' }, runningMode: 'VIDEO', numFaces: 2 })]);
+    } catch (e) { say('The clay could not see you: check the connection and reload the page. It still takes the mouse.'); return; }
+    camOn = true; say('Raise your hands and look at the clay. Nothing from the camera leaves your computer.');
+  });
+
+  // ---- each frame: the target height, the clay easing toward it, the two maps drawn from it
+  let fired = false, fireT = 0;
+  function frame() {
+    if (!fired) {
+      if (camOn && hands && video.readyState >= 2 && video.currentTime !== seen) { seen = video.currentTime; const ts = performance.now();
+        fromCamera(hands.detectForVideo(video, ts).landmarks, face.detectForVideo(video, ts).faceLandmarks); }
+      else if (!camOn) T.fill(0);
+      if (press.on) { const [cx, cy] = toCell(press.x, press.y); stamp(cx, cy, .035); }   // held still, the thumb keeps sinking
+      for (let i = 0; i < Pd.length; i++) { Pd[i] *= .992; H[i] += (T[i] - Pd[i] * .6 - H[i]) * .12; }   // the clay is slow: it follows the shape a little late, and fills dents back in
+    }
+    // the height map: the face of the slab at .6, the impressions below it, the pushed-up clay above
+    const hd = hImg.data; for (let i = 0; i < H.length; i++) { const v = Math.max(0, Math.min(255, (.6 + H[i] * .4) * 255)); hd[i * 4] = hd[i * 4 + 1] = hd[i * 4 + 2] = v; hd[i * 4 + 3] = 255; }
+    hCx.putImageData(hImg, 0, 0); dispTex.needsUpdate = true;
+    // the normal map: twice as fine, the height read smoothly between the cells, with the grain of the clay (and, once fired, the crackle of the glaze)
+    const nd = nImg.data, k = 3.8, g = .045, c = .05 * fireT;
+    const h = (x, y) => { x = Math.max(0, Math.min(NW - 1, x)); y = Math.max(0, Math.min(NH - 1, y)); const fx = x / 2, fy = y / 2, x0 = Math.min(HW - 1, fx | 0), y0 = Math.min(HH - 1, fy | 0), x1 = Math.min(HW - 1, x0 + 1), y1 = Math.min(HH - 1, y0 + 1), tx = fx - x0, ty = fy - y0;
+      return (H[y0 * HW + x0] * (1 - tx) + H[y0 * HW + x1] * tx) * (1 - ty) + (H[y1 * HW + x0] * (1 - tx) + H[y1 * HW + x1] * tx) * ty + GR[y * NW + x] * g - CR[y * NW + x] * c; };
+    for (let y = 0; y < NH; y++) for (let x = 0; x < NW; x++) { const dx = (h(x + 1, y) - h(x - 1, y)) * k, dy = (h(x, y + 1) - h(x, y - 1)) * k, l = Math.hypot(dx, dy, 1), i = (y * NW + x) * 4;
+      nd[i] = (-dx / l * .5 + .5) * 255; nd[i + 1] = (dy / l * .5 + .5) * 255; nd[i + 2] = (1 / l * .5 + .5) * 255; nd[i + 3] = 255; }
+    nCx.putImageData(nImg, 0, 0); normTex.needsUpdate = true;
   }
-  let mx = 0, my = 0; addEventListener('pointermove', e => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; }, { passive: true });
-  function size() { const w = innerWidth, h = innerHeight; R.setSize(w, h, false); CAM.aspect = w / h; CAM.updateProjectionMatrix(); CAM.position.z = w / h < 1 ? 13 : 9.5; }
-  addEventListener('resize', size); size(); pair.position.y = .7;
-  const t0 = performance.now();
+
+  // ---- firing: the slab stops, glows in the kiln, shrinks a touch and comes out glazed, dark and glossy, crazed with fine lines
+  const WET = new THREE.Color(0x5a554f), GLAZE = new THREE.Color(0x3d4044), KILN = new THREE.Color(0xff5a1a);
+  let fireStart = 0;
+  fireBtn.addEventListener('click', () => { if (fired) return; fired = true; fireStart = performance.now(); press.on = false; fireBtn.hidden = true; say('In the kiln…'); if (typeof placeSound === 'function') placeSound(); else nudge(.6); });
+  const no = () => String(Math.floor(Math.random() * 9000) + 1000);
+  function afterFire() { const d = new Date(), m = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
+    tileNo = no(); say(`Tile No. ${tileNo}, ${d.getDate()} ${m} ${d.getFullYear()}, Dirty Hands`); keepBtn.hidden = againBtn.hidden = false; }
+  keepBtn.addEventListener('click', () => { const a = document.createElement('a'); a.href = cv.toDataURL('image/png'); a.download = `dirty-hands-tile-${tileNo}.png`; a.click(); });
+  againBtn.addEventListener('click', () => { fired = false; fireT = 0; mesh.scale.setScalar(1); mat.color.copy(WET); mat.roughness = .74; mat.metalness = 0; mat.envMapIntensity = .25; mat.emissive.setRGB(0, 0, 0); Pd.fill(0); keepBtn.hidden = againBtn.hidden = true; fireBtn.hidden = false; say('Wet clay again. Nothing from the camera leaves your computer.'); });
+
   (function loop(now) {
-    const t = (now - t0) / 1000;
-    hands.forEach((h, k) => h && pose(h, t, k * .8));
-    pair.rotation.y += ((mx * .7 + Math.sin(t * .25) * .25) - pair.rotation.y) * .05; pair.rotation.x += ((my * .35 - .05) - pair.rotation.x) * .05;
-    lump.rotation.y = t * .35; lump.rotation.x = Math.sin(t * .5) * .2; lump.scale.y = .8 + .04 * Math.sin(t * 1.8);
-    R.render(S, CAM); requestAnimationFrame(loop);
-  })(t0);
+    frame();
+    if (fired && fireT < 1) { fireT = Math.min(1, (now - fireStart) / 2600); const e = fireT * fireT * (3 - 2 * fireT);
+      mat.color.copy(WET).lerp(GLAZE, e); mat.roughness = .74 - .46 * e; mat.metalness = .5 * e; mat.envMapIntensity = .25 + .85 * e; mat.emissive.copy(KILN).multiplyScalar(Math.sin(Math.PI * Math.min(1, fireT * 1.3)) * .14); mesh.scale.setScalar(1 - .03 * e);
+      if (fireT >= 1) { mat.emissive.setRGB(0, 0, 0); afterFire(); } }
+    CAM.position.x += (mx * .12 - CAM.position.x) * .05; CAM.position.y += (-my * .08 - CAM.position.y) * .05; CAM.lookAt(0, 0, 0);   // a very slight parallax, so the relief is felt
+    R.render(S, CAM); requestAnimationFrame(loop); })(performance.now());
 </script>
+<script src="cookies.js"></script>
 </body>
 </html>

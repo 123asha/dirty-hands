@@ -1,7 +1,7 @@
 // Dirty Hands: the sound of the pages, made in the browser (no files). Needs a <button class="snd"> with an svg path inside; starts on the first click anywhere.
-// Globals for the page: sndBtn, setSound(on), muffle(on) (a view is open: the filter goes down), soundNudge(k) (a rustle of air, 0..1).
+// Globals for the page: sndBtn, setSound(on), muffle(on) (a view is open: the filter goes down), soundNudge(k) (a rustle of air, 0..1), breeze(k) (a steady breeze, 0..1), whisper(k) (a breath of air).
 // ---- sound: a very light, calm museum background made in the browser (no files): a soft D major chord held and breathing, a little air, and a long room around it. Off until the switch is pressed; inside a view (a category, a case, the Story) it goes muffled, as if behind a wall
-const sndBtn = document.querySelector('.snd'); let sBake = null, sPan = null, sGust = 0, sLeafBuf = null, sLeafOut = null, actx = null, sMaster = null, sLp = null, sOn = false, sInside = false, sInG = null, sWob = null, sSw = null, sBp = null;
+const sndBtn = document.querySelector('.snd'); let sBreeze = null, sBreezeBp = null, sWhisper = null, sBake = null, sPan = null, sGust = 0, sLeafBuf = null, sLeafOut = null, actx = null, sMaster = null, sLp = null, sOn = false, sInside = false, sInG = null, sWob = null, sSw = null, sBp = null;
 function startSound() {
   const C = actx = new (window.AudioContext || window.webkitAudioContext)();
   sMaster = C.createGain(); sMaster.gain.value = 0; sLp = C.createBiquadFilter(); sLp.type = 'lowpass'; sLp.frequency.value = 2600; sLp.Q.value = .4;
@@ -60,8 +60,17 @@ function startSound() {
   sLeafOut = C.createGain(); sLeafOut.gain.value = 1; sLeafOut.connect(bus);
   (function rustle() { const n = Math.random() < sGust * .9 ? 1 + Math.floor(sGust * 5 * Math.random()) : 0; for (let i = 0; i < n; i++) leaf(C.currentTime + Math.random() * .09, .02 + .05 * sGust); setTimeout(rustle, 70 + Math.random() * 90); })();
   { const sw = C.createBufferSource(); sw.buffer = nb; sw.loop = true; sBp = C.createBiquadFilter(); sBp.type = 'bandpass'; sBp.Q.value = 1.6; sBp.frequency.value = 450; sSw = C.createGain(); sSw.gain.value = 0; sPan = C.createStereoPanner ? C.createStereoPanner() : null;
+    { const br = C.createBufferSource(); br.buffer = nb; br.loop = true; sBreezeBp = C.createBiquadFilter(); sBreezeBp.type = 'bandpass'; sBreezeBp.Q.value = .6; sBreezeBp.frequency.value = 520; sBreeze = C.createGain(); sBreeze.gain.value = 0;   // a soft, steady breeze, only while the cards are in the air
+      br.connect(sBreezeBp); sBreezeBp.connect(sBreeze); sBreeze.connect(bus); br.start();
+      const ws = C.createBufferSource(); ws.buffer = nb; ws.loop = true; const wh = C.createBiquadFilter(); wh.type = 'highpass'; wh.frequency.value = 2800; sWhisper = C.createGain(); sWhisper.gain.value = 0; ws.connect(wh); wh.connect(sWhisper); sWhisper.connect(bus); ws.start(); }   // and the faintest whisper of air, for letters going
     sw.connect(sBp); sBp.connect(sSw); if (sPan) { sSw.connect(sPan); sPan.connect(sMaster); sPan.connect(rv); } else { sSw.connect(sMaster); sSw.connect(rv); } sw.start(); }   // a gust of wind when something is swiped: a band of soft noise that rises and falls, never a hiss
 }
+function breeze(v) {                                                    // the breeze while the cards are in the air: 0 (still) .. 1, eased, so it swells and dies away slowly
+  if (!sBreeze || !sOn) return; const k = Math.max(0, Math.min(1, v)); if (Math.abs(k - (breeze._k ?? -1)) < .03) return; breeze._k = k; const t = actx.currentTime;
+  sBreeze.gain.setTargetAtTime(.022 * k, t, k > (breeze._p || 0) ? .6 : 1.2); sBreezeBp.frequency.setTargetAtTime(420 + 380 * k, t, .8); breeze._p = k; }
+function whisper(v) {                                                   // letters going: a breath of air, very light
+  if (!sWhisper || !sOn) return; const t = actx.currentTime; if (t - (whisper._l || 0) < .12) return; whisper._l = t; const k = Math.max(0, Math.min(1, v));
+  sWhisper.gain.cancelScheduledValues(t); sWhisper.gain.setValueAtTime(sWhisper.gain.value, t); sWhisper.gain.linearRampToValueAtTime(.004 + .006 * k, t + .08); sWhisper.gain.setTargetAtTime(0, t + .12, .18); }
 function pop(t, g) {                                                     // one tiny pop of baking clay: a couple of milliseconds of very bright crackle
   if (!actx || !sLeafBuf) return; const C = actx, src = C.createBufferSource(), bp = C.createBiquadFilter(), e = C.createGain(), pn = C.createStereoPanner ? C.createStereoPanner() : null, len = .002 + Math.random() * .006;
   src.buffer = sLeafBuf; bp.type = 'bandpass'; bp.frequency.value = 3000 + Math.random() * 6000; bp.Q.value = 1.5;
