@@ -334,7 +334,7 @@
   <div class="ph" style="left:calc(618 * var(--u));top:calc(272.25 * var(--u));width:calc(164 * var(--u));height:calc(157.5 * var(--u));"></div>
   <div class="stack" style="left:calc(940 * var(--u));top:calc(142 * var(--u));width:calc(440 * var(--u));">
     <p class="t18 lr" style="padding-right:calc(40 * var(--u));">The studio was founded by designers and entrepreneurs Lisa and Karen, who combine professional expertise with artistic intuition to bring unconventional ideas to life. Their approach reimagines ceramics, moving beyond functional plates and pots towards an artistic language that expresses the style, mood, and character of a space.</p>
-    <a class="t18 shop" style="display:block;width:max-content;margin-top:calc(40 * var(--u));" href="shop.html">Shop now<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a>
+    <a class="t18 shop" style="display:block;width:max-content;margin-top:calc(40 * var(--u));" href="shop.html">Order now<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a>
   </div>
 
   <div class="plab" style="left:0;top:calc(613 * var(--u));width:100%;height:calc(709 * var(--u));"><div class="plab-in">
@@ -480,6 +480,7 @@ window.preDone = new Promise(done => {
 });
 </script>
 <script src="sound.js?v=13"></script>
+<script src="outline.js"></script>
 <script>
 const HASH0 = location.hash; if (HASH0) history.replaceState(null, '', location.pathname + location.search);   // #cases or #about: the browser must not jump there under the preloader; the page glides there itself after the intro
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scrollTo(0, 0);   // the page always starts from the top: the intro is built for it
@@ -1187,14 +1188,14 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       });
     };
     let closing = false;
-    const icoEl = CATV.querySelector('.cat-ico'), icoAt = { x: cx, y: 0, h: 0, near: 0 };   // the category's outline stands behind the picture in the middle, as tall as it, and draws itself again under every next one
+    const icoEl = CATV.querySelector('.cat-ico'), icoAt = { x: cx, y: 0, h: 0, near: 0, pts: [] };   // the category's outline stands behind the picture in the middle, as tall as it, and draws itself again under every next one
     const follow = () => { const near = Math.max(lo0, Math.min(hi0, Math.round(pos))), P = photos.find(p => p.d === near); if (!P) return;
       const tb = textEl.getBoundingClientRect(), th = 64 * U * 1.2, tx = CATV.clientWidth / 2, ty = tb.top - th / 2 - 16 * U;   // small, in the middle, just over the text below
       if (!icoAt.h) Object.assign(icoAt, { x: tx, y: ty, h: th }); icoAt.x += (tx - icoAt.x) * .12; icoAt.y += (ty - icoAt.y) * .12; icoAt.h += (th - icoAt.h) * .12;
       Object.assign(icoEl.style, { left: icoAt.x.toFixed(1) + 'px', top: icoAt.y.toFixed(1) + 'px', width: icoAt.h.toFixed(1) + 'px', height: icoAt.h.toFixed(1) + 'px' });
       const pth = icoEl.querySelector('path'); if (pth) pth.style.strokeWidth = (52 / icoAt.h).toFixed(4);   // one screen pixel at any size
-      if (near !== icoAt.near) { icoAt.near = near; icoAt.goal = ICO_N[((ci + near) % 6 + 6) % 6]; }   // a next picture in the middle: the outline flows into the next form, as the one on the page does
-      if (pth && icoAt.goal) { if (!icoAt.cur) icoAt.cur = ICO_N[ci].slice(); let moved = false; icoAt.cur.forEach((v, k) => { const d = icoAt.goal[k] - v; if (Math.abs(d) > .01) { icoAt.cur[k] = v + d * .07; moved = true; } }); if (moved) { let k = 0; pth.setAttribute('d', ICO_T.replace(/#/g, () => icoAt.cur[k++].toFixed(2))); } } };
+      if (near !== icoAt.near) { icoAt.near = near; icoAt.goal = icoAt.pts[order.indexOf(near)] || null; }   // a next picture in the middle: the outline flows into that work's own outline
+      if (pth && icoAt.goal) { if (!icoAt.cur) { icoAt.cur = icoAt.goal.slice(); pth.setAttribute('d', outlineD(icoAt.cur)); } let moved = false; icoAt.cur.forEach((v, k) => { const d = icoAt.goal[k] - v; if (Math.abs(d) > .01) { icoAt.cur[k] = v + d * .07; moved = true; } }); if (moved) pth.setAttribute('d', outlineD(icoAt.cur)); } };
     (function loop() { if (!run) return; if (!st.fixed) { vel = (vel + (target - pos) * st.k) * st.damp; pos += vel; } place(); follow(); requestAnimationFrame(loop); })();   // the cylinder follows a little behind the hand, so it glides on after the scroll stops
     const lo = Math.min(...order), hi = Math.max(...order), nudge = v => { if (closing) return; target = Math.max(lo - 0.3, Math.min(hi + 0.3, v)); clearTimeout(snapT); snapT = setTimeout(() => { target = Math.max(lo, Math.min(hi, Math.round(target))); }, 180); };
     const onWheel = e => { e.preventDefault(); const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY; soundNudge(d / 120); nudge(target + d / SPc * 0.9); };   // any wheel turns the pictures; the category closes only on a click (or Escape)
@@ -1208,7 +1209,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     card.style.visibility = 'hidden';                                    // the picture leaves the card for the gallery: never two of it at once
     const r = card.getBoundingClientRect(), ox = r.left + r.width / 2 - cx, oy = r.top + r.height / 2 - (top + PHc / 2), sc = r.width / PWc;
     const inT = splitMask(textEl), letters = [...titleEl.children], ico = CATV.querySelector('.cat-ico');
-    ico.innerHTML = `<svg viewBox="0 0 52 52"><path pathLength="1" stroke-dasharray="1.04 1" stroke-dashoffset="1" d="${CAT_ICO[ci]}"/></svg>`; ico.firstChild.firstChild.style.strokeWidth = (52 / (innerHeight * .7)).toFixed(4);   // one screen pixel wide
+    ico.innerHTML = `<svg viewBox="0 0 52 52"><path pathLength="1" stroke-dasharray="1.04 1" stroke-dashoffset="1" d="${CAT_ICO[ci]}"/></svg>`; ico.firstChild.firstChild.style.strokeWidth = (52 / (innerHeight * .7)).toFixed(4); if (window.outlineOf) srcs.forEach((src, j) => outlineOf(src, P => { icoAt.pts[j] = P; const pth = ico.querySelector('path'); if (!P || !pth) return; if (j === 0 && !icoAt.cur) { icoAt.cur = P.slice(); pth.setAttribute('d', outlineD(P)); } if (order[j] === icoAt.near) icoAt.goal = P; }));   /* every work's own outline, traced from its photo (outline.js) */   // one screen pixel wide
     const tl = gsap.timeline({ onReverseComplete() { stop(); card.style.visibility = ''; if (scrollY < 4 && card.matches(':hover')) card.classList.add('hov');   /* still pointed at: the card shows the same photo the gallery folded back */ CATV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); tick(); } });
     tl.to(pageEls(), { opacity: 0, duration: .45, ease: 'power2.in' }, 0);
     tl.fromTo('#catView .ov-scrim', { opacity: 0 }, { opacity: 1, duration: .45, ease: 'power2.out' }, 0);
@@ -1607,15 +1608,15 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   const endBars = $('.bar');
   function converge(done) {                       // the steps pull into one line at the top on their own, left to right, and drag the title and the menu up behind them
     lockScroll(true);
-    const under = [...$('.rest > :not(.bar)'), nav, contact, sndBtn, tagline]; gsap.to(under, { opacity: 0, duration: .45, ease: 'power2.out' });   // only the strips, the title and the menu stay: the rest of the page is gone before they reach the top
-    const rise = endBars.map(b => b.getBoundingClientRect().top - 20 * U), t1 = performance.now(), dur = DUR + 100, gap = 70;
+    const under = [...$('.rest > :not(.bar)'), nav, contact, sndBtn, tagline]; gsap.to(under, { opacity: 0, duration: .45, ease: 'power2.out' }); gsap.to([nav, contact, sndBtn, tagline], { opacity: 0, duration: .25, ease: 'power2.out', overwrite: true });   // the menu goes first and quickly: it is gone before the strips reach its line   // only the strips, the title and the menu stay: the rest of the page is gone before they reach the top
+    const rise = endBars.map(b => b.getBoundingClientRect().top - 20 * U), t1 = performance.now() + 260, dur = DUR + 100, gap = 70;   // the strips set off once the menu has gone
     const ttl = document.createElement('div'); ttl.className = 't h1 endttl'; ttl.innerHTML = h1.innerHTML;
     ttl.querySelectorAll('.ch').forEach(c => { c.style.animation = 'none'; c.style.transform = 'none'; });
     document.body.append(ttl);
     const below = 270 * U, tt = (now, d0, d) => 1 - ease(clamp((now - t1 - d0) / d));       // 1 = still below the screen, 0 = in place
     (function f(now) {
       let busy = false;
-      endBars.forEach((b, i) => { const k = clamp((now - t1 - i * gap) / dur); if (k < 1) busy = true; const nat = b.getBoundingClientRect().top - (b._ty || 0); b._ty = -ease(k) * (nat - 20 * U); b.style.transform = `translateY(${b._ty}px)`; });   // measured every frame: the scrollbar goes away and the layout may rescale a little while the steps climb
+      endBars.forEach((b, i) => { const k = clamp((now - t1 - i * gap) / dur); if (k < 1) busy = true; if (now < t1) { busy = true; return; } const nat = b.getBoundingClientRect().top - (b._ty || 0); b._ty = -ease(k) * (nat - 20 * U); b.style.transform = `translateY(${b._ty}px)`; });   // measured every frame: the scrollbar goes away and the layout may rescale a little while the steps climb
       const a = tt(now, 250, 800), b2 = 0;
       ttl.style.transform = `translateY(${a * below}px)`;
       if (a > 0 || b2 > 0) busy = true;

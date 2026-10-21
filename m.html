@@ -63,6 +63,8 @@
   .bend { will-change: transform; transform-origin: 50% 50%; }
   #cats .cat i { position: relative; perspective: 520px; background: none !important; }   /* the slider on the outside of a cylinder: each picture in thin strips, every strip on its own angle */
   #cats .ds { position: absolute; top: 0; bottom: 0; background: #ecebe9 no-repeat; will-change: transform; }
+  .track .fr.dr { position: relative; perspective: 520px; } .track .fr.dr.grey { background: none; } .track .fr.dr > img { visibility: hidden; }   /* the category's slider on the same drum */
+  .track .fr.dr > .ds { position: absolute; top: 0; bottom: 0; background-repeat: no-repeat; will-change: transform; } .track .fr.dr.grey > .ds { background-color: #f2f2f2; background-blend-mode: multiply; }
   .ttl { font-size: 37vw; position: absolute; left: 0; right: 0; bottom: calc(40px - 4vw); margin: 0; text-align: center; z-index: 1; }   /* at the foot of the first screen, 40 under its letters; it goes up with the page */
   .ttl { line-height: .8; }
   .ttl .ln { display: block; overflow: hidden; padding: .03em 0 0; }
@@ -137,7 +139,7 @@
   .mi i { display: block; width: 60%; aspect-ratio: 4 / 3; background: var(--gray) 50% 30% / cover no-repeat; margin-bottom: var(--s2); }   /* smaller, and held a little high so heads are never cut */
   .mi:last-child { border-bottom: 1px solid var(--rule); }
   .mi .d { opacity: .4; }
-  .mi b { font-weight: 400; display: block; margin-bottom: var(--s1); }   /* room between the outlet and what it says */
+  .mi b { font-weight: 400; display: block; margin-bottom: var(--s1); } .mi .mt { display: block; }   /* room between the outlet and what it says */
   .mi.more { display: none; } .media.all .mi.more { display: grid; }
   .allbtn { margin-top: var(--s2); text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
 
@@ -237,7 +239,7 @@
   <p class="in" style="margin-top:var(--s2)">At DirtyHands, we create original design pieces — from tabletop art objects and wall panels to sculptural forms and interior accents that enhance spaces and set their emotional tone.</p>
   <div class="pots" id="pots"><i class="pp" style="--k:0"></i><i class="pp" style="--k:1"></i><i class="pp" style="--k:2"></i><i class="pp" style="--k:3"></i><svg viewBox="0 0 1080 1080" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M212 975L210 835L198 832L196 540C120 540 50 500 40 385L108 375C112 430 140 465 192 470L186 395L222 395L225 352L248 345L246 175C260 150 345 150 358 180L360 345L382 352L385 395L410 395L440 400L500 440L535 500L545 580L530 660L538 720L505 770L440 790L405 800L400 832L385 835L383 975C340 990 250 990 212 975Z M718 975L715 785L640 795L595 760L580 690L556 620L570 520L610 465L690 440L688 425L735 425L735 395C735 370 750 345 752 330L752 255L770 250L785 262L800 248L830 258L850 250L852 345L865 350L868 425L925 425L928 520C950 525 960 510 962 480L962 430L1052 428L1050 470C1045 540 990 560 930 560L925 780L885 785L882 975C840 990 760 990 718 975Z"/></svg></div>
   <p class="in shift">The studio was founded by designers and entrepreneurs Lisa and Karen, who combine professional expertise with artistic intuition to bring unconventional ideas to life. Their approach reimagines ceramics, moving beyond functional plates and pots towards an artistic language that expresses the style, mood, and character of a space.</p>
-  <p class="in shift" style="margin-top:var(--s3)"><a class="lnk ord" href="#order">Shop now<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a></p>
+  <p class="in shift" style="margin-top:var(--s3)"><a class="lnk ord" href="#order">Order now<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a></p>
 </section>
 
 <section class="wrap sec" id="cases">
@@ -269,6 +271,7 @@
 <script>window.clayFast = true;   // on the phone the marks dry sooner</script>
 <script src="clay.js?v=6"></script>
 <script src="sound.js?v=13"></script>
+<script src="outline.js"></script>
 <script>
 // the preloader: a white sheet; one finger loaded with clay is drawn across it from left to right, then the sheet fades away and the page begins as it always does
 window.preDone = new Promise(done => {
@@ -349,7 +352,7 @@ window.preDone = new Promise(done => {
   const pile = one('#pile'), pcs = CATS.map((_, k) => { const d = document.createElement('i'); d.className = 'pc'; pile.append(d); return d; }), cats = $('#cats .cat i'), trs = $('.tr'), tbl = one('#tbl');
   const SKEW = [[-3, -2, -4], [4, 3, 3], [-2, 5, -2], [5, -4, 5], [-5, 2, -3], [2, -5, 4]];   // each work a little askew under the one on top
   function pileTick() { const V = innerHeight, W = innerWidth, hero = one('.hero'), p = clamp(scrollY / Math.max(1, hero.offsetHeight * .75)), e = p * p * (3 - 2 * p);
-    if (p <= 0) { pile.style.visibility = 'hidden'; cats.forEach(c => c.style.visibility = ''); return; }
+    if (p <= 0) { pile.style.visibility = 'hidden'; cats.forEach(c => c.style.visibility = ''); if (titleReady) chs.forEach(c => { c.style.transform = ''; }); return; }   // back at the top (after the page starts over too) the title stands whole again
     if (titleReady) chs.forEach((c, k) => { const e = clamp(p * 1.5 - k * .045); c.style.transform = `translateY(${(-e * 130).toFixed(1)}%)`; });   // the title leaves letter by letter, as it came
     pile.style.visibility = ''; cats.forEach(c => c.style.visibility = 'hidden');
     const tr = tbl.getBoundingClientRect(), endShift = Math.min(0, tr.bottom - V * .6);   // at the end of the table the pile goes up with it
@@ -367,17 +370,17 @@ window.preDone = new Promise(done => {
   // the cases, under the clients' names
   one('#caselist').innerHTML = CASES.map(([n, t, cap], k) => `<article class="case" data-c="${k}"><h3 class="vh">${n}</h3><button type="button" class="pic" data-c="${k}" style="background-image:url('${SRC(k)}');background-position:${POS(k)}" aria-label="${n}"></button><div class="meta"><p class="type lab">${t}</p><p class="cap"><span>${cap}</span></p></div></article>`).join('');
   // the media: four, the rest behind a button
-  one('#medialist').innerHTML = MEDIA.map(([d, o, t, im], k) => `<div class="mi in${k > 3 ? ' more' : ''}"><span class="d">${d}</span><div><i style="background-image:url('${im}')"></i><p><b>${o}</b>${t}</p></div></div>`).join('');
-  one('#allmedia').addEventListener('click', e => { const m = one('#media'); m.classList.toggle('all'); e.currentTarget.textContent = m.classList.contains('all') ? 'Fewer' : 'All publications'; reveal(); });
+  one('#medialist').innerHTML = MEDIA.map(([d, o, t, im], k) => `<div class="mi${k > 3 ? ' more' : ''}"><span class="d in">${d}</span><div><i class="in" style="background-image:url('${im}')"></i><p><b class="in">${o}</b><span class="mt">${t}</span></p></div></div>`).join('');
+  one('#allmedia').addEventListener('click', e => { const m = one('#media'); m.classList.toggle('all'); e.currentTarget.textContent = m.classList.contains('all') ? 'Fewer' : 'All publications'; $('.mi.more .mt').forEach(splitLines); reveal(); });   // the rest cut into lines once they are shown
 
   // every paragraph cut into its own lines, so they come in one after another as on the full page
   function splitLines(el) { if (el._split || !el.textContent.trim()) return; el._split = 1;
-    const words = el.textContent.trim().split(/\s+/), spans = words.map(w => { const t = document.createElement('span'); t.textContent = w; return t; });
+    const words = el.textContent.trim().split(/\s+/), spans = words.map(w => { const t = document.createElement('span'); t.textContent = w; t.style.whiteSpace = 'nowrap'; return t; });   // measured whole: a word never splits at its hyphen
     el.textContent = ''; spans.forEach((t, k) => { el.append(t); if (k < spans.length - 1) el.append(document.createTextNode(' ')); });
     const lines = []; let top = null, cur = null;
     spans.forEach(t => { const y = Math.round(t.offsetTop); if (y !== top) { top = y; cur = []; lines.push(cur); } cur.push(t.textContent); });
     el.innerHTML = lines.map(l => `<span class="ln-in">${l.join(' ')}</span>`).join(''); }
-  (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { $('.tr p, .about p, .case .cap span').forEach(splitLines); reveal(); });
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { $('.tr p, .about p, .case .cap span, .mi:not(.more) .mt').forEach(splitLines); reveal(); });
 
   // coming into view: a short rise, once
   const io = new IntersectionObserver(es => { let d = 0; es.forEach(e => { if (e.isIntersecting) { e.target.style.transitionDelay = (d++ * 60) + 'ms'; e.target.classList.add('on'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px' });
@@ -397,17 +400,20 @@ window.preDone = new Promise(done => {
     el.addEventListener('scroll', () => { const t = performance.now(), v = Math.abs(el.scrollLeft - last) / Math.max(8, t - lt); last = el.scrollLeft; lt = t; goal = Math.min(1, Math.max(goal, v * .9)); if (!run) { run = true; requestAnimationFrame(frame); } if (window.soundNudge) soundNudge(Math.min(.6, v * .3)); }, { passive: true });
     requestAnimationFrame(frame); }
   // the top slider on the outside of a drum, as the publications on the full page: every picture cut into thin strips, each strip standing on its own angle, so the pictures bend with the drum and the middle comes nearest; a swipe bows it a little more
-  function drum(el, base) { const NS = 16, cards = [...el.children].map(c => { const i = c.firstElementChild, src = i.style.backgroundImage; i.append(...Array.from({ length: NS }, () => { const b = document.createElement('b'); b.className = 'ds'; b.style.backgroundImage = src; return b; })); return i; });
-    const size = () => cards.forEach(i => { const w = i.offsetWidth, sw = w / NS, bw = w * 1.7; [...i.children].forEach((b, k) => { b.style.left = (k * sw - .5).toFixed(2) + 'px'; b.style.width = (sw + 1).toFixed(2) + 'px'; b.style.backgroundSize = `${bw.toFixed(1)}px auto`; b.style.backgroundPosition = `${((w - bw) / 2 - k * sw + .5).toFixed(1)}px 48%`; }); });   // the strips overlap by half a pixel each side: no seam
+  function drum(el, base, boxes, paint) { const NS = 16;   // boxes: the pictures to cut into strips; paint(box, strip, k, w, sw): that picture's part on one strip
+    boxes.forEach(i => { i._ds = Array.from({ length: NS }, () => { const b = document.createElement('b'); b.className = 'ds'; i.append(b); return b; }); });
+    const size = () => boxes.forEach(i => { const w = i.offsetWidth, sw = w / NS; i._ds.forEach((b, k) => { b.style.left = (k * sw - .5).toFixed(2) + 'px'; b.style.width = (sw + 1).toFixed(2) + 'px'; paint(i, b, k, w, sw); }); });   // the strips overlap by half a pixel each side: no seam
     let last = el.scrollLeft, lt = performance.now(), amt = 0, goal = 0, run = false;
-    const frame = () => { amt += (goal - amt) * .14; goal *= .9; const er = el.getBoundingClientRect(), cx = er.left + er.width / 2, kk = Math.min(1, base + amt), R = er.width / (2.6 * Math.max(.0001, kk));   // flat at rest; while swiped the screen's half bows up to about 45° of the drum
-      cards.forEach(i => { const r = i.getBoundingClientRect(), sw = r.width / NS; if (r.right < er.left - 60 || r.left > er.right + 60) return; i.style.perspectiveOrigin = `${(cx - r.left).toFixed(1)}px 50%`;
-        [...i.children].forEach((b, k) => { const u = r.left + (k + .5) * sw - cx, al = u / R; b.style.transform = kk < .002 ? '' : `translate3d(${(R * Math.sin(al) - u).toFixed(2)}px,0,${(-R * (1 - Math.cos(al))).toFixed(2)}px) rotateY(${al.toFixed(4)}rad)`; }); });
+    const frame = () => { if (!el.isConnected) { run = false; return; } amt += (goal - amt) * .14; goal *= .9; const er = el.getBoundingClientRect(), cx = er.left + er.width / 2, kk = Math.min(1, base + amt * .45), R = er.width / (2.2 * Math.max(.0001, kk));   // flat at rest (or the given bow); a swipe rounds it gently, the screen's half never past about 25° of the drum
+      boxes.forEach(i => { const r = i.getBoundingClientRect(), sw = r.width / NS; if (r.right < er.left - 60 || r.left > er.right + 60) return; i.style.perspectiveOrigin = `${(cx - r.left).toFixed(1)}px 50%`;
+        i._ds.forEach((b, k) => { const u = r.left + (k + .5) * sw - cx, al = u / R; b.style.transform = kk < .002 ? '' : `translate3d(${(R * Math.sin(al) - u).toFixed(2)}px,0,${(-R * (1 - Math.cos(al))).toFixed(2)}px) rotateY(${al.toFixed(4)}rad)`; }); });
       if (amt > .002 || goal > .002) requestAnimationFrame(frame); else run = false; };
     const go = () => { if (!run) { run = true; requestAnimationFrame(frame); } };
     el.addEventListener('scroll', () => { const t = performance.now(), v = Math.abs(el.scrollLeft - last) / Math.max(8, t - lt); last = el.scrollLeft; lt = t; goal = Math.min(1, Math.max(goal, v * .9)); go(); if (window.soundNudge) soundNudge(Math.min(.6, v * .3)); }, { passive: true });
-    addEventListener('resize', () => { size(); go(); }); size(); go(); setTimeout(go, 1200); }   // once more after the cards have come in
-  drum(one('#cats'), 0);
+    addEventListener('resize', () => { if (el.isConnected) { size(); go(); } }); size(); go(); setTimeout(go, 1200);   // once more after the pictures have come in
+    return { size, go }; }
+  // the top slider on the outside of a drum, as the publications on the full page: every picture cut into thin strips, each on its own angle, so the pictures bend with the drum and the middle comes nearest
+  drum(one('#cats'), 0, $('#cats .cat i'), (i, b, k, w, sw) => { const bw = w * 1.7; b.style.backgroundImage = i.style.backgroundImage; b.style.backgroundSize = `${bw.toFixed(1)}px auto`; b.style.backgroundPosition = `${((w - bw) / 2 - k * sw + .5).toFixed(1)}px 48%`; });
 
   // block 2: the ruled text laid out with pretext (github.com/chenglou/pretext), as on the full page: at the height of the work on top every line is cut in two, a part on each side of it, by the work's own outline
   const LHP = 19, shapes = {};
@@ -447,7 +453,7 @@ window.preDone = new Promise(done => {
     { const r = pots.getBoundingClientRect(), p = clamp((V * .85 - r.top) / (V * .5)); pots.querySelectorAll('.pp').forEach((el, k) => { const e = clamp(p * 1.6 - k * .2); el.style.transform = `rotateY(${(-(1 - e) * 92).toFixed(1)}deg)`; el.style.opacity = e > 0 ? 1 : 0; }); pots.lastElementChild.style.opacity = clamp(1 - p * 1.4).toFixed(3); }   // a line drawing first, the photo as it comes up
     { let best = 0, bd = 1e9; cases.forEach((c, k) => { const r = c.firstElementChild.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - V * .42); if (d < bd) { bd = d; best = k; } });
       if (best !== act) { act = best; cases.forEach((c, k) => c.classList.toggle('act', k === best)); showName(best); } }   // the client in front, held under the menu
-    { const r = formsEl.getBoundingClientRect(), p = clamp((V - r.top) / (V * .9)), e = 1 - Math.pow(1 - p, 3), DX = [-28, 30, 22]; words.forEach((w, k) => { w.style.transform = `translateX(${(DX[k] * (1 - e)).toFixed(2)}vw)`; }); }
+    { const r = formsEl.getBoundingClientRect(), p = clamp((V - r.top) / (V * .9)), e = 1 - Math.pow(1 - p, 3), DX = [-28, 30, 22]; words.forEach((w, k) => { w.style.transform = `translateX(${(DX[k] * (1 - e)).toFixed(2)}vw)`; w.style.opacity = clamp(p * 1.4 - k * .15).toFixed(3); }); }
   }
   addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
 
@@ -476,11 +482,16 @@ window.preDone = new Promise(done => {
     imgs.slice(1).forEach((im, n) => gsap.fromTo(im, { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: .9, ease: EASE, delay: .25 + n * .06 }));
     const first = imgs[0], grow = () => { if (from) { const a = from.getBoundingClientRect(), b = first.getBoundingClientRect(); if (b.width) gsap.fromTo(first, { x: a.left + a.width / 2 - (b.left + b.width / 2), y: a.top + a.height / 2 - (b.top + b.height / 2), scale: a.height / b.height }, { x: 0, y: 0, scale: 1, duration: .8, ease: 'power3.inOut' }); } };
     if (first.firstChild.complete) grow(); else first.firstChild.addEventListener('load', grow, { once: true });
-    let near = -1; const redraw = () => { const c = track.getBoundingClientRect().left + track.clientWidth / 2; let best = 0, bd = 1e9; imgs.forEach((im, n) => { const r = im.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - c); if (d < bd) { bd = d; best = n; } });
-      if (best !== near) { const first_ = near < 0; near = best; if (first_) gsap.fromTo(ip, { attr: { 'stroke-dashoffset': 1 } }, { attr: { 'stroke-dashoffset': 0 }, duration: 1.4, ease: 'power2.inOut' }); else goal = nums[(k + best) % nums.length]; } };   // drawn once, then it flows from one form into the next behind each picture that comes to the middle
-    let cur = nums[k].slice(), goal = null; (function flow() { if (!view.contains(ip)) return; if (goal) { let moved = false; cur.forEach((v, n) => { const d = goal[n] - v; if (Math.abs(d) > .01) { cur[n] = v + d * .07; moved = true; } }); if (moved) { let n = 0; ip.setAttribute('d', tpl.replace(/#/g, () => cur[n++].toFixed(2))); } } requestAnimationFrame(flow); })();
+    let near = -1, cur = null, goal = null; const pts = photos.map(() => undefined);
+    const traced = n => { const P = pts[n]; if (!P) return; if (!cur) { cur = P.slice(); ip.setAttribute('d', outlineD(cur)); gsap.fromTo(ip, { attr: { 'stroke-dashoffset': 1 } }, { attr: { 'stroke-dashoffset': 0 }, duration: 1.4, ease: 'power2.inOut' }); } else goal = P; };   // drawn once, then it flows into the outline of each work that comes to the middle
+    if (window.outlineOf) photos.forEach((src, n) => outlineOf(src, P => { pts[n] = P; if (n === near) traced(n); }));
+    const redraw = () => { const c = track.getBoundingClientRect().left + track.clientWidth / 2; let best = 0, bd = 1e9; imgs.forEach((im, n) => { const r = im.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - c); if (d < bd) { bd = d; best = n; } });
+      if (best !== near) { near = best; traced(best); } };
+    (function flow() { if (!view.contains(ip)) return; if (goal && cur) { let moved = false; cur.forEach((v, n) => { const d = goal[n] - v; if (Math.abs(d) > .01) { cur[n] = v + d * .08; moved = true; } }); if (moved) ip.setAttribute('d', outlineD(cur)); } requestAnimationFrame(flow); })();
     track.addEventListener('scroll', redraw, { passive: true }); setTimeout(redraw, 300);
-    bendStrip(track, .7); }
+    imgs.forEach(fr => fr.classList.add('dr'));
+    const D = drum(track, .18, imgs, (fr, b, k, w, sw) => { b.style.backgroundImage = `url("${fr.firstChild.src}")`; b.style.backgroundSize = `${w.toFixed(1)}px ${fr.offsetHeight.toFixed(1)}px`; b.style.backgroundPosition = `${(-k * sw + .5).toFixed(1)}px 0`; });   // as the top slider, and a little round even at rest
+    imgs.forEach(fr => { if (!fr.firstChild.complete) fr.firstChild.addEventListener('load', () => { D.size(); D.go(); }, { once: true }); }); }
   function openCase(c) { const [n, t] = CASES[c];
     show(`<div class="head"><p class="h">${n}</p><p class="lab" style="margin-top:var(--s1)">${t}</p><div class="big" style="background-image:url('${SRC(c)}');background-position:${POS(c)}"></div></div><div class="txt"><p>${CASE_TEXT[c][0]}</p><p>${CASE_TEXT[c][1]}</p></div><div class="strip cover">${Array.from({ length: CASE_N[CASE_KEY[c]] - 1 }, (_, k) => `<i class="bend" style="background-image:url('${SRC(c, k + 1)}');background-position:${POS(c, k + 1)}"></i>`).join('')}</div>`);
     bendStrip(view.querySelector('.strip'), .7); }
@@ -515,7 +526,7 @@ window.preDone = new Promise(done => {
   const veil = one('.veil'); let endT = 0;
   addEventListener('scroll', () => { const d = document.documentElement; if (open || d.scrollHeight - (scrollY + innerHeight) > 2) { clearTimeout(endT); endT = 0; return; }
     if (endT) return; endT = setTimeout(() => { veil.style.opacity = 1;   // held at the end a moment: the page goes white, starts over at the top, and comes back
-      setTimeout(() => { scrollTo({ top: 0, behavior: 'instant' }); requestAnimationFrame(() => requestAnimationFrame(() => { veil.style.opacity = 0; endT = 0; })); }, 650); }, 700); }, { passive: true });   // the jump at once, never a glide through the whole page
+      setTimeout(() => { d.style.overflow = 'hidden'; scrollTo({ top: 0, behavior: 'instant' }); requestAnimationFrame(() => requestAnimationFrame(() => { d.style.overflow = ''; scrollTo({ top: 0, behavior: 'instant' }); veil.style.opacity = 0; endT = 0; })); }, 650); }, 700); }, { passive: true });   // the jump at once, never a glide through the whole page
 
   makeClay();   // the clay, as on the full page: a finger leaves marks and smears them, also while the page scrolls (on the phone they dry sooner)
 })();
