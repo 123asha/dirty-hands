@@ -834,8 +834,9 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       top = dTop + d.offsetHeight / U + 56; });
     // the end of the page follows the last publication on the standard steps: 80, the hand (136, the drawing in its middle), 80, the credit; the strip and the end of the page move up with it, so the loop stays as it was
     const hTop = top - 56 + 80, dy = 5189 - hTop + 233, hand = one('.rest > .eye'), cr = $('.rest > .credit');
-    if (hand) hand.style.top = `calc(${hTop.toFixed(1)} * var(--u))`;
-    if (cr[0]) cr[0].style.top = `calc(${(hTop + 167).toFixed(1)} * var(--u))`; if (cr[1]) cr[1].style.top = `calc(${(hTop + 186).toFixed(1)} * var(--u))`;
+    const mEnd = top - 56, gTop = mEnd + (5749 - dy - mEnd - 205) / 2;   // the hands and the credit (205 high together) halfway between the last publication and the strip at the end: the same room above and below them (the half of the screen's share, 5/24 of its height, in the calc)
+    if (hand) hand.style.top = `calc(${gTop.toFixed(1)} * var(--u) + 100vh * 5 / 24)`;
+    if (cr[0]) cr[0].style.top = `calc(${(gTop + 167).toFixed(1)} * var(--u) + 100vh * 5 / 24)`; if (cr[1]) cr[1].style.top = `calc(${(gTop + 186).toFixed(1)} * var(--u) + 100vh * 5 / 24)`;
     $('.rest > .bar').forEach(b => { b.style.top = `calc(${(5749 - dy).toFixed(1)} * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 20 * var(--u)) / 5)`; });
     one('.rest').style.height = `calc(${(5809 - dy).toFixed(1)} * var(--u))`;
   }
