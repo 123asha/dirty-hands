@@ -119,6 +119,8 @@
   .case .pic { display: block; width: 100%; aspect-ratio: 5 / 4; margin-top: var(--s2); background: var(--gray) center / cover no-repeat; }
   .case .cap { margin-top: var(--s2); }
   .case .cap span { display: block; border-top: 1px solid var(--rule); padding-top: var(--s1); }
+  .case .cap span span:not(.ln-in) { display: inline; border: 0; padding: 0; }   /* the words while the caption is measured into lines stay in the line (as blocks they fell one under another) */
+  .case .cap > span > .ln-in + .ln-in { margin-top: 0; }
 
   /* unconventional ceramic forms: the first word where it is, the second from the middle, the third from the left; they slide to their places with the scroll, and a form drawn in one line turns from one work into the next over them, bigger than the block */
   .forms { position: relative; margin-top: var(--s5); padding: var(--s5) var(--m); overflow-x: clip; }   /* the words slide in from the sides without widening the page; the form may still reach above and below */
@@ -189,7 +191,17 @@
   .foot { position: relative; display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: calc(var(--s5) + env(safe-area-inset-bottom)); }   /* the address and the silhouette on one line */
   .ov .mail { display: inline-flex; gap: .25em; align-items: flex-start; padding: 0 0 0 var(--m); }
   .ov .mail span { background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat; padding-bottom: .12em; }
+  /* a finger-sized tap area (about 44 px) round the small links, invisible: nothing moves */
+  .top nav a, .snd, .allbtn, .credit a { position: relative; }
+  .top nav a::before, .snd::before, .allbtn::before, .credit a::before { content: ''; position: absolute; inset: -13px -6px; }
+  @media (max-width: 359px) { .snd span { display: none; } }   /* the narrowest phones: the sound switch keeps only its wave, the menu has room */
 </style>
+<link rel="canonical" href="https://123asha.github.io/dirty-hands/">
+<meta property="og:locale" content="en_US">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#ffffff">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "Dirty Hands", "alternateName": "DirtyHands", "description": "Moscow studio of interior ceramics: wall panels, mirrors, tables, sculptures and vases made by hand for homes, restaurants and public spaces.", "url": "https://123asha.github.io/dirty-hands/", "logo": "https://123asha.github.io/dirty-hands/icon-512.png", "image": "https://123asha.github.io/dirty-hands/photos/og.jpg", "email": "order@dirtyhands.ru", "telephone": "+7 916 319-51-86", "foundingDate": "2019", "founder": [{"@type": "Person", "name": "Elizaveta Martirosyan"}, {"@type": "Person", "name": "Karen Yuzbashyan"}], "address": {"@type": "PostalAddress", "streetAddress": "Bolshoy Karetny pereulok, 2", "addressLocality": "Moscow", "addressCountry": "RU"}, "sameAs": ["https://dirtyhands.ru"]}</script>
 </head>
 <body>
 <div class="pre" aria-hidden="true"><canvas></canvas></div>

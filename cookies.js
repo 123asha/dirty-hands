@@ -7,7 +7,7 @@
     font-family: "CoFo Sans", -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 15px; line-height: 19px; letter-spacing: -.01em; opacity: 0; transition: opacity .5s cubic-bezier(.2,.8,.2,1), translate .5s cubic-bezier(.2,.8,.2,1); }
     .ck.on { opacity: 1; translate: -50% 0; }
     .ck p { margin: 0; }
-    .ck button { all: unset; cursor: pointer; margin-top: 16px; display: inline-block; padding-bottom: .12em; background: linear-gradient(currentColor, currentColor) 100% 100% / 100% 1px no-repeat; transition: background-size .9s cubic-bezier(.4,0,.2,1); }
+    .ck button { all: unset; cursor: pointer; margin-top: 4px; display: inline-block; padding: 12px 0; background-origin: content-box; background-clip: content-box; background: linear-gradient(currentColor, currentColor) 100% 100% / 100% 1px no-repeat; transition: background-size .9s cubic-bezier(.4,0,.2,1); }
     .ck button:hover { background-size: 0 1px; }`;
   const box = document.createElement('div'); box.className = 'ck'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'Cookies');
   box.innerHTML = '<p>This site uses only essential cookies and your browser’s storage, to keep a few settings such as the sound. Nothing is used to track you.</p><button type="button">OK</button>';
