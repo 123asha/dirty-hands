@@ -54,7 +54,7 @@
 
   /* first screen: the categories as a horizontal slider of signed pictures, then the title rising letter by letter */
   .hero { position: relative; height: 100svh; min-height: 520px; padding: calc(var(--s5) + env(safe-area-inset-top)) 0 0; }   /* the first screen: the slider at the top, the studio in the middle, the title at the bottom */
-  .strip { display: flex; gap: 6px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 var(--m); scroll-padding: 0 var(--m); scrollbar-width: none; perspective: 1100px; perspective-origin: 50% 50%; touch-action: pan-x; }
+  .strip { display: flex; gap: 6px; overscroll-behavior-x: contain; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 var(--m); scroll-padding: 0 var(--m); scrollbar-width: none; perspective: 1100px; perspective-origin: 50% 50%; touch-action: pan-x; }
   .strip::-webkit-scrollbar { display: none; }
   .cat { flex: none; width: 38vw; scroll-snap-align: start; text-align: left; }
   .cat i { display: block; aspect-ratio: 4 / 5; background: #ecebe9 50% 48% / 170% auto no-repeat; }
@@ -187,7 +187,7 @@
   .gal { flex: none; position: relative; height: 48vh; margin-top: var(--s3); }
   .cv .ico { display: block; width: 56px; height: 56px; margin: 0 auto var(--s2); overflow: visible; }   /* a small outline over the text, redrawn as the slider turns */
   .cv .ico path { fill: none; stroke: #9a9a9a; stroke-width: 1.2; vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: round; }   /* drawn as one line, never a black blot */
-  .track { position: relative; z-index: 1; display: flex; align-items: flex-start; gap: 6px; height: 100%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; padding: 0 22vw; scrollbar-width: none; perspective: 1100px; perspective-origin: 50% 50%; touch-action: pan-x; }
+  .track { position: relative; z-index: 1; display: flex; align-items: flex-start; gap: 6px; height: 100%; overscroll-behavior-x: contain; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; padding: 0 22vw; scrollbar-width: none; perspective: 1100px; perspective-origin: 50% 50%; touch-action: pan-x; }
   .track::-webkit-scrollbar { display: none; }
   .track .fr { flex: none; display: block; max-height: 100%; scroll-snap-align: center; isolation: isolate; }
   .track .fr.grey { background: #f2f2f2; } .track .fr.grey img { mix-blend-mode: multiply; }   /* a photo on white stands on the cards' grey: the white multiplied into it, the work untouched */
@@ -518,7 +518,7 @@ window.preDone = new Promise(done => {
     imgs.forEach(fr => fr.classList.add('dr'));
     const HF = [1, .76, .9, .7, .84, .72, .94, .78], YO = [0, .25, .8, .4, 1, .15, .6, .9];   // stepped as on the full page: every frame its own height and level, the gap between them always the same
     imgs.forEach((fr, n) => { const h = 48 * HF[n % HF.length]; fr.style.height = h + 'vh'; fr.style.marginTop = ((48 - h) * YO[n % YO.length]).toFixed(2) + 'vh'; });
-    const D = drum(track, .18, imgs, (fr, b, k, w, sw) => { const im = fr.firstChild, h = fr.offsetHeight, sc = im.naturalWidth ? Math.max(w / im.naturalWidth, h / im.naturalHeight) : 1, bw = im.naturalWidth ? im.naturalWidth * sc : w, bh = im.naturalWidth ? im.naturalHeight * sc : h;   // as the photo lies in its frame (cover)
+    const D = drum(track, 0, imgs, (fr, b, k, w, sw) => { const im = fr.firstChild, h = fr.offsetHeight, sc = im.naturalWidth ? Math.max(w / im.naturalWidth, h / im.naturalHeight) : 1, bw = im.naturalWidth ? im.naturalWidth * sc : w, bh = im.naturalWidth ? im.naturalHeight * sc : h;   // as the photo lies in its frame (cover)
       b.style.backgroundImage = `url("${im.src}")`; b.style.backgroundSize = `${bw.toFixed(1)}px ${bh.toFixed(1)}px`; b.style.backgroundPosition = `${((w - bw) / 2 - k * sw + .5).toFixed(1)}px ${((h - bh) / 2).toFixed(1)}px`; });   // as the top slider, and a little round even at rest
     imgs.forEach(fr => { if (!fr.firstChild.complete) fr.firstChild.addEventListener('load', () => { D.size(); D.go(); }, { once: true }); }); }
   // Karen and Lisa: a tap on the label opens their story, and everything in it comes in one thing after another: the name letter by letter, the role, their own part of the photo from its top edge down, then each ruled line and its text line by line
@@ -536,7 +536,7 @@ window.preDone = new Promise(done => {
   $('.who').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); openPerson(+b.dataset.p); }));
   function openCase(c) { const [n, t] = CASES[c];
     show(`<div class="head"><p class="h">${n}</p><p class="lab" style="margin-top:var(--s1)">${t}</p><div class="big" style="background-image:url('${SRC(c)}');background-position:${POS(c)}"></div></div><div class="txt"><p>${CASE_TEXT[c][0]}</p><p>${CASE_TEXT[c][1]}</p></div><div class="strip cover">${Array.from({ length: CASE_N[CASE_KEY[c]] - 1 }, (_, k) => `<i class="bend" style="background-image:url('${SRC(c, k + 1)}');background-position:${POS(c, k + 1)}"></i>`).join('')}</div>`);
-    bendStrip(view.querySelector('.strip'), .7);
+    bendStrip(view.querySelector('.strip'), 0);   // flat at rest, bowing only while swiped
     const hd = view.querySelector('.head .h'); hd.innerHTML = letters(hd.textContent);   // and it opens as the others do: the name letter by letter, the picture from its top edge down, then the text line by line
     gsap.fromTo(view.querySelectorAll('.head .h .ch'), { yPercent: 110 }, { yPercent: 0, duration: .8, ease: EASE, stagger: .04, delay: .1 });
     gsap.fromTo(view.querySelector('.head .lab'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .7, ease: EASE, delay: .3 });
@@ -570,6 +570,10 @@ window.preDone = new Promise(done => {
   if (location.hash === '#order') openOrder();
   document.addEventListener('click', e => { if (open) return; const c = e.target.closest('.cat, .tr'), p = e.target.closest('.pic'); if (c) openCat(+c.dataset.k, c.querySelector('i')); else if (p) openCase(+p.dataset.c); });
   view.addEventListener('scroll', () => { if (window.soundNudge) soundNudge(.2); }, { passive: true });
+  // a slider in a view swiped sideways: the view itself holds still meanwhile (on the iPhone it moved up and down with the swipe)
+  let sw0 = null; view.addEventListener('touchstart', e => { sw0 = e.target.closest('.strip, .track') ? { x: e.touches[0].clientX, y: e.touches[0].clientY, on: false } : null; }, { passive: true });
+  view.addEventListener('touchmove', e => { if (!sw0) return; const dx = Math.abs(e.touches[0].clientX - sw0.x), dy = Math.abs(e.touches[0].clientY - sw0.y); if (!sw0.on && dx > 6 && dx > dy) { sw0.on = true; view.style.overflowY = 'hidden'; } }, { passive: true });
+  const swEnd = () => { if (sw0 && sw0.on) view.style.overflowY = ''; sw0 = null; }; view.addEventListener('touchend', swEnd, { passive: true }); view.addEventListener('touchcancel', swEnd, { passive: true });
 
   // scrolled to the very end and still pulling: the page starts over, as the full one loops
   const veil = one('.veil'); let endT = 0;
