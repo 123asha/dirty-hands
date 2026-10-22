@@ -104,7 +104,7 @@
 <script>{ const grid = document.querySelector('.grid'); try { if (sessionStorage.getItem('grid') === '1') grid.classList.add('on'); } catch (e) {}   // the grid stays on or off from page to page
   addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.code === 'KeyG') { e.preventDefault(); if (!e.repeat) { const on = grid.classList.toggle('on'); try { sessionStorage.setItem('grid', on ? '1' : '0'); } catch (er) {} } } }); }</script>
 <script src="clay.js?v=8"></script>
-<script src="sound.js?v=15"></script>
+<script src="sound.js?v=16"></script>
 <script>
 (() => {
   const CATS = ['Panels', 'Mirrors', 'Tables', 'Sculptures', 'Urbans', 'Vases'];
@@ -147,19 +147,19 @@
       if (!d._w) d._w = [...d.querySelectorAll('.w')].map(el => ({ el, l: el.offsetLeft, r: el.offsetLeft + el.offsetWidth, x: 0 }));
       const m = /translate\(([-\d.]+)px,\s*([-\d.]+)px/.exec(d.style.transform); if (!m) return;
       const lx = r.left + +m[1] + d.firstChild.offsetLeft, y0 = r.top + +m[2], y1 = y0 + lh; let cut = null;
-      obs.forEach(o => { if (cut) return; const b = o.box, bt = b.cy - b.S / 2, v0 = Math.max(0, Math.floor((y0 - bt) / b.S * MR)), v1 = Math.min(MR - 1, Math.ceil((y1 - bt) / b.S * MR) - 1); if (v0 > v1) return;
+      obs.forEach(o => { const b = o.box, bt = b.cy - b.S / 2, v0 = Math.max(0, Math.floor((y0 - bt) / b.S * MR)), v1 = Math.min(MR - 1, Math.ceil((y1 - bt) / b.S * MR) - 1); if (v0 > v1) return;
         let a = 1, c = 0; for (let v = v0; v <= v1; v++) { const rw = MASK[o.src][v]; if (rw) { a = Math.min(a, rw[0]); c = Math.max(c, rw[1]); } } if (a >= c) return;
-        cut = [b.cx - b.S / 2 + a * b.S - 10 * U, b.cx - b.S / 2 + c * b.S + 10 * U]; });
+        const ca = b.cx - b.S / 2 + a * b.S - 12 * U, cb = b.cx - b.S / 2 + c * b.S + 12 * U; cut = cut ? [Math.min(cut[0], ca), Math.max(cut[1], cb)] : [ca, cb]; });   // all the silhouettes beside the line together
       let dl = 0, dr = 0; const mid = cut ? (cut[0] + cut[1]) / 2 : 0;
       if (cut) d._w.forEach(w => { const p = lx + w.l, q = lx + w.r; if (q <= cut[0] || p >= cut[1]) return; if ((p + q) / 2 < mid) dl = Math.max(dl, q - cut[0]); else dr = Math.max(dr, cut[1] - p); });
-      d._w.forEach(w => { const t = !cut ? 0 : (lx + (w.l + w.r) / 2 < mid ? -dl : dr); w.x += (t - w.x) * .16; if (Math.abs(w.x) < .2 && !t) w.x = 0; w.el.style.transform = w.x ? `translateX(${w.x.toFixed(1)}px)` : ''; }); });
+      d._w.forEach(w => { const t = !cut ? 0 : (lx + (w.l + w.r) / 2 < mid ? -dl : dr); w.x += (t - w.x) * (Math.abs(t) > Math.abs(w.x) ? .6 : .16); if (Math.abs(w.x) < .2 && !t) w.x = 0; w.el.style.transform = w.x ? `translateX(${w.x.toFixed(1)}px)` : ''; }); });
   }
   function flow() {
     if (!PT) return;
     const f18 = Math.min(18, 18 * U);
     if (!preps || preps.f !== f18) { preps = paras.map(t => PT.prepareWithSegments(t, `${f18}px "CoFo Sans"`, { letterSpacing: -0.01 * f18 })); preps.f = f18; fl.querySelectorAll('p').forEach(p => p.remove()); }
     const r = fl.getBoundingClientRect(), L = r.left, Rr = L + 440 * U, lh = LH * U, ht = mid.getBoundingClientRect().top;
-    const obs = [...its.slice(0, 1), ...falling].filter(it => it.box && MASK[it.src] && it.box.cx + it.box.S / 2 > L && it.box.cx - it.box.S / 2 < Rr);
+    const obs = [...its, ...falling].filter(it => it.box && MASK[it.src] && it.box.cx + it.box.S / 2 > L && it.box.cx - it.box.S / 2 < Rr);
     otl.style.top = ht + 'px';
     hws.forEach(h => { const e = h.el, b = h.band ?? (h.band = [...otl.querySelectorAll('.hl')].indexOf(e.parentNode)), base = e.offsetLeft + e.offsetWidth / 2, dx = wrapX(base, shelfOff[b] || 0) - base, th = (base + dx - innerWidth / 2) / (680 * U) * Math.PI / 2;   // the title's words go round with their shelves (and are never pushed by the trail)
       e.style.transform = Math.abs(dx) > .3 ? `translateX(${dx.toFixed(1)}px)` : ''; e.style.opacity = drumFade(Math.cos(th)).toFixed(3); });
@@ -233,6 +233,14 @@
   document.fonts.ready.then(() => { centreTitle(); openTitle(); }); addEventListener('resize', () => { U = innerWidth / 1400; centreTitle(); });
   // (no clay to draw with on this page: here the works follow the hand instead)
 })();
+</script>
+<script>
+// opened over the main page (Order on the desktop): its links back to the page close the sheet instead of loading the page again
+if (parent !== window && (() => { try { return parent.location.origin === location.origin; } catch (e) { return false; } })()) {   // inside the sheet on the main page (the page itself takes ?in=1 out of the address)
+  document.addEventListener('click', e => { const a = e.target.closest && e.target.closest('a[href]'); if (!a) return; const h = a.getAttribute('href');
+    if (h === './' || h.startsWith('./#')) { e.preventDefault(); e.stopImmediatePropagation(); parent.postMessage({ dh: 'close', to: h.slice(2) }, location.origin); }
+    else if (h === 'shop.html') e.preventDefault(); }, true);
+  addEventListener('keydown', e => { if (e.key === 'Escape') parent.postMessage({ dh: 'close' }, location.origin); }); }
 </script>
 <script src="cookies.js"></script>
 </body>

@@ -96,7 +96,7 @@ function placeSound(at) {                                               // a wor
     we.gain.setValueAtTime(0, t); we.gain.linearRampToValueAtTime(.05 * amp, t + .004); we.gain.exponentialRampToValueAtTime(.0001, t + .08); w.connect(we); we.connect(sMaster); w.start(t); w.stop(t + .1);
     noise(t, 'lowpass', 900, .5, .025 * amp, .02);                                      // the touch of the foot, barely there
   };
-  const a = (.8 + Math.random() * .2) * 2.3; hit(t, a);   /* the knock of ceramic on the shelf, well above the wind */ hit(t + .09 + Math.random() * .03, a * (.08 + Math.random() * .06)); }   // it lands, and settles with a very small second knock
+  const a = (.8 + Math.random() * .2) * 3.2; hit(t, a);   /* the knock of ceramic on the shelf, well above the wind */ hit(t + .09 + Math.random() * .03, a * (.08 + Math.random() * .06)); }   // it lands, and settles with a very small second knock
 function setSound(on) {
   sOn = on; sndBtn.setAttribute('aria-pressed', on); if (on && !actx) startSound(); if (!actx) return;
   if (actx.state === 'suspended') actx.resume();
@@ -130,3 +130,7 @@ sndBtn.addEventListener('click', e => { e.stopPropagation(); sndBtn._touched = t
 const wake = () => { if (actx && sOn && actx.state !== 'running') actx.resume(); };   // Safari lets sound start only on a finished tap (touchend, click), not on the first touch
 addEventListener('touchend', wake, { passive: true }); addEventListener('click', wake, { passive: true });
 addEventListener('pointerdown', e => { if (!sndBtn._touched && !sOn && !sndBtn.contains(e.target)) { sndBtn._touched = true; setSound(true); } }, { capture: true });   // the first click anywhere starts the sound (the browser allows sound only after a click); after that only the switch turns it off and on
+// inside the Order sheet over the main page: no sound of its own; the switch, the knocks and the rustles all play through the main page's sound, which never stops
+(() => { let P = null; try { if (parent !== window && parent.setSound && parent.sndBtn) P = parent; } catch (e) {} if (!P) return;
+  setSound = on => { P.setSound(on); sndBtn.setAttribute('aria-pressed', on); }; soundNudge = v => P.soundNudge(v); placeSound = at => P.placeSound(at); muffle = () => {};
+  sndBtn.setAttribute('aria-pressed', P.sndBtn.getAttribute('aria-pressed')); sOn = P.sndBtn.getAttribute('aria-pressed') === 'true'; })();

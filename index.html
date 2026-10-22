@@ -481,7 +481,7 @@ window.preDone = new Promise(done => {
     setTimeout(() => { pre.style.pointerEvents = 'none'; pre.style.transition = 'background-color .6s cubic-bezier(.4, 0, .2, 1)'; pre.style.backgroundColor = 'transparent'; done(); if (c.soak) c.soak(0, () => pre.remove()); else { pre.style.transition = 'opacity 1.2s ease'; pre.style.opacity = 0; setTimeout(() => pre.remove(), 1300); } }, 250); })(t1);   // (an older clay.js from the cache: it simply fades)   // the sheet goes and the page appears; the DH soaks away like any clay mark, gone by the time the top row has come in   // the sheet goes and the page appears; the DH stays and soaks away by itself, as every clay mark on the site does
 });
 </script>
-<script src="sound.js?v=15"></script>
+<script src="sound.js?v=16"></script>
 <script src="outline.js"></script>
 <script>
 const HASH0 = location.hash; if (HASH0) history.replaceState(null, '', location.pathname + location.search);   // #cases or #about: the browser must not jump there under the preloader; the page glides there itself after the intro
@@ -1934,6 +1934,24 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   const end = () => { if (drag) { drag.p.born = performance.now(); drag = null; } };
   addEventListener('pointerup', end); addEventListener('pointercancel', end); addEventListener('blur', end);
 })();
+</script>
+<style>
+  .ord-ov { position: fixed; inset: 0; z-index: 2000; background: #fff; opacity: 0; visibility: hidden; transform: translateY(24px); transition: opacity .5s cubic-bezier(.2, .8, .2, 1), transform .6s cubic-bezier(.2, .8, .2, 1), visibility 0s .6s; }
+  .ord-ov.on { opacity: 1; visibility: visible; transform: none; transition: opacity .5s cubic-bezier(.2, .8, .2, 1), transform .6s cubic-bezier(.2, .8, .2, 1); }
+  .ord-ov iframe { display: block; width: 100%; height: 100%; border: 0; }
+</style>
+<script>
+// Order opens over the page, as on the phone: the order page in a sheet over this one; the page under it holds still and is found again where it was
+{ const ov = Object.assign(document.createElement('div'), { className: 'ord-ov' }); document.body.append(ov); let fr = null;
+  const hold = on => { if (typeof lenis !== 'undefined' && lenis) on ? lenis.stop() : lenis.start(); document.documentElement.style.overflow = on ? 'hidden' : ''; };   // the sound goes on as it is under the sheet
+  const open = () => { if (!fr) { fr = Object.assign(document.createElement('iframe'), { title: 'Order and cooperation' }); ov.append(fr); } fr.src = 'shop.html?in=1'; ov.classList.add('on'); hold(true); if (!/shop\.html$/.test(location.pathname)) history.pushState({ ord: 1 }, '', 'shop.html'); };
+  const close = (to, fromHistory) => { if (!ov.classList.contains('on')) return; ov.classList.remove('on'); hold(false); if (!fromHistory && /shop\.html$/.test(location.pathname)) history.replaceState(null, '', './');
+    setTimeout(() => { if (fr && !ov.classList.contains('on')) fr.src = 'about:blank'; }, 700);
+    if (to && to[0] === '#') { const a = document.querySelector(`.hero > .nav a[href="${to}"]`); if (a) setTimeout(() => a.click(), 350); } };   // About or Cases chosen inside: the sheet goes, and the page glides there
+  document.addEventListener('click', e => { const a = e.target.closest && e.target.closest('a[href="shop.html"]'); if (!a || e.metaKey || e.ctrlKey || e.shiftKey) return; e.preventDefault(); e.stopPropagation(); open(); }, true);
+  addEventListener('message', e => { if (e.origin === location.origin && e.data && e.data.dh === 'close') close(e.data.to); });
+  addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  addEventListener('popstate', () => close('', true)); }   // the browser's Back closes it too
 </script>
 <script src="cookies.js"></script>
 </body>
