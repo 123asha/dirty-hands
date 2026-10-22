@@ -90,7 +90,15 @@
   .row i { display: block; height: 72px; background: center / contain no-repeat; }
 
   /* Karen and Lisa: the photo whole (no face cut) held in the middle of the screen, their two cards passing over it, Karen first, Lisa after her and a little quicker */
-  .duo { position: relative; margin-top: var(--s5); }
+  .duo { position: relative; margin-top: var(--s5); overflow: clip; view-timeline: --duo block; }
+  @supports (animation-timeline: --duo) {   /* the photo and the cards move with the scroll itself, on the compositor: no frame behind it, no shake (where this is not supported, they simply scroll) */
+    .duo .photo { animation: duoPhoto linear both; animation-timeline: --duo; animation-range: contain 0% contain 100%; }
+    .duo .card:first-child { animation: duoKaren linear both; animation-timeline: --duo; animation-range: contain 0% contain 100%; }
+    .duo #lisa { animation: duoLisa linear both; animation-timeline: --duo; animation-range: contain 0% contain 100%; }
+  }
+  @keyframes duoPhoto { from { transform: none; } to { transform: translateY(calc(var(--pd, 0px) * .6)); } }   /* the photo at less than half the cards' speed */
+  @keyframes duoKaren { from { transform: none; } to { transform: translateY(-6vh); } }
+  @keyframes duoLisa { from { transform: none; } to { transform: translateY(-16vh); } }   /* Lisa a little quicker than Karen */
   .duo .photo { position: absolute; left: 0; right: 0; top: 0; height: 100vh; overflow: hidden; z-index: 0; will-change: transform; }   /* not held: it goes up with the page, slower than the cards over it */   /* the whole screen: they stand full length behind the cards */
   .duo .photo::before { content: ''; position: absolute; left: 50%; top: 50%; width: 100vh; height: 100vw; translate: -50% -50%; rotate: 90deg; background: url("photos/lisa-karen.jpg") center / contain no-repeat; }   /* the photo turned a quarter: whole, nothing cut at the sides, and the cards pass over it */
   .cards { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 30vh; padding: 55vh 0 20vh; }   /* one after another down the middle of the screen */
@@ -141,10 +149,10 @@
   .mi .d { opacity: .4; }
   .mi b { font-weight: 400; display: block; margin-bottom: var(--s1); } .mi .mt { display: block; }   /* room between the outlet and what it says */
   .mi.more { display: none; } .media.all .mi.more { display: grid; }
-  .allbtn { margin-top: var(--s2); text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
+  .allbtn { display: block; margin: var(--s2) auto 0; text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
 
   .fin { height: 160svh; margin-top: var(--s5); }   /* the end: the hands and the credit stop in the middle of the screen a while before the page starts over */
-  .fin-in { position: sticky; top: 0; height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .fin-in { position: sticky; top: 0; height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 16vh; box-sizing: border-box; }   /* a little above the middle */
   .veil { position: fixed; inset: 0; z-index: 2500; background: #fff; opacity: 0; pointer-events: none; transition: opacity .6s var(--ease); }
   .hands { display: block; width: 136px; height: 74px; margin: 0 auto; overflow: visible; }
   .hands path { fill: none; stroke: #000; stroke-width: 4.6; stroke-linejoin: miter; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 2.4s cubic-bezier(.4, 0, .2, 1); } .hands.on path { stroke-dashoffset: 0; } .hands.on path + path { transition-delay: .5s; }
@@ -350,12 +358,16 @@ window.preDone = new Promise(done => {
   });
   // the ruled list
   one('#tbl').innerHTML = CATS.map((n, k) => `<div class="tr" data-k="${k}"><span class="n in">0${k + 1}</span><p>${TEXT[k]}</p></div>`).join('');
-  let titleReady = false, PT = null; const chs = $('.ttl .ch');
+  let titleReady = false, PT = null, titleRaf = 0, titleLt = 0;
+  function glideTitle() { if (!titleRaf) titleRaf = requestAnimationFrame(function f(now) { const dt = Math.min(50, now - (titleLt || now)) || 16.7, k = 1 - Math.pow(1 - .14, dt / 16.7); titleLt = now; let busy = false;   // the same soft follow at any frame rate
+      chs.forEach(c => { const t = c._t || 0, v = c._c || 0, n = Math.abs(t - v) < .05 ? t : v + (t - v) * k; if (n !== t) busy = true; c._c = n; c.style.transform = n ? `translateY(${n.toFixed(2)}%)` : ''; });
+      if (busy) titleRaf = requestAnimationFrame(f); else { titleRaf = 0; titleLt = 0; } }); }
+  const chs = $('.ttl .ch');
   const pile = one('#pile'), pcs = CATS.map((_, k) => { const d = document.createElement('i'); d.className = 'pc'; pile.append(d); return d; }), cats = $('#cats .cat i'), trs = $('.tr'), tbl = one('#tbl');
   const SKEW = [[-3, -2, -4], [4, 3, 3], [-2, 5, -2], [5, -4, 5], [-5, 2, -3], [2, -5, 4]];   // each work a little askew under the one on top
   function pileTick() { const V = innerHeight, W = innerWidth, hero = one('.hero'), p = clamp(scrollY / Math.max(1, hero.offsetHeight * .75)), e = p * p * (3 - 2 * p);
-    if (p <= 0) { pile.style.visibility = 'hidden'; cats.forEach(c => c.style.visibility = ''); if (titleReady) chs.forEach(c => { c.style.transform = ''; }); return; }   // back at the top (after the page starts over too) the title stands whole again
-    if (titleReady) chs.forEach((c, k) => { const e = clamp(p * 1.5 - k * .045); c.style.transform = `translateY(${(-e * 130).toFixed(1)}%)`; });   // the title leaves letter by letter, as it came
+    if (p <= 0) { pile.style.visibility = 'hidden'; cats.forEach(c => c.style.visibility = ''); if (titleReady) { chs.forEach(c => { c._t = 0; }); glideTitle(); } return; }   // back at the top (after the page starts over too) the title stands whole again
+    if (titleReady) { chs.forEach((c, k) => { const e = clamp(p * 1.15 - k * .04); c._t = -e * e * (3 - 2 * e) * 130; }); glideTitle(); }   // the title leaves letter by letter, as it came, each letter gliding after the scroll (see glideTitle)
     pile.style.visibility = ''; cats.forEach(c => c.style.visibility = 'hidden');
     const tr = tbl.getBoundingClientRect(), endShift = Math.min(0, tr.bottom - V * .6);   // at the end of the table the pile goes up with it
     let top = 0, bd = 1e9; trs.forEach((r, k) => { const b = r.getBoundingClientRect(), d = Math.abs(b.top + 40 - V * .38); if (d < bd) { bd = d; top = k; } });
@@ -388,7 +400,7 @@ window.preDone = new Promise(done => {
   const io = new IntersectionObserver(es => { let d = 0; es.forEach(e => { if (e.isIntersecting) { e.target.style.transitionDelay = (d++ * 60) + 'ms'; e.target.classList.add('on'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px' });
   const reveal = () => $('.in:not(.on), .ln-in:not(.on), .rv:not(.on)').forEach(el => io.observe(el));
   reveal();
-  { const hd = one('.hands'), ho = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { hd.classList.add('on'); ho.disconnect(); } }, { threshold: .9 }); ho.observe(hd); }
+  { const hd = one('.hands'), ho = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { hd.classList.add('on'); ho.disconnect(); } }, { rootMargin: '0px 0px -40% 0px', threshold: 1 }); ho.observe(hd); }   // drawn when they reach the upper part of the screen, so the line is seen being drawn
 
   // a slider swiped: the pictures bow round a little while it moves, as on a drum, and lie flat again when it stops (the browser's own glide gives the inertia)
   function bendStrip(el, base = 0) { let last = el.scrollLeft, lt = performance.now(), amt = 0, goal = 0, run = false;   // base: a drum the pictures always stand on (case and category sliders), the swipe bows it a little more
@@ -419,7 +431,7 @@ window.preDone = new Promise(done => {
 
   // block 2: the ruled text laid out with pretext (github.com/chenglou/pretext), as on the full page: at the height of the work on top every line is cut in two, a part on each side of it, by the work's own outline
   const LHP = 19, shapes = {};
-  import('https://esm.sh/@chenglou/pretext@1.0.0').then(m => { PT = m; return document.fonts ? document.fonts.ready : 0; }).then(() => { trs.forEach((tr, k) => { const p = tr.querySelector('p'), fs = parseFloat(getComputedStyle(p).fontSize); p._prep = PT.prepareWithSegments(TEXT[k], `${fs}px "CoFo Sans"`, { letterSpacing: -0.01 * fs }); p.classList.add('flow'); p.textContent = ''; p._rows = []; }); CUT.forEach((_, k) => shapeOf(k)); pileTick(); }).catch(() => {});
+  import('https://esm.sh/@chenglou/pretext@1.0.0').then(m => { PT = m; return document.fonts ? document.fonts.ready : 0; }).then(() => { trs.forEach((tr, k) => { const p = tr.querySelector('p'), fs = parseFloat(getComputedStyle(p).fontSize); p._prep = PT.prepareWithSegments(TEXT[k], `${fs}px "CoFo Sans"`, { letterSpacing: -0.01 * fs }); p.classList.add('flow'); p.textContent = ''; p._rows = []; }); reserveTable(); addEventListener('resize', reserveTable); CUT.forEach((_, k) => shapeOf(k)); pileTick(); }).catch(() => {});
   function shapeOf(k) { if (k in shapes) return shapes[k]; shapes[k] = null; const img = new Image(); img.onload = () => {   // the outline of a cut-out work, from its transparency: left and right edge in 48 rows, as drawn (contain)
       const N = 48, W = 96, cv = document.createElement('canvas'); cv.width = cv.height = W; const g = cv.getContext('2d'), sc = Math.min(W / img.width, W / img.height); g.drawImage(img, (W - img.width * sc) / 2, (W - img.height * sc) / 2, img.width * sc, img.height * sc);
       const d = g.getImageData(0, 0, W, W).data, rows = []; for (let r = 0; r < N; r++) { let L = -1, R = -1; for (let y = Math.floor(r * W / N); y < Math.floor((r + 1) * W / N); y++) for (let x = 0; x < W; x++) if (d[(y * W + x) * 4 + 3] > 40) { if (L < 0 || x < L) L = x; if (x > R) R = x; } rows.push(R < 0 ? null : [L / W, (R + 1) / W]); }
@@ -428,6 +440,16 @@ window.preDone = new Promise(done => {
     if (!ob || y1 < ob.r.top - 6 || y0 > ob.r.bottom + 6) return null; const sh = shapes[ob.k]; if (!sh) return [ob.r.left, ob.r.right];
     let L = Infinity, R = -Infinity; sh.forEach((e, i) => { const a = ob.r.top + i / sh.length * ob.r.height, b = a + ob.r.height / sh.length; if (!e || b < y0 - 6 || a > y1 + 6) return; L = Math.min(L, ob.r.left + e[0] * ob.r.width); R = Math.max(R, ob.r.left + e[1] * ob.r.width); });
     return R > L ? [L, R] : null; }
+  function reserveTable() {   // the most lines each paragraph can take: laid out with the work's whole square at every height beside it
+    const W = innerWidth, S = W * .46, L = (W - S) / 2;
+    trs.forEach(tr => { const p = tr.querySelector('p'); if (!p._prep) return; p.style.minHeight = ''; const pr = p.getBoundingClientRect(); let most = 0;
+      for (let off = -S; off <= 30 * LHP; off += LHP / 2) { const ob = { r: { left: L, right: L + S, width: S, height: S, top: pr.top + off, bottom: pr.top + off + S }, k: -1 }; most = Math.max(most, lineCount(p, pr, ob)); }
+      p.style.minHeight = most * LHP + 'px'; }); }
+  function lineCount(p, pr, ob) { let cur = { segmentIndex: 0, graphemeIndex: 0 }, n = 0, last = 0;
+    for (let k = 0; k < 60; k++) { const y = pr.top + k * LHP, o = around(y, y + LHP, ob), segs = o ? [[pr.left, o[0] - 14], [o[1] + 14, pr.right]] : [[pr.left, pr.right]]; let done = false, any = false;
+      for (const [a, b] of segs) { if (b - a < 44) continue; const rg = PT.layoutNextLineRange(p._prep, b - a, cur); if (!rg) { done = true; break; } if (o && rg.end.graphemeIndex) continue; cur = rg.end; any = true; }
+      n++; if (any) last = n; if (done) break; }
+    return last; }
   function flowTable(ob) { if (!PT) return;
     trs.forEach(tr => { const p = tr.querySelector('p'); if (!p._prep) return; const pr = p.getBoundingClientRect(), rows = []; let cur = { segmentIndex: 0, graphemeIndex: 0 }, fin = false;
       for (let k = 0; k < 60 && !fin; k++) { const y = pr.top + k * LHP, o = around(y, y + LHP, ob), segs = o ? [[pr.left, o[0] - 14], [o[1] + 14, pr.right]] : [[pr.left, pr.right]], row = [];
@@ -446,12 +468,8 @@ window.preDone = new Promise(done => {
   function showName(k) { const w = document.createElement('span'); w.className = 'w'; w.innerHTML = [...CASES[k][0]].map(c => `<span class="ch">${c === ' ' ? '&nbsp;' : c}</span>`).join(''); nameBox.append(w);
     const old = nameEl; nameEl = w; gsap.fromTo(w.children, { yPercent: 110 }, { yPercent: 0, duration: .7, ease: EASE, stagger: .03, delay: old ? .12 : 0 });
     if (old) gsap.to(old.children, { yPercent: -110, duration: .45, ease: 'power2.in', stagger: .02, onComplete() { old.remove(); } }); }   // the old name goes up and out as the new one comes up after it
-  let act = -1, duoT = 0, duoC = 0, duoRaf = 0, duoLt = 0; const karen = one('.card'), photo = one('.duo .photo');
-  function duoGlide(now) { const dt = Math.min(50, now - (duoLt || now)) || 16.7; duoLt = now; duoC += (duoT - duoC) * (1 - Math.pow(1 - .09, dt / 16.7));   // one soft follower for the whole pair: no hanging, no jump
-    const V = innerHeight / 100; karen.style.transform = `translate3d(0,${(-duoC * 6 * V).toFixed(2)}px,0)`; lisa.style.transform = `translate3d(0,${(-duoC * 16 * V).toFixed(2)}px,0)`; photo.style.transform = `translate3d(0,${(duoC * (duo.offsetHeight - innerHeight) * .6).toFixed(1)}px,0)`;   // Lisa a little quicker than Karen, the photo at less than half their speed
-    if (Math.abs(duoT - duoC) > .0004) duoRaf = requestAnimationFrame(duoGlide); else { duoRaf = 0; duoLt = 0; } }
+  let act = -1; const duoRoom = () => duo.style.setProperty('--pd', Math.max(0, duo.offsetHeight - innerHeight) + 'px'); addEventListener('resize', duoRoom); duoRoom(); setTimeout(duoRoom, 1500);
   function onScroll() { const V = innerHeight;
-    { const r = duo.getBoundingClientRect(), p = clamp(-r.top / Math.max(1, r.height - V)); duoT = p; if (!duoRaf) duoRaf = requestAnimationFrame(duoGlide); }   // the cards and the photo follow the scroll a little late (see duoGlide)
     { const r = pots.getBoundingClientRect(), p = clamp((V * .85 - r.top) / (V * .5)); pots.querySelectorAll('.pp').forEach((el, k) => { const e = clamp(p * 1.6 - k * .2); el.style.transform = `rotateY(${(-(1 - e) * 92).toFixed(1)}deg)`; el.style.opacity = e > 0 ? 1 : 0; }); pots.lastElementChild.style.opacity = clamp(1 - p * 1.4).toFixed(3); }   // a line drawing first, the photo as it comes up
     { let best = 0, bd = 1e9; cases.forEach((c, k) => { const r = c.firstElementChild.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - V * .42); if (d < bd) { bd = d; best = k; } });
       if (best !== act) { act = best; cases.forEach((c, k) => c.classList.toggle('act', k === best)); showName(best); } }   // the client in front, held under the menu
