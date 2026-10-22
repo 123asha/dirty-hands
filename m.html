@@ -145,7 +145,7 @@
   .mi { display: grid; grid-template-columns: 72px 1fr; gap: var(--g); padding: var(--s3) 0; border-top: 1px solid var(--rule); }
   .mi i { position: relative; overflow: hidden; display: block; width: 60%; aspect-ratio: 4 / 3; background: var(--gray); margin-bottom: var(--s2); }
   .mi i b { position: absolute; inset: 0; background: 50% 15% / cover no-repeat; transform-origin: 50% 50%; }   /* square, cut to the frame, held near the top so no face is lost */
-  .rvz { opacity: 0; transition: opacity .45s var(--ease); } .rvz b { clip-path: inset(0 0 100% 0); transform: scale(1.12); transition: clip-path 1.3s cubic-bezier(.65, 0, .35, 1) .25s, transform 1.5s cubic-bezier(.2, .8, .2, 1) .25s; }   /* a grey frame first, then the picture opening inside it from the top down, settling from a slight zoom */
+  .rvz { opacity: 0; transition: opacity .45s var(--ease); } .rvz b { clip-path: inset(0 0 100% 0); transform: translateY(-14%) scale(1.18); transition: clip-path 1.3s cubic-bezier(.65, 0, .35, 1) .25s, transform 1.5s cubic-bezier(.2, .8, .2, 1) .25s; }   /* a grey frame first, then the picture opening inside it from the top down, settling from a slight zoom */
   .rvz.on { opacity: 1; } .rvz.on b { clip-path: inset(0 0 0 0); transform: none; }   /* smaller, and held a little high so heads are never cut */
   .mi:last-child { border-bottom: 1px solid var(--rule); }
   .mi .d { opacity: .4; }

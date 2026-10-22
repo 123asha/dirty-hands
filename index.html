@@ -558,7 +558,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
  "photos/red-vase.jpg",
  "photos/cone-table.jpg",
  "photos/blue-mug.jpg",
- "photos/white-pots.jpg",
+ "photos/white-pots-cut.png",
  "photos/green-sculpture.jpg",
  "photos/bedroom.jpg",
  "photos/relief.jpg",
@@ -938,7 +938,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     stackStory();
     const mediaItems = storyP.map(q => { const tl = gsap.timeline({ paused: true });
       [q, q._desc, q._date].forEach(el => el && done.add(el));
-      riseIn(tl, splitMask(q), { each: .09 }); if (q._date) riseIn(tl, splitMask(q._date), { at: .06 }); if (q._desc) riseIn(tl, splitMask(q._desc), { each: .09, at: .18 }); if (q._img) { const pic = q._img.firstChild; touched.push(q._img, pic); tl.fromTo(q._img, { opacity: 0 }, { opacity: 1, duration: .45, ease: 'power2.out' }, .05); tl.fromTo(pic, { clipPath: 'inset(0% 0% 100% 0%)', scale: 1.12 }, { clipPath: 'inset(0% 0% 0% 0%)', scale: 1, duration: 1.3, ease: 'power2.inOut', clearProps: 'clipPath' }, .3); }   // the picture opens from its top edge down, under the outlet
+      riseIn(tl, splitMask(q), { each: .09 }); if (q._date) riseIn(tl, splitMask(q._date), { at: .06 }); if (q._desc) riseIn(tl, splitMask(q._desc), { each: .09, at: .18 }); if (q._img) { const pic = q._img.firstChild; touched.push(q._img, pic); tl.fromTo(q._img, { opacity: 0 }, { opacity: 1, duration: .45, ease: 'power2.out' }, .05); tl.fromTo(pic, { clipPath: 'inset(0% 0% 100% 0%)', scale: 1.18, yPercent: -14 }, { clipPath: 'inset(0% 0% 0% 0%)', scale: 1, yPercent: 0, duration: 1.3, ease: 'power2.inOut', clearProps: 'clipPath' }, .3); }   // the picture opens from its top edge down, under the outlet
       return { el: q, tl }; });
     stag(mediaItems, { gap: .5 });   // one publication after another, never together
 
