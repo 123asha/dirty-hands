@@ -59,8 +59,8 @@
   .credit a, a.credit { text-decoration: none; } .credit .u { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; padding-bottom: .12em; transition: background-size .4s var(--ease, cubic-bezier(.2,.8,.2,1)); } .credit a:hover .u, a.credit:hover .u { background-size: 100% 1px; } .credit .arr { margin-left: .25em; vertical-align: .02em; } .credit a:hover .arr, a.credit:hover .arr { animation: arrowSwap .55s cubic-bezier(.4, 0, .2, 1); }   /* Skip Design: an arrow as on the other links; on hover a line draws in under the name and the arrow flies off and comes back */
   .credit .sfav { display: inline-block; height: .83em; width: auto; vertical-align: -.07em; }   /* the Skip Design mark, a couple of pixels bigger than the heart */
   .rest > .mrule { display: none; }   /* Media has no ruled lines now */
-  .rest > .mthumb { position: absolute; left: calc(710 * var(--u)); width: calc(100 * var(--u)); aspect-ratio: 4 / 3; background: var(--gray); overflow: hidden; }
-  .rest > .mthumb > b { position: absolute; inset: 0; background: 50% 0% / cover no-repeat; transform-origin: 50% 0; }   /* the picture inside its grey frame */   /* from the fourth column, the outlet and the thesis a gutter (20) to its right; level with the outlet; held a little high, so no head is cut */
+  .rest > .mthumb { position: absolute; left: calc(710 * var(--u)); width: calc(100 * var(--u)); aspect-ratio: 4 / 3; background: var(--gray); overflow: hidden; }   /* (its aspect is set to the picture's own) */
+  .rest > .mthumb > b { position: absolute; inset: 0; background: center / 100% 100% no-repeat; transform-origin: 50% 50%; }   /* the whole picture, exactly the size of its grey frame */   /* the picture inside its grey frame */   /* from the fourth column, the outlet and the thesis a gutter (20) to its right; level with the outlet; held a little high, so no head is cut */
   .rest > .mdate { position: absolute; left: calc(1170 * var(--u)); width: calc(210 * var(--u)); opacity: .4; text-align: left; }   /* the date at the start of the next column, on the outlet's line */   /* the date, grey, level with the outlet, flush right in the next column */
   .nav a, .top nav a { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; padding-bottom: .12em; transition: background-size .4s var(--ease); }   /* the menu: on hover an underline draws in from left to right */
   .nav a:hover, .top nav a:hover { background-size: 100% 1px; }
@@ -847,13 +847,14 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
 
 
   // the small picture stands level with "Shop now": its middle on the middle of the link (the link follows the length of the paragraph)
+  const MEDIA_AR = { 'photos/media/m01.jpg': 1, 'photos/media/m03.jpg': .75, 'photos/media/m04.jpg': 900 / 594, 'photos/media/m06.jpg': 1, 'photos/media/m07.jpg': .75, 'photos/media/m09.jpg': 1, 'photos/media/m10.jpg': 1 };   // each picture's own shape: its frame takes it, so the whole picture is seen, never cropped
   function stackStory() {                          // Media: one row per publication, one under another with the same gap however many lines each has: the outlet, its date in grey level with it at the right of the next column, and the thesis under the outlet, a little indented
     let top = storyP[0]._t0 ?? (storyP[0]._t0 = parseFloat(storyP[0].style.top.match(/calc\(([\d.]+)/)[1]));
     storyP.forEach((q, i) => {
       const d = q._desc || (q._desc = q.parentNode.querySelector(`.mdesc[data-i="${i}"]`) || [...q.parentNode.querySelectorAll('.mdesc')][i]);
       const r = q._rule || (q._rule = Object.assign(document.createElement('i'), { className: 'mrule' })); if (!r.parentNode) q.before(r);
       const dt = q._date || (q._date = Object.assign(document.createElement('p'), { className: 't18 mdate', textContent: (MEDIA[i] || [''])[0] })); if (!dt.parentNode) d.after(dt);
-      const im = q._img || (q._img = Object.assign(document.createElement('i'), { className: 'mthumb', innerHTML: '<b></b>' })); if (MEDIA[i] && MEDIA[i][3]) im.firstChild.style.backgroundImage = `url("${MEDIA[i][3]}")`; if (!im.parentNode) dt.after(im);   // a small preview of the publication
+      const im = q._img || (q._img = Object.assign(document.createElement('i'), { className: 'mthumb', innerHTML: '<b></b>' })); if (MEDIA[i] && MEDIA[i][3]) { im.firstChild.style.backgroundImage = `url("${MEDIA[i][3]}")`; im.style.aspectRatio = MEDIA_AR[MEDIA[i][3]] || 4 / 3; } if (!im.parentNode) dt.after(im);   // a small preview of the publication
       const set = (el, v) => { el.style.top = `calc(${v.toFixed(1)} * var(--u))`; };
       set(r, top - 4); set(q, top); set(dt, top); const iTop = top + q.offsetHeight / U + 20; set(im, iTop); set(d, iTop - 3);   /* as in the cases: the outlet above, the picture in the corner under it, the thesis beside the picture from its top line */
       top = Math.max(iTop - 3 + d.offsetHeight / U, iTop + im.offsetHeight / U) + 56; });
@@ -938,7 +939,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     stackStory();
     const mediaItems = storyP.map(q => { const tl = gsap.timeline({ paused: true });
       [q, q._desc, q._date].forEach(el => el && done.add(el));
-      riseIn(tl, splitMask(q), { each: .09 }); if (q._date) riseIn(tl, splitMask(q._date), { at: .06 }); if (q._desc) riseIn(tl, splitMask(q._desc), { each: .09, at: .18 }); if (q._img) { const pic = q._img.firstChild; touched.push(q._img, pic); tl.fromTo(q._img, { opacity: 0 }, { opacity: 1, duration: .45, ease: 'power2.out' }, .05); tl.fromTo(pic, { clipPath: 'inset(0% 0% 100% 0%)', scale: 1.15 }, { clipPath: 'inset(0% 0% 0% 0%)', scale: 1, duration: 1.3, ease: 'power2.inOut', clearProps: 'clipPath' }, .3); }   // the picture opens from its top edge down, under the outlet
+      riseIn(tl, splitMask(q), { each: .09 }); if (q._date) riseIn(tl, splitMask(q._date), { at: .06 }); if (q._desc) riseIn(tl, splitMask(q._desc), { each: .09, at: .18 }); if (q._img) { const pic = q._img.firstChild; touched.push(q._img, pic); tl.fromTo(q._img, { opacity: 0 }, { opacity: 1, duration: .45, ease: 'power2.out' }, .05); tl.fromTo(pic, { clipPath: 'inset(0% 0% 100% 0%)', scale: 1.12 }, { clipPath: 'inset(0% 0% 0% 0%)', scale: 1, duration: 1.3, ease: 'power2.inOut', clearProps: 'clipPath' }, .3); }   // the picture opens from its top edge down, under the outlet
       return { el: q, tl }; });
     stag(mediaItems, { gap: .5 });   // one publication after another, never together
 
