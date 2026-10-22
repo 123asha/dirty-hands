@@ -77,7 +77,7 @@
   .list { margin-top: var(--s5); }
   /* block 2, as on the full page: the cards of the top slider fly together into a pile in the middle of the screen and turn over into the works cut out; under them the table, its ruled lines and numbered paragraphs; the work of the paragraph in front stands on top of the pile */
   .tbl { position: relative; margin-top: 0; padding: calc(6 * var(--lh)) var(--m) calc(4 * var(--lh)); background: repeating-linear-gradient(to bottom, var(--rule) 0 1px, transparent 1px var(--lh)); }
-  .tr { display: grid; grid-template-columns: 28px 1fr; gap: var(--s1); margin-bottom: calc(2 * var(--lh)); }   /* full width; where the work stands, its lines go round it on both sides (pretext, as on the full page) */
+  .tr { display: grid; grid-template-columns: calc(100vw / 3 - var(--m) - var(--s1)) 1fr; gap: var(--s1); margin-bottom: var(--lh); } .tr p { margin-top: var(--lh); }   /* the number at the left edge, the text a line under it, a third of the screen in (as the second paragraph of About) */   /* full width; where the work stands, its lines go round it on both sides (pretext, as on the full page) */
   .tr p.flow > .fl { position: relative; display: block; height: var(--lh); } .tr p.flow > .fl > span { position: absolute; top: 0; white-space: nowrap; }
   .tr .n { opacity: .4; } .tr p { line-height: var(--lh); }
   .ln-in { display: block; opacity: 0; transform: translateY(14px); transition: opacity .7s var(--ease), transform .7s var(--ease); } .ln-in.on { opacity: 1; transform: none; }   /* the text comes in line by line, out of nothing, as on the full page */
@@ -89,27 +89,20 @@
   .row .n { opacity: .4; }
   .row i { display: block; height: 72px; background: center / contain no-repeat; }
 
-  /* Karen and Lisa: the photo whole (no face cut) held in the middle of the screen, their two cards passing over it, Karen first, Lisa after her and a little quicker */
-  .duo { position: relative; margin-top: var(--s5); overflow: clip; view-timeline: --duo block; }
-  @media (hover: hover) and (pointer: fine) { @supports (animation-timeline: --duo) {   /* the photo and the cards move with the scroll itself, on the compositor; not on the iPhone, where the address bar coming and going changes the screen's height and shook them: there, and wherever this is not supported, they simply scroll */
-    .duo .photo { animation: duoPhoto linear both; animation-timeline: --duo; animation-range: contain 0% contain 100%; }
-    .duo .card:first-child { animation: duoKaren linear both; animation-timeline: --duo; animation-range: contain 0% contain 100%; }
-    .duo #lisa { animation: duoLisa linear both; animation-timeline: --duo; animation-range: contain 0% contain 100%; }
-  }
-  }
-  @keyframes duoPhoto { from { transform: none; } to { transform: translateY(calc(var(--pd, 0px) * .6)); } }   /* the photo at less than half the cards' speed */
-  @keyframes duoKaren { from { transform: none; } to { transform: translateY(-6vh); } }
-  @keyframes duoLisa { from { transform: none; } to { transform: translateY(-16vh); } }   /* Lisa a little quicker than Karen */
-  .duo .photo { position: absolute; left: 0; right: 0; top: 0; height: 100vh; overflow: hidden; z-index: 0; will-change: transform; }   /* not held: it goes up with the page, slower than the cards over it */   /* the whole screen: they stand full length behind the cards */
-  .duo .photo::before { content: ''; position: absolute; left: 50%; top: 50%; width: 100vh; height: 100vw; translate: -50% -50%; rotate: 90deg; background: url("photos/lisa-karen.jpg") center / contain no-repeat; }   /* the photo turned a quarter: whole, nothing cut at the sides, and the cards pass over it */
-  .cards { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 30vh; padding: 55vh 0 20vh; }   /* one after another down the middle of the screen */
-  .card { width: calc(100vw * 2 / 3); aspect-ratio: 5 / 7; display: flex; flex-direction: column; background: #fff; padding: var(--s1) var(--s1) var(--s2); will-change: transform; }   /* upright: the name drops to the foot of the card */
-  .card:first-child { align-self: flex-start; margin-left: var(--m); } .card:last-child { align-self: flex-end; margin-right: var(--m); }   /* Karen on the left line, Lisa on the right */
-  .card .h { margin-top: auto !important; }
-  .card .r { display: block; padding: var(--s1) 0; border-top: 1px solid var(--rule); }
-  .card .r .n { display: block; opacity: .4; }
-  .card .h { font-size: 11vw; margin-top: var(--s3); }
-  .card .cf { margin-top: var(--s1); color: #999; }
+  /* Karen and Lisa: the photo the right way up, the whole width, nothing held or moved by the scroll; on it a short label for each, which opens their story */
+  .duo { position: relative; margin-top: var(--s5); }
+  .duo .photo { position: relative; width: 100%; height: calc(100vw * 1680 / 850); overflow: hidden; }   /* the photo upright, as it was: turned a quarter, whole, the whole width */
+  .duo .photo::before { content: ''; position: absolute; left: 50%; top: 50%; width: calc(100vw * 1680 / 850); height: 100vw; translate: -50% -50%; rotate: 90deg; background: url("photos/lisa-karen.jpg") center / cover no-repeat; }
+  .who { position: absolute; display: block; text-align: left; background: #fff; color: #000; padding: var(--s1) var(--s1) var(--s1); }   /* a small white card on the photo: readable on any part of it */
+  .who.k { left: var(--m); top: var(--s2); } .who.l { right: var(--m); bottom: var(--s2); }   /* Karen at the top of the turned photo, Lisa at its foot */
+  .who b { font-weight: 400; display: block; } .who span { display: block; color: #999; }
+  .who b { background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat; padding-bottom: .12em; display: inline-block; }   /* underlined: it opens */
+  .who::before { content: ''; position: absolute; inset: -6px; }   /* a finger-sized tap area */
+  .pv .head { padding-bottom: 0; } .pv .h { font-size: var(--h2); } .pv .h .ch { display: inline-block; }
+  .pv .face { margin: var(--s3) var(--m) 0; aspect-ratio: 4 / 5; background: var(--gray) url("photos/lisa-karen.jpg") no-repeat; background-size: auto 100%; clip-path: inset(0 0 100% 0); }   /* the person's own part of the photo, opening from its top edge */
+  .pv .rows { padding: var(--s3) var(--m) var(--s5); }
+  .pv .r { padding: 0 0 var(--s2); } .pv .rl { display: block; height: 1px; background: var(--rule); margin-bottom: var(--s1); transform-origin: 0 50%; } .pv .r .n { display: block; opacity: .4; margin-bottom: var(--s1); }
+  .pv .lab { margin-top: var(--s1); }
 
   /* about */
   .about p + p { margin-top: var(--lh); }
@@ -139,21 +132,21 @@
   .forms { position: relative; margin-top: var(--s5); padding: var(--s5) var(--m); overflow-x: clip; }   /* the words slide in from the sides without widening the page; the form may still reach above and below */
   .forms .h { font-size: var(--h2); display: block; border-bottom: 1px solid var(--rule); padding: 4px 0 2px; will-change: transform; }
   .forms .h:nth-child(2) { padding-left: 50%; }
-  .forms svg { position: absolute; left: 50%; top: 50%; width: 92vw; height: 92vw; translate: -50% -50%; overflow: visible; mix-blend-mode: difference; pointer-events: none; }
+  .forms svg { position: absolute; left: 50%; top: 50%; width: 78vw; height: 78vw; translate: -50% -50%; overflow: visible; mix-blend-mode: difference; pointer-events: none; }
   .forms svg path { fill: none; stroke: #fff; stroke-width: 1.4; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
 
   /* media */
   .media .h { font-size: var(--h2); }
-  .mi { display: grid; grid-template-columns: 72px 1fr; gap: var(--g); padding: var(--s2) 0; border-top: 1px solid var(--rule); }
+  .mi { display: grid; grid-template-columns: 72px 1fr; gap: var(--g); padding: var(--s3) 0; border-top: 1px solid var(--rule); }
   .mi i { display: block; width: 60%; aspect-ratio: 4 / 3; background: var(--gray) 50% 0% / cover no-repeat; margin-bottom: var(--s2); }   /* smaller, and held a little high so heads are never cut */
   .mi:last-child { border-bottom: 1px solid var(--rule); }
   .mi .d { opacity: .4; }
   .mi b { font-weight: 400; display: block; margin-bottom: var(--s1); } .mi .mt { display: block; }   /* room between the outlet and what it says */
   .mi.more { display: none; } .media.all .mi.more { display: grid; }
-  .allbtn { display: block; margin: var(--s2) auto 0; text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
+  .allbtn { display: block; margin: var(--s4) auto 0; text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
 
-  .fin { height: 160svh; margin-top: var(--s5); }   /* the end: the hands and the credit stop in the middle of the screen a while before the page starts over */
-  .fin-in { position: sticky; top: 0; height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 16vh; box-sizing: border-box; }   /* a little above the middle */
+  .fin { margin-top: var(--s5); } .fin::after { content: ''; display: block; height: 65svh; }   /* the end: the hands and the credit come right after Media, stop a little above the middle of the screen, and stay there a while before the page starts over */
+  .fin-in { position: sticky; top: calc(42svh - 76px); display: flex; flex-direction: column; align-items: center; }
   .veil { position: fixed; inset: 0; z-index: 2500; background: #fff; opacity: 0; pointer-events: none; transition: opacity .6s var(--ease); }
   .hands { display: block; width: 136px; height: 74px; margin: 0 auto; overflow: visible; }
   .hands path { fill: none; stroke: #000; stroke-width: 4.6; stroke-linejoin: miter; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 2.4s cubic-bezier(.4, 0, .2, 1); } .hands.on path { stroke-dashoffset: 0; } .hands.on path + path { transition-delay: .5s; }
@@ -238,11 +231,9 @@
 <div class="pile" id="pile" aria-hidden="true"></div>
 
 <section class="duo" id="duo">
-  <div class="photo" role="img" aria-label="Karen and Lisa"></div>
-  <div class="cards">
-    <div class="card"><div class="r"><span class="n">01</span><p>Designer and entrepreneur, one of the two founders of DirtyHands.</p></div><div class="r"><span class="n">02</span><p>Pairs professional design with artistic intuition to bring unconventional ideas to life.</p></div><h3 class="h">Karen</h3><p class="cf">Co-founder, Dirty Hands</p></div>
-    <div class="card" id="lisa"><div class="r"><span class="n">01</span><p>Designer and entrepreneur, co-founder of DirtyHands together with Karen.</p></div><div class="r"><span class="n">02</span><p>Sees ceramics beyond plates and pots, as objects that shape the mood and character of a room.</p></div><h3 class="h">Lisa</h3><p class="cf">Co-founder, Dirty Hands</p></div>
-  </div>
+  <div class="photo" role="img" aria-label="Karen and Lisa, the founders of Dirty Hands"></div>
+  <button type="button" class="who k" data-p="0"><b>Karen</b><span>Co-owner</span></button>
+  <button type="button" class="who l" data-p="1"><b>Lisa</b><span>Co-owner</span></button>
 </section>
 
 <section class="wrap sec about" id="about">
@@ -254,7 +245,7 @@
 </section>
 
 <section class="wrap sec" id="cases">
-  <div class="chead"><h2 class="lab in">Our clients</h2></div>
+  <div class="chead"><h2 class="lab in">Our projects</h2></div>
   <div class="names" aria-hidden="true"><p class="h"></p></div>
   <div id="caselist"></div>
 </section>
@@ -288,7 +279,7 @@
 window.preDone = new Promise(done => {
   const pre = document.querySelector('.pre'); if (!pre || typeof makeClay !== 'function') { if (pre) pre.remove(); return done(); }
   document.documentElement.style.overflow = 'hidden'; window.preDone && 0;   // no scrolling under the sheet (a lock that leaves the scrollbar alone, so nothing shifts when it lifts)
-  const S = 0.5, cv = pre.querySelector('canvas'), w = Math.round(innerWidth * S), h = Math.round(innerHeight * S), c = makeClay({ cv, w, h });   // made at half size and stretched: soft clay loses nothing, and it is ready six times sooner
+  const S = 1, cv = pre.querySelector('canvas'), w = Math.round(innerWidth * S), h = Math.round(innerHeight * S), c = makeClay({ cv, w, h });   // at the phone screen's own sharpness: the clay keeps its grain and its clean edge (stretched from half size it went soft, like soap)
   // a finger writes D and H in clay across the middle of the sheet, stroke by stroke, lifting between them (sizes in css px)
   const LH = Math.min(168, innerHeight * .2, innerWidth / 3),   /* sweeping, as if drawn across the sheet with a whole finger, but not too big */ BW = LH * .95, GAP = LH * .48,   /* wide letters (the strokes as thick as before) */ x0 = (innerWidth - (BW * 2 + GAP)) / 2, yT = innerHeight / 2 - LH / 2, yB = yT + LH;
   // written by hand, not drawn: each letter a little askew, every stroke wobbling and running on past its end, the clay thinning out as it goes, so the ends are rubbed and dry
@@ -372,7 +363,7 @@ window.preDone = new Promise(done => {
     pile.style.visibility = ''; cats.forEach(c => c.style.visibility = 'hidden');
     const tr = tbl.getBoundingClientRect(), endShift = 0, gone = clamp((tr.bottom - V * .42) / (V * .22)); pile.style.opacity = gone.toFixed(3);   // at the end of the table the pile melts away where it stands: chasing the page with the script made it shake on the iPhone
     let top = 0, bd = 1e9; trs.forEach((r, k) => { const b = r.getBoundingClientRect(), d = Math.abs(b.top + 40 - V * .38); if (d < bd) { bd = d; top = k; } });
-    const S = W * .46, PX = (W - S) / 2, PY = V * .34, flip = clamp((p - .55) / .3);
+    const S = W * .46, PX = 16, PY = V * .34, flip = clamp((p - .55) / .3);
     pcs.forEach((el, k) => { const c = cats[k].getBoundingClientRect(), dk = Math.min(5, Math.abs(k - top)), sk = SKEW[k];
       const x = c.left + (PX + sk[0] * dk - c.left) * e, y = c.top + (PY + sk[1] * dk + endShift - c.top) * e, w = c.width + (S - c.width) * e, h = c.height + (S - c.height) * e;
       const f = flip * 180, back = f > 90; if (el.classList.contains('back') !== back) { el.classList.toggle('back', back); el.style.backgroundImage = `url('${back ? CUT[k] : PHOTO[k]}')`; }   // edge-on half way, and on its back the work without its background
@@ -436,15 +427,15 @@ window.preDone = new Promise(done => {
   function shapeOf(k) { if (k in shapes) return shapes[k]; shapes[k] = null; const img = new Image(); img.onload = () => {   // the outline of a cut-out work, from its transparency: left and right edge in 48 rows, as drawn (contain)
       const N = 48, W = 96, cv = document.createElement('canvas'); cv.width = cv.height = W; const g = cv.getContext('2d'), sc = Math.min(W / img.width, W / img.height); g.drawImage(img, (W - img.width * sc) / 2, (W - img.height * sc) / 2, img.width * sc, img.height * sc);
       const d = g.getImageData(0, 0, W, W).data, rows = []; for (let r = 0; r < N; r++) { let L = -1, R = -1; for (let y = Math.floor(r * W / N); y < Math.floor((r + 1) * W / N); y++) for (let x = 0; x < W; x++) if (d[(y * W + x) * 4 + 3] > 40) { if (L < 0 || x < L) L = x; if (x > R) R = x; } rows.push(R < 0 ? null : [L / W, (R + 1) / W]); }
-      shapes[k] = rows; pileTick(); }; img.src = CUT[k]; return null; }
+      shapes[k] = rows; if (CUT.every((_, j) => shapes[j])) reserveTable(); pileTick(); }; img.src = CUT[k]; return null; }   // with every outline read, the room is laid out again, tighter
   function around(y0, y1, ob) {   // where the work is across the band y0..y1 of the screen: [left, right], or null
     if (!ob || y1 < ob.r.top - 6 || y0 > ob.r.bottom + 6) return null; const sh = shapes[ob.k]; if (!sh) return [ob.r.left, ob.r.right];
-    let L = Infinity, R = -Infinity; sh.forEach((e, i) => { const a = ob.r.top + i / sh.length * ob.r.height, b = a + ob.r.height / sh.length; if (!e || b < y0 - 6 || a > y1 + 6) return; L = Math.min(L, ob.r.left + e[0] * ob.r.width); R = Math.max(R, ob.r.left + e[1] * ob.r.width); });
+    let L = Infinity, R = -Infinity; sh.forEach((e, i) => { const a = ob.r.top + i / sh.length * ob.r.height, b = a + ob.r.height / sh.length; if (!e || b < y0 - LHP || a > y1 + LHP) return; L = Math.min(L, ob.r.left + e[0] * ob.r.width); R = Math.max(R, ob.r.left + e[1] * ob.r.width); });
     return R > L ? [L, R] : null; }
   function reserveTable() {   // the most lines each paragraph can take: laid out with the work's whole square at every height beside it
-    const W = innerWidth, S = W * .46, L = (W - S) / 2;
+    const W = innerWidth, S = W * .46, L = 16;
     trs.forEach(tr => { const p = tr.querySelector('p'); if (!p._prep) return; p.style.minHeight = ''; const pr = p.getBoundingClientRect(); let most = 0;
-      for (let off = -S; off <= 30 * LHP; off += LHP / 2) { const ob = { r: { left: L, right: L + S, width: S, height: S, top: pr.top + off, bottom: pr.top + off + S }, k: -1 }; most = Math.max(most, lineCount(p, pr, ob)); }
+      for (let k = 0; k < CUT.length; k++) for (let off = -S; off <= 30 * LHP; off += LHP / 2) { const ob = { r: { left: L, right: L + S, width: S, height: S, top: pr.top + off, bottom: pr.top + off + S }, k: shapes[k] ? k : -1 }; most = Math.max(most, lineCount(p, pr, ob)); }   /* by every work's own outline (the whole square until it is read) */
       p.style.minHeight = most * LHP + 'px'; }); }
   function lineCount(p, pr, ob) { let cur = { segmentIndex: 0, graphemeIndex: 0 }, n = 0, last = 0;
     for (let k = 0; k < 60; k++) { const y = pr.top + k * LHP, o = around(y, y + LHP, ob), segs = o ? [[pr.left, o[0] - 14], [o[1] + 14, pr.right]] : [[pr.left, pr.right]]; let done = false, any = false;
@@ -464,12 +455,12 @@ window.preDone = new Promise(done => {
         const h = r.map(([x, t]) => `<span style="left:${x.toFixed(1)}px">${t.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</span>`).join(''); if (ln._h !== h) { ln._h = h; ln.innerHTML = h; } }); }); }
 
   // the scroll: Lisa's card a little quicker than Karen's; the pots from line to photo; clients lit in turn; the forms' words sliding to their places
-  const lisa = one('#lisa'), duo = one('#duo'), pots = one('#pots'), cases = $('.case'), nameBox = one('.names .h'), words = $('.forms .h'), formsEl = one('.forms');
+  const duo = one('#duo'), pots = one('#pots'), cases = $('.case'), nameBox = one('.names .h'), words = $('.forms .h'), formsEl = one('.forms');
   let nameEl = null;
   function showName(k) { const w = document.createElement('span'); w.className = 'w'; w.innerHTML = [...CASES[k][0]].map(c => `<span class="ch">${c === ' ' ? '&nbsp;' : c}</span>`).join(''); nameBox.append(w);
     const old = nameEl; nameEl = w; gsap.fromTo(w.children, { yPercent: 110 }, { yPercent: 0, duration: .7, ease: EASE, stagger: .03, delay: old ? .12 : 0 });
     if (old) gsap.to(old.children, { yPercent: -110, duration: .45, ease: 'power2.in', stagger: .02, onComplete() { old.remove(); } }); }   // the old name goes up and out as the new one comes up after it
-  let act = -1; const duoRoom = () => duo.style.setProperty('--pd', Math.max(0, duo.offsetHeight - innerHeight) + 'px'); let dw = innerWidth; addEventListener('resize', () => { if (innerWidth !== dw) { dw = innerWidth; duoRoom(); } }); duoRoom(); setTimeout(duoRoom, 1500);
+  let act = -1;
   function onScroll() { const V = innerHeight;
     { const r = pots.getBoundingClientRect(), p = clamp((V * .85 - r.top) / (V * .5)); pots.querySelectorAll('.pp').forEach((el, k) => { const e = clamp(p * 1.6 - k * .2); el.style.transform = `rotateY(${(-(1 - e) * 92).toFixed(1)}deg)`; el.style.opacity = e > 0 ? 1 : 0; }); pots.lastElementChild.style.opacity = clamp(1 - p * 1.4).toFixed(3); }   // a line drawing first, the photo as it comes up
     { let best = 0, bd = 1e9; cases.forEach((c, k) => { const r = c.querySelector('.pic').getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - V * .42); if (d < bd) { bd = d; best = k; } });
@@ -513,6 +504,19 @@ window.preDone = new Promise(done => {
     imgs.forEach(fr => fr.classList.add('dr'));
     const D = drum(track, .18, imgs, (fr, b, k, w, sw) => { b.style.backgroundImage = `url("${fr.firstChild.src}")`; b.style.backgroundSize = `${w.toFixed(1)}px ${fr.offsetHeight.toFixed(1)}px`; b.style.backgroundPosition = `${(-k * sw + .5).toFixed(1)}px 0`; });   // as the top slider, and a little round even at rest
     imgs.forEach(fr => { if (!fr.firstChild.complete) fr.firstChild.addEventListener('load', () => { D.size(); D.go(); }, { once: true }); }); }
+  // Karen and Lisa: a tap on the label opens their story, and everything in it comes in one thing after another: the name letter by letter, the role, their own part of the photo from its top edge down, then each ruled line and its text line by line
+  const PEOPLE = [['Karen', 'Co-owner, Dirty Hands', 17, ['Designer and entrepreneur, one of the two founders of DirtyHands.', 'Pairs professional design with artistic intuition to bring unconventional ideas to life.']],
+    ['Lisa', 'Co-owner, Dirty Hands', 87, ['Designer and entrepreneur, co-founder of DirtyHands together with Karen.', 'Sees ceramics beyond plates and pots, as objects that shape the mood and character of a room.']]];
+  function openPerson(k) { const [n, t, fx, rows] = PEOPLE[k];
+    show(`<div class="pv"><div class="head"><p class="h">${letters(n)}</p><p class="lab">${t}</p></div><div class="face" style="background-position:${fx}% 0"></div><div class="rows">${rows.map((r, i) => `<div class="r"><i class="rl"></i><span class="n">0${i + 1}</span><p>${r}</p></div>`).join('')}</div></div>`);
+    const pv = view.querySelector('.pv'); pv.querySelectorAll('.r p').forEach(splitLines);
+    gsap.fromTo(pv.querySelectorAll('.head .ch'), { yPercent: 110 }, { yPercent: 0, duration: .8, ease: EASE, stagger: .04, delay: .1 });
+    gsap.fromTo(pv.querySelector('.head .lab'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .7, ease: EASE, delay: .35 });
+    gsap.fromTo(pv.querySelector('.face'), { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'power2.inOut', delay: .45 });
+    let at = 1.2; pv.querySelectorAll('.r').forEach(r => { gsap.fromTo(r.querySelector('.rl'), { scaleX: 0 }, { scaleX: 1, duration: .7, ease: 'power2.out', delay: at });
+      gsap.fromTo(r.querySelector('.n'), { opacity: 0 }, { opacity: .4, duration: .5, delay: at + .15 });
+      r.querySelectorAll('.ln-in').forEach((l, i) => { l.style.transitionDelay = (at + .25 + i * .08).toFixed(2) + 's'; requestAnimationFrame(() => l.classList.add('on')); }); at += .35 + r.querySelectorAll('.ln-in').length * .08; }); }
+  $('.who').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); openPerson(+b.dataset.p); }));
   function openCase(c) { const [n, t] = CASES[c];
     show(`<div class="head"><p class="h">${n}</p><p class="lab" style="margin-top:var(--s1)">${t}</p><div class="big" style="background-image:url('${SRC(c)}');background-position:${POS(c)}"></div></div><div class="txt"><p>${CASE_TEXT[c][0]}</p><p>${CASE_TEXT[c][1]}</p></div><div class="strip cover">${Array.from({ length: CASE_N[CASE_KEY[c]] - 1 }, (_, k) => `<i class="bend" style="background-image:url('${SRC(c, k + 1)}');background-position:${POS(c, k + 1)}"></i>`).join('')}</div>`);
     bendStrip(view.querySelector('.strip'), .7); }
