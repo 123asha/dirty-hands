@@ -247,7 +247,7 @@
   .cat-ico { z-index: 5; position: absolute; left: 50%; top: 45%; width: 70vh; height: 70vh; translate: -50% -50%; opacity: 0; pointer-events: none; }   /* the category's form, drawn as one grey line, large, behind its works */
   .cat-ico svg { width: 100%; height: 100%; overflow: visible; }
   .cat-ico path { fill: none; stroke: #c8c8c8; stroke-linejoin: round; stroke-linecap: round; }   /* no non-scaling stroke here: it breaks the dash the line is drawn with into pieces */
-  .cat-text { position: absolute; left: 50%; bottom: calc(20 * var(--u)); width: calc(210 * var(--u)); margin-left: calc(-105 * var(--u)); font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; text-align: center; z-index: 2; }   /* the body text, one column wide, centred, down at the bottom of the screen 20 above its edge */
+  .cat-text { position: absolute; left: 50%; bottom: calc(20 * var(--u)); width: calc(210 * var(--u)); margin-left: calc(-105 * var(--u)); font-size: var(--t18); line-height: min(var(--l18), calc(var(--t18) * 1.08));   /* never more than the type needs: on a wide screen the type stops at 18 px, so must its lines */ letter-spacing: -.01em; text-align: center; z-index: 2; }   /* the body text, one column wide, centred, down at the bottom of the screen 20 above its edge */
   .hc.hov { cursor: pointer; }
   .cd-pic { position: absolute; background: var(--gray) center / cover no-repeat; overflow: hidden; }
   .cd-snap { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; pointer-events: none; }   /* the page's own picture, as the shader draws it: the folding picture turns into it just before it lands, so nothing jumps */
@@ -1221,7 +1221,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     tl.fromTo(letters, { yPercent: -115 }, { yPercent: 0, duration: .6, ease: EASE, stagger: .04 }, .45);
     riseIn(tl, inT, { at: 1, each: .07, dur: .8 });                                                             // the text in front
     tl.fromTo(ico, { opacity: 0 }, { opacity: 1, duration: .2 }, .3);
-    tl.fromTo(ico.querySelector('path'), { attr: { 'stroke-dashoffset': 1 } }, { attr: { 'stroke-dashoffset': 0 }, duration: 2.2, ease: 'power2.inOut' }, .3);   // the form draws itself, one line going round
+    tl.fromTo(ico.querySelector('path'), { attr: { 'stroke-dashoffset': 1 } }, { attr: { 'stroke-dashoffset': 0 }, duration: 2.2, ease: 'power2.inOut', onUpdate() { this.targets()[0].setAttribute('stroke-dasharray', this.progress() >= 1 ? '2 0' : '1.04 1'); } }, .3);   /* drawn in, then one unbroken line (the dash left a gap where it closes); dashed again to draw itself out on closing */   // the form draws itself, one line going round
     openView = { close() {                                                // first the cylinder turns back to the picture that was clicked, then everything folds back into the card
       if (closing) return; closing = true; drag = null; clearTimeout(snapT);
       const back = { v: pos }; target = 0; st.fixed = true; gsap.to(back, { v: 0, duration: .9, ease: 'power2.inOut', onUpdate() { pos = back.v; }, onComplete() { pos = 0; } });   // the cylinder turns back on one smooth curve ...
