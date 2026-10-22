@@ -85,7 +85,7 @@
 <div class="grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 <script>{ const grid = document.querySelector('.grid'); try { if (sessionStorage.getItem('grid') === '1') grid.classList.add('on'); } catch (e) {}   // the grid stays on or off from page to page
   addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.code === 'KeyG') { e.preventDefault(); if (!e.repeat) { const on = grid.classList.toggle('on'); try { sessionStorage.setItem('grid', on ? '1' : '0'); } catch (er) {} } } }); }</script>
-<script src="sound.js?v=13"></script>
+<script src="sound.js?v=14"></script>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
 <script type="module">
   // ---- the clay mirror: a slab of wet clay the whole screen wide; seen by the camera, the visitor's hands and eyes (only those) rise out of it in relief, as on the studio's panels, and moves in it, a little late, as wet clay would; fired, it becomes a glazed tile to keep. Without the camera, the pointer presses into it. Nothing leaves the computer.
@@ -242,33 +242,44 @@
     const dS = snap(hCv), nS = snap(nCv);
     comps.filter(c => c.n > 60).forEach((c, k) => {
       const ac = Object.assign(document.createElement('canvas'), { width: NW, height: NH }), ax = ac.getContext('2d'), im = ax.createImageData(NW, NH);
-      for (let i = 0; i < NW * NH; i++) { const x = i % NW, mine = lab[i] === c.id || (!lab[i] && A[i * 4] > 0 && (lab[i - 1] === c.id || lab[i + 1] === c.id || lab[i - NW] === c.id || lab[i + NW] === c.id)); const v = mine ? A[i * 4] : 0; im.data[i * 4] = im.data[i * 4 + 1] = im.data[i * 4 + 2] = v; im.data[i * 4 + 3] = 255; } ax.putImageData(im, 0, 0);   // this piece alone, with the soft edge it had
+      for (let i = 0; i < NW * NH; i++) { const x = i % NW, mine = lab[i] === c.id || (!lab[i] && A[i * 4] > 0 && (lab[i - 1] === c.id || lab[i + 1] === c.id || lab[i - NW] === c.id || lab[i + NW] === c.id)); const v = mine ? A[i * 4] : 0; im.data[i * 4] = im.data[i * 4 + 1] = im.data[i * 4 + 2] = v; im.data[i * 4 + 3] = 255; }   // this piece alone, with the soft edge it had
+      const hr = Math.max(3, Math.min(7, (c.x1 - c.x0) * .06)); let hx = 0, hn = 0; for (let y = c.y0; y < c.y0 + 3; y++) for (let x = c.x0; x <= c.x1; x++) if (lab[y * NW + x] === c.id) { hx += x; hn++; } hx = Math.round(hn ? hx / hn : (c.x0 + c.x1) / 2);
+      let hy = c.y0 + Math.round(hr * 2.2); while (hy < c.y1 && lab[hy * NW + hx] !== c.id) hy++;   // the hole for the cord: near the top, in the clay itself
+      for (let y = Math.floor(hy - hr - 1); y <= hy + hr + 1; y++) for (let x = Math.floor(hx - hr - 1); x <= hx + hr + 1; x++) { if (x < 0 || y < 0 || x >= NW || y >= NH) continue; const d = Math.hypot(x - hx, y - hy), i = (y * NW + x) * 4; if (d < hr + 1) { const v = Math.round(im.data[i] * Math.max(0, Math.min(1, d - hr + .5))); im.data[i] = im.data[i + 1] = im.data[i + 2] = v; } }
+      ax.putImageData(im, 0, 0);
       const pw = (c.x1 - c.x0 + 3) / NW * vw, ph = (c.y1 - c.y0 + 3) / NH * vh, g = new THREE.PlaneGeometry(pw, ph, Math.max(2, Math.round(pw / vw * innerWidth / 4)), Math.max(2, Math.round(ph / vh * innerHeight / 4))), uv = g.attributes.uv;
       for (let i = 0; i < uv.count; i++) { uv.setX(i, (c.x0 - 1 + uv.getX(i) * (c.x1 - c.x0 + 3)) / NW); uv.setY(i, 1 - (c.y0 - 1 + (1 - uv.getY(i)) * (c.y1 - c.y0 + 3)) / NH); }   // its own part of the snapshot
       const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: mat.color.clone(), map: skin, roughnessMap: skin, roughness: mat.roughness, metalness: mat.metalness, envMapIntensity: mat.envMapIntensity, displacementMap: dS, displacementScale: .3, displacementBias: -.18, normalMap: nS, normalScale: new THREE.Vector2(1.6, 1.6), alphaMap: new THREE.CanvasTexture(ac), alphaTest: .5 }));
       { const bc = Object.assign(document.createElement('canvas'), { width: HW, height: HH }), bx = bc.getContext('2d'); bx.filter = 'blur(4px)'; bx.drawImage(ac, 0, 0, HW, HH);   // its own soft shadow, which goes with it
         const M = 14, sg = new THREE.PlaneGeometry(pw + 2 * M / NW * vw, ph + 2 * M / NH * vh), su = sg.attributes.uv;   // room round it for the blur
         for (let i = 0; i < su.count; i++) { su.setX(i, (c.x0 - 1 - M + su.getX(i) * (c.x1 - c.x0 + 3 + 2 * M)) / NW); su.setY(i, 1 - (c.y0 - 1 - M + (1 - su.getY(i)) * (c.y1 - c.y0 + 3 + 2 * M)) / NH); }
-        const sh = new THREE.Mesh(sg, new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: .3, alphaMap: new THREE.CanvasTexture(bc), depthWrite: false })); sh.position.set(vw * .006, -vh * .01, -.06); m.add(sh); }
+        const sh = new THREE.Mesh(sg, new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: .3, alphaMap: new THREE.CanvasTexture(bc), depthWrite: false })); S.add(sh); var shM = sh; }
       m.position.set(((c.x0 + c.x1) / 2 / NW - .5) * vw, (.5 - (c.y0 + c.y1) / 2 / NH) * vh, .02); S.add(m);
-      pieces.push({ m, hw: pw / 2, hh: ph / 2, vy: 0, vx: (Math.random() - .5) * .25, wz: (Math.random() - .5) * 1.4, wx: .4 + Math.random() * .5, wait: .05 + k * .09 + Math.random() * .08, rest: false }); });
+      m.rotation.order = 'ZYX';   // swings in the page's plane, and turns a little on its cord
+      const cx = m.position.x, cy = m.position.y, hX = (hx / NW - .5) * vw, hY = (.5 - hy / NH) * vh, top = vh / 1.08 / 2 + .02;
+      const cord = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(hX, top, .03), new THREE.Vector3(hX, top, .03)]), new THREE.LineBasicMaterial({ color: 0x5c554f })); cord.frustumCulled = false; S.add(cord);   // it changes length every frame: never skipped as if off screen
+      pieces.push({ m, sh: shM, cord, ax: hX, ay: top, L: top - hY, hl: [hX - cx, hY - cy], th: 0, w: 0, tw: 0, tv: 0, k, drop: k * .12 }); });
     mesh.visible = shadow.visible = false; falling = true; fallT = performance.now(); }
-  function fall(now, dt) {   // each piece drops in turn, turns a little as it goes, lands on the foot of the screen with a small bounce and lies there
-    const floor = -vh / 1.08 / 2; let moving = false;
-    pieces.forEach(p => { const t = (now - fallT) / 1000; if (t < p.wait) { moving = true; return; } if (p.rest) return; moving = true;
-      p.vy -= 9 * dt; p.m.position.y += p.vy * dt; p.m.position.x += p.vx * dt; p.m.rotation.z += p.wz * dt; p.m.rotation.x = Math.min(.5, p.m.rotation.x + p.wx * dt * (p.vy < -.2 ? 1 : -1));
-      const a = p.m.rotation.z, reach = Math.abs(Math.cos(a)) * p.hh + Math.abs(Math.sin(a)) * p.hw;
-      if (p.m.position.y - reach < floor) { p.m.position.y = floor + reach; if (p.vy < -1.2) { p.vy = -p.vy * .28; p.wz *= .4; p.vx *= .5; nudge(.25); } else { p.vy = 0; p.rest = true; } } });
-    if (!moving) { falling = false; if (!told) { told = true; afterFire(); } } }
+  function fall(now, dt) {   // each piece hangs on its cord: the cord comes down from the top of the screen to its hole, then the piece swings as a pendulum and turns a little on the cord, and never quite stops (a draught in the studio)
+    const t = (now - fallT) / 1000; let ready = true;
+    pieces.forEach(p => { const grow = Math.max(0, Math.min(1, (t - p.drop) / .6)), e = 1 - Math.pow(1 - grow, 3); if (grow < 1) ready = false;
+      if (grow >= 1) { if (!p.on) { p.on = true; p.w = (Math.random() - .5) * 1.2; p.tv = (Math.random() - .5) * 2; nudge(.15); }
+        p.w += (-(9 / p.L) * Math.sin(p.th) - .18 * p.w + Math.sin(now * .0006 + p.k * 1.7) * .03) * dt; p.th += p.w * dt;
+        p.tv += (-3 * p.tw - .35 * p.tv + Math.sin(now * .0004 + p.k) * .05) * dt; p.tw += p.tv * dt; }
+      const s_ = Math.sin(p.th), c_ = Math.cos(p.th), hx = p.ax + p.L * s_, hy = p.ay - p.L * c_;   // the hole, at the end of the cord
+      p.m.rotation.set(0, p.tw, p.th); p.m.position.set(hx - (p.hl[0] * c_ - p.hl[1] * s_), hy - (p.hl[0] * s_ + p.hl[1] * c_), .02);
+      p.sh.position.set(p.m.position.x + vw * .008, p.m.position.y - vh * .014, -.06); p.sh.rotation.z = p.th; p.sh.scale.x = Math.max(.25, Math.abs(Math.cos(p.tw)));   // the shadow on the wall behind
+      const pos = p.cord.geometry.attributes.position; pos.setXYZ(1, grow < 1 ? p.ax : hx, grow < 1 ? p.ay - p.L * e : hy, .03); pos.needsUpdate = true; });
+    if (ready && !told) { told = true; afterFire(); } }
   let told = false; const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
-  cv.addEventListener('pointerdown', e => { if (!pieces.length) return; ndc.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(ndc, CAM);   // tapped, a fired piece jumps up and falls back
-    const p = pieces.find(q => { const hit = ray.intersectObject(q.m)[0]; if (!hit || !hit.uv) return false; const im = q.m.material.alphaMap.image, x = Math.floor(hit.uv.x * im.width), y = Math.floor((1 - hit.uv.y) * im.height); return im.getContext('2d').getImageData(x, y, 1, 1).data[0] > 128; });   // only on the clay itself, not the empty corners of its piece
-    if (!p) return; p.vy = 3.2 + Math.random() * 1.2; p.vx = (Math.random() - .5) * .6; p.wz = (Math.random() - .5) * 3; p.rest = false; p.wait = 0; if (!falling) { falling = true; fallT = performance.now() - 1e4; } nudge(.4); });
+  cv.addEventListener('pointerdown', e => { if (!pieces.length) return; ndc.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(ndc, CAM);   // tapped, a pendant swings off and spins on its cord
+    const p = pieces.find(q => { const hit = ray.intersectObject(q.m, false)[0]; if (!hit || !hit.uv) return false; const im = q.m.material.alphaMap.image, x = Math.floor(hit.uv.x * im.width), y = Math.floor((1 - hit.uv.y) * im.height); return im.getContext('2d').getImageData(x, y, 1, 1).data[0] > 128; });   // only on the clay itself
+    if (!p || !p.on) return; const side = e.clientX / innerWidth * vw - vw / 2 < p.m.position.x ? 1 : -1; p.w += side * (1.6 + Math.random()); p.tv += (Math.random() - .5) * 5; nudge(.4); });
   const no = () => String(Math.floor(Math.random() * 9000) + 1000);
   function afterFire() { const d = new Date(), m = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
     tileNo = no(); say(`Tile No. ${tileNo}, ${d.getDate()} ${m} ${d.getFullYear()}, Dirty Hands`); keepBtn.hidden = againBtn.hidden = false; }
   keepBtn.addEventListener('click', () => { const a = document.createElement('a'); a.href = cv.toDataURL('image/png'); a.download = `dirty-hands-tile-${tileNo}.png`; a.click(); });
-  againBtn.addEventListener('click', () => { told = false; pieces.forEach(p => { S.remove(p.m); p.m.children.forEach(c => { c.geometry.dispose(); c.material.alphaMap.dispose(); c.material.dispose(); }); p.m.geometry.dispose(); p.m.material.alphaMap.dispose(); p.m.material.dispose(); }); pieces = []; mesh.visible = shadow.visible = true;
+  againBtn.addEventListener('click', () => { told = false; falling = false; pieces.forEach(p => { S.remove(p.m); S.remove(p.sh); S.remove(p.cord); p.cord.geometry.dispose(); p.cord.material.dispose(); p.sh.geometry.dispose(); p.sh.material.alphaMap.dispose(); p.sh.material.dispose(); p.m.geometry.dispose(); p.m.material.alphaMap.dispose(); p.m.material.dispose(); }); pieces = []; mesh.visible = shadow.visible = true;
     fired = false; fireT = 0; mesh.scale.setScalar(1); mat.color.copy(WET); mat.roughness = .92; mat.metalness = 0; mat.envMapIntensity = .15; mat.emissive.setRGB(0, 0, 0); Pd.fill(0); H.fill(0); keepBtn.hidden = againBtn.hidden = true; fireBtn.hidden = false; say('Wet clay again. Nothing from the camera leaves your computer.'); });
 
   let lastT = performance.now();
