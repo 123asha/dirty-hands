@@ -91,10 +91,11 @@
 
   /* Karen and Lisa: the photo whole (no face cut) held in the middle of the screen, their two cards passing over it, Karen first, Lisa after her and a little quicker */
   .duo { position: relative; margin-top: var(--s5); overflow: clip; view-timeline: --duo block; }
-  @supports (animation-timeline: --duo) and (not (-webkit-touch-callout: none)) {   /* the photo and the cards move with the scroll itself, on the compositor; not on the iPhone, where the address bar coming and going changes the screen's height and shook them: there, and wherever this is not supported, they simply scroll */
+  @media (hover: hover) and (pointer: fine) { @supports (animation-timeline: --duo) {   /* the photo and the cards move with the scroll itself, on the compositor; not on the iPhone, where the address bar coming and going changes the screen's height and shook them: there, and wherever this is not supported, they simply scroll */
     .duo .photo { animation: duoPhoto linear both; animation-timeline: --duo; animation-range: contain 0% contain 100%; }
     .duo .card:first-child { animation: duoKaren linear both; animation-timeline: --duo; animation-range: contain 0% contain 100%; }
     .duo #lisa { animation: duoLisa linear both; animation-timeline: --duo; animation-range: contain 0% contain 100%; }
+  }
   }
   @keyframes duoPhoto { from { transform: none; } to { transform: translateY(calc(var(--pd, 0px) * .6)); } }   /* the photo at less than half the cards' speed */
   @keyframes duoKaren { from { transform: none; } to { transform: translateY(-6vh); } }
@@ -369,7 +370,7 @@ window.preDone = new Promise(done => {
     if (p <= 0) { pile.style.visibility = 'hidden'; cats.forEach(c => c.style.visibility = ''); if (titleReady) { chs.forEach(c => { c._t = 0; }); glideTitle(); } return; }   // back at the top (after the page starts over too) the title stands whole again
     if (titleReady) { chs.forEach((c, k) => { const e = clamp(p * 1.15 - k * .04); c._t = -e * e * (3 - 2 * e) * 130; }); glideTitle(); }   // the title leaves letter by letter, as it came, each letter gliding after the scroll (see glideTitle)
     pile.style.visibility = ''; cats.forEach(c => c.style.visibility = 'hidden');
-    const tr = tbl.getBoundingClientRect(), endShift = Math.min(0, tr.bottom - V * .6);   // at the end of the table the pile goes up with it
+    const tr = tbl.getBoundingClientRect(), endShift = 0, gone = clamp((tr.bottom - V * .42) / (V * .22)); pile.style.opacity = gone.toFixed(3);   // at the end of the table the pile melts away where it stands: chasing the page with the script made it shake on the iPhone
     let top = 0, bd = 1e9; trs.forEach((r, k) => { const b = r.getBoundingClientRect(), d = Math.abs(b.top + 40 - V * .38); if (d < bd) { bd = d; top = k; } });
     const S = W * .46, PX = (W - S) / 2, PY = V * .34, flip = clamp((p - .55) / .3);
     pcs.forEach((el, k) => { const c = cats[k].getBoundingClientRect(), dk = Math.min(5, Math.abs(k - top)), sk = SKEW[k];
@@ -378,7 +379,7 @@ window.preDone = new Promise(done => {
       el.style.width = w + 'px'; el.style.height = h + 'px'; el.style.zIndex = 10 - dk;
       el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) perspective(800px) rotateY(${(back ? f - 180 : f).toFixed(1)}deg) rotate(${(sk[2] * dk * e * .6).toFixed(1)}deg)`;
       el.style.opacity = k === top ? 1 : flip > .9 ? 0 : (1 - flip).toFixed(3); });   // once turned over only the work on top is seen
-    flowTable(p >= 1 && flip >= 1 ? { r: pcs[top].getBoundingClientRect(), k: top } : null); }   // the lines go round the work on top, on both sides
+    flowTable(p >= 1 && flip >= 1 && gone > .5 ? { r: pcs[top].getBoundingClientRect(), k: top } : null); }   // the lines go round the work on top, on both sides
   pcs.forEach((el, k) => el.style.backgroundImage = `url('${PHOTO[k]}')`);
   addEventListener('scroll', () => requestAnimationFrame(pileTick), { passive: true }); addEventListener('resize', pileTick); one('#cats').addEventListener('scroll', pileTick, { passive: true }); pileTick();
   // the cases, under the clients' names
