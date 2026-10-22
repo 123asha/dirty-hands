@@ -860,7 +860,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const hTop = top - 56 + 80, dy = 5189 - hTop + 233, hand = one('.rest > .eye'), cr = $('.rest > .credit');
     const mEnd = top - 56, gTop = mEnd + (5749 - dy - mEnd - 212) / 2;   // the hands and the credit (205 high together) halfway between the last publication and the strip at the end: the same room above and below them (the half of the screen's share, 5/24 of its height, in the calc)
     if (hand) hand.style.top = `calc(${gTop.toFixed(1)} * var(--u) + 100vh * 5 / 24)`;
-    if (cr[0]) cr[0].style.top = `calc(${(gTop + 167).toFixed(1)} * var(--u) + 100vh * 5 / 24)`; if (cr[1]) cr[1].style.top = `calc(${(gTop + 193).toFixed(1)} * var(--u) + 100vh * 5 / 24)`;   /* the two lines of the credit a little apart */
+    if (cr[0]) cr[0].style.top = `calc(${(gTop + 167).toFixed(1)} * var(--u) + 100vh * 5 / 24)`; if (cr[1]) cr[1].style.top = `calc(${(gTop + 167).toFixed(1)} * var(--u) + 100vh * 5 / 24 + min(20px, 20 * var(--u)))`;   /* the second line of the credit one line under the first: as the type stops at 18 px on a wide screen, so does the gap */
     $('.rest > .bar').forEach(b => { b.style.top = `calc(${(5749 - dy).toFixed(1)} * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 10 * var(--u)) / 5)`; });
     one('.rest').style.height = `calc(${(5809 - dy).toFixed(1)} * var(--u))`;
   }
@@ -1350,7 +1350,12 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   }
 
   // ---- the two hands over the credit: a thin outline, drawn in line by line once scrolled to (as the outline of the urban over About)
-  { const eye = one('.rest > .eye'); if (eye && 'IntersectionObserver' in window) { const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { eye.classList.add('on'); io.disconnect(); } }, { threshold: .9 }); io.observe(eye); } else if (eye) eye.classList.add('on'); }
+  { const eye = one('.rest > .eye'), crs = $('.rest > .credit'), grp = [eye, ...crs].filter(Boolean); let held = 0;
+    const endHold = () => { if (!eye) return; const V = innerHeight, a = eye.getBoundingClientRect().top - held, b = (crs[crs.length - 1] || eye).getBoundingClientRect().bottom - held, mid = (a + b) / 2;   // where the hands and the credit would be, unheld
+      held = Math.max(0, Math.min(150 * U, V * .46 - mid)); grp.forEach(el => { el.style.transform = held ? `translate3d(0,${held.toFixed(1)}px,0)` : ''; });   // once they reach the middle of the screen they stay there a while, then go on up
+      if (!eye.classList.contains('on') && mid + held < V * .62) eye.classList.add('on');   // the hands are drawn once they have come up to the middle, so they are seen being drawn
+      if (scrollY < V) eye.classList.remove('on'); };   // back at the top (the page starting over): drawn again next time
+    addEventListener('scroll', endHold, { passive: true }); addEventListener('resize', endHold); endHold(); }
 
   // ---- one clay mark on each of the Lisa and Karen cards, made by the same clay as the live marks: a finger print or a longer smear, placed at random, drawn in as the card scrolls up
   const cardMarks = [lisa, karen].map((card, idx) => { const cv = document.createElement('canvas'); cv.className = 'cmark'; card.prepend(cv); return { card, cv, idx, smear: false, w: 0, h: 0, drawn: -1 }; });
