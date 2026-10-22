@@ -85,7 +85,7 @@
 <div class="grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 <script>{ const grid = document.querySelector('.grid'); try { if (sessionStorage.getItem('grid') === '1') grid.classList.add('on'); } catch (e) {}   // the grid stays on or off from page to page
   addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.code === 'KeyG') { e.preventDefault(); if (!e.repeat) { const on = grid.classList.toggle('on'); try { sessionStorage.setItem('grid', on ? '1' : '0'); } catch (er) {} } } }); }</script>
-<script src="sound.js?v=14"></script>
+<script src="sound.js?v=15"></script>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
 <script type="module">
   // ---- the clay mirror: a slab of wet clay the whole screen wide; seen by the camera, the visitor's hands and eyes (only those) rise out of it in relief, as on the studio's panels, and moves in it, a little late, as wet clay would; fired, it becomes a glazed tile to keep. Without the camera, the pointer presses into it. Nothing leaves the computer.

@@ -96,7 +96,7 @@ function placeSound(at) {                                               // a wor
     we.gain.setValueAtTime(0, t); we.gain.linearRampToValueAtTime(.05 * amp, t + .004); we.gain.exponentialRampToValueAtTime(.0001, t + .08); w.connect(we); we.connect(sMaster); w.start(t); w.stop(t + .1);
     noise(t, 'lowpass', 900, .5, .025 * amp, .02);                                      // the touch of the foot, barely there
   };
-  const a = (.8 + Math.random() * .2) * 1.3; hit(t, a); hit(t + .09 + Math.random() * .03, a * (.08 + Math.random() * .06)); }   // it lands, and settles with a very small second knock
+  const a = (.8 + Math.random() * .2) * 2.3; hit(t, a);   /* the knock of ceramic on the shelf, well above the wind */ hit(t + .09 + Math.random() * .03, a * (.08 + Math.random() * .06)); }   // it lands, and settles with a very small second knock
 function setSound(on) {
   sOn = on; sndBtn.setAttribute('aria-pressed', on); if (on && !actx) startSound(); if (!actx) return;
   if (actx.state === 'suspended') actx.resume();
@@ -105,7 +105,7 @@ function setSound(on) {
 }
 function soundNudge(v) {                                               // a swipe or a drag: a gust of wind with leaves in it, rising and falling, fuller and higher the faster it goes, from one side or the other
   if (!sSw || !sOn) return; const k = Math.min(1, Math.abs(v)), t = actx.currentTime;
-  sSw.gain.cancelScheduledValues(t); sSw.gain.setValueAtTime(sSw.gain.value, t); sSw.gain.linearRampToValueAtTime(Math.max(sSw.gain.value, .03 + .08 * k), t + .18);   // (quieter: at the level of the cracks)
+  sSw.gain.cancelScheduledValues(t); sSw.gain.setValueAtTime(sSw.gain.value, t); sSw.gain.linearRampToValueAtTime(Math.max(sSw.gain.value, .02 + .05 * k), t + .18);   // (quieter: at the level of the cracks)
   sSw.gain.setTargetAtTime(0, t + .25, .45);
   sBp.frequency.cancelScheduledValues(t); sBp.frequency.setValueAtTime(sBp.frequency.value, t); sBp.frequency.linearRampToValueAtTime(420 + 900 * k, t + .22); sBp.frequency.setTargetAtTime(380, t + .3, .7);
   if (sPan) { sPan.pan.cancelScheduledValues(t); sPan.pan.setValueAtTime(sPan.pan.value, t); sPan.pan.linearRampToValueAtTime((Math.random() - .5) * .9, t + .3); }
