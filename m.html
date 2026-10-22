@@ -91,7 +91,7 @@
 
   /* Karen and Lisa: the photo whole (no face cut) held in the middle of the screen, their two cards passing over it, Karen first, Lisa after her and a little quicker */
   .duo { position: relative; margin-top: var(--s5); overflow: clip; view-timeline: --duo block; }
-  @supports (animation-timeline: --duo) {   /* the photo and the cards move with the scroll itself, on the compositor: no frame behind it, no shake (where this is not supported, they simply scroll) */
+  @supports (animation-timeline: --duo) and (not (-webkit-touch-callout: none)) {   /* the photo and the cards move with the scroll itself, on the compositor; not on the iPhone, where the address bar coming and going changes the screen's height and shook them: there, and wherever this is not supported, they simply scroll */
     .duo .photo { animation: duoPhoto linear both; animation-timeline: --duo; animation-range: contain 0% contain 100%; }
     .duo .card:first-child { animation: duoKaren linear both; animation-timeline: --duo; animation-range: contain 0% contain 100%; }
     .duo #lisa { animation: duoLisa linear both; animation-timeline: --duo; animation-range: contain 0% contain 100%; }
@@ -431,7 +431,7 @@ window.preDone = new Promise(done => {
 
   // block 2: the ruled text laid out with pretext (github.com/chenglou/pretext), as on the full page: at the height of the work on top every line is cut in two, a part on each side of it, by the work's own outline
   const LHP = 19, shapes = {};
-  import('https://esm.sh/@chenglou/pretext@1.0.0').then(m => { PT = m; return document.fonts ? document.fonts.ready : 0; }).then(() => { trs.forEach((tr, k) => { const p = tr.querySelector('p'), fs = parseFloat(getComputedStyle(p).fontSize); p._prep = PT.prepareWithSegments(TEXT[k], `${fs}px "CoFo Sans"`, { letterSpacing: -0.01 * fs }); p.classList.add('flow'); p.textContent = ''; p._rows = []; }); reserveTable(); addEventListener('resize', reserveTable); CUT.forEach((_, k) => shapeOf(k)); pileTick(); }).catch(() => {});
+  import('https://esm.sh/@chenglou/pretext@1.0.0').then(m => { PT = m; return document.fonts ? document.fonts.ready : 0; }).then(() => { trs.forEach((tr, k) => { const p = tr.querySelector('p'), fs = parseFloat(getComputedStyle(p).fontSize); p._prep = PT.prepareWithSegments(TEXT[k], `${fs}px "CoFo Sans"`, { letterSpacing: -0.01 * fs }); p.classList.add('flow'); p.textContent = ''; p._rows = []; }); reserveTable(); let rw = innerWidth; addEventListener('resize', () => { if (innerWidth !== rw) { rw = innerWidth; reserveTable(); } }); /* only a new width lays it out again: the phone's address bar changing the height must not move anything */ CUT.forEach((_, k) => shapeOf(k)); pileTick(); }).catch(() => {});
   function shapeOf(k) { if (k in shapes) return shapes[k]; shapes[k] = null; const img = new Image(); img.onload = () => {   // the outline of a cut-out work, from its transparency: left and right edge in 48 rows, as drawn (contain)
       const N = 48, W = 96, cv = document.createElement('canvas'); cv.width = cv.height = W; const g = cv.getContext('2d'), sc = Math.min(W / img.width, W / img.height); g.drawImage(img, (W - img.width * sc) / 2, (W - img.height * sc) / 2, img.width * sc, img.height * sc);
       const d = g.getImageData(0, 0, W, W).data, rows = []; for (let r = 0; r < N; r++) { let L = -1, R = -1; for (let y = Math.floor(r * W / N); y < Math.floor((r + 1) * W / N); y++) for (let x = 0; x < W; x++) if (d[(y * W + x) * 4 + 3] > 40) { if (L < 0 || x < L) L = x; if (x > R) R = x; } rows.push(R < 0 ? null : [L / W, (R + 1) / W]); }
@@ -468,7 +468,7 @@ window.preDone = new Promise(done => {
   function showName(k) { const w = document.createElement('span'); w.className = 'w'; w.innerHTML = [...CASES[k][0]].map(c => `<span class="ch">${c === ' ' ? '&nbsp;' : c}</span>`).join(''); nameBox.append(w);
     const old = nameEl; nameEl = w; gsap.fromTo(w.children, { yPercent: 110 }, { yPercent: 0, duration: .7, ease: EASE, stagger: .03, delay: old ? .12 : 0 });
     if (old) gsap.to(old.children, { yPercent: -110, duration: .45, ease: 'power2.in', stagger: .02, onComplete() { old.remove(); } }); }   // the old name goes up and out as the new one comes up after it
-  let act = -1; const duoRoom = () => duo.style.setProperty('--pd', Math.max(0, duo.offsetHeight - innerHeight) + 'px'); addEventListener('resize', duoRoom); duoRoom(); setTimeout(duoRoom, 1500);
+  let act = -1; const duoRoom = () => duo.style.setProperty('--pd', Math.max(0, duo.offsetHeight - innerHeight) + 'px'); let dw = innerWidth; addEventListener('resize', () => { if (innerWidth !== dw) { dw = innerWidth; duoRoom(); } }); duoRoom(); setTimeout(duoRoom, 1500);
   function onScroll() { const V = innerHeight;
     { const r = pots.getBoundingClientRect(), p = clamp((V * .85 - r.top) / (V * .5)); pots.querySelectorAll('.pp').forEach((el, k) => { const e = clamp(p * 1.6 - k * .2); el.style.transform = `rotateY(${(-(1 - e) * 92).toFixed(1)}deg)`; el.style.opacity = e > 0 ? 1 : 0; }); pots.lastElementChild.style.opacity = clamp(1 - p * 1.4).toFixed(3); }   // a line drawing first, the photo as it comes up
     { let best = 0, bd = 1e9; cases.forEach((c, k) => { const r = c.firstElementChild.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - V * .42); if (d < bd) { bd = d; best = k; } });
