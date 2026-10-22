@@ -92,11 +92,13 @@
   /* Karen and Lisa: the photo the right way up, the whole width, nothing held or moved by the scroll; on it a short label for each, which opens their story */
   .duo { position: relative; margin-top: var(--s5); }
   .duo .photo { position: relative; width: 100%; height: calc(100vw * 1680 / 850); overflow: hidden; }   /* the photo upright, as it was: turned a quarter, whole, the whole width */
-  .duo .photo::before { content: ''; position: absolute; left: 50%; top: 50%; width: calc(100vw * 1680 / 850); height: 100vw; translate: -50% -50%; rotate: 90deg; background: url("photos/lisa-karen.jpg") center / cover no-repeat; }
-  .who { position: absolute; display: block; text-align: left; background: #fff; color: #000; padding: var(--s1) var(--s1) var(--s1); }   /* a small white card on the photo: readable on any part of it */
+  .duo .photo::before { content: ''; position: absolute; left: 50%; top: 50%; width: calc(100vw * 1680 / 850); height: 100vw; translate: -50% -50%; rotate: 90deg; scale: 1.12; background: url("photos/lisa-karen.jpg") center / cover no-repeat; }
+  @supports (animation-timeline: view()) { .duo .photo::before { animation: duoDrift linear both; animation-timeline: view(); } }   /* the photo goes up a little faster than the page, inside its frame */
+  @keyframes duoDrift { from { transform: translateX(-5%); } to { transform: translateX(5%); } }   /* (turned a quarter: its own x is the screen's y) */
+  .who { position: absolute; display: block; width: calc((100vw - 2 * var(--m) - var(--g)) / 2); text-align: left; background: #fff; color: #000; padding: var(--s1); }   /* a white card half the width */
+  .who svg { position: absolute; top: var(--s1); right: var(--s1); width: 9px; height: 9px; }   /* a small white card on the photo: readable on any part of it */
   .who.k { left: var(--m); top: var(--s2); } .who.l { right: var(--m); bottom: var(--s2); }   /* Karen at the top of the turned photo, Lisa at its foot */
   .who b { font-weight: 400; display: block; } .who span { display: block; color: #999; }
-  .who b { background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat; padding-bottom: .12em; display: inline-block; }   /* underlined: it opens */
   .who::before { content: ''; position: absolute; inset: -6px; }   /* a finger-sized tap area */
   .pv .head { padding-bottom: 0; } .pv .h { font-size: var(--h2); } .pv .h .ch { display: inline-block; }
   .pv .face { margin: var(--s3) var(--m) 0; aspect-ratio: 4 / 5; background: var(--gray) url("photos/lisa-karen.jpg") no-repeat; background-size: auto 100%; clip-path: inset(0 0 100% 0); }   /* the person's own part of the photo, opening from its top edge */
@@ -160,7 +162,7 @@
   /* the simple way things come in: up a little, once */
   .in { opacity: 0; transform: translateY(16px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
   .in.on { opacity: 1; transform: none; }
-  .tr .n.in.on { opacity: .4; }   /* the numbers come up grey, as they stay */
+  .tr .n.in.on, .mi .d.in.on { opacity: .4; }   /* the numbers come up grey, as they stay */
   .rv { clip-path: inset(0 0 100% 0); transition: clip-path 1.1s cubic-bezier(.65, 0, .35, 1); } .rv.on { clip-path: inset(0 0 0 0); }   /* a picture opens from its top edge down, as on the full page */
 
   /* the views: over the page, with a cross to close them */
@@ -235,8 +237,8 @@
 
 <section class="duo" id="duo">
   <div class="photo" role="img" aria-label="Karen and Lisa, the founders of Dirty Hands"></div>
-  <button type="button" class="who k" data-p="0"><b>Karen</b><span>Co-owner</span></button>
-  <button type="button" class="who l" data-p="1"><b>Lisa</b><span>Co-owner</span></button>
+  <button type="button" class="who k" data-p="0"><b>Karen</b><span>Co-owner</span><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></button>
+  <button type="button" class="who l" data-p="1"><b>Lisa</b><span>Co-owner</span><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></button>
 </section>
 
 <section class="wrap sec about" id="about">
@@ -360,7 +362,7 @@ window.preDone = new Promise(done => {
   const chs = $('.ttl .ch');
   const pile = one('#pile'), pcs = CATS.map((_, k) => { const d = document.createElement('i'); d.className = 'pc'; pile.append(d); return d; }), cats = $('#cats .cat i'), trs = $('.tr'), tbl = one('#tbl');
   const SKEW = [[-3, -2, -4], [4, 3, 3], [-2, 5, -2], [5, -4, 5], [-5, 2, -3], [2, -5, 4]];   // each work a little askew under the one on top
-  function pileTick() { const V = innerHeight, W = innerWidth, hero = one('.hero'), p = clamp(scrollY / Math.max(1, hero.offsetHeight * .75)), e = p * p * (3 - 2 * p);
+  function pileTick() { const V = innerHeight, W = innerWidth, hero = one('.hero'), p = clamp(scrollY / Math.max(1, hero.offsetHeight * .75)), g_ = clamp(p / .55), e = g_ * g_ * (3 - 2 * g_);   // the pile has gathered before the top one starts to turn (at .55)
     if (p <= 0) { pile.style.visibility = 'hidden'; cats.forEach(c => c.style.visibility = ''); if (titleReady) { chs.forEach(c => { c._t = 0; }); glideTitle(); } return; }   // back at the top (after the page starts over too) the title stands whole again
     if (titleReady) { chs.forEach((c, k) => { const e = clamp(p * 1.15 - k * .04); c._t = -e * e * (3 - 2 * e) * 130; }); glideTitle(); }   // the title leaves letter by letter, as it came, each letter gliding after the scroll (see glideTitle)
     pile.style.visibility = ''; cats.forEach(c => c.style.visibility = 'hidden');
@@ -369,10 +371,10 @@ window.preDone = new Promise(done => {
     const S = W * .46, PX = 16, PY = V * .34, flip = clamp((p - .55) / .3);
     pcs.forEach((el, k) => { const c = cats[k].getBoundingClientRect(), dk = Math.min(5, Math.abs(k - top)), sk = SKEW[k];
       const x = c.left + (PX + sk[0] * dk - c.left) * e, y = c.top + (PY + sk[1] * dk + endShift - c.top) * e, w = c.width + (S - c.width) * e, h = c.height + (S - c.height) * e;
-      const f = flip * 180, back = f > 90; if (el.classList.contains('back') !== back) { el.classList.toggle('back', back); el.style.backgroundImage = `url('${back ? CUT[k] : PHOTO[k]}')`; }   // edge-on half way, and on its back the work without its background
+      const f = k === top ? flip * 180 : 0, back = f > 90;   // only the work on top turns over if (el.classList.contains('back') !== back) { el.classList.toggle('back', back); el.style.backgroundImage = `url('${back ? CUT[k] : PHOTO[k]}')`; }   // edge-on half way, and on its back the work without its background
       el.style.width = w + 'px'; el.style.height = h + 'px'; el.style.zIndex = 10 - dk;
       el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) perspective(800px) rotateY(${(back ? f - 180 : f).toFixed(1)}deg) rotate(${(sk[2] * dk * e * .6).toFixed(1)}deg)`;
-      el.style.opacity = k === top ? 1 : flip > .9 ? 0 : (1 - flip).toFixed(3); });   // once turned over only the work on top is seen
+      el.style.opacity = k === top || flip <= 0 ? 1 : 0; });   // they gather into one solid pile; once gathered the ones under it go, and only the top one turns over
     flowTable(gone > .5 ? pcs.filter(el => +el.style.opacity > .05).map(el => ({ r: el.getBoundingClientRect(), k: el === pcs[top] && flip >= 1 ? top : -1 })) : null); }   // the lines go round every work in sight from the first moment, even while they fly in (by its own outline once it has turned over)   // the lines go round the work on top, on both sides
   pcs.forEach((el, k) => el.style.backgroundImage = `url('${PHOTO[k]}')`);
   addEventListener('scroll', () => requestAnimationFrame(pileTick), { passive: true }); addEventListener('resize', pileTick); one('#cats').addEventListener('scroll', pileTick, { passive: true }); pileTick();
@@ -393,7 +395,7 @@ window.preDone = new Promise(done => {
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { $('.tr p, .about p, .case .cap span, .mi:not(.more) .mt').forEach(splitLines); reveal(); });
 
   // coming into view: a short rise, once
-  const io = new IntersectionObserver(es => { let d = 0; es.forEach(e => { if (e.isIntersecting) { e.target.style.transitionDelay = (d++ * 60) + 'ms'; e.target.classList.add('on'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px' });
+  const io = new IntersectionObserver(es => { let d = 0; es.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top || a.boundingClientRect.left - b.boundingClientRect.left).forEach(e => { e.target.style.transitionDelay = (d++ * 90) + 'ms'; e.target.classList.add('on'); io.unobserve(e.target); }); }, { rootMargin: '0px 0px -8% 0px' });   // what comes in together comes in from the top down, one after another
   const reveal = () => $('.in:not(.on), .ln-in:not(.on), .rv:not(.on)').forEach(el => io.observe(el));
   reveal();
   { const hd = one('.hands'), ho = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { hd.classList.add('on'); ho.disconnect(); } }, { rootMargin: '0px 0px -40% 0px', threshold: 1 }); ho.observe(hd); }   // drawn when they reach the upper part of the screen, so the line is seen being drawn
