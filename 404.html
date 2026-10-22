@@ -176,13 +176,13 @@
   function fromCamera(hs, fs) {   // the hands and eyes rise out of the clay, larger than life, modelled round as on the panels: a crisp edge and a full, rounded body
     const vw0 = video.videoWidth, vh0 = video.videoHeight, k = Math.max(HW / vw0, HH / vh0), w = vw0 * k, h = vh0 * k, ox = (HW - w) / 2, oy = (HH - h) / 2;
     const at = p => [HW - (ox + p.x * w), oy + p.y * h];   // a landmark in the cells, mirrored as a looking-glass
-    tCv.width = rCv.width = HW; tCv.height = rCv.height = HH; const g = tCx; g.fillStyle = '#000'; g.fillRect(0, 0, HW, HH); g.filter = 'blur(1.1px)'; g.lineCap = 'round'; g.lineJoin = 'round';
+    tCv.width = rCv.width = HW; tCv.height = rCv.height = HH; const g = tCx; g.fillStyle = '#000'; g.fillRect(0, 0, HW, HH); g.filter = 'none'; g.lineCap = 'butt'; g.lineJoin = 'miter'; g.miterLimit = 4;   // cut, not modelled: straight edges and sharp corners
     const grow = (P, c, s) => P.map(([x, y]) => [c[0] + (x - c[0]) * s, c[1] + (y - c[1]) * s]);
     const FING = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16], [17, 18, 19, 20]], WID = [.27, .25, .23, .2];   // each finger its own smooth tube, narrowing to the tip, a gap between them
     (hs || []).forEach((L, hi) => { let P = L.map(at); const pr = SMH[hi]; if (pr && pr.length === P.length) P = P.map(([x, y], i) => [pr[i][0] + (x - pr[i][0]) * .45, pr[i][1] + (y - pr[i][1]) * .45]); SMH[hi] = P;   /* the hand follows yours smoothly: the camera's points shake from frame to frame */ const c = [(P[0][0] + P[9][0]) / 2, (P[0][1] + P[9][1]) / 2]; P = grow(P, c, 1.35);   // a hand a third larger than it is, grown from the middle of the palm
       const size = Math.hypot(P[0][0] - P[9][0], P[0][1] - P[9][1]);
       g.fillStyle = g.strokeStyle = 'rgb(225,225,225)'; g.beginPath(); [0, 1, 2, 5, 9, 13, 17].forEach((i, n) => n ? g.lineTo(...P[i]) : g.moveTo(...P[i])); g.closePath(); g.fill(); g.lineWidth = size * .22; g.stroke();   // the palm, its corners rounded
-      FING.forEach((f, n) => f.slice(0, -1).forEach((j, q) => { g.lineWidth = size * WID[q] * (n === 4 ? .85 : n === 0 ? 1.08 : 1); g.strokeStyle = '#fff'; g.beginPath(); g.moveTo(...P[j]); g.lineTo(...P[f[q + 1]]); g.stroke(); })); });   // fingers, full and rounded, narrowing to their tips
+      FING.forEach((f, n) => { g.lineWidth = size * .24 * (n === 4 ? .85 : n === 0 ? 1.1 : 1); g.strokeStyle = '#fff'; g.beginPath(); g.moveTo(...P[f[0]]); f.slice(1).forEach(j => g.lineTo(...P[j])); g.stroke(); }); });   // each finger one straight-sided bar, bent sharply at its joints   // fingers, full and rounded, narrowing to their tips
     (fs || []).forEach(F => EYES.forEach(E => { const pts0 = E.slice(0, -1).map(i => at(F[i])), c0 = at(F[E[E.length - 1]]);
       const cx = pts0.reduce((a, p) => a + p[0], 0) / pts0.length, cy = pts0.reduce((a, p) => a + p[1], 0) / pts0.length, B = grow(pts0, [cx, cy], 1.75), [ix, iy] = grow([c0], [cx, cy], 1.75)[0];   // an eye nearly twice its size, still clear of the other
       const ew = Math.hypot(B[0][0] - B[8][0], B[0][1] - B[8][1]), upper = [B[8], ...B.slice(9), B[0]];
@@ -191,11 +191,12 @@
       line([...B, B[0]], ew * .1, 'rgb(205,205,205)');   // the lids, a raised rim all round
       line(upper.map(([x, y]) => [x + (x - cx) * .1, y - ew * .26 + Math.abs(x - cx) / ew * ew * .1]), ew * .07, 'rgb(170,170,170)');   // the fold of the lid above
       upper.forEach(([x, y], n) => { if (n % 2 || n === 0 || n === upper.length - 1) return; const dx = x - cx, dy = y - cy, l = Math.hypot(dx, dy) || 1; line([[x, y], [x + dx / l * ew * .22, y + dy / l * ew * .22]], ew * .045, 'rgb(200,200,200)'); });   // lashes, standing out along the upper lid
-      g.fillStyle = '#fff'; g.beginPath(); g.arc(ix, iy, ew * .24, 0, 7); g.fill();   // the iris, a dome
-      g.fillStyle = 'rgb(60,60,60)'; g.beginPath(); g.arc(ix, iy, ew * .08, 0, 7); g.fill(); }));   // and the pupil pressed into it
+      const poly = (x, y, r, n, a0) => { g.beginPath(); for (let i = 0; i < n; i++) { const a = a0 + i / n * Math.PI * 2; g[i ? 'lineTo' : 'moveTo'](x + Math.cos(a) * r, y + Math.sin(a) * r); } g.closePath(); g.fill(); };
+      g.fillStyle = '#fff'; poly(ix, iy, ew * .24, 6, Math.PI / 6);   // the iris, a six-sided boss
+      g.fillStyle = 'rgb(60,60,60)'; poly(ix, iy, ew * .09, 4, Math.PI / 4); }));   // and a square pupil cut into it   // and the pupil pressed into it
     g.filter = 'none'; rCx.filter = 'blur(3px)'; rCx.drawImage(tCv, 0, 0); rCx.filter = 'none';
     const d = g.getImageData(0, 0, HW, HH).data, r = rCx.getImageData(0, 0, HW, HH).data;
-    for (let i = 0; i < HW * HH; i++) { const m = d[i * 4] / 255, b = r[i * 4] / 255, e = Math.max(0, Math.min(1, (m - .15) / .3)); T[i] = e * e * (3 - 2 * e) * (.35 * m + .65 * Math.sqrt(b)); }   // a clean edge exactly on the outline, and a smooth body swelling towards the middle, as a modelled hand
+    for (let i = 0; i < HW * HH; i++) { const m = d[i * 4] / 255, b = r[i * 4] / 255, e = Math.max(0, Math.min(1, (m - .15) / .3)); T[i] = m < .15 ? 0 : Math.ceil((.35 * m + .65 * Math.sqrt(b)) * 4) / 4; }   // faceted: the body rises in flat steps, every step a hard edge, like cut stone
   }
   document.getElementById('go').addEventListener('click', async () => {
     say('Asking for the camera…');
@@ -219,7 +220,7 @@
     if (!fired) {
       if (camOn && hands && video.readyState >= 2 && video.currentTime !== seen) { seen = video.currentTime; const ts = performance.now();
         fromCamera(hands.detectForVideo(video, ts).landmarks, face.detectForVideo(video, ts).faceLandmarks); }
-      else if (!camOn) { if (!BASE) lay(); T.set(BASE); }   // without the camera: the pair of hands
+      else if (!camOn) T.fill(0);   // without the camera: nothing but what the finger leaves
       if (press.on) { roll(); const [cx, cy] = toCell(press.x, press.y); stamp(cx, cy, .02); }   // held still, the lump keeps growing
       let moved = 0; for (let i = 0; i < Pd.length; i++) { Pd[i] *= .995; const d = Math.max(T[i], Pd[i] * .9) - H[i]; if (d > .002 || d < -.002) moved = 1; H[i] += d * .12; }
       if (!moved && built) return; built = true;   // nothing moved: the maps stay as they are (they cost the most)   // the clay is slow: it follows the shape a little late, and what the finger left sinks away
