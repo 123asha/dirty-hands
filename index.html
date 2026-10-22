@@ -1491,13 +1491,13 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const DEPTH = i => Math.abs(p - i);                                                   // the works lie one exactly on another in the middle and flow into each other: the nearest one is in front
     const PM = ease(clamp((q - 0.4) / 0.55));                                             // as the ring closes, the depth order glides into the order of the categories, so the pile is already right when it forms: panels on top, then mirrors, tables, ...
     const KEY = q < 1 ? SZ.map((v, i) => v * (1 - PM) + (1 - 2 * i / 5) * PM) : cards.map((_, i) => -DEPTH(i)), RANK = KEY.map((v, i) => KEY.filter((w, j) => w < v || (w === v && j > i)).length);   // on the ring the nearer cards are in front; in the pile and on the wheel the nearer to three o'clock, the higher (the two orders agree where the ring closes, so nothing jumps)
-    const obs = [];
+    const obs = [], lay = 1 - ease(clamp((q - .75) / .25));   // lay: each card askew on the way, all of them exactly on one another once the pile has formed (no step when it does)
     cards.forEach((c, i) => {
       const d = introDone ? 1 : drop((now - t0 - LEAD - i * GAP) / DUR), h = lerp(10, H0[i], d);   /* the strips 10 high at first */
       const w = lerp(W0, PW, q), hh = lerp(h, PH, q);
       const fan = Math.atan2(Math.sin(ang[i]), Math.cos(ang[i])) * open;          // the pile lies at three o'clock, in the middle of the screen; opening, the cards run round the wheel to their places (up or down, whichever is shorter) and the top one stays where it is
       const sd = p - i, settle = q < 1 ? 1 : 0, leave = 0;   // the card in the middle lies straight; the others lie askew under it; the front one slides out to the left (first half) and comes back to the very back of the stack (second half)
-      const tx = WX + R * Math.cos(fan) + PILE[i][0] * settle - leave * 380, ty = WY + R * Math.sin(fan) + PILE[i][1] * settle - leave * 50;   // its place in the pile (page coordinates)
+      const tx = WX + R * Math.cos(fan) + PILE[i][0] * settle * lay - leave * 380, ty = WY + R * Math.sin(fan) + PILE[i][1] * settle * lay - leave * 50;   // its place in the pile (page coordinates)
       const th = TH[i] + 2 * Math.PI * q, cl = Math.cos(LA[i]), sx = Math.sin(th) * cl, sy = Math.sin(LA[i]);   // point on the sphere
       const cx = lerp(lerp(X0(i) + W0 / 2, PX + SPH * 0.9 * sx, wIn), tx, 1 - wOut);
       const cy = lerp(lerp(20 + h / 2, V * 0.4 + SPH * 0.55 * sy, wIn) + yc, ty, 1 - wOut);   // page coordinates; the ring turns a little above the middle of the screen
@@ -1512,13 +1512,13 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       c.style.position = fixed ? 'fixed' : 'absolute';
       c.style.left = (cx - w / 2) * U + 'px'; c.style.top = (cy - hh / 2 - (fixed ? yc : 0)) * U + 'px';
       // the photo turns over like a sheet as the pile forms: edge-on half way, and on its back the work without its background (scroll back and it turns back)
-      const flip = ease(clamp((t - .62) / .16)), fd = flip * 180, flipY = fd < 90 ? fd : fd - 180;
+      const flip = ease(clamp((t - .72) / .14)), fd = flip * 180, flipY = fd < 90 ? fd : fd - 180;
       c.classList.toggle('photo', fd < 90);
       if (t > 0 !== !!c._fl) { c._fl = t > 0; const tr = t > 0 ? 'none' : ''; c.querySelector('.hc-alt').style.transition = tr; c._hs.forEach(st => { st.firstElementChild.style.transition = tr; st.lastElementChild.style.transition = tr; }); }   // in the air the sides swap at once, on the edge, never by fading
       if (t === 0 && c._lt > 0 && !c.classList.contains('hov')) { c.style.transform = ''; c._hs.forEach(st => { st.style.transform = ''; }); }   // back on top in one jump (the page starting over, a fast scroll up): nothing of the pile's transform stays
       c._lt = t;
       if (t > 0) {                                                          // (at rest on top the hover owns the transform)
-        const rot = PILE[i][2] * (1 - wOut) * settle - leave * 16;          // a pile lies a little askew; a card thrown off turns as it goes
+        const rot = PILE[i][2] * (1 - wOut) * settle * lay - leave * 16;          // a pile lies a little askew; a card thrown off turns as it goes
         const bend = landed ? 0 : ease(clamp(t / 0.14)) * ease(clamp((1 - t) / 0.2)) * mv;   // concave all the way: from the first bit of scroll, round the ring, through the pile, until they settle flat on the wheel
         const Z = SPH * SZ[i] * U * ring, far = Math.max(0, -SZ[i]) * ring;   // on the ring some are nearer and some further away (and darker)
         const live = bend > 0.001 || ring > 0.001 || (!landed && t < 0.99);   // on the ring the cards keep their depth even when straight
@@ -1533,7 +1533,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       }
       {                                                                    // one work flows into the next: the one leaving softens, swells a little and fades while the next comes out of the blur, sharp, in the same place
         // both works are in the blur at once: while one dissolves, the next one comes in (weights add up to one)
-        const uPrev = i === 0 ? 1 : ease(clamp((p - (i - 1) - 0.25) / 0.5)), uNext = i === cards.length - 1 ? 0 : ease(clamp((p - i - 0.25) / 0.5)), w = uPrev * (1 - uNext), hide = t < 0.72 ? 0 : 1;   // until the pile has formed they are all there
+        const uPrev = i === 0 ? 1 : ease(clamp((p - (i - 1) - 0.25) / 0.5)), uNext = i === cards.length - 1 ? 0 : ease(clamp((p - i - 0.25) / 0.5)), w = uPrev * (1 - uNext), hide = flip < .5 ? 0 : 1;   // all there until the pile stands edge-on; from then on only the one on top
         c.style.opacity = lerp(1, ease(clamp(w * 1.6)), hide).toFixed(3);
         c.style.filter = hide > 0.01 && w < 0.999 ? `blur(${((1 - w) * hide * 18 * U).toFixed(1)}px)` : '';
         { const goal = 1 + (-sd) * 0.09 * hide; c._flow = c._flow == null ? goal : c._flow + (goal - c._flow) * .2; }   // eased, never a step
