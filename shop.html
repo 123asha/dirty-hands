@@ -123,7 +123,7 @@
     // the text: pretext lays out every line in the room the works leave free on it, left to right, piece by piece
   const otl = document.querySelector('.otl'), mid = document.querySelector('.mid'), fl = document.querySelector('.flow'), paras = [...fl.querySelectorAll('p')].map(p => p.textContent), LH = 19; let PT = null, preps = null, pool = [], rules = [], sig = '';
   import('https://esm.sh/@chenglou/pretext@1.0.0').then(m => document.fonts.ready.then(() => { PT = m; })).catch(() => {});
-  const hws = [...document.querySelectorAll('.otl .hw')].map(el => ({ el, x: 0 }));
+  const hws = [...document.querySelectorAll('.otl .hw')].map(el => { const c = el.cloneNode(true); c.setAttribute('aria-hidden', 'true'); el.after(c); return { el, c, x: 0 }; });   // each word and a copy one shelf-length away: it slides out past one edge as its copy slides in at the other
   function lay(pr, L, Rr, top, lh, obs, pad, rows, k0, center, ind1 = 0) {   // lay out one text into the room left free on each line, from line k0 of a block that starts at top; returns the next line (ind1: the first line's indent)
     let cur = { segmentIndex: 0, graphemeIndex: 0 }, k = k0, fresh = true;
     for (let guard = 0; guard < 80; guard++, k++) {
@@ -162,7 +162,7 @@
     const obs = [...its, ...falling].filter(it => it.box && MASK[it.src] && it.box.cx + it.box.S / 2 > L && it.box.cx - it.box.S / 2 < Rr);
     otl.style.top = ht + 'px';
     hws.forEach(h => { const e = h.el, b = h.band ?? (h.band = [...otl.querySelectorAll('.hl')].indexOf(e.parentNode)), base = e.offsetLeft + e.offsetWidth / 2, dx = wrapX(base, shelfOff[b] || 0) - base, th = (base + dx - innerWidth / 2) / (680 * U) * Math.PI / 2;   // the title's words go round with their shelves (and are never pushed by the trail)
-      e.style.transform = Math.abs(dx) > .3 ? `translateX(${dx.toFixed(1)}px)` : ''; e.style.opacity = drumFade(Math.cos(th)).toFixed(3); });
+      e.style.transform = Math.abs(dx) > .3 ? `translateX(${dx.toFixed(1)}px)` : ''; const W = 1360 * U, cdx = base + dx > 20 * U + W / 2 ? dx - W : dx + W; h.c.style.transform = `translateX(${cdx.toFixed(1)}px)`; });   /* no fading: the words simply go on round, out at one edge and in at the other */
     part(obs, r, lh);
     const key = Math.round(r.top) + '|' + U; if (key === sig) return; sig = key;   // the lines are broken once, with nothing in their way, and stay so: a work passing through only pushes words aside
     const rows = []; let k = 0;
