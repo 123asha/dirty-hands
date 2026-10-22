@@ -107,14 +107,14 @@
   const noise = (x, y) => { const xi = Math.floor(x), yi = Math.floor(y), xf = sm(x - xi), yf = sm(y - yi); return (hash(xi, yi) * (1 - xf) + hash(xi + 1, yi) * xf) * (1 - yf) + (hash(xi, yi + 1) * (1 - xf) + hash(xi + 1, yi + 1) * xf) * yf; };
 
   // the grids: the height the clay is pushed to (small, from the camera or the pointer) and the surface it is drawn with (twice as fine, with grain)
-  let HW, HH, NW, NH, T, H, Pd, GR, CR, hCv, hCx, hImg, nCv, nCx, nImg, dispTex, normTex, plane, mesh, vw = 2, vh = 2;
-  const mat = new THREE.MeshStandardMaterial({ color: 0x6d6760, roughness: .82, metalness: 0, envMapIntensity: .25, displacementScale: .3, displacementBias: -.18 });   // dark grey stoneware, wet
+  let HW, HH, NW, NH, T, H, Pd, GR, CR, hCv, hCx, hImg, nCv, nCx, nImg, aCv, aCx, aImg, sCv, sCx, dispTex, normTex, alphaTex, shTex, plane, mesh, shadow, vw = 2, vh = 2;
+  const mat = new THREE.MeshStandardMaterial({ color: 0x444547, roughness: .78, metalness: 0, envMapIntensity: .25, displacementScale: .3, displacementBias: -.18, alphaTest: .5 });   // black-grey clay, wet; only where there is clay: no slab, the page stays white round it
   // the skin of the clay, finer than any relief could carry: mottled colour, grit, small pits, drawn once and repeated; also used for how rough each grain is
   const skin = (() => { const n = 1024, c = Object.assign(document.createElement('canvas'), { width: n, height: n }), g = c.getContext('2d'), im = g.createImageData(n, n);
     const tn = (x, y, cell) => { const P = n / cell, fx = x / cell, fy = y / cell, xi = Math.floor(fx), yi = Math.floor(fy), xf = sm(fx - xi), yf = sm(fy - yi), H = (a, b) => hash(((a % P) + P) % P, ((b % P) + P) % P);   // value noise that wraps round the tile, so the repeats never show a seam
       return (H(xi, yi) * (1 - xf) + H(xi + 1, yi) * xf) * (1 - yf) + (H(xi, yi + 1) * (1 - xf) + H(xi + 1, yi + 1) * xf) * yf; };
     for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { const i = (y * n + x) * 4, m = tn(x, y, 128) * .5 + tn(x, y, 32) * .3 + tn(x, y, 8) * .2, gr = hash(x * 1.7, y * 1.3), pit = hash(x * .37 + 11, y * .53) > .993 ? 1 : 0;
-      const v = Math.max(0, Math.min(255, 200 + (m - .5) * 36 + (gr - .5) * 30 - pit * 60)); im.data[i] = v; im.data[i + 1] = v * .985; im.data[i + 2] = v * .965; im.data[i + 3] = 255; }   // a quiet mottle, grit and a few small pits
+      const v = Math.max(0, Math.min(255, 200 + (m - .5) * 36 + (gr - .5) * 30 - pit * 60)); im.data[i] = im.data[i + 1] = im.data[i + 2] = v; im.data[i + 3] = 255; }   // a quiet mottle, grit and a few small pits
     g.putImageData(im, 0, 0); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; })();
   mat.map = skin; mat.roughnessMap = skin;
   function build() {
@@ -126,18 +126,21 @@
       const c = Math.abs(noise(x * .06 + 3, y * .06) - .5) + Math.abs(noise(x * .13, y * .13 + 7) - .5) * .5; CR[i] = c < .045 ? 1 - c / .045 : 0; }   // fine crackle lines for the glaze, shown only once it is fired
     hCv = Object.assign(document.createElement('canvas'), { width: HW, height: HH }); hCx = hCv.getContext('2d'); hImg = hCx.createImageData(HW, HH);
     nCv = Object.assign(document.createElement('canvas'), { width: NW, height: NH }); nCx = nCv.getContext('2d'); nImg = nCx.createImageData(NW, NH);
-    dispTex && dispTex.dispose(); normTex && normTex.dispose();
-    dispTex = new THREE.CanvasTexture(hCv); normTex = new THREE.CanvasTexture(nCv); mat.displacementMap = dispTex; mat.normalMap = normTex; mat.normalScale.set(1, 1); mat.needsUpdate = true;
+    aCv = Object.assign(document.createElement('canvas'), { width: NW, height: NH }); aCx = aCv.getContext('2d'); aImg = aCx.createImageData(NW, NH);   // where the clay is
+    sCv = Object.assign(document.createElement('canvas'), { width: HW, height: HH }); sCx = sCv.getContext('2d');   // and its soft shadow on the white
+    dispTex && dispTex.dispose(); normTex && normTex.dispose(); alphaTex && alphaTex.dispose(); shTex && shTex.dispose();
+    dispTex = new THREE.CanvasTexture(hCv); normTex = new THREE.CanvasTexture(nCv); alphaTex = new THREE.CanvasTexture(aCv); shTex = new THREE.CanvasTexture(sCv); mat.displacementMap = dispTex; mat.normalMap = normTex; mat.alphaMap = alphaTex; mat.normalScale.set(1, 1); mat.needsUpdate = true;
     const D = 5; CAM.aspect = a; CAM.position.set(0, 0, D); CAM.lookAt(0, 0, 0); CAM.updateProjectionMatrix();
     vh = 2 * D * Math.tan(THREE.MathUtils.degToRad(CAM.fov / 2)) * 1.08; vw = vh * a;   // the slab a little larger than the screen, so the slight parallax never shows its edge
-    if (mesh) { S.remove(mesh); plane.dispose(); }
+    if (mesh) { S.remove(mesh); S.remove(shadow); plane.dispose(); shadow.geometry.dispose(); }
     plane = new THREE.PlaneGeometry(vw, vh, Math.round(innerWidth / 4), Math.round(innerHeight / 4)); mesh = new THREE.Mesh(plane, mat); S.add(mesh);
+    shadow = new THREE.Mesh(new THREE.PlaneGeometry(vw, vh), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: .2, alphaMap: shTex, depthWrite: false })); shadow.position.set(vw * .006, -vh * .01, -.05); S.add(shadow);   // the clay stands off the page: its shadow falls down and to the right, away from the light
     skin.repeat.set(innerWidth / 520, innerHeight / 520);   // the skin about 520 px to a repeat, the same grain on any screen
     R.setSize(innerWidth, innerHeight, false);
   }
   build(); addEventListener('resize', () => { if (!fired) build(); });
 
-  // ---- the pointer presses: a soft round dent that deepens while held and runs into a groove when dragged; the clay fills back in by itself
+  // ---- the pointer leaves clay: a lump under the finger that grows while held, a roll of it when dragged; it slowly sinks away by itself
   const press = { on: false, x: 0, y: 0 };
   const toCell = (x, y) => [x / innerWidth * HW, y / innerHeight * HH];
   function stamp(cx, cy, amt) { const r = Math.max(4, HW * .035), r2 = r * r;
@@ -204,35 +207,69 @@
         fromCamera(hands.detectForVideo(video, ts).landmarks, face.detectForVideo(video, ts).faceLandmarks); }
       else if (!camOn) T.fill(0);
       if (press.on) { const [cx, cy] = toCell(press.x, press.y); stamp(cx, cy, .035); }   // held still, the thumb keeps sinking
-      for (let i = 0; i < Pd.length; i++) { Pd[i] *= .992; H[i] += (T[i] - Pd[i] * .6 - H[i]) * .12; }   // the clay is slow: it follows the shape a little late, and fills dents back in
+      for (let i = 0; i < Pd.length; i++) { Pd[i] *= .995; H[i] += (Math.max(T[i], Pd[i] * .9) - H[i]) * .12; }   // the clay is slow: it follows the shape a little late, and what the finger left sinks away
     }
     // the height map: the face of the slab at .6, the impressions below it, the pushed-up clay above
     const hd = hImg.data; for (let i = 0; i < H.length; i++) { const v = Math.max(0, Math.min(255, (.6 + H[i] * .4) * 255)); hd[i * 4] = hd[i * 4 + 1] = hd[i * 4 + 2] = v; hd[i * 4 + 3] = 255; }
     hCx.putImageData(hImg, 0, 0); dispTex.needsUpdate = true;
     // the normal map: twice as fine, the height read smoothly between the cells, with the grain of the clay (and, once fired, the crackle of the glaze)
     const nd = nImg.data, k = 3.8, g = .045, c = .05 * fireT;
-    const h = (x, y) => { x = Math.max(0, Math.min(NW - 1, x)); y = Math.max(0, Math.min(NH - 1, y)); const fx = x / 2, fy = y / 2, x0 = Math.min(HW - 1, fx | 0), y0 = Math.min(HH - 1, fy | 0), x1 = Math.min(HW - 1, x0 + 1), y1 = Math.min(HH - 1, y0 + 1), tx = fx - x0, ty = fy - y0;
-      return (H[y0 * HW + x0] * (1 - tx) + H[y0 * HW + x1] * tx) * (1 - ty) + (H[y1 * HW + x0] * (1 - tx) + H[y1 * HW + x1] * tx) * ty + GR[y * NW + x] * g - CR[y * NW + x] * c; };
+    const hb = (x, y) => { x = Math.max(0, Math.min(NW - 1, x)); y = Math.max(0, Math.min(NH - 1, y)); const fx = x / 2, fy = y / 2, x0 = Math.min(HW - 1, fx | 0), y0 = Math.min(HH - 1, fy | 0), x1 = Math.min(HW - 1, x0 + 1), y1 = Math.min(HH - 1, y0 + 1), tx = fx - x0, ty = fy - y0;
+      return (H[y0 * HW + x0] * (1 - tx) + H[y0 * HW + x1] * tx) * (1 - ty) + (H[y1 * HW + x0] * (1 - tx) + H[y1 * HW + x1] * tx) * ty; };
+    const h = (x, y) => { const b = hb(x, y), xx = Math.max(0, Math.min(NW - 1, x)), yy = Math.max(0, Math.min(NH - 1, y)), j = yy * NW + xx; return b + (GR[j] * g - CR[j] * c) * Math.min(1, b * 8); };   // the grain lies only on the clay
+    const ad = aImg.data;
     for (let y = 0; y < NH; y++) for (let x = 0; x < NW; x++) { const dx = (h(x + 1, y) - h(x - 1, y)) * k, dy = (h(x, y + 1) - h(x, y - 1)) * k, l = Math.hypot(dx, dy, 1), i = (y * NW + x) * 4;
-      nd[i] = (-dx / l * .5 + .5) * 255; nd[i + 1] = (dy / l * .5 + .5) * 255; nd[i + 2] = (1 / l * .5 + .5) * 255; nd[i + 3] = 255; }
-    nCx.putImageData(nImg, 0, 0); normTex.needsUpdate = true;
+      nd[i] = (-dx / l * .5 + .5) * 255; nd[i + 1] = (dy / l * .5 + .5) * 255; nd[i + 2] = (1 / l * .5 + .5) * 255; nd[i + 3] = 255;
+      const a = Math.max(0, Math.min(1, (hb(x, y) - .03) / .05)) * 255; ad[i] = ad[i + 1] = ad[i + 2] = a; ad[i + 3] = 255; }   // a clean edge where the clay begins
+    nCx.putImageData(nImg, 0, 0); normTex.needsUpdate = true; aCx.putImageData(aImg, 0, 0); alphaTex.needsUpdate = true;
+    sCx.clearRect(0, 0, HW, HH); sCx.filter = 'blur(2px)'; sCx.drawImage(aCv, 0, 0, HW, HH); sCx.filter = 'none'; shTex.needsUpdate = true;
   }
 
   // ---- firing: the slab stops, glows in the kiln, shrinks a touch and comes out glazed, dark and glossy, crazed with fine lines
-  const WET = new THREE.Color(0x5a554f), GLAZE = new THREE.Color(0x3d4044), KILN = new THREE.Color(0xff5a1a);
-  let fireStart = 0;
-  fireBtn.addEventListener('click', () => { if (fired) return; fired = true; fireStart = performance.now(); press.on = false; fireBtn.hidden = true; say('In the kiln…'); if (typeof placeSound === 'function') placeSound(); else nudge(.6); });
+  const WET = new THREE.Color(0x444547), GLAZE = new THREE.Color(0x3b3d41), KILN = new THREE.Color(0xff5a1a);
+  let fireStart = 0, pieces = [], falling = false, fallT = 0;
+  fireBtn.addEventListener('click', () => { if (fired) return; if (!aImg.data.some((v, i) => i % 4 === 0 && v > 128)) { say('Nothing to fire yet: raise your hands to the camera, or leave some clay with the mouse.'); return; }
+    fired = true; fireStart = performance.now(); press.on = false; fireBtn.hidden = true; say('In the kiln…'); if (typeof placeSound === 'function') placeSound(); else nudge(.6); });
+  // the fired clay cut into its pieces (each hand, each eye, each lump), every piece a little glazed object of its own
+  function breakUp() {
+    const A = aImg.data, lab = new Int32Array(NW * NH), stack = new Int32Array(NW * NH), comps = [];
+    for (let s0 = 0; s0 < NW * NH; s0++) { if (lab[s0] || A[s0 * 4] < 128) continue; const id = comps.length + 1; let sp = 0, n = 0, x0 = NW, x1 = 0, y0 = NH, y1 = 0; stack[sp++] = s0; lab[s0] = id;
+      while (sp) { const p = stack[--sp], x = p % NW, y = (p / NW) | 0; n++; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+        for (const q of [x > 0 ? p - 1 : -1, x < NW - 1 ? p + 1 : -1, y > 0 ? p - NW : -1, y < NH - 1 ? p + NW : -1]) if (q >= 0 && !lab[q] && A[q * 4] >= 128) { lab[q] = id; stack[sp++] = q; } }
+      comps.push({ id, n, x0, x1, y0, y1 }); }
+    const snap = c => { const k = Object.assign(document.createElement('canvas'), { width: c.width, height: c.height }); k.getContext('2d').drawImage(c, 0, 0); return new THREE.CanvasTexture(k); };
+    const dS = snap(hCv), nS = snap(nCv);
+    comps.filter(c => c.n > 60).forEach((c, k) => {
+      const ac = Object.assign(document.createElement('canvas'), { width: NW, height: NH }), ax = ac.getContext('2d'), im = ax.createImageData(NW, NH);
+      for (let i = 0; i < NW * NH; i++) { const x = i % NW, mine = lab[i] === c.id || (!lab[i] && A[i * 4] > 0 && (lab[i - 1] === c.id || lab[i + 1] === c.id || lab[i - NW] === c.id || lab[i + NW] === c.id)); const v = mine ? A[i * 4] : 0; im.data[i * 4] = im.data[i * 4 + 1] = im.data[i * 4 + 2] = v; im.data[i * 4 + 3] = 255; } ax.putImageData(im, 0, 0);   // this piece alone, with the soft edge it had
+      const pw = (c.x1 - c.x0 + 3) / NW * vw, ph = (c.y1 - c.y0 + 3) / NH * vh, g = new THREE.PlaneGeometry(pw, ph, Math.max(2, Math.round(pw / vw * innerWidth / 4)), Math.max(2, Math.round(ph / vh * innerHeight / 4))), uv = g.attributes.uv;
+      for (let i = 0; i < uv.count; i++) { uv.setX(i, (c.x0 - 1 + uv.getX(i) * (c.x1 - c.x0 + 3)) / NW); uv.setY(i, 1 - (c.y0 - 1 + (1 - uv.getY(i)) * (c.y1 - c.y0 + 3)) / NH); }   // its own part of the snapshot
+      const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: mat.color.clone(), map: skin, roughnessMap: skin, roughness: mat.roughness, metalness: mat.metalness, envMapIntensity: mat.envMapIntensity, displacementMap: dS, displacementScale: .3, displacementBias: -.18, normalMap: nS, alphaMap: new THREE.CanvasTexture(ac), alphaTest: .5 }));
+      m.position.set(((c.x0 + c.x1) / 2 / NW - .5) * vw, (.5 - (c.y0 + c.y1) / 2 / NH) * vh, .02); S.add(m);
+      pieces.push({ m, hw: pw / 2, hh: ph / 2, vy: 0, vx: (Math.random() - .5) * .25, wz: (Math.random() - .5) * 1.4, wx: .4 + Math.random() * .5, wait: .05 + k * .09 + Math.random() * .08, rest: false }); });
+    mesh.visible = shadow.visible = false; falling = true; fallT = performance.now(); }
+  function fall(now, dt) {   // each piece drops in turn, turns a little as it goes, lands on the foot of the screen with a small bounce and lies there
+    const floor = -vh / 1.08 / 2; let moving = false;
+    pieces.forEach(p => { const t = (now - fallT) / 1000; if (t < p.wait) { moving = true; return; } if (p.rest) return; moving = true;
+      p.vy -= 9 * dt; p.m.position.y += p.vy * dt; p.m.position.x += p.vx * dt; p.m.rotation.z += p.wz * dt; p.m.rotation.x = Math.min(.5, p.m.rotation.x + p.wx * dt * (p.vy < -.2 ? 1 : -1));
+      const a = p.m.rotation.z, reach = Math.abs(Math.cos(a)) * p.hh + Math.abs(Math.sin(a)) * p.hw;
+      if (p.m.position.y - reach < floor) { p.m.position.y = floor + reach; if (p.vy < -1.2) { p.vy = -p.vy * .28; p.wz *= .4; p.vx *= .5; nudge(.25); } else { p.vy = 0; p.rest = true; } } });
+    if (!moving) { falling = false; afterFire(); } }
   const no = () => String(Math.floor(Math.random() * 9000) + 1000);
   function afterFire() { const d = new Date(), m = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
     tileNo = no(); say(`Tile No. ${tileNo}, ${d.getDate()} ${m} ${d.getFullYear()}, Dirty Hands`); keepBtn.hidden = againBtn.hidden = false; }
   keepBtn.addEventListener('click', () => { const a = document.createElement('a'); a.href = cv.toDataURL('image/png'); a.download = `dirty-hands-tile-${tileNo}.png`; a.click(); });
-  againBtn.addEventListener('click', () => { fired = false; fireT = 0; mesh.scale.setScalar(1); mat.color.copy(WET); mat.roughness = .74; mat.metalness = 0; mat.envMapIntensity = .25; mat.emissive.setRGB(0, 0, 0); Pd.fill(0); keepBtn.hidden = againBtn.hidden = true; fireBtn.hidden = false; say('Wet clay again. Nothing from the camera leaves your computer.'); });
+  againBtn.addEventListener('click', () => { pieces.forEach(p => { S.remove(p.m); p.m.geometry.dispose(); p.m.material.alphaMap.dispose(); p.m.material.dispose(); }); pieces = []; mesh.visible = shadow.visible = true;
+    fired = false; fireT = 0; mesh.scale.setScalar(1); mat.color.copy(WET); mat.roughness = .74; mat.metalness = 0; mat.envMapIntensity = .25; mat.emissive.setRGB(0, 0, 0); Pd.fill(0); H.fill(0); keepBtn.hidden = againBtn.hidden = true; fireBtn.hidden = false; say('Wet clay again. Nothing from the camera leaves your computer.'); });
 
+  let lastT = performance.now();
   (function loop(now) {
-    frame();
-    if (fired && fireT < 1) { fireT = Math.min(1, (now - fireStart) / 2600); const e = fireT * fireT * (3 - 2 * fireT);
-      mat.color.copy(WET).lerp(GLAZE, e); mat.roughness = .74 - .46 * e; mat.metalness = .5 * e; mat.envMapIntensity = .25 + .85 * e; mat.emissive.copy(KILN).multiplyScalar(Math.sin(Math.PI * Math.min(1, fireT * 1.3)) * .14); mesh.scale.setScalar(1 - .03 * e);
-      if (fireT >= 1) { mat.emissive.setRGB(0, 0, 0); afterFire(); } }
+    const dt = Math.min(.05, (now - lastT) / 1000); lastT = now;
+    if (!falling && !pieces.length) frame();
+    if (fired && fireT < 1) { fireT = Math.min(1, (now - fireStart) / 1600); const e = fireT * fireT * (3 - 2 * fireT);
+      mat.color.copy(WET).lerp(GLAZE, e); mat.roughness = .74 - .44 * e; mat.metalness = .12 * e; mat.envMapIntensity = .25 + 1.1 * e;   /* a black-grey glaze that still shows its relief: glossy, hardly metallic */ mat.emissive.copy(KILN).multiplyScalar(Math.sin(Math.PI * Math.min(1, fireT * 1.3)) * .14);
+      if (fireT >= 1) { mat.emissive.setRGB(0, 0, 0); breakUp(); } }   // glazed in the kiln, then it comes apart into its pieces
+    if (falling) fall(now, dt);
     CAM.position.x += (mx * .12 - CAM.position.x) * .05; CAM.position.y += (-my * .08 - CAM.position.y) * .05; CAM.lookAt(0, 0, 0);   // a very slight parallax, so the relief is felt
     R.render(S, CAM); requestAnimationFrame(loop); })(performance.now());
 </script>
