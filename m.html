@@ -471,7 +471,7 @@ window.preDone = new Promise(done => {
   let act = -1; const duoRoom = () => duo.style.setProperty('--pd', Math.max(0, duo.offsetHeight - innerHeight) + 'px'); let dw = innerWidth; addEventListener('resize', () => { if (innerWidth !== dw) { dw = innerWidth; duoRoom(); } }); duoRoom(); setTimeout(duoRoom, 1500);
   function onScroll() { const V = innerHeight;
     { const r = pots.getBoundingClientRect(), p = clamp((V * .85 - r.top) / (V * .5)); pots.querySelectorAll('.pp').forEach((el, k) => { const e = clamp(p * 1.6 - k * .2); el.style.transform = `rotateY(${(-(1 - e) * 92).toFixed(1)}deg)`; el.style.opacity = e > 0 ? 1 : 0; }); pots.lastElementChild.style.opacity = clamp(1 - p * 1.4).toFixed(3); }   // a line drawing first, the photo as it comes up
-    { let best = 0, bd = 1e9; cases.forEach((c, k) => { const r = c.firstElementChild.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - V * .42); if (d < bd) { bd = d; best = k; } });
+    { let best = 0, bd = 1e9; cases.forEach((c, k) => { const r = c.querySelector('.pic').getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - V * .42); if (d < bd) { bd = d; best = k; } });
       if (best !== act) { act = best; cases.forEach((c, k) => c.classList.toggle('act', k === best)); showName(best); } }   // the client in front, held under the menu
     { const r = formsEl.getBoundingClientRect(), p = clamp((V - r.top) / (V * .9)), e = 1 - Math.pow(1 - p, 3), DX = [-28, 30, 22]; words.forEach((w, k) => { w.style.transform = `translateX(${(DX[k] * (1 - e)).toFixed(2)}vw)`; w.style.opacity = clamp(p * 1.4 - k * .15).toFixed(3); }); }
   }
