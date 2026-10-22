@@ -122,7 +122,10 @@
   .names .w { position: absolute; right: 0; bottom: 0; white-space: nowrap; } .names .ch { display: inline-block; }
   .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .case { margin-top: var(--s5); }
-  .case .pic { display: block; width: 100%; aspect-ratio: 5 / 4; margin-top: 0; background: var(--gray) center / cover no-repeat; }   /* the kind of place over the picture, what was made under it on the left */
+  .case .pic { position: relative; overflow: hidden; display: block; width: 100%; aspect-ratio: 5 / 4; margin-top: 0; background: var(--gray) center / cover no-repeat; }   /* the kind of place over the picture, what was made under it on the left */
+  .case .pic::before { content: ''; position: absolute; left: 0; right: 0; top: -8%; bottom: -8%; background: inherit; }   /* the picture a little taller than its frame */
+  @supports (animation-timeline: view()) { .case .pic::before { animation: picDrift linear both; animation-timeline: view(); } }   /* and it drifts slowly inside it as the case goes by, with the scroll itself */
+  @keyframes picDrift { from { transform: translateY(-6%); } to { transform: translateY(6%); } }
   .case .meta { display: grid; grid-template-columns: 1fr 1fr; gap: var(--g); margin-top: var(--s2); border-top: 1px solid var(--rule); padding-top: var(--s1); }   /* under the picture: the kind of place on the left, what was made on the right */
   .case .cap span { display: block; }
   .case .cap span span:not(.ln-in) { display: inline; border: 0; padding: 0; }   /* the words while the caption is measured into lines stay in the line (as blocks they fell one under another) */
@@ -182,11 +185,11 @@
   .gal { flex: none; position: relative; height: 48vh; margin-top: var(--s3); }
   .cv .ico { display: block; width: 56px; height: 56px; margin: 0 auto var(--s2); overflow: visible; }   /* a small outline over the text, redrawn as the slider turns */
   .cv .ico path { fill: none; stroke: #9a9a9a; stroke-width: 1.2; vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: round; }   /* drawn as one line, never a black blot */
-  .track { position: relative; z-index: 1; display: flex; align-items: center; gap: 6px; height: 100%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; padding: 0 22vw; scrollbar-width: none; perspective: 1100px; perspective-origin: 50% 50%; touch-action: pan-x; }
+  .track { position: relative; z-index: 1; display: flex; align-items: flex-start; gap: 6px; height: 100%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; padding: 0 22vw; scrollbar-width: none; perspective: 1100px; perspective-origin: 50% 50%; touch-action: pan-x; }
   .track::-webkit-scrollbar { display: none; }
   .track .fr { flex: none; display: block; max-height: 100%; scroll-snap-align: center; isolation: isolate; }
   .track .fr.grey { background: #f2f2f2; } .track .fr.grey img { mix-blend-mode: multiply; }   /* a photo on white stands on the cards' grey: the white multiplied into it, the work untouched */
-  .track img { width: auto; height: auto; max-height: 48vh; max-width: 78vw; }   /* whole, never wider than the screen allows: a wide photo simply gets lower */
+  .track img { display: block; width: auto; height: 100%; max-width: 78vw; object-fit: cover; }   /* the photo fills its frame, cut to it if it is very wide */   /* whole, never wider than the screen allows: a wide photo simply gets lower */
   .cv .mid { flex: 1; display: grid; place-content: center; padding: var(--s2) var(--m); text-align: center; }
 
   /* order: the title on three shelves; the works stand on them and go round as the shelves are swiped; a tap lets the next work fall onto a free place; a black silhouette stands in the text and the lines bend round it */
@@ -362,7 +365,7 @@ window.preDone = new Promise(done => {
     if (titleReady) { chs.forEach((c, k) => { const e = clamp(p * 1.15 - k * .04); c._t = -e * e * (3 - 2 * e) * 130; }); glideTitle(); }   // the title leaves letter by letter, as it came, each letter gliding after the scroll (see glideTitle)
     pile.style.visibility = ''; cats.forEach(c => c.style.visibility = 'hidden');
     const tr = tbl.getBoundingClientRect(), endShift = 0, gone = clamp((tr.bottom - V * .42) / (V * .22)); pile.style.opacity = gone.toFixed(3);   // at the end of the table the pile melts away where it stands: chasing the page with the script made it shake on the iPhone
-    let top = 0, bd = 1e9; trs.forEach((r, k) => { const b = r.getBoundingClientRect(), d = Math.abs(b.top + 40 - V * .38); if (d < bd) { bd = d; top = k; } });
+    let top = 0, bd = 1e9; const mid = V * .34 + W * .23; trs.forEach((r, k) => { const b = r.getBoundingClientRect(), d = Math.abs((b.top + b.bottom) / 2 - mid); if (d < bd) { bd = d; top = k; } });   // the work of the paragraph whose middle is nearest the middle of the work
     const S = W * .46, PX = 16, PY = V * .34, flip = clamp((p - .55) / .3);
     pcs.forEach((el, k) => { const c = cats[k].getBoundingClientRect(), dk = Math.min(5, Math.abs(k - top)), sk = SKEW[k];
       const x = c.left + (PX + sk[0] * dk - c.left) * e, y = c.top + (PY + sk[1] * dk + endShift - c.top) * e, w = c.width + (S - c.width) * e, h = c.height + (S - c.height) * e;
@@ -370,7 +373,7 @@ window.preDone = new Promise(done => {
       el.style.width = w + 'px'; el.style.height = h + 'px'; el.style.zIndex = 10 - dk;
       el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) perspective(800px) rotateY(${(back ? f - 180 : f).toFixed(1)}deg) rotate(${(sk[2] * dk * e * .6).toFixed(1)}deg)`;
       el.style.opacity = k === top ? 1 : flip > .9 ? 0 : (1 - flip).toFixed(3); });   // once turned over only the work on top is seen
-    flowTable(p >= 1 && flip >= 1 && gone > .5 ? { r: pcs[top].getBoundingClientRect(), k: top } : null); }   // the lines go round the work on top, on both sides
+    flowTable(gone > .5 ? pcs.filter(el => +el.style.opacity > .05).map(el => ({ r: el.getBoundingClientRect(), k: el === pcs[top] && flip >= 1 ? top : -1 })) : null); }   // the lines go round every work in sight from the first moment, even while they fly in (by its own outline once it has turned over)   // the lines go round the work on top, on both sides
   pcs.forEach((el, k) => el.style.backgroundImage = `url('${PHOTO[k]}')`);
   addEventListener('scroll', () => requestAnimationFrame(pileTick), { passive: true }); addEventListener('resize', pileTick); one('#cats').addEventListener('scroll', pileTick, { passive: true }); pileTick();
   // the cases, under the clients' names
@@ -380,7 +383,8 @@ window.preDone = new Promise(done => {
   one('#allmedia').addEventListener('click', e => { const m = one('#media'); m.classList.toggle('all'); e.currentTarget.textContent = m.classList.contains('all') ? 'Fewer' : 'All publications'; $('.mi.more .mt').forEach(splitLines); reveal(); });   // the rest cut into lines once they are shown
 
   // every paragraph cut into its own lines, so they come in one after another as on the full page
-  function splitLines(el) { if (el._split || !el.textContent.trim()) return; el._split = 1;
+  function splitLines(el) { if (el._split || !el.textContent.trim() || el.querySelector('a, svg')) return;   // a paragraph holding a link or an icon stays as it is (cutting it into lines lost the arrow)
+    el._split = 1;
     const words = el.textContent.trim().split(/\s+/), spans = words.map(w => { const t = document.createElement('span'); t.textContent = w; t.style.whiteSpace = 'nowrap'; return t; });   // measured whole: a word never splits at its hyphen
     el.textContent = ''; spans.forEach((t, k) => { el.append(t); if (k < spans.length - 1) el.append(document.createTextNode(' ')); });
     const lines = []; let top = null, cur = null;
@@ -428,7 +432,8 @@ window.preDone = new Promise(done => {
       const N = 48, W = 96, cv = document.createElement('canvas'); cv.width = cv.height = W; const g = cv.getContext('2d'), sc = Math.min(W / img.width, W / img.height); g.drawImage(img, (W - img.width * sc) / 2, (W - img.height * sc) / 2, img.width * sc, img.height * sc);
       const d = g.getImageData(0, 0, W, W).data, rows = []; for (let r = 0; r < N; r++) { let L = -1, R = -1; for (let y = Math.floor(r * W / N); y < Math.floor((r + 1) * W / N); y++) for (let x = 0; x < W; x++) if (d[(y * W + x) * 4 + 3] > 40) { if (L < 0 || x < L) L = x; if (x > R) R = x; } rows.push(R < 0 ? null : [L / W, (R + 1) / W]); }
       shapes[k] = rows; if (CUT.every((_, j) => shapes[j])) reserveTable(); pileTick(); }; img.src = CUT[k]; return null; }   // with every outline read, the room is laid out again, tighter
-  function around(y0, y1, ob) {   // where the work is across the band y0..y1 of the screen: [left, right], or null
+  function around(y0, y1, ob) {   // where the work is across the band y0..y1 of the screen: [left, right], or null (for several works: from the leftmost to the rightmost of those beside the band)
+    if (Array.isArray(ob)) { let L = Infinity, R = -Infinity; ob.forEach(o => { const a = around(y0, y1, o); if (a) { L = Math.min(L, a[0]); R = Math.max(R, a[1]); } }); return R > L ? [L, R] : null; }
     if (!ob || y1 < ob.r.top - 6 || y0 > ob.r.bottom + 6) return null; const sh = shapes[ob.k]; if (!sh) return [ob.r.left, ob.r.right];
     let L = Infinity, R = -Infinity; sh.forEach((e, i) => { const a = ob.r.top + i / sh.length * ob.r.height, b = a + ob.r.height / sh.length; if (!e || b < y0 - LHP || a > y1 + LHP) return; L = Math.min(L, ob.r.left + e[0] * ob.r.width); R = Math.max(R, ob.r.left + e[1] * ob.r.width); });
     return R > L ? [L, R] : null; }
@@ -475,10 +480,10 @@ window.preDone = new Promise(done => {
     let k = 0; path.setAttribute('d', tpl.replace(/#/g, () => { const v = nums[i][k] + (nums[j][k] - nums[i][k]) * e; k++; return v.toFixed(1); })); requestAnimationFrame(morph); })(0);
 
   // the views
-  const view = one('#view'), x = one('#close'); let open = false;
+  const view = one('#view'), x = one('#close'); let open = false, lockY = 0;
   window.clayBlocked = () => open;
-  function show(html, fit) { view.innerHTML = html; view.scrollTop = 0; view.classList.toggle('fit', !!fit); view.classList.add('open'); view.setAttribute('aria-hidden', 'false'); x.hidden = false; open = true; document.body.style.overflow = 'hidden'; if (window.muffle) muffle(true); }
-  function hide() { view.classList.remove('open'); view.setAttribute('aria-hidden', 'true'); x.hidden = true; open = false; document.body.style.overflow = ''; if (location.hash === '#order') history.replaceState(null, '', location.pathname); if (window.muffle) muffle(false); }
+  function show(html, fit) { view.innerHTML = html; view.scrollTop = 0; view.classList.toggle('fit', !!fit); view.classList.add('open'); view.setAttribute('aria-hidden', 'false'); x.hidden = false; if (!open) { lockY = scrollY; Object.assign(document.body.style, { position: 'fixed', top: -lockY + 'px', left: '0', right: '0' }); } open = true; if (window.muffle) muffle(true); }   // the page under a view is pinned where it is: on the iPhone it scrolled under it otherwise
+  function hide() { view.classList.remove('open'); view.setAttribute('aria-hidden', 'true'); x.hidden = true; open = false; Object.assign(document.body.style, { position: '', top: '', left: '', right: '' }); scrollTo({ top: lockY, behavior: 'instant' }); if (location.hash === '#order') history.replaceState(null, '', location.pathname); if (window.muffle) muffle(false); }
   x.addEventListener('click', hide); addEventListener('keydown', e => { if (e.key === 'Escape' && open) hide(); });
   const letters = s => [...s].map(c => `<span class="ch">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
 
@@ -502,7 +507,10 @@ window.preDone = new Promise(done => {
     (function flow() { if (!view.contains(ip)) return; if (goal && cur) { let moved = false; cur.forEach((v, n) => { const d = goal[n] - v; if (Math.abs(d) > .01) { cur[n] = v + d * .08; moved = true; } }); if (moved) ip.setAttribute('d', outlineD(cur)); } requestAnimationFrame(flow); })();
     track.addEventListener('scroll', redraw, { passive: true }); setTimeout(redraw, 300);
     imgs.forEach(fr => fr.classList.add('dr'));
-    const D = drum(track, .18, imgs, (fr, b, k, w, sw) => { b.style.backgroundImage = `url("${fr.firstChild.src}")`; b.style.backgroundSize = `${w.toFixed(1)}px ${fr.offsetHeight.toFixed(1)}px`; b.style.backgroundPosition = `${(-k * sw + .5).toFixed(1)}px 0`; });   // as the top slider, and a little round even at rest
+    const HF = [1, .76, .9, .7, .84, .72, .94, .78], YO = [0, .25, .8, .4, 1, .15, .6, .9];   // stepped as on the full page: every frame its own height and level, the gap between them always the same
+    imgs.forEach((fr, n) => { const h = 48 * HF[n % HF.length]; fr.style.height = h + 'vh'; fr.style.marginTop = ((48 - h) * YO[n % YO.length]).toFixed(2) + 'vh'; });
+    const D = drum(track, .18, imgs, (fr, b, k, w, sw) => { const im = fr.firstChild, h = fr.offsetHeight, sc = im.naturalWidth ? Math.max(w / im.naturalWidth, h / im.naturalHeight) : 1, bw = im.naturalWidth ? im.naturalWidth * sc : w, bh = im.naturalWidth ? im.naturalHeight * sc : h;   // as the photo lies in its frame (cover)
+      b.style.backgroundImage = `url("${im.src}")`; b.style.backgroundSize = `${bw.toFixed(1)}px ${bh.toFixed(1)}px`; b.style.backgroundPosition = `${((w - bw) / 2 - k * sw + .5).toFixed(1)}px ${((h - bh) / 2).toFixed(1)}px`; });   // as the top slider, and a little round even at rest
     imgs.forEach(fr => { if (!fr.firstChild.complete) fr.firstChild.addEventListener('load', () => { D.size(); D.go(); }, { once: true }); }); }
   // Karen and Lisa: a tap on the label opens their story, and everything in it comes in one thing after another: the name letter by letter, the role, their own part of the photo from its top edge down, then each ruled line and its text line by line
   const PEOPLE = [['Karen', 'Co-owner, Dirty Hands', 17, ['Designer and entrepreneur, one of the two founders of DirtyHands.', 'Pairs professional design with artistic intuition to bring unconventional ideas to life.']],
