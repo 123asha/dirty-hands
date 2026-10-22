@@ -339,7 +339,7 @@
   </div>
 
   <div class="plab" style="left:0;top:calc(613 * var(--u));width:100%;height:calc(709 * var(--u));"><div class="plab-in">
-    <p class="t18" style="left:calc(20 * var(--u));opacity:.4">Clients about us</p>
+    <p class="t18" style="left:calc(20 * var(--u));opacity:.4">Our projects</p>
     <div class="quote" style="left:calc(250 * var(--u));width:calc(210 * var(--u));"><div class="rules" data-n="3" data-step="19" style="left:0;top:0;width:100%;height:calc(38 * var(--u));"></div><p class="t18 q" style="line-height:calc(19 * var(--u));"></p></div>
   </div></div>
   <h3 class="t name2 partner" style="left:calc(706 * var(--u));top:calc(621.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">Brera</span></h3>
@@ -718,9 +718,8 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   document.querySelectorAll('.hero > .nav a[href^="#"]').forEach(a => a.addEventListener('click', e => { const el = anchor(a.getAttribute('href')); if (!el) return; e.preventDefault(); glideTo(el); }));   // About and Cases glide there: Cases to the first case, level with its client's name
   partners.forEach((el, i) => el.addEventListener('click', () => { if (pics[i]) glideTo(pics[i]); }));   // a slow, soft glide rather than the browser's own jump   // a name is an anchor: it takes you to its case
 
-  // "Clients about us": the quote on the left (two lines between ruled lines, one column wide) changes with the client that is level with the labels
-  // (placeholder quotes: to be replaced with the real ones)
-  const QUOTES = ["Our dining room became a quiet gallery.", "Every plate feels made for this table.", "The mood of the whole room has changed.", "Guests ask about the plates first.", "Handmade, and it shows in the best way."];
+  // "Our projects": on the left, what was made for the project that is level with the labels (from dirtyhands.ru/projects, as in the cases)
+  const QUOTES = ["A ceramic triptych at the very centre of an Italian restaurant.", "Two large panels, below and above, over a kitchen open to the guests.", "Smooth, rounded slabs like Mediterranean stones on three sides of the bar.", "Half-round ceramic panels on the columns, and planters for several pots.", "Two large wall panels for the bathroom, tattooed with Russian and Soviet symbols."];
   const quoteP = one('.quote .q'); let quoteIdx = -1, quoteToken = 0;
   function setQuote(i, now) {
     if (!quoteP || i === quoteIdx) return;
@@ -1414,7 +1413,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     // the title soaks into the background once it is released and led away: the edges bleed like water in clay, and by the gray block it has dried into nothing
     const release = ttlBox.offsetHeight / U - V + 40;                 // scroll position where the stuck title lets go
     const soak = ease(clamp((y - release) / (V * 0.5)));
-    soakDisp.setAttribute('scale', ((soak * 26 * U) || 0).toFixed(1)); soakBlur.setAttribute('stdDeviation', ((soak * 5 * U) || 0).toFixed(2));
+    { const sc = ((soak * 26 * U) || 0).toFixed(1), sd = ((soak * 5 * U) || 0).toFixed(2); if (sc !== soakDisp._v) { soakDisp._v = sc; soakDisp.setAttribute('scale', sc); } if (sd !== soakBlur._v) { soakBlur._v = sd; soakBlur.setAttribute('stdDeviation', sd); } }   /* only when it changes: rewriting the filter every frame made the browser redraw it every frame and the scroll stutter */
     // once the title is no longer stuck it is not blurred or faded: its letters, from the first one on, climb up one after another in steps, and so on with the scroll
     h1.style.filter = 'none'; ttlBox.style.opacity = 1; ttlBox.style.zIndex = '';
     { const r = Math.max(0, y - release), D = 45, K = 160; h1.style.translate = r > 0 ? `0 ${((K * (1 - Math.exp(-r / K)) + (y - yS) * 0.6) * U).toFixed(1)}px` : '';   /* and it trails the scroll a little, settling softly */ /* released, the title does not jump to the speed of the page: it starts slowly and catches up */ (h1._chars || (h1._chars = [...h1.querySelectorAll('.ch')])).forEach((ch, j) => { ch._t = -ease(clamp((r - j * D) / 340)) * 220 * U; });   /* each letter's place; it glides there on its own (below), so the steps never jump with the wheel */
