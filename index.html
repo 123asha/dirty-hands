@@ -938,9 +938,9 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     stackStory();
     const mediaItems = storyP.map(q => { const tl = gsap.timeline({ paused: true });
       [q, q._desc, q._date].forEach(el => el && done.add(el));
-      riseIn(tl, splitMask(q), { each: .09 }); if (q._date) riseIn(tl, splitMask(q._date), { at: .06 }); if (q._desc) riseIn(tl, splitMask(q._desc), { each: .09, at: .18 }); if (q._img) { touched.push(q._img); tl.fromTo(q._img, { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'power2.inOut', clearProps: 'clipPath' }, .12); }   // the picture opens from its top edge down, under the outlet
+      riseIn(tl, splitMask(q), { each: .09 }); if (q._date) riseIn(tl, splitMask(q._date), { at: .06 }); if (q._desc) riseIn(tl, splitMask(q._desc), { each: .09, at: .18 }); if (q._img) { touched.push(q._img); tl.fromTo(q._img, { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'power2.inOut', clearProps: 'clipPath' }, .25); }   // the picture opens from its top edge down, under the outlet
       return { el: q, tl }; });
-    stag(mediaItems, { gap: .22 });
+    stag(mediaItems, { gap: .5 });   // one publication after another, never together
 
     // all other text: line by line, one paragraph after another
     const items = [];
