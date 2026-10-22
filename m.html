@@ -368,13 +368,13 @@ window.preDone = new Promise(done => {
     pile.style.visibility = ''; cats.forEach(c => c.style.visibility = 'hidden');
     const tr = tbl.getBoundingClientRect(), endShift = 0, gone = clamp((tr.bottom - V * .42) / (V * .22)); pile.style.opacity = gone.toFixed(3);   // at the end of the table the pile melts away where it stands: chasing the page with the script made it shake on the iPhone
     let top = 0, bd = 1e9; const mid = V * .34 + W * .23; trs.forEach((r, k) => { const b = r.getBoundingClientRect(), d = Math.abs((b.top + b.bottom) / 2 - mid); if (d < bd) { bd = d; top = k; } });   // the work of the paragraph whose middle is nearest the middle of the work
-    const S = W * .46, PX = 16, PY = V * .34, flip = clamp((p - .55) / .2), lay = Math.sin(Math.PI * e);   // lay: each work askew on the way, all of them exactly on one another once gathered
+    const S = W * .46, PX = 16, PY = V * .34, flip = clamp((p - .1) / .35), lay = Math.sin(Math.PI * e);   // lay: each work askew on the way, all of them exactly on one another once gathered
     pcs.forEach((el, k) => { const c = cats[k].getBoundingClientRect(), dk = Math.min(5, Math.abs(k - top)), sk = SKEW[k];
       const x = c.left + (PX + sk[0] * dk * lay - c.left) * e, y = c.top + (PY + sk[1] * dk * lay + endShift - c.top) * e, w = c.width + (S - c.width) * e, h = c.height + (S - c.height) * e;
-      const f = k === top ? flip * 180 : 0, back = f > 90;   // only the work on top turns over if (el.classList.contains('back') !== back) { el.classList.toggle('back', back); el.style.backgroundImage = `url('${back ? CUT[k] : PHOTO[k]}')`; }   // edge-on half way, and on its back the work without its background
+      const f = flip * 180, back = f > 90;   /* every work turns over to its cut-out on the way */ if (el.classList.contains('back') !== back) { el.classList.toggle('back', back); el.style.backgroundImage = `url('${back ? CUT[k] : PHOTO[k]}')`; }   // edge-on half way, and on its back the work without its background
       el.style.width = w + 'px'; el.style.height = h + 'px'; el.style.zIndex = 10 - dk;
       el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) perspective(800px) rotateY(${(back ? f - 180 : f).toFixed(1)}deg) rotate(${(sk[2] * dk * lay * .6).toFixed(1)}deg)`;
-      el.style.opacity = k === top || flip <= 0 ? 1 : 0; });   // they gather into one solid pile; once gathered the ones under it go, and only the top one turns over
+      el.style.opacity = k === top || g_ < 1 ? 1 : 0; });   // they gather into one solid pile; once gathered the ones under it go, and only the top one turns over
     flowTable(gone > .5 ? pcs.filter(el => +el.style.opacity > .05).map(el => ({ r: el.getBoundingClientRect(), k: el === pcs[top] && flip >= 1 ? top : -1 })) : null); }   // the lines go round every work in sight from the first moment, even while they fly in (by its own outline once it has turned over)   // the lines go round the work on top, on both sides
   pcs.forEach((el, k) => el.style.backgroundImage = `url('${PHOTO[k]}')`);
   addEventListener('scroll', () => requestAnimationFrame(pileTick), { passive: true }); addEventListener('resize', pileTick); one('#cats').addEventListener('scroll', pileTick, { passive: true }); pileTick();
@@ -470,7 +470,7 @@ window.preDone = new Promise(done => {
   let act = -1;
   function onScroll() { const V = innerHeight;
     { const r = pots.getBoundingClientRect(), p = clamp((V * .85 - r.top) / (V * .5)); pots.querySelectorAll('.pp').forEach((el, k) => { const e = clamp(p * 1.6 - k * .2); el.style.transform = `rotateY(${(-(1 - e) * 92).toFixed(1)}deg)`; el.style.opacity = e > 0 ? 1 : 0; }); pots.lastElementChild.style.opacity = clamp(1 - p * 1.4).toFixed(3); }   // a line drawing first, the photo as it comes up
-    { let best = 0, bd = 1e9; cases.forEach((c, k) => { const r = c.querySelector('.pic').getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - V * .42); if (d < bd) { bd = d; best = k; } });
+    { let best = 0, bd = 0; cases.forEach((c, k) => { const r = c.querySelector('.pic').getBoundingClientRect(); if (r.top + r.height / 2 < V * .55) best = k; });   // the last case whose picture has come up to the middle: the name changes with the picture, never before it
       if (best !== act) { act = best; cases.forEach((c, k) => c.classList.toggle('act', k === best)); showName(best); } }   // the client in front, held under the menu
     { const r = formsEl.getBoundingClientRect(), p = clamp((V - r.top) / (V * .9)), e = 1 - Math.pow(1 - p, 3), DX = [-28, 30, 22]; words.forEach((w, k) => { w.style.transform = `translateX(${(DX[k] * (1 - e)).toFixed(2)}vw)`; w.style.opacity = clamp(p * 1.4 - k * .15).toFixed(3); }); }
   }
