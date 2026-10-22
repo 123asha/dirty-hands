@@ -277,7 +277,7 @@
 
 <script>window.clayFast = true;   // on the phone the marks dry sooner</script>
 <script src="clay.js?v=8"></script>
-<script src="sound.js?v=13"></script>
+<script src="sound.js?v=14"></script>
 <script src="outline.js"></script>
 <script>
 // the preloader: a white sheet; one finger loaded with clay is drawn across it from left to right, then the sheet fades away and the page begins as it always does
@@ -368,12 +368,12 @@ window.preDone = new Promise(done => {
     pile.style.visibility = ''; cats.forEach(c => c.style.visibility = 'hidden');
     const tr = tbl.getBoundingClientRect(), endShift = 0, gone = clamp((tr.bottom - V * .42) / (V * .22)); pile.style.opacity = gone.toFixed(3);   // at the end of the table the pile melts away where it stands: chasing the page with the script made it shake on the iPhone
     let top = 0, bd = 1e9; const mid = V * .34 + W * .23; trs.forEach((r, k) => { const b = r.getBoundingClientRect(), d = Math.abs((b.top + b.bottom) / 2 - mid); if (d < bd) { bd = d; top = k; } });   // the work of the paragraph whose middle is nearest the middle of the work
-    const S = W * .46, PX = 16, PY = V * .34, flip = clamp((p - .55) / .3);
+    const S = W * .46, PX = 16, PY = V * .34, flip = clamp((p - .55) / .2), lay = Math.sin(Math.PI * e);   // lay: each work askew on the way, all of them exactly on one another once gathered
     pcs.forEach((el, k) => { const c = cats[k].getBoundingClientRect(), dk = Math.min(5, Math.abs(k - top)), sk = SKEW[k];
-      const x = c.left + (PX + sk[0] * dk - c.left) * e, y = c.top + (PY + sk[1] * dk + endShift - c.top) * e, w = c.width + (S - c.width) * e, h = c.height + (S - c.height) * e;
+      const x = c.left + (PX + sk[0] * dk * lay - c.left) * e, y = c.top + (PY + sk[1] * dk * lay + endShift - c.top) * e, w = c.width + (S - c.width) * e, h = c.height + (S - c.height) * e;
       const f = k === top ? flip * 180 : 0, back = f > 90;   // only the work on top turns over if (el.classList.contains('back') !== back) { el.classList.toggle('back', back); el.style.backgroundImage = `url('${back ? CUT[k] : PHOTO[k]}')`; }   // edge-on half way, and on its back the work without its background
       el.style.width = w + 'px'; el.style.height = h + 'px'; el.style.zIndex = 10 - dk;
-      el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) perspective(800px) rotateY(${(back ? f - 180 : f).toFixed(1)}deg) rotate(${(sk[2] * dk * e * .6).toFixed(1)}deg)`;
+      el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) perspective(800px) rotateY(${(back ? f - 180 : f).toFixed(1)}deg) rotate(${(sk[2] * dk * lay * .6).toFixed(1)}deg)`;
       el.style.opacity = k === top || flip <= 0 ? 1 : 0; });   // they gather into one solid pile; once gathered the ones under it go, and only the top one turns over
     flowTable(gone > .5 ? pcs.filter(el => +el.style.opacity > .05).map(el => ({ r: el.getBoundingClientRect(), k: el === pcs[top] && flip >= 1 ? top : -1 })) : null); }   // the lines go round every work in sight from the first moment, even while they fly in (by its own outline once it has turned over)   // the lines go round the work on top, on both sides
   pcs.forEach((el, k) => el.style.backgroundImage = `url('${PHOTO[k]}')`);
@@ -485,7 +485,14 @@ window.preDone = new Promise(done => {
   const view = one('#view'), x = one('#close'); let open = false, lockY = 0;
   window.clayBlocked = () => open;
   function show(html, fit) { view.innerHTML = html; view.scrollTop = 0; view.classList.toggle('fit', !!fit); view.classList.add('open'); view.setAttribute('aria-hidden', 'false'); x.hidden = false; if (!open) { lockY = scrollY; Object.assign(document.body.style, { position: 'fixed', top: -lockY + 'px', left: '0', right: '0' }); } open = true; if (window.muffle) muffle(true); }   // the page under a view is pinned where it is: on the iPhone it scrolled under it otherwise
-  function hide() { view.classList.remove('open'); view.setAttribute('aria-hidden', 'true'); x.hidden = true; open = false; Object.assign(document.body.style, { position: '', top: '', left: '', right: '' }); scrollTo({ top: lockY, behavior: 'instant' }); if (location.hash === '#order') history.replaceState(null, '', location.pathname); if (window.muffle) muffle(false); }
+  // closing plays the opening backwards: the blocks go from the bottom up, the title's letters sink, then the view fades
+  let closing = false;
+  function hide() { if (closing || !open) return; closing = true;
+    const blocks = [...view.querySelectorAll('.head .lab, .big, .face, .gal, .mid, .rows, .txt, .strip, .shelves, .foot')].reverse(), chs = view.querySelectorAll('.head .h .ch, .shelf .h');
+    gsap.to(blocks, { opacity: 0, y: -16, duration: .35, ease: 'power2.in', stagger: .06 });
+    gsap.to(chs, { yPercent: 110, opacity: 0, duration: .4, ease: 'power2.in', stagger: { each: .03, from: 'end' }, delay: blocks.length * .06 * .6 });
+    setTimeout(() => { closing = false; shut(); }, 380 + blocks.length * 60 * .6 + 120); }
+  function shut() { view.classList.remove('open'); view.setAttribute('aria-hidden', 'true'); x.hidden = true; open = false; Object.assign(document.body.style, { position: '', top: '', left: '', right: '' }); scrollTo({ top: lockY, behavior: 'instant' }); if (location.hash === '#order') history.replaceState(null, '', location.pathname); if (window.muffle) muffle(false); }
   x.addEventListener('click', hide); addEventListener('keydown', e => { if (e.key === 'Escape' && open) hide(); });
   const letters = s => [...s].map(c => `<span class="ch">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
 
@@ -529,7 +536,12 @@ window.preDone = new Promise(done => {
   $('.who').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); openPerson(+b.dataset.p); }));
   function openCase(c) { const [n, t] = CASES[c];
     show(`<div class="head"><p class="h">${n}</p><p class="lab" style="margin-top:var(--s1)">${t}</p><div class="big" style="background-image:url('${SRC(c)}');background-position:${POS(c)}"></div></div><div class="txt"><p>${CASE_TEXT[c][0]}</p><p>${CASE_TEXT[c][1]}</p></div><div class="strip cover">${Array.from({ length: CASE_N[CASE_KEY[c]] - 1 }, (_, k) => `<i class="bend" style="background-image:url('${SRC(c, k + 1)}');background-position:${POS(c, k + 1)}"></i>`).join('')}</div>`);
-    bendStrip(view.querySelector('.strip'), .7); }
+    bendStrip(view.querySelector('.strip'), .7);
+    const hd = view.querySelector('.head .h'); hd.innerHTML = letters(hd.textContent);   // and it opens as the others do: the name letter by letter, the picture from its top edge down, then the text line by line
+    gsap.fromTo(view.querySelectorAll('.head .h .ch'), { yPercent: 110 }, { yPercent: 0, duration: .8, ease: EASE, stagger: .04, delay: .1 });
+    gsap.fromTo(view.querySelector('.head .lab'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .7, ease: EASE, delay: .3 });
+    gsap.fromTo(view.querySelector('.big'), { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'power2.inOut', delay: .35 });
+    gsap.fromTo(view.querySelectorAll('.txt p, .strip'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .8, ease: EASE, stagger: .12, delay: .9 }); }
 
   // order, as on the full page: the title on three shelves that turn when swiped, a tap lets the next work fall onto a free place on them, and a black silhouette stands in the text
   function openOrder() { const W = ['tattoo-relief-up', 'panel-eva', 'shelf-spine', 'mirror-beetles', 'bust', 'urban-angel', 'vase-brutskin', 'table-cubeball'];

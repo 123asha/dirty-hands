@@ -3,6 +3,7 @@
 // ---- sound: a very light, calm museum background made in the browser (no files): a soft D major chord held and breathing, a little air, and a long room around it. Off until the switch is pressed; inside a view (a category, a case, the Story) it goes muffled, as if behind a wall
 const sndBtn = document.querySelector('.snd'); let sBreeze = null, sBreezeBp = null, sWhisper = null, sBake = null, sPan = null, sGust = 0, sLeafBuf = null, sLeafOut = null, actx = null, sMaster = null, sLp = null, sOn = false, sInside = false, sInG = null, sWob = null, sSw = null, sBp = null;
 function startSound() {
+  try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}   // on the iPhone: play as sound, not as a ringtone the silent switch would mute
   const C = actx = new (window.AudioContext || window.webkitAudioContext)();
   sMaster = C.createGain(); sMaster.gain.value = 0; sLp = C.createBiquadFilter(); sLp.type = 'lowpass'; sLp.frequency.value = 2600; sLp.Q.value = .4;
   const dry = C.createGain(), wet = C.createGain(), rv = C.createConvolver(); dry.gain.value = .55; wet.gain.value = .8;
@@ -126,4 +127,6 @@ addEventListener('pointerover', e => { const t = e.target.closest && e.target.cl
 addEventListener('scroll', () => { const y = scrollY, d = Math.abs(y - scrLast); scrLast = y; if (d > 2) soundNudge(Math.min(1, d / 120)); }, { passive: true });
 addEventListener('click', () => soundNudge(.6), { passive: true });
 sndBtn.addEventListener('click', e => { e.stopPropagation(); sndBtn._touched = true; setSound(!sOn); });
+const wake = () => { if (actx && sOn && actx.state !== 'running') actx.resume(); };   // Safari lets sound start only on a finished tap (touchend, click), not on the first touch
+addEventListener('touchend', wake, { passive: true }); addEventListener('click', wake, { passive: true });
 addEventListener('pointerdown', e => { if (!sndBtn._touched && !sOn && !sndBtn.contains(e.target)) { sndBtn._touched = true; setSound(true); } }, { capture: true });   // the first click anywhere starts the sound (the browser allows sound only after a click); after that only the switch turns it off and on
