@@ -144,7 +144,7 @@
   .media .h { font-size: var(--h2); }
   .mi { display: grid; grid-template-columns: 72px 1fr; gap: var(--g); padding: var(--s3) 0; border-top: 1px solid var(--rule); }
   .mi i { position: relative; overflow: hidden; display: block; width: 60%; aspect-ratio: 4 / 3; background: var(--gray); margin-bottom: var(--s2); }
-  .mi i b { position: absolute; inset: 0; background: center / 100% 100% no-repeat; transform-origin: 50% 50%; }   /* the whole picture, exactly the size of its grey frame (the frame takes the picture's own shape) */
+  .mi i b { position: absolute; inset: 0; background: 50% 15% / cover no-repeat; transform-origin: 50% 50%; }   /* square, cut to the frame, held near the top so no face is lost */
   .rvz { opacity: 0; transition: opacity .45s var(--ease); } .rvz b { clip-path: inset(0 0 100% 0); transform: scale(1.12); transition: clip-path 1.3s cubic-bezier(.65, 0, .35, 1) .25s, transform 1.5s cubic-bezier(.2, .8, .2, 1) .25s; }   /* a grey frame first, then the picture opening inside it from the top down, settling from a slight zoom */
   .rvz.on { opacity: 1; } .rvz.on b { clip-path: inset(0 0 0 0); transform: none; }   /* smaller, and held a little high so heads are never cut */
   .mi:last-child { border-bottom: 1px solid var(--rule); }
@@ -264,7 +264,7 @@
 </section>
 
 <section class="wrap sec media" id="media">
-  <h2 class="h in">Media</h2>
+  <h2 class="h in">Press</h2>
   <div id="medialist" style="margin-top:var(--s3)"></div>
   <button type="button" class="allbtn" id="allmedia">All publications</button>
 </section>
@@ -383,9 +383,8 @@ window.preDone = new Promise(done => {
   addEventListener('scroll', () => requestAnimationFrame(pileTick), { passive: true }); addEventListener('resize', pileTick); one('#cats').addEventListener('scroll', pileTick, { passive: true }); pileTick();
   // the cases, under the clients' names
   one('#caselist').innerHTML = CASES.map(([n, t, cap], k) => `<article class="case" data-c="${k}"><h3 class="vh">${n}</h3><button type="button" class="pic rv" data-c="${k}" style="background-image:url('${SRC(k)}');background-position:${POS(k)}" aria-label="${n}"></button><div class="meta"><p class="type lab in">${t}</p><p class="cap"><span>${cap}</span></p></div></article>`).join('');
-  const MEDIA_AR = { 'photos/media/m01.jpg': 1, 'photos/media/m03.jpg': .75, 'photos/media/m04.jpg': 900 / 594, 'photos/media/m06.jpg': 1, 'photos/media/m07.jpg': .75, 'photos/media/m09.jpg': 1, 'photos/media/m10.jpg': 1 };   // each picture's own shape: its frame takes it, so the whole picture is seen, never cropped
-  // the media: four, the rest behind a button
-  one('#medialist').innerHTML = MEDIA.map(([d, o, t, im], k) => `<div class="mi${k > 3 ? ' more' : ''}"><span class="d in">${d}</span><div><i class="rvz" style="aspect-ratio:${MEDIA_AR[im] || 4 / 3}"><b style="background-image:url('${im}')"></b></i><p><b class="in">${o}</b><span class="mt">${t}</span></p></div></div>`).join('');
+    // the media: four, the rest behind a button
+  one('#medialist').innerHTML = MEDIA.map(([d, o, t, im], k) => `<div class="mi${k > 3 ? ' more' : ''}"><span class="d in">${d}</span><div><i class="rvz" style="aspect-ratio:1"><b style="background-image:url('${im}')"></b></i><p><b class="in">${o}</b><span class="mt">${t}</span></p></div></div>`).join('');
   one('#allmedia').addEventListener('click', e => { const m = one('#media'); m.classList.toggle('all'); e.currentTarget.textContent = m.classList.contains('all') ? 'Fewer' : 'All publications'; $('.mi.more .mt').forEach(splitLines); reveal(); });   // the rest cut into lines once they are shown
 
   // every paragraph cut into its own lines, so they come in one after another as on the full page
