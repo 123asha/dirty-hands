@@ -121,6 +121,12 @@ function waveLoop(now = performance.now()) {                            // the l
   let d = 'M0 5'; const amp = sOn ? 2.6 : 0; for (let x = 2; x <= L; x += 2) d += `L${x} ${(5 + amp * Math.sin(x / L * Math.PI * 2 - now / 420) * Math.sin(x / L * Math.PI)).toFixed(2)}`;
   wave.setAttribute('d', d); if (sOn) requestAnimationFrame(waveLoop);
 }
+function soundOpen() {                                                  // a view opens: a full gust with a big handful of leaves, clearly heard (the muffle comes in only after it)
+  if (!sSw || !sOn) return; const t = actx.currentTime;
+  sSw.gain.cancelScheduledValues(t); sSw.gain.setValueAtTime(sSw.gain.value, t); sSw.gain.linearRampToValueAtTime(.2, t + .2); sSw.gain.setTargetAtTime(0, t + .32, .5);
+  sBp.frequency.cancelScheduledValues(t); sBp.frequency.setValueAtTime(sBp.frequency.value, t); sBp.frequency.linearRampToValueAtTime(1500, t + .24); sBp.frequency.setTargetAtTime(420, t + .35, .8);
+  for (let i = 0; i < 22; i++) leaf(t + .02 + Math.random() * .55, .06 + .06 * Math.random());
+}
 // the sound of the page: no notes, only soft rustles of air when something is pointed at, scrolled or opened (and inside a view the filter lies over them too)
 let hovLast = null, scrLast = 0;
 addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('a, button, .hc, .pic, .partner, [data-year], .cat-strip, .sv-strip, .cd-s'); if (t && t !== hovLast) { hovLast = t; soundNudge(.25); } else if (!t) hovLast = null; }, { passive: true });
