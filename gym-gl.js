@@ -16,7 +16,7 @@ window.gymGL = (el, srcs) => {
     vec2 place(vec2 q, float off, vec2 cen, float bend, float wob) {
       vec2 home = .5 + (cen - .5) * 1.12;                                // each a little further out from the middle than in the panel, and a little smaller: room between them, so they never touch
       vec2 d = (rot(q, -off) + .5 - home) / .9; float r = length(d);
-      d = rot(d, -bend * smoothstep(.04, .22, r));   // a hinge at her middle: the angle between the body and the legs opens and closes
+      d = rot(d, -bend * (.35 + .65 * smoothstep(.0, .24, r)));   // the whole of her turns a little, the more the further out: the body and the legs move together, the angle between them opening and closing
       d += wob * vec2(sin(d.y * 12. + sp * 3.), sin(d.x * 11. - sp * 2.6));
       return cen + d; }   // (read from the picture where she stands in the panel)
     void main(){
@@ -26,9 +26,9 @@ window.gymGL = (el, srcs) => {
       q *= 1. - .08 * (1. - r2);                                          // a slight dome: the middle comes a little towards us
       // each at a speed of her own: one goes round a little faster, one a little slower; and each swings her limbs on a rhythm of her own as you scroll
       float o1 = .08 * sin(sp * .9 + .4) - tw * .5, o2 = .08 * sin(sp * 1.2 + 2.3) + tw * .4, o3 = .07 * sin(sp * .7 + 4.4) - tw * .3;   // a little ahead or behind, never so far that they meet
-      float b1 = .42 * sin(sp * 2.1 + .3) + tw * 1.2, b2 = .42 * sin(sp * 1.7 + 2.1) - tw * 1.1, b3 = .38 * sin(sp * 2.5 + 4.) + tw;
-      float wob = .004 + .01 * mv;
-      vec4 c1 = tap(t1, place(q, o1, vec2(.657, .684), b1, wob)), c2 = tap(t2, place(q, o2, vec2(.345, .680), b2, wob)), c3 = tap(t3, place(q, o3, vec2(.517, .248), b3, wob));
+      float b1 = .5 * sin(sp * 2.1 + .3) + tw * 1.4, b2 = .5 * sin(sp * 1.7 + 2.1) - tw * 1.3, b3 = .46 * sin(sp * 2.5 + 4.) + tw * 1.2;
+      float wob = .006 + .014 * mv;
+      vec4 c1 = tap(t1, place(q, o1, vec2(.632, .655), b1, wob)), c2 = tap(t2, place(q, o2, vec2(.370, .651), b2, wob)), c3 = tap(t3, place(q, o3, vec2(.514, .288), b3, wob));
       vec4 o = vec4(c1.rgb * c1.a, c1.a); o = vec4(c2.rgb * c2.a, c2.a) + (1. - c2.a) * o; o = vec4(c3.rgb * c3.a, c3.a) + (1. - c3.a) * o;
       gl_FragColor = o;
     }`);
@@ -39,6 +39,7 @@ window.gymGL = (el, srcs) => {
   const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
   const loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
   const u = n => gl.getUniformLocation(pr, n);
+  cv.addEventListener('webglcontextlost', e => { e.preventDefault(); ready = false; running = false; cv.style.display = 'none'; el.classList.remove('gym-on'); });   // if the browser takes the drawing away, the plain picture of the gymnasts is there instead, never an empty space
   let ready = false, loaded = 0, on = false, running = false, spin = 0, last = null, mv = 0, tw = 0;
   srcs.forEach((src, k) => { const img = new Image(); img.onload = () => {
     gl.activeTexture(gl.TEXTURE0 + k); const tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);

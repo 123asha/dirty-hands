@@ -105,12 +105,12 @@
 <script>{ const grid = document.querySelector('.grid'); try { if (sessionStorage.getItem('grid') === '1') grid.classList.add('on'); } catch (e) {}   // the grid stays on or off from page to page
   addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.code === 'KeyG') { e.preventDefault(); if (!e.repeat) { const on = grid.classList.toggle('on'); try { sessionStorage.setItem('grid', on ? '1' : '0'); } catch (er) {} } } }); }</script>
 <script src="clay.js?v=8"></script>
-<script src="sound.js?v=17"></script>
+<script src="sound.js?v=18"></script>
 <script>
 (() => {
   const CATS = ['Panels', 'Mirrors', 'Tables', 'Sculptures', 'Urbans', 'Vases'];
   // (the category outlines are no longer shown here)
-  const ITEMS = [['tattoo-relief-up', 0, 'Tattooed relief'], ['panel-eva', 0, 'Eva panel'], ['shelf-spine', 0, 'Spine shelf'], ['mirror-beetles', 1, 'Beetles mirror'], ['bust', 3, 'Bust'], ['urban-angel', 4, 'Angel urban'], ['vase-brutskin', 5, 'BrutSkin vase'], ['table-cubeball', 2, 'Cube and ball table']];
+  const ITEMS = [['tattoo-relief-up', 0, 'Tattooed relief'], ['panel-eva', 0, 'Eva panel'], ['shelf-spine', 0, 'Spine shelf'], ['mirror-beetles', 1, 'Beetles mirror'], ['bust', 3, 'Bust'], ['urban-angel', 4, 'Angel urban'], ['vase-brutskin', 5, 'BrutSkin vase'], ['table-cubeball', 2, 'Cube and ball table'], ['panel-gymnastics', 0, 'Gymnastics panel'], ['table-studs', 2, 'Studded table'], ['vase-bubbles', 5, 'Bubble vase'], ['table-slab', 2, 'Slab table']];
   const board = document.querySelector('.board');
   let U = innerWidth / 1400;
   const its = [];
@@ -155,6 +155,11 @@
       if (cut) d._w.forEach(w => { const p = lx + w.l, q = lx + w.r; if (q <= cut[0] || p >= cut[1]) return; if ((p + q) / 2 < mid) dl = Math.max(dl, q - cut[0]); else dr = Math.max(dr, cut[1] - p); });
       d._w.forEach(w => { const t = !cut ? 0 : (lx + (w.l + w.r) / 2 < mid ? -dl : dr); w.x += (t - w.x) * (Math.abs(t) > Math.abs(w.x) ? .6 : .16); if (Math.abs(w.x) < .2 && !t) w.x = 0; w.el.style.transform = w.x ? `translateX(${w.x.toFixed(1)}px)` : ''; }); });
   }
+  // how far something on a shelf steps aside from the works of the trail passing along it: away from each one's middle, just clear of it
+  function trailPush(x, w, band) { let p = 0; if (!band) return 0;
+    its.forEach(it => { const bx = it.box; if (!bx) return; if (bx.cy + bx.S / 2 < band.top - 4 || bx.cy - bx.S / 2 > band.bottom + 4) return;
+      const half = Math.min(w / 2, bx.S * .35), need = bx.S / 2 + half + 12 * U, d = x - bx.cx; if (Math.abs(d) < need) { const v = (d < 0 ? -1 : 1) * (need - Math.abs(d)); if (Math.abs(v) > Math.abs(p)) p = v; } });   // the nearest work only, never the sum of them: a word steps just clear, as the text below does
+    return Math.max(-120 * U, Math.min(120 * U, p)); }
   function flow() {
     if (!PT) return;
     const f18 = Math.min(18, 18 * U);
@@ -162,7 +167,9 @@
     const r = fl.getBoundingClientRect(), L = r.left, Rr = L + 440 * U, lh = LH * U, ht = mid.getBoundingClientRect().top;
     const obs = [...its, ...falling].filter(it => it.box && MASK[it.src] && it.box.cx + it.box.S / 2 > L && it.box.cx - it.box.S / 2 < Rr);
     otl.style.top = ht + 'px';
-    hws.forEach(h => { const e = h.el, b = h.band ?? (h.band = [...otl.querySelectorAll('.hl')].indexOf(e.parentNode)), base = e.offsetLeft + e.offsetWidth / 2, dx = wrapX(base, shelfOff[b] || 0) - base, th = (base + dx - innerWidth / 2) / (680 * U) * Math.PI / 2;   // the title's words go round with their shelves (and are never pushed by the trail)
+    const bandR = [...otl.querySelectorAll('.hl')].map(b => b.getBoundingClientRect());
+    hws.forEach(h => { const e = h.el, b = h.band ?? (h.band = [...otl.querySelectorAll('.hl')].indexOf(e.parentNode)), base = e.offsetLeft + e.offsetWidth / 2, dx0 = wrapX(base, shelfOff[b] || 0) - base, th = (base + dx0 - innerWidth / 2) / (680 * U) * Math.PI / 2;   // the title's words go round with their shelves
+      h.push = (h.push || 0) + (trailPush(base + dx0 + (h.push || 0) * 0, e.offsetWidth, bandR[b]) - (h.push || 0)) * .18; const dx = dx0 + h.push;   // and step aside from the trail as it passes along their shelf, gliding back after it
       e.style.transform = Math.abs(dx) > .3 ? `translateX(${dx.toFixed(1)}px)` : ''; const W = 1360 * U, cdx = base + dx > 20 * U + W / 2 ? dx - W : dx + W; h.c.style.transform = `translateX(${cdx.toFixed(1)}px)`; });   /* no fading: the words simply go on round, out at one edge and in at the other */
     part(obs, r, lh);
     const key = Math.round(r.top) + '|' + U; if (key === sig) return; sig = key;   // the lines are broken once, with nothing in their way, and stay so: a work passing through only pushes words aside
@@ -230,7 +237,7 @@
         const dx = wrapX(f.tx, shelfOff[f.band]); f.dx = dx; const th = (dx - innerWidth / 2) / (680 * U) * Math.PI / 2, cyl = Math.max(0, Math.cos(th));   // where it is on the turning shelf, and how far round the drum
         f.x = f.x0 + (dx - f.x0) * e; f.y = f.y0 + (f.ty - f.y0) * e - Math.sin(k * Math.PI) * 90 * U - bob; f.sz = S + (f.ts - S) * e; f.r = (1 - e) * f.vr * 18 + f.rr * e; f.th = 0; f.cyl = 1 - e + cyl * e;   // upright all the way round: only fading at the edges
         if (k >= 1 && !f.placed) { f.placed = true; dips[f.band].push({ tx: f.tx, t0: now }); if (typeof placeSound === 'function') placeSound(); }   // set down: a soft knock, and its shelf gives a little under it
-        if (f.placed) f.y += dipAt(f.band, dx, now);   // it rides the line as it gives and springs back
+        if (f.placed) { f.y += dipAt(f.band, dx, now); const bb = otl.querySelectorAll('.hl')[f.band]; f.push = (f.push || 0) + (trailPush(dx, f.sz * .7, bb && bb.getBoundingClientRect()) - (f.push || 0)) * .18; f.x += f.push; }   // it rides the line as it gives and springs back, and steps aside from the trail
       } else { f.vy += .55; f.x += f.vx; f.y += f.vy; f.r += f.vr; f.sz = S; }   // no room left on the shelves: it simply falls away
       f.el.style.width = f.el.style.height = f.sz + 'px'; f.el.style.transform = `translate(${(f.x - f.sz / 2).toFixed(1)}px,${(f.y - f.sz / 2).toFixed(1)}px) perspective(${(500 * U).toFixed(0)}px) rotateY(${(f.th || 0).toFixed(3)}rad) rotate(${f.r.toFixed(1)}deg)`; f.el.style.opacity = f.tx != null ? drumFade(f.cyl ?? 1).toFixed(3) : 1;   // round the drum it turns away and fades at the edges f.box = f.tx != null ? null : { cx: f.x, cy: f.y, S: f.sz };
       if (f.tx == null && f.y - S > innerHeight) { f.el.remove(); falling.splice(i, 1); } }
