@@ -115,7 +115,7 @@
   let U = innerWidth / 1400;
   const its = [];
   // the works: five of them follow the hand (see below)
-  const ORDER = [0, ...ITEMS.map((x, k) => k).slice(1).sort(() => Math.random() - .5)], PICK = ORDER.slice(0, 6); let nextPick = 6;   // six works in the trail, the little tattooed figure always at its head; the others wait their turn
+  const ORDER = [0, ...ITEMS.map((x, k) => k).slice(1).sort(() => Math.random() - .5)], PICK = ORDER.slice(0, 5); let nextPick = 5;   // five works in the trail, the little tattooed figure always at its head; the others wait their turn
   const addIt = k => { const [src, cat] = ITEMS[k], el = document.createElement('div'); el.className = 'it'; el.style.backgroundImage = `url("photos/${src}.webp")`; el.classList.add('sil'); board.append(el); const last = its[its.length - 1] || mouse; its.push({ el, cat, src, s: 0, fx: 0, fy: 0, x: last.x, y: last.y }); };
   PICK.forEach(k => { const [src, cat, name] = ITEMS[k], el = document.createElement('div'); el.className = 'it'; el.style.backgroundImage = `url("photos/${src}.webp")`; board.append(el); its.push({ el, cat, src, s: 0, fx: 0, fy: 0 }); });
   // the silhouette of each work, row by row (from its cut-out's alpha), so the text can run close round its real shape
@@ -166,7 +166,7 @@
     const f18 = Math.min(18, 18 * U);
     if (!preps || preps.f !== f18) { preps = paras.map(t => PT.prepareWithSegments(t, `${f18}px "CoFo Sans"`, { letterSpacing: -0.01 * f18 })); preps.f = f18; fl.querySelectorAll('p').forEach(p => p.remove()); }
     const r = fl.getBoundingClientRect(), L = r.left, Rr = L + 440 * U, lh = LH * U, ht = mid.getBoundingClientRect().top;
-    const obs = [...its, ...falling].filter(it => it.box && MASK[it.src] && it.box.cx + it.box.S / 2 > L && it.box.cx - it.box.S / 2 < Rr);
+    const obs = [its[0], ...falling].filter(it => it && it.box && MASK[it.src] && it.box.cx + it.box.S / 2 > L && it.box.cx - it.box.S / 2 < Rr);   // only the work at the head of the trail moves the text; the ones behind it follow quietly
     otl.style.top = ht + 'px';
     const bandR = [...otl.querySelectorAll('.hl')].map(b => b.getBoundingClientRect());
     hws.forEach(h => { const e = h.el, b = h.band ?? (h.band = [...otl.querySelectorAll('.hl')].indexOf(e.parentNode)), base = e.offsetLeft + e.offsetWidth / 2, dx0 = wrapX(base, shelfOff[b] || 0) - base, th = (base + dx0 - innerWidth / 2) / (680 * U) * Math.PI / 2;   // the title's words go round with their shelves
@@ -222,7 +222,7 @@
     if (nextPick < ORDER.length * 3) { addIt(ORDER[nextPick % ORDER.length]); nextPick++; }   /* a new work joins the end of the trail for every one that drops: all of them come round in turn */
     const head = its.shift(), el = head.el.cloneNode(true); el.classList.remove('sil'); el.classList.add('drop'); board.append(el); head.el.remove();   // the work itself, in colour, falls from where its silhouette was (the silhouette goes)
     falling.push(Object.assign({ el, src: head.src, x: head.x, y: head.y, x0: head.x, y0: head.y, t0: performance.now(), r: 0, vx: (Math.random() - .5) * 2, vy: -3, vr: (Math.random() - .5) * 4 }, spot));
-    head.x = its.length ? its[its.length - 1].x : mouse.x; head.y = its.length ? its[its.length - 1].y : mouse.y; its.push(head); soundNudge && soundNudge(.6); });   // and the silhouette goes to the end of the trail
+    soundNudge && soundNudge(.6); });   // the silhouette that dropped is gone for good: the new work at the end of the trail takes its place, so the trail is always five and nothing invisible is left behind
   (function loop(now) {
     const S = SZ * U;
     its.forEach((it, k) => {
