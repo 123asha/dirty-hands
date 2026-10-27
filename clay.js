@@ -55,7 +55,7 @@ function alloc() {
     }
   }
   S = ns; W = nw; H = nh; T = nT; D = nD; tiles.clear(); content.clear();
-  G = new Float32Array(nw * nh); for (let y = 0; y < nh; y++) for (let x = 0; x < nw; x++) G[y * nw + x] = (vnoise(x * .45, y * .45) - .5) * .7 + (hash(x, y) - .5) * .3;   // the grain of plasticine: fine lumps pressed into every mark
+  G = new Float32Array(nw * nh); for (let y = 0; y < nh; y++) for (let x = 0; x < nw; x++) G[y * nw + x] = (vnoise(x * .2, y * .62) - .5) * .7 + (hash(x, y) - .5) * .18;   // the grain of plasticine: fine lumps pressed into every mark
   for (let ty = 0; ty < Math.ceil(H / TILE); ty++) for (let tx = 0; tx < Math.ceil(W / TILE); tx++) content.add(ty * Math.ceil(W / TILE) + tx);
   cv.width = W; cv.height = H;
   img = ctx.createImageData(W, H);
