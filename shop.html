@@ -110,12 +110,13 @@
 (() => {
   const CATS = ['Panels', 'Mirrors', 'Tables', 'Sculptures', 'Urbans', 'Vases'];
   // (the category outlines are no longer shown here)
-  const ITEMS = [['tattoo-relief-up', 0, 'Tattooed relief'], ['panel-eva', 0, 'Eva panel'], ['shelf-spine', 0, 'Spine shelf'], ['mirror-beetles', 1, 'Beetles mirror'], ['bust', 3, 'Bust'], ['urban-angel', 4, 'Angel urban'], ['vase-brutskin', 5, 'BrutSkin vase'], ['table-cubeball', 2, 'Cube and ball table'], ['panel-gymnastics', 0, 'Gymnastics panel'], ['table-studs', 2, 'Studded table'], ['vase-bubbles', 5, 'Bubble vase'], ['table-slab', 2, 'Slab table']];
+  const ITEMS = [['tattoo-relief-up', 0, 'Tattooed relief'], ['panel-eva', 0, 'Eva panel'], ['shelf-spine', 0, 'Spine shelf'], ['mirror-beetles', 1, 'Beetles mirror'], ['bust', 3, 'Bust'], ['urban-angel', 4, 'Angel urban'], ['vase-brutskin', 5, 'BrutSkin vase'], ['table-cubeball', 2, 'Cube and ball table'], ['panel-gymnastics', 0, 'Gymnastics panel'], ['table-studs', 2, 'Studded table'], ['vase-bubbles', 5, 'Bubble vase'], ['table-slab', 2, 'Slab table'], ['ord-cone-table', 2, 'Cone table'], ['ord-red-table', 2, 'Red table'], ['ord-red-bottle', 5, 'Red bottle vase'], ['ord-ring-vase', 5, 'Ring vase'], ['ord-petal-vase', 5, 'Petal vase'], ['ord-pyramid-vase', 5, 'Pyramid vase'], ['ord-orange-vase', 5, 'Orange vase'], ['ord-yellow-vase', 5, 'Yellow vase'], ['ord-blue-vase', 5, 'Blue vase'], ['ord-house', 3, 'House sculpture'], ['ord-hand', 3, 'Hand sculpture'], ['ord-mirror', 1, 'Mirror'], ['ord-urban-green', 4, 'Green urban'], ['ord-urban-brown', 4, 'Brown urban'], ['ord-urban-grey', 4, 'Grey urban']];
   const board = document.querySelector('.board');
   let U = innerWidth / 1400;
   const its = [];
   // the works: five of them follow the hand (see below)
-  const PICK = [0, ...ITEMS.map((x, k) => k).slice(1).sort(() => Math.random() - .5).slice(0, 5)];   // six works in the trail, the little tattooed figure always at its head
+  const ORDER = [0, ...ITEMS.map((x, k) => k).slice(1).sort(() => Math.random() - .5)], PICK = ORDER.slice(0, 6); let nextPick = 6;   // six works in the trail, the little tattooed figure always at its head; the others wait their turn
+  const addIt = k => { const [src, cat] = ITEMS[k], el = document.createElement('div'); el.className = 'it'; el.style.backgroundImage = `url("photos/${src}.webp")`; el.classList.add('sil'); board.append(el); const last = its[its.length - 1] || mouse; its.push({ el, cat, src, s: 0, fx: 0, fy: 0, x: last.x, y: last.y }); };
   PICK.forEach(k => { const [src, cat, name] = ITEMS[k], el = document.createElement('div'); el.className = 'it'; el.style.backgroundImage = `url("photos/${src}.webp")`; board.append(el); its.push({ el, cat, src, s: 0, fx: 0, fy: 0 }); });
   // the silhouette of each work, row by row (from its cut-out's alpha), so the text can run close round its real shape
   const MASK = {}, MR = 48;
@@ -218,7 +219,8 @@
   }
   addEventListener('pointerdown', e => { if (e.button || e.target.closest('a, button') || !its.length || !mouse.seen) return;
     const spot = shelfSpot(); if (spot.tx == null) return;   // the shelves are full: nothing more drops
-    const head = its.shift(), el = head.el.cloneNode(true); el.classList.remove('sil'); el.classList.add('drop'); board.append(el);   // the work itself, in colour, falls from where its silhouette was
+    if (nextPick < ORDER.length * 3) { addIt(ORDER[nextPick % ORDER.length]); nextPick++; }   /* a new work joins the end of the trail for every one that drops: all of them come round in turn */
+    const head = its.shift(), el = head.el.cloneNode(true); el.classList.remove('sil'); el.classList.add('drop'); board.append(el); head.el.remove();   // the work itself, in colour, falls from where its silhouette was (the silhouette goes)
     falling.push(Object.assign({ el, src: head.src, x: head.x, y: head.y, x0: head.x, y0: head.y, t0: performance.now(), r: 0, vx: (Math.random() - .5) * 2, vy: -3, vr: (Math.random() - .5) * 4 }, spot));
     head.x = its.length ? its[its.length - 1].x : mouse.x; head.y = its.length ? its[its.length - 1].y : mouse.y; its.push(head); soundNudge && soundNudge(.6); });   // and the silhouette goes to the end of the trail
   (function loop(now) {
