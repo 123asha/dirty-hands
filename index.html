@@ -719,7 +719,8 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const sc = { v: scrollY }; gsap.to(sc, { v: to, duration: d, ease: 'power3.inOut', overwrite: true, onUpdate() { scrollTo(0, sc.v); } }); };
   // Karen's and Lisa's cards are sheets of paper on a table, never quite flat: each curls up a little from its lower edge; while the page moves it curls a touch more, Karen's first and Lisa's a moment after, and when it stops it settles back softly.
   // A sheet is drawn as thin strips of itself set along the curve (a paper cannot bend as one flat plane): the strips hold copies of the card, made again whenever the card changes, and its clay mark is copied every frame.
-  { const N = 16, REST = .1;   /* a gentle curl at rest, a clear one while the page moves */
+  let markV = 0;   // counts how many times the clay mark on a card has been drawn again
+  { const N = 10, REST = .1;   /* ten strips: enough for a smooth bend, far less to paint */   /* a gentle curl at rest, a clear one while the page moves */
     const sheets = $('.card2').map((card, k) => { const curl = document.createElement('div'); curl.className = 'curl'; card.append(curl); return { card, curl, k, a: REST, va: 0, dirty: true, pairs: [], strips: [], H: 0 }; });
     const mo = new MutationObserver(ms => ms.forEach(m => { if (m.target.closest && m.target.closest('.curl')) return; const s = sheets.find(s => s.card !== m.target && s.card.contains(m.target)); if (s) s.dirty = true; }));
     sheets.forEach(s => mo.observe(s.card, { subtree: true, attributes: true, childList: true, characterData: true }));
@@ -728,7 +729,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
         const inner = document.createElement('div'); inner.className = 'curl-in'; Object.assign(inner.style, { top: (-j * sh).toFixed(2) + 'px', width: W + 'px', height: H + 'px' });
         orig.forEach(o => { const c = o.cloneNode(true); c.removeAttribute('id'); inner.append(c); if (o.tagName === 'CANVAS') s.pairs.push([o, c]); else o.querySelectorAll('canvas').forEach((oc, q) => s.pairs.push([oc, c.querySelectorAll('canvas')[q]])); });
         st.append(inner); s.curl.append(st); s.strips.push(st); }
-      s.pairs.forEach(([o, c]) => { c.width = o.width; c.height = o.height; }); card.classList.add('curled'); s.dirty = false; };
+      s.pairs.forEach(([o, c]) => { c.width = o.width; c.height = o.height; }); card.classList.add('curled'); s.dirty = false; s._mv = -1; s._lc = -1; };
     let lastY = scrollY, vs = 0, fr = 0, h1y = null; const hist = []; const h1el = one('.ttl .h1');
     (function blow() { fr++; const v = lenis ? lenis.velocity : scrollY - lastY; lastY = scrollY; vs += (v - vs) * .2; hist.push(vs); if (hist.length > 20) hist.shift();   /* Lisa's sheet follows Karen's about a third of a second later, like the next carriage */
       if (typeof breeze === 'function') breeze(document.querySelector('.hc.bent') ? .35 + Math.min(.65, Math.abs(vs) * .03) : 0);   // a breeze while the cards are curled in the air and lie in the pile; it dies away once they have settled
@@ -737,8 +738,10 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
         if ((s.dirty && fr % 3 === 0) || s.H !== s.card.offsetHeight || !s.strips.length) build(s);
         const vk = s.k ? (hist[0] ?? vs) : vs, target = REST + Math.min(.45, Math.abs(vk) * .013 * (s.k ? 1.15 : 1)); s.va += (target - s.a) * (s.k ? .035 : .045); s.va *= .9; s.a += s.va;   // Karen's sheet first, Lisa's a moment later (about a fifth of a second); the air bows it, a spring lets it down again
         const H = s.H, sh = H / N, c = Math.max(1e-4, s.a) / H;
-        s.strips.forEach((st, j) => { const d = H - (j + 1) * sh, dy = d - Math.sin(c * d) / c, dz = (1 - Math.cos(c * d)) / c; st.style.transform = `translate3d(0,${dy.toFixed(2)}px,${dz.toFixed(2)}px) rotateX(${(-c * d).toFixed(4)}rad)`; });   // each strip where the curl takes it, turned to follow it
-        s.pairs.forEach(([o, cc]) => { if (cc.width !== o.width || cc.height !== o.height) { cc.width = o.width; cc.height = o.height; } const g = cc.getContext('2d'); g.clearRect(0, 0, cc.width, cc.height); g.drawImage(o, 0, 0); }); });
+        if (Math.abs(c - (s._lc ?? -1)) > Math.max(1e-6, Math.abs(c) * .006)) { s._lc = c;   // only when the sheet has really bent further: a still sheet costs nothing
+          s.strips.forEach((st, j) => { const d = H - (j + 1) * sh, dy = d - Math.sin(c * d) / c, dz = (1 - Math.cos(c * d)) / c; st.style.transform = `translate3d(0,${dy.toFixed(2)}px,${dz.toFixed(2)}px) rotateX(${(-c * d).toFixed(4)}rad)`; }); }
+        if (s._mv !== markV) { s._mv = markV;   // the clay mark is copied into the strips only when it has itself been drawn again
+          s.pairs.forEach(([o, cc]) => { if (cc.width !== o.width || cc.height !== o.height) { cc.width = o.width; cc.height = o.height; } const g = cc.getContext('2d'); g.clearRect(0, 0, cc.width, cc.height); g.drawImage(o, 0, 0); }); } });
       requestAnimationFrame(blow); })(); }
   const anchor = h => h === '#about' ? one('.gray') : document.querySelector(h);   // About lands on the photo of Karen and Lisa, above the text
   { const ab = one('.stack .shop'); if (ab) ab.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); glideTo(one('.tagged')); }); }   // the About link under the awards glides to the Story too
@@ -893,11 +896,12 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
  { const mo = one('.rest > a.more'); if (mo) { mo.style.display = 'none'; mo.style.left = '50%'; mo.style.translate = '-50% 0'; mo.style.top = `calc(${(top + 56).toFixed(1)} * var(--u) + var(--fsh, 0px))`; } }   // (no separate More link: the whole Story opens it)   // More: the whole story, on its own slider
     // the end of the page follows the last publication on the standard steps: 80, the hand (136, the drawing in its middle), 80, the credit; the strip and the end of the page move up with it, so the loop stays as it was
     const hTop = top - 56 + 80, dy = 5189 - hTop + 233, hand = one('.rest > .eye'), cr = $('.rest > .credit');
-    const mEnd = top - 56, gTop = mEnd + (5749 - dy - mEnd - 212) / 2;   // the hands and the credit (205 high together) halfway between the last publication and the strip at the end: the same room above and below them (the half of the screen's share, 5/24 of its height, in the calc)
+    const barTop = 5749 - dy - 170;   // the strips follow the credit on the usual step, not a whole screen below it
+    const mEnd = top - 56, gTop = mEnd + (barTop - mEnd - 212) / 2;   // the hands and the credit (205 high together) halfway between the last publication and the strip at the end: the same room above and below them (the half of the screen's share, 5/24 of its height, in the calc)
     if (hand) hand.style.top = `calc(${gTop.toFixed(1)} * var(--u) + 100vh * 5 / 24 + var(--fsh, 0px))`;
     if (cr[0]) cr[0].style.top = `calc(${(gTop + 167).toFixed(1)} * var(--u) + 100vh * 5 / 24 + var(--fsh, 0px))`; if (cr[1]) cr[1].style.top = `calc(${(gTop + 167).toFixed(1)} * var(--u) + 100vh * 5 / 24 + min(20px, 20 * var(--u)) + var(--fsh, 0px))`;   /* the second line of the credit one line under the first: as the type stops at 18 px on a wide screen, so does the gap */
-    $('.rest > .bar').forEach(b => { b.style.top = `calc(${(5749 - dy).toFixed(1)} * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 10 * var(--u)) / 5 + 100vh + var(--fsh, 0px))`;   /* a screen lower: the hands and the credit are held in the middle for one screen first */ });
-    one('.rest').style.height = `calc(${(5809 - dy).toFixed(1)} * var(--u) + 100vh + var(--fsh, 0px))`;
+    $('.rest > .bar').forEach(b => { b.style.top = `calc(${barTop.toFixed(1)} * var(--u) + 100vh * 5 / 12 + var(--i) * (100vh / 6 - 10 * var(--u)) / 5 + var(--fsh, 0px))`; });
+    one('.rest').style.height = `calc(${(5809 - dy - 170).toFixed(1)} * var(--u) + var(--fsh, 0px))`;
   }
   function alignShop() {
     const shop = one('.stack .shop'), pic = one('.rest > .ph:not(.pic):not(.bar)'), rest = one('.rest');
@@ -1055,8 +1059,8 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     sGroup.forEach(el => { if (el.style.position !== 'fixed' && (el._top0 == null || formsScene._w !== W)) el._top0 = el.offsetTop ?? cssPx(el, 'top');   /* its place in the page, read while it is not fixed */
       const side = 0, dy = pin ? 0 : h;
       if (el.classList.contains('bigrow')) { const wd = el.querySelector('.name2'); if (wd && !wd._lt) { wd._lt = [...wd.textContent].map(ch => Object.assign(document.createElement('span'), { className: 'fl', textContent: ch })); wd.textContent = ''; wd.append(...wd._lt); }
-        const wi = $('.rest > .bigrow').indexOf(el), dir = wi === 0 ? -1 : 1, pw = clamp((k - wi * .05) / .3), n = wd ? wd._lt.length : 1;   // the words go off sideways along their lines, whole, Unconventional to the left, ceramic and forms to the right; gone before the film reaches them
-        const lw = ease(pw); if (wd) wd._lt.forEach((sp, j) => { const ord = dir < 0 ? n - 1 - j : j; sp.style.translate = lw ? `${(dir * lw * (W * .7 + ord * 1.5)).toFixed(1)}px 0` : ''; sp.style.opacity = lw > .7 ? (1 - (lw - .7) / .3).toFixed(3) : ''; });   /* the word goes off whole, as it came; its letters part only by a hair */
+        const wi = $('.rest > .bigrow').indexOf(el), dir = wi === 0 ? -1 : 1, pw = clamp((k - .04 - wi * .07) / .66), n = wd ? wd._lt.length : 1;   // they take most of the scene to go, and cross the film on their way   // the words go off sideways along their lines, whole, Unconventional to the left, ceramic and forms to the right; gone before the film reaches them
+        const lw = ease(pw); if (wd) wd._lt.forEach((sp, j) => { const ord = dir < 0 ? n - 1 - j : j; sp.style.translate = lw ? `${(dir * lw * (W * .7 + ord * 1.5)).toFixed(1)}px 0` : ''; sp.style.opacity = lw > .88 ? (1 - (lw - .88) / .12).toFixed(3) : ''; });   /* the word goes off whole, as it came; its letters part only by a hair */
         if (wi === 2) formsScene._formsGo = pw; if (wi === 1) formsScene._ceramicGo = pw; }
       if (el._topCss == null) el._topCss = el.style.top;   /* its own top, kept before it is ever fixed */
       if (pin) { el.style.position = 'fixed'; el.style.top = (el._top0 + rt - S0) + 'px'; } else if (el.style.position === 'fixed') { el.style.position = ''; el.style.top = el._topCss || ''; }
@@ -1507,9 +1511,9 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     rev = clamp(rev); const g = m.cv.getContext('2d');
     if (m.smear) {
       const idx = rev <= 0 ? -1 : Math.min(m.frames.length - 1, Math.round(rev * (m.frames.length - 1)));
-      if (idx === m.drawn) return; m.drawn = idx; g.clearRect(0, 0, m.w, m.h); if (idx >= 0) g.drawImage(m.frames[idx], 0, 0);
+      if (idx === m.drawn) return; m.drawn = idx; markV++; g.clearRect(0, 0, m.w, m.h); if (idx >= 0) g.drawImage(m.frames[idx], 0, 0);
     } else {                                                             // the print: pressed in, it darkens as the card comes up
-      if (m.drawn !== 0) { m.drawn = 0; g.clearRect(0, 0, m.w, m.h); g.drawImage(m.frames[0], 0, 0); }
+      if (m.drawn !== 0) { m.drawn = 0; markV++; g.clearRect(0, 0, m.w, m.h); g.drawImage(m.frames[0], 0, 0); }
       m.cv.style.opacity = rev.toFixed(3);
     }
   }
@@ -1773,10 +1777,29 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
         endBars.forEach(b => { b.style.transform = ''; b._ty = 0; }); }
     })(t1);
   }
+  // the last stretch is pulled by the scroll itself: from the middle of the screen the strips come up one after another into one line at the top, and the title rises behind them; when the last one is home the page opens again
+  const endMenu = () => [nav, contact, sndBtn, tagline].filter(Boolean);
+  let endT = null, endQ = -1;
+  function endPull() {
+    if (!introDone) return; const bars = endBars; if (!bars.length) return;
+    const V = innerHeight, start = V * .62, home = 20 * U;
+    const nat0 = bars[0].getBoundingClientRect().top - (bars[0]._ty || 0);
+    const q = clamp((start - nat0) / Math.max(1, start - home));
+    if (Math.abs(q - endQ) < .0005) return; endQ = q;
+    bars.forEach((b, i) => { const nat = b.getBoundingClientRect().top - (b._ty || 0), qi = ease(clamp((q - i * .085) / .58));
+      b._ty = -qi * (nat - home); b.style.transform = q > 0 ? `translateY(${b._ty.toFixed(1)}px)` : (b._ty = 0, ''); });   // each strip rises to the top row, one after another, as the page is pulled
+    if (q > 0 && !endT) { endT = document.createElement('div'); endT.className = 't h1 endttl'; endT.innerHTML = h1.innerHTML;
+      endT.querySelectorAll('.ch').forEach(c => { c.style.animation = 'none'; c.style.transform = 'none'; }); document.body.append(endT); }
+    if (endT) { if (q <= 0) { endT.remove(); endT = null; } else endT.style.transform = `translateY(${((1 - ease(clamp((q - .1) / .9))) * 300 * U).toFixed(1)}px)`; }   // the title comes up from below with them
+    { const f = ease(clamp((q - .35) / .5)); endMenu().forEach(el => { el.style.opacity = f ? (1 - f).toFixed(3) : ''; }); }   // the strips push the menu out ahead of them
+    if (q >= .999 && !looping) { looping = true;
+      if (endT) { endT.remove(); endT = null; }
+      bars.forEach(b => { b.style.transform = ''; b._ty = 0; }); endQ = -1;
+      restart(); gsap.to(endMenu(), { opacity: 1, duration: .7, ease: 'power2.out', onComplete: () => gsap.set(endMenu(), { clearProps: 'opacity' }) }); }
+  }
+  addEventListener('scroll', endPull, { passive: true }); addEventListener('resize', endPull); if (lenis) lenis.on('scroll', endPull);
   addEventListener('scroll', () => {
-    if (!looping && introDone && scrollMax() > innerHeight && scrollY >= scrollMax() - 2) {   // only when the strips have climbed to the very top of the screen: there they pull the title up behind them and the page opens again
-      looping = true; converge(restart); }
-    else if (looping && scrollY < innerHeight) looping = false;
+    if (looping && scrollY < innerHeight) looping = false;
   }, { passive: true });
 
   // a scroll lock that leaves the scrollbar alone (with Lenis it just pauses it): taking the scrollbar away and back made the whole page shift and flicker at the restart
