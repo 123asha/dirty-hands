@@ -24,16 +24,14 @@
     back = e => { if (e.key === 'Escape') close(); }; addEventListener('keydown', back);
   }
   window.openFilm = open;
-  // a film shown in the page itself ([data-inline]): no player controls on it, only Play under the pointer. Play brings it to the middle of the screen and plays it there with sound;
-  // a second click pauses it; scrolled past, it pauses by itself and goes back to playing silently in the background when it is seen again
+  // a film shown in the page itself ([data-inline]): no player controls on it, only Play under the pointer. Play gives it its sound where it stands, without moving the page;
+  // a second click takes the sound away again, and so does scrolling past it: the film goes on playing quietly in its place, as it always does
   const yt = (fr, func, args = []) => { if (fr && fr.contentWindow) fr.contentWindow.postMessage(JSON.stringify({ event: 'command', func, args }), '*'); };
-  const stopInline = b => { const fr = b.querySelector('iframe'); yt(fr, 'pauseVideo'); yt(fr, 'mute'); b._playing = false; b.classList.remove('playing'); if (typeof muffle === 'function') muffle(false); };   // the room's sound comes back
+  const stopInline = b => { const fr = b.querySelector('iframe'); yt(fr, 'mute'); yt(fr, 'playVideo'); b._playing = false; b.classList.remove('playing'); if (typeof muffle === 'function') muffle(false); };   // only the sound goes; the film plays on where it is, and the room's sound comes back
   document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-inline]'); if (!b) return; e.preventDefault(); e.stopPropagation(); const fr = b.querySelector('iframe');
-    if (b._playing) { stopInline(b); yt(fr, 'playVideo'); return; }   // (back to the silent loop)
-    const r = b.getBoundingClientRect(), to = typeof window.inlineTarget === 'function' && getComputedStyle(b).position !== 'static' && b.closest('.rest') ? window.inlineTarget(b) : scrollY + r.top + r.height / 2 - innerHeight / 2;
-    if (typeof lenis !== 'undefined' && lenis) lenis.scrollTo(to, { duration: 1.1 }); else scrollTo({ top: to, behavior: 'smooth' });
-    yt(fr, 'seekTo', [0, true]); yt(fr, 'unMute'); yt(fr, 'setVolume', [100]); yt(fr, 'playVideo'); b._playing = true; b._t = performance.now(); b.classList.add('playing'); if (typeof muffle === 'function') muffle(true); }, true);   // while the film speaks, the room's sound goes quiet behind it
-  const watch = () => document.querySelectorAll('[data-inline]').forEach(b => { if (b._io) return; b._io = new IntersectionObserver(es => es.forEach(en => { if (b._playing && performance.now() - b._t > 1500 && en.intersectionRatio < .3) { stopInline(b); } else if (!b._playing && en.intersectionRatio > .3) yt(b.querySelector('iframe'), 'playVideo'); }), { threshold: [0, .3, .6] }); b._io.observe(b); });
+    if (b._playing) { stopInline(b); return; }   // (back to the silent film)
+    yt(fr, 'unMute'); yt(fr, 'setVolume', [100]); yt(fr, 'playVideo'); b._playing = true; b._t = performance.now(); b.classList.add('playing'); if (typeof muffle === 'function') muffle(true); }, true);   // while the film speaks, the room's sound goes quiet behind it
+  const watch = () => document.querySelectorAll('[data-inline]').forEach(b => { if (b._io) return; b._io = new IntersectionObserver(es => es.forEach(en => { if (b._playing && performance.now() - b._t > 1200 && en.intersectionRatio < .45) { stopInline(b); } else if (!b._playing && en.intersectionRatio > .3) yt(b.querySelector('iframe'), 'playVideo'); }), { threshold: [0, .3, .6] }); b._io.observe(b); });
   if (document.readyState === 'loading') addEventListener('DOMContentLoaded', watch); else watch();
   document.addEventListener('click', e => { const el = e.target.closest && e.target.closest('[data-film]'); if (!el) return; e.preventDefault(); e.stopPropagation(); open(el.dataset.film); }, true);
 })();
