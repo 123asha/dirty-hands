@@ -347,7 +347,7 @@
   <div class="ph" style="left:calc(618 * var(--u));top:calc(272.25 * var(--u));width:calc(164 * var(--u));height:calc(157.5 * var(--u));"></div>
   <div class="stack" style="left:calc(940 * var(--u));top:calc(142 * var(--u));width:calc(440 * var(--u));">
     <ul class="t18 aw" aria-label="Awards"><li><span>RPA Awards</span><span class="an">01</span></li><li><span>ADD Awards</span><span class="an">02</span></li><li><span>Kandinsky Prize</span><span class="an">03</span></li><li><span>Art Zverev Prize</span><span class="an">04</span></li></ul>
-    <a class="t18 shop more" style="display:block;width:max-content;margin-top:calc(40 * var(--u));" href="#story">About<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a>
+    <a class="t18 shop" style="display:block;width:max-content;margin-top:calc(40 * var(--u));" href="#story">About<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a>
   </div>
 
   <div class="plab" style="left:0;top:calc(613 * var(--u));width:100%;height:calc(709 * var(--u));"><div class="plab-in">
@@ -737,7 +737,8 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
         s.pairs.forEach(([o, cc]) => { if (cc.width !== o.width || cc.height !== o.height) { cc.width = o.width; cc.height = o.height; } const g = cc.getContext('2d'); g.clearRect(0, 0, cc.width, cc.height); g.drawImage(o, 0, 0); }); });
       requestAnimationFrame(blow); })(); }
   const anchor = h => h === '#about' ? one('.gray') : document.querySelector(h);   // About lands on the photo of Karen and Lisa, above the text
-  document.querySelectorAll('.hero > .nav a[href^="#"]').forEach(a => a.addEventListener('click', e => { if (a.getAttribute('href') === '#about') { e.preventDefault(); e.stopPropagation(); if (!openView) { if (openView === null || openView === undefined) openStory(); } return; }   /* About opens the Story */ const el = anchor(a.getAttribute('href')); if (!el) return; e.preventDefault(); glideTo(el); }));   // About and Cases glide there: Cases to the first case, level with its client's name
+  { const ab = one('.stack .shop'); if (ab) ab.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); glideTo(one('.tagged')); }); }   // the About link under the awards glides to the Story too
+  document.querySelectorAll('.hero > .nav a[href^="#"]').forEach(a => a.addEventListener('click', e => { if (a.getAttribute('href') === '#about') { e.preventDefault(); e.stopPropagation(); glideTo(one('.tagged')); return; }   /* About glides to the Story on the page */ const el = anchor(a.getAttribute('href')); if (!el) return; e.preventDefault(); glideTo(el); }));   // About and Cases glide there: Cases to the first case, level with its client's name
   partners.forEach((el, i) => el.addEventListener('click', () => { if (pics[i]) glideTo(pics[i]); }));   // a slow, soft glide rather than the browser's own jump   // a name is an anchor: it takes you to its case
 
   // "Our projects": on the left, what was made for the project that is level with the labels (from dirtyhands.ru/projects, as in the cases)
@@ -1046,8 +1047,8 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     sGroup.forEach(el => { if (el.style.position !== 'fixed' && (el._top0 == null || formsScene._w !== W)) el._top0 = el.offsetTop ?? cssPx(el, 'top');   /* its place in the page, read while it is not fixed */
       const side = 0, dy = pin ? 0 : h;
       if (el.classList.contains('bigrow')) { const wd = el.querySelector('.name2'); if (wd && !wd._lt) { wd._lt = [...wd.textContent].map(ch => Object.assign(document.createElement('span'), { className: 'fl', textContent: ch })); wd.textContent = ''; wd.append(...wd._lt); }
-        const wi = $('.rest > .bigrow').indexOf(el), dir = wi === 0 ? -1 : 1, pw = clamp((k - wi * .05) / .3), n = wd ? wd._lt.length : 1;   // the words go off sideways along their lines, Unconventional to the left, ceramic and forms to the right, the letters one after another, the outermost first; gone before the film reaches them
-        if (wd) wd._lt.forEach((sp, j) => { const ord = dir < 0 ? j : n - 1 - j, lp = ease(clamp(pw * 1.6 - ord / n * .6)); sp.style.translate = lp ? `${(dir * lp * W * .6).toFixed(1)}px 0` : ''; sp.style.opacity = lp > .6 ? (1 - (lp - .6) / .4).toFixed(3) : ''; });
+        const wi = $('.rest > .bigrow').indexOf(el), dir = wi === 0 ? -1 : 1, pw = clamp((k - wi * .05) / .3), n = wd ? wd._lt.length : 1;   // the words go off sideways along their lines, whole, Unconventional to the left, ceramic and forms to the right; gone before the film reaches them
+        const lw = ease(pw); if (wd) wd._lt.forEach((sp, j) => { const ord = dir < 0 ? n - 1 - j : j; sp.style.translate = lw ? `${(dir * lw * (W * .7 + ord * 1.5)).toFixed(1)}px 0` : ''; sp.style.opacity = lw > .7 ? (1 - (lw - .7) / .3).toFixed(3) : ''; });   /* the word goes off whole, as it came; its letters part only by a hair */
         if (wi === 2) formsScene._formsGo = pw; if (wi === 1) formsScene._ceramicGo = pw; }
       if (el._topCss == null) el._topCss = el.style.top;   /* its own top, kept before it is ever fixed */
       if (pin) { el.style.position = 'fixed'; el.style.top = (el._top0 + rt - S0) + 'px'; } else if (el.style.position === 'fixed') { el.style.position = ''; el.style.top = el._topCss || ''; }
@@ -1077,7 +1078,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const tl = gsap.timeline({ onReverseComplete() { one('.tagged').style.visibility = ''; SV.classList.remove('open'); lockView(false); openView = null; gsap.set(pageEls(), { clearProps: 'opacity,transform' }); tick(); } });
     tl.to(pageEls(), { opacity: 0, y: -24, duration: .5, ease: 'power2.in' }, 0);
     tl.fromTo('#storyView .ov-scrim', { opacity: 0 }, { opacity: 1, duration: .45, ease: 'power2.out' }, 0.05);
-    tl.fromTo(title, { x: r0.left - r1.left, y: r0.top - r1.top }, { x: 0, y: 0, duration: .95, ease: EASE }, 0.15);                 // the Story word stays: it only moves to its new place
+    riseIn(tl, splitLetters(title), { each: .06, at: .15 });   // the Story word comes up letter by letter, as the titles everywhere do
     // an invisible cylinder with the text written on it, and a smaller one inside it with the photographs: both are cut into thin vertical strips, every strip stands on its own angle
     const host = one('#storyView .sv-items'), SP = 320 * U, TW = 260 * U, RAD = 930 * U, RT = 1500 * U, RP = RAD * 0.7, FP = RP / RAD, PGR = 1.12, N = data.length, CW = 210 * U, SW = 12 * U, KS = Math.ceil(CW / SW);
     const PW_ = [1, .8, 1.15, .9, 1.05, .85], PH_ = [260, 190, 320, 230, 290, 200], PG_ = [24, 80, 24, 120, 44, 96], strips = [];
@@ -1470,7 +1471,10 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   // ---- the two hands over the credit: a thin outline, drawn in line by line once scrolled to (as the outline of the urban over About)
   { const eye = one('.rest > .eye'), crs = $('.rest > .credit'), grp = [eye, ...crs].filter(Boolean); let held = 0;
     const endHold = () => { if (!eye) return; const V = innerHeight, a = eye.getBoundingClientRect().top - held, b = (crs[crs.length - 1] || eye).getBoundingClientRect().bottom - held, mid = (a + b) / 2;   // where the hands and the credit would be, unheld
-      held = Math.round(Math.max(0, Math.min(V, V * .46 - mid)));   /* whole pixels */   /* held in the middle for one whole screen of scrolling */ grp.forEach(el => { el.style.transform = held ? `translate3d(0,${held.toFixed(1)}px,0)` : ''; });   // once they reach the middle of the screen they stay there a while, then go on up
+      held = Math.round(Math.max(0, Math.min(V, V * .46 - mid)));   /* whole pixels; held in the middle for one whole screen of scrolling */
+      const pin = held > 0 && held < V, midDoc = mid + scrollY;   /* while held they stand fixed on the screen: moved by the script against the scroll they shook, in Safari most */
+      grp.forEach(el => { if (pin) { if (el.style.position !== 'fixed') { el._topCss = el.style.top; el._doc = el.getBoundingClientRect().top + scrollY - (el._tf || 0); } el.style.transform = ''; el._tf = 0; el.style.position = 'fixed'; el.style.top = Math.round(el._doc - midDoc + V * .46) + 'px'; }
+        else { if (el.style.position === 'fixed') { el.style.position = ''; el.style.top = el._topCss; } el._tf = held; el.style.transform = held ? `translate3d(0,${held}px,0)` : ''; } });   // once they reach the middle of the screen they stay there a while, then go on up
       if (!eye.classList.contains('on') && mid + held < V * .62) eye.classList.add('on');   // the hands are drawn once they have come up to the middle, so they are seen being drawn
       if (scrollY < V) eye.classList.remove('on'); };   // back at the top (the page starting over): drawn again next time
     addEventListener('scroll', endHold, { passive: true }); addEventListener('resize', endHold); if (lenis) lenis.on('scroll', endHold); endHold(); }   // placed in the same frame as the smooth scroll moves the page: held still, never a frame late
