@@ -466,7 +466,7 @@ window.preDone = new Promise(done => {
   window.scrollLocked = true;   // no scrolling under the sheet (a lock that leaves the scrollbar alone, so nothing shifts when it lifts)
   const S = 1, cv = pre.querySelector('canvas'), w = Math.round(innerWidth * S), h = Math.round(innerHeight * S), c = makeClay({ cv, w, h });   // full size: the clay keeps its grain and its clean edge (stretched from half size it went soft, like soap)
   // a finger writes D and H in clay across the middle of the sheet, stroke by stroke, lifting between them (sizes in css px)
-  const LH = Math.min(168, innerHeight * .2),   /* sweeping, as if drawn across the sheet with a whole finger, but not too big */ BW = LH * .95, GAP = LH * .48,   /* wide letters (the strokes as thick as before) */ x0 = (innerWidth - (BW * 2 + GAP)) / 2, yT = innerHeight / 2 - LH / 2, yB = yT + LH;
+  const LH = Math.min(140, innerHeight * .17),   /* sweeping, as if drawn across the sheet with a whole finger, but not too big */ BW = LH * .95, GAP = LH * .48,   /* wide letters (the strokes as thick as before) */ x0 = (innerWidth - (BW * 2 + GAP)) / 2, yT = innerHeight / 2 - LH / 2, yB = yT + LH;
   // written by hand, not drawn: each letter a little askew, every stroke wobbling and running on past its end, the clay thinning out as it goes, so the ends are rubbed and dry
   // written by hand, quickly and badly, as a finger would: every stroke leaning its own way, starting and stopping a little off, running on well past its end, wobbling, the clay thinning out so the ends are dry and rubbed
   const R = (a, b) => a + Math.random() * (b - a), j = () => R(-.14, .14) * LH;
@@ -498,7 +498,7 @@ window.preDone = new Promise(done => {
   (function step(now) { const k = Math.min(1, (now - t1) / DUR), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;   // slow in, slow out
     advance(e * total + (k >= 1 ? 1 : 0)); c.render();
     if (k < 1) return requestAnimationFrame(step);
-    setTimeout(() => { pre.classList.add('going'); pre.style.pointerEvents = 'none'; pre.style.transition = 'background-color .6s cubic-bezier(.4, 0, .2, 1)'; pre.style.backgroundColor = 'transparent'; done(); if (c.soak) c.soak(0, () => pre.remove()); else { pre.style.transition = 'opacity 1.2s ease'; pre.style.opacity = 0; setTimeout(() => pre.remove(), 1300); } }, 250); })(t1);   // (an older clay.js from the cache: it simply fades)   // the sheet goes and the page appears; the DH soaks away like any clay mark, gone by the time the top row has come in   // the sheet goes and the page appears; the DH stays and soaks away by itself, as every clay mark on the site does
+    setTimeout(() => { pre.classList.add('going'); pre.style.pointerEvents = 'none'; pre.style.transition = 'background-color .6s cubic-bezier(.4, 0, .2, 1)'; pre.style.backgroundColor = 'transparent'; done(); if (c.soak) c.soak(0, () => pre.remove()); else { pre.style.transition = 'opacity 1.2s ease'; pre.style.opacity = 0; setTimeout(() => pre.remove(), 1300); } }, 750); })(t1);   // (an older clay.js from the cache: it simply fades)   // the sheet goes and the page appears; the DH soaks away like any clay mark, gone by the time the top row has come in   // the sheet goes and the page appears; the DH stays and soaks away by itself, as every clay mark on the site does
 });
 </script>
 <script src="sound.js?v=18"></script>
