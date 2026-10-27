@@ -42,7 +42,7 @@
   @keyframes arrowSwap { 0% { transform: none; opacity: 1; } 42% { transform: translate(120%, -120%); opacity: 0; } 43% { transform: translate(-120%, 120%); opacity: 0; } 100% { transform: none; opacity: 1; } }
 
   /* the preloader: a finger writes DH in clay on a white sheet, then the sheet goes and the clay soaks away */
-  .pre { position: fixed; inset: 0; z-index: 3000; background-color: #fff; } .pre canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .pre { position: fixed; inset: 0; z-index: 3000; background-color: #fff; } .pre-hint { position: absolute; left: 0; right: 0; bottom: calc(24px + env(safe-area-inset-bottom)); margin: 0; text-align: center; font-size: 13px; line-height: 1.3; letter-spacing: -.01em; color: #8a8a8a; animation: preHint .6s ease .5s both; transition: opacity .25s ease, translate .25s ease; } .pre.going .pre-hint { opacity: 0; translate: 0 6px; } @keyframes preHint { from { opacity: 0; translate: 0 6px; } }   /* while the clay is drawn: a quiet word at the bottom that the sound is part of it; it goes the moment the clay washes away */ .pre canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
   /* top bar */
   .top { position: fixed; z-index: 50; left: 0; right: 0; top: 0; height: calc(48px + env(safe-area-inset-top)); padding: env(safe-area-inset-top) var(--m) 0; display: flex; justify-content: space-between; align-items: center; background: #fff; pointer-events: none; }
@@ -90,7 +90,8 @@
   .row i { display: block; height: 72px; background: center / contain no-repeat; }
 
   /* Karen and Lisa: the photo the right way up, the whole width, nothing held or moved by the scroll; on it a short label for each, which opens their story */
-  .duo { position: relative; margin-top: var(--s5); }
+  .duo { position: relative; margin-top: var(--s5); z-index: 7; }   /* over the gymnasts as they pass behind the photo */
+  #pots > * { visibility: hidden; }   /* the gymnasts land in the place of the pots */
   .duo .photo { position: relative; width: 100%; height: calc(100vw * 1680 / 850); overflow: hidden; }   /* the photo upright, as it was: turned a quarter, whole, the whole width */
   .duo .photo::before { content: ''; position: absolute; left: 50%; top: 50%; width: calc(100vw * 1680 / 850); height: 100vw; translate: -50% -50%; rotate: 90deg; scale: 1.12; background: url("photos/lisa-karen.jpg") center / cover no-repeat; }
   @supports (animation-timeline: view()) { .duo .photo::before { animation: duoDrift linear both; animation-timeline: view(); } }   /* the photo goes up a little faster than the page, inside its frame */
@@ -113,7 +114,7 @@
   .aw li { position: relative; display: flex; justify-content: space-between; } .aw li::before, .aw li:last-child::after { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--rule); transform: scaleX(0); transform-origin: 0 50%; transition: transform 1s cubic-bezier(.2,.8,.2,1) calc(var(--i) * .12s); } .aw li:last-child::after { top: auto; bottom: 0; transition-delay: calc((var(--i) + 1) * .12s); }
   .aw li > span { opacity: 0; translate: 0 .5em; transition: opacity .7s cubic-bezier(.2,.8,.2,1) calc(var(--i) * .12s + .15s), translate .7s cubic-bezier(.2,.8,.2,1) calc(var(--i) * .12s + .15s); }
   .aw.on li::before, .aw.on li:last-child::after { transform: none; } .aw.on li > span { opacity: 1; translate: 0 0; } .aw.on li > .an { opacity: .4; }
-  .sfilm { position: relative; width: 100%; aspect-ratio: 16 / 9; } .sfilm .vid iframe { width: 112%; height: auto; aspect-ratio: 16 / 9; }   /* the studio film between the forms and the Story, playing silently; a tap opens it with sound */
+  .sfilm { position: relative; width: 100%; aspect-ratio: 16 / 9; } .sfilm .vid iframe { width: 100%; height: 100%; translate: none; left: 0; top: 0; }   /* the whole picture, not cut at the top or the bottom */   /* the studio film between the forms and the Story, playing silently; a tap opens it with sound */
   .vid { position: absolute; inset: 0; overflow: hidden; background: #f2f2f2; } .vid iframe { position: absolute; left: 50%; top: 50%; width: 118%; height: 118%; translate: -50% -50%; border: 0; pointer-events: none; }   /* the studio film, silent and looping, a little larger than its frame so the player's own bars stay outside; a click opens it whole, with sound */
   .about .shift { padding-left: calc(100vw / 3); }   /* the second paragraph a third of the screen in */
   .pots { position: relative; width: var(--col); aspect-ratio: 1; margin: var(--s4) 0; }
@@ -132,6 +133,7 @@
   .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .case { margin-top: var(--s5); }
   .case .pic { position: relative; overflow: hidden; display: block; width: 100%; aspect-ratio: 5 / 4; margin-top: 0; background: var(--gray) center / cover no-repeat; }   /* the kind of place over the picture, what was made under it on the left */
+  .pic-gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; } .case .pic.gl::before { display: none; }   /* the shaded picture in place of the plain one */
   .case .pic::before { content: ''; position: absolute; left: 0; right: 0; top: -8%; bottom: -8%; background: inherit; }   /* the picture a little taller than its frame */
   @supports (animation-timeline: view()) { .case .pic::before { animation: picDrift linear both; animation-timeline: view(); } }   /* and it drifts slowly inside it as the case goes by, with the scroll itself */
   @keyframes picDrift { from { transform: translateY(-6%); } to { transform: translateY(6%); } }
@@ -149,18 +151,19 @@
 
   /* media */
   .media .h { font-size: var(--h2); }
-  .mi { display: grid; grid-template-columns: 72px 1fr; gap: var(--g); padding: var(--s3) 0; border-top: 1px solid var(--rule); }
-  .mi i { position: relative; overflow: hidden; display: block; width: 60%; aspect-ratio: 4 / 3; background: var(--gray); margin-bottom: var(--s2); }
-  .mi i b { position: absolute; inset: 0; background: 50% 15% / cover no-repeat; transform-origin: 50% 50%; }   /* square, cut to the frame, held near the top so no face is lost */
+  .mi { display: block; padding: var(--s3) 0; border-top: 1px solid var(--rule); }
+  .mi .mh { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--s2); padding-left: calc(30vw + var(--g)); }   /* the title over the text, the year at the right, the picture under them to the left: as on the full page */ .mi .mb { display: grid; grid-template-columns: 30vw 1fr; gap: var(--g); align-items: start; }   /* as on the full page: what happened and its year, and under them the picture with the text beside it */
+  .mi .sth { position: relative; overflow: hidden; display: block; width: 100%; aspect-ratio: 1; background: var(--gray); } .mi .sth b { position: absolute; inset: 0; background: 50% 15% / cover no-repeat; margin: 0; }
   .rvz { opacity: 0; transition: opacity .45s var(--ease); } .rvz b { clip-path: inset(0 0 100% 0); transform: translateY(-14%) scale(1.18); transition: clip-path 1.3s cubic-bezier(.65, 0, .35, 1) .25s, transform 1.5s cubic-bezier(.2, .8, .2, 1) .25s; }   /* a grey frame first, then the picture opening inside it from the top down, settling from a slight zoom */
   .rvz.on { opacity: 1; } .rvz.on b { clip-path: inset(0 0 0 0); transform: none; }   /* smaller, and held a little high so heads are never cut */
   .mi:last-child { border-bottom: 1px solid var(--rule); }
   .mi .d { opacity: .4; }
   .mi b { font-weight: 400; display: block; margin-bottom: var(--s1); } .mi .mt { display: block; }   /* room between the outlet and what it says */
-  .mi.more { display: none; } .media.all .mi.more { display: grid; }
+  .mi.more { display: none; } .media.all .mi.more { display: block; }
   .allbtn { display: block; margin: var(--s4) auto 0; text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
 
   .fin { margin-top: var(--s5); } .fin::after { content: ''; display: block; height: 65svh; }   /* the end: the hands and the credit come right after Media, stop a little above the middle of the screen, and stay there a while before the page starts over */
+  .totop { all: unset; cursor: pointer; margin-top: var(--s4); width: 48px; height: 48px; display: grid; place-items: center; }   /* back to the top: a big target round a small arrow */
   .fin-in { position: sticky; top: calc(42svh - 76px); display: flex; flex-direction: column; align-items: center; }
   .veil { position: fixed; inset: 0; z-index: 2500; background: #fff; opacity: 0; pointer-events: none; transition: opacity .6s var(--ease); }
   .hands { display: block; width: 136px; height: 74px; margin: 0 auto; overflow: visible; }
@@ -172,6 +175,7 @@
   /* the simple way things come in: up a little, once */
   .in { opacity: 0; transform: translateY(16px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
   .in.on { opacity: 1; transform: none; }
+  .in.sp { opacity: 1; transform: none; } .in.sp .lm { display: block; overflow: hidden; padding-bottom: .18em; margin-bottom: -.18em; } .in.sp .lmi { display: block; transform: translateY(110%); transition: transform .9s var(--ease) calc(var(--d, 0ms) + var(--i, 0) * 80ms); } .in.sp.on .lmi { transform: none; }   /* text: line by line, each line coming up out of its own line, as on the full page */
   .tr .n.in.on, .mi .d.in.on { opacity: .4; }   /* the numbers come up grey, as they stay */
   .rv { clip-path: inset(0 0 100% 0); transition: clip-path 1.1s cubic-bezier(.65, 0, .35, 1); } .rv.on { clip-path: inset(0 0 0 0); }   /* a picture opens from its top edge down, as on the full page */
 
@@ -179,7 +183,7 @@
   .ov { position: fixed; inset: 0; z-index: 60; background: #fff; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; visibility: hidden; opacity: 0; transition: opacity .45s var(--ease), visibility 0s .45s; }
   .ov.open { visibility: visible; opacity: 1; transition: opacity .45s var(--ease); }
   .ov.fit { overflow: hidden; }
-  .x { position: fixed; z-index: 61; top: calc(var(--s1) + env(safe-area-inset-top)); right: calc(var(--m) - 6px); width: 32px; height: 32px; display: grid; place-items: center; color: #fff; mix-blend-mode: difference; }
+  .x { position: fixed; z-index: 61; top: calc(var(--s1) + env(safe-area-inset-top)); right: calc(var(--m) - 18px); width: 56px; height: 56px; margin-top: -12px; display: grid; place-items: center;   /* a big target round the small cross: no need to aim */ color: #fff; mix-blend-mode: difference; }
   .x[hidden] { display: none; }
   .x svg { width: 14px; height: 14px; }
   .ov .head { padding: calc(var(--s5) + env(safe-area-inset-top)) var(--m) 0; }
@@ -212,6 +216,8 @@
   .shelf .w { position: absolute; bottom: 1px; width: 14vw; height: 14vw; background: center bottom / contain no-repeat; z-index: 1; }
   .sil { position: absolute; z-index: 62; right: var(--m); top: calc(var(--lh) / 2); translate: 0 -50%; width: 14vw; height: 14vw; background: center bottom / contain no-repeat; filter: brightness(0); transition: transform .25s var(--ease); }   /* the next work, a black silhouette at the bottom right: a tap sends it flying onto a shelf */
   .sil:active { transform: scale(.9); }
+  .trl { position: fixed; left: 0; top: 0; z-index: 70; width: 14vw; height: 14vw; background: center bottom / contain no-repeat; filter: brightness(0); pointer-events: none; opacity: 0; }   /* the works trailing the finger, as silhouettes */
+  .sil { top: 0; translate: 0 -78%; touch-action: none; }   /* up level with Order now, and held by the finger without scrolling the page */
   .fall { filter: brightness(0); } .shelf .w { transition: filter .7s var(--ease); } .shelf .w.dark { filter: brightness(0); }
   .fall { position: fixed; z-index: 70; width: 14vw; height: 14vw; background: center bottom / contain no-repeat; pointer-events: none; }
   .foot { position: relative; display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: calc(var(--s5) + env(safe-area-inset-bottom)); }   /* the address and the silhouette on one line */
@@ -230,7 +236,7 @@
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "Dirty Hands", "alternateName": "DirtyHands", "description": "Studio of interior ceramics: wall panels, mirrors, tables, sculptures and vases made by hand for homes, restaurants and public spaces.", "url": "https://123asha.github.io/dirty-hands/", "logo": "https://123asha.github.io/dirty-hands/icon-512.png", "image": "https://123asha.github.io/dirty-hands/photos/og.jpg", "email": "order@dirtyhands.ru", "foundingDate": "2019", "founder": [{"@type": "Person", "name": "Elizaveta Martirosyan"}, {"@type": "Person", "name": "Karen Yuzbashyan"}], "sameAs": ["https://dirtyhands.ru"]}</script>
 </head>
 <body>
-<div class="pre" aria-hidden="true"><canvas></canvas></div>
+<div class="pre" aria-hidden="true"><canvas></canvas><p class="pre-hint">Tap anywhere — Dirty Hands is best with sound</p></div>
 <div class="top">
   <button type="button" class="snd" aria-pressed="false" aria-label="Sound"><svg viewBox="0 0 20 10" aria-hidden="true"><path d="M0 5H20" fill="none" stroke="currentColor" stroke-width="1.1"/></svg><span>Sound</span></button>
   <nav><a href="#about">About</a><a href="#cases">Cases</a><a href="#order" class="ord">Order</a><a class="lnk" href="mailto:order@dirtyhands.ru">Contact<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a></nav>
@@ -282,6 +288,7 @@
 <section class="fin"><div class="fin-in">
 <svg class="hands" viewBox="164 14 680 368" aria-hidden="true"><path pathLength="1" d="M408.0 372.0L410.4 357.3L408.2 342.7L407.7 328.0L409.6 313.3L408.8 298.7L405.9 284.0L406.4 269.3L408.5 254.7L408.0 240.0L423.2 238.0L438.4 240.4L453.6 242.2L468.8 240.4L484.0 240.0L485.8 224.0L485.5 208.0L482.5 192.0L484.0 176.0L468.8 175.6L453.6 176.7L438.4 178.4L423.2 176.3L408.0 176.0L408.3 160.9L407.6 145.7L409.9 130.6L410.1 115.4L407.2 100.3L406.7 85.1L408.0 70.0L390.0 70.4L372.0 72.6L354.0 70.0L352.7 85.0L353.8 100.0L354.7 115.0L352.3 130.0L351.5 145.0L354.2 160.0L355.0 175.0L354.0 190.0L354.0 174.9L351.5 159.8L352.5 144.7L354.9 129.6L353.9 114.5L352.8 99.5L355.2 84.4L356.6 69.3L354.3 54.2L353.3 39.1L354.0 24.0L340.0 23.4L326.0 26.2L312.0 25.8L298.0 24.0L298.3 39.1L299.7 54.2L297.4 69.3L295.5 84.4L297.4 99.5L298.5 114.5L296.5 129.6L296.8 144.7L299.7 159.8L299.8 174.9L298.0 190.0L297.6 175.0L295.9 160.0L297.9 145.0L300.2 130.0L298.7 115.0L297.6 100.0L299.6 85.0L299.9 70.0L296.9 55.0L298.0 40.0L283.5 39.7L269.0 40.3L254.5 42.4L240.0 40.0L238.3 55.0L239.4 70.0L240.6 85.0L238.5 100.0L237.6 115.0L240.4 130.0L241.4 145.0L239.5 160.0L240.1 175.0L240.0 190.0L238.5 175.0L241.1 160.0L240.4 145.0L239.1 130.0L241.2 115.0L240.0 100.0L222.0 99.8L204.0 101.0L186.0 100.0L185.6 114.0L188.3 128.0L187.9 142.0L185.3 156.0L185.9 170.0L187.3 184.0L185.3 198.0L183.4 212.0L185.3 226.0L186.0 240.0L186.5 254.8L188.1 269.4L192.6 283.8L194.3 298.4L193.5 313.4L195.4 328.0L198.7 342.5L198.4 357.3L200.0 372.0"/><path pathLength="1" d="M600.0 372.0L598.3 357.3L597.6 342.7L600.2 328.0L600.7 313.3L598.9 298.7L600.0 284.0L602.5 269.3L601.4 254.7L600.0 240.0L584.8 239.6L569.6 238.6L554.4 241.2L539.2 242.5L524.0 240.0L524.4 224.0L522.5 208.0L523.3 192.0L524.0 176.0L539.2 177.6L554.4 175.5L569.6 176.6L584.8 177.9L600.0 176.0L597.7 160.9L599.6 145.7L600.3 130.6L598.3 115.4L598.7 100.3L601.6 85.1L600.0 70.0L618.0 69.6L636.0 70.6L654.0 70.0L653.8 85.0L656.0 100.0L654.4 115.0L653.6 130.0L655.8 145.0L655.9 160.0L653.0 175.0L654.0 190.0L653.5 174.9L654.5 159.8L656.5 144.7L654.9 129.6L652.5 114.5L653.7 99.5L654.6 84.4L652.3 69.3L651.6 54.2L654.3 39.1L654.0 24.0L668.0 23.3L682.0 24.1L696.0 26.6L710.0 24.0L711.0 39.1L710.0 54.2L708.9 69.3L711.3 84.4L712.6 99.5L710.2 114.5L709.2 129.6L711.1 144.7L710.5 159.8L707.7 174.9L710.0 190.0L709.4 175.0L710.2 160.0L711.5 145.0L709.3 130.0L707.4 115.0L709.4 100.0L710.5 85.0L708.6 70.0L708.9 55.0L710.0 40.0L724.5 41.9L739.0 39.7L753.5 40.4L768.0 40.0L768.0 55.0L770.3 70.0L768.7 85.0L767.6 100.0L769.5 115.0L769.7 130.0L766.8 145.0L766.2 160.0L768.3 175.0L768.0 190.0L770.3 175.0L768.7 160.0L766.2 145.0L767.3 130.0L768.5 115.0L768.0 100.0L786.0 97.7L804.0 100.5L822.0 100.0L822.4 114.0L821.9 128.0L819.5 142.0L820.7 156.0L823.3 170.0L822.5 184.0L821.2 198.0L823.3 212.0L824.6 226.0L822.0 240.0L819.3 254.5L819.5 269.4L817.6 284.0L813.4 298.4L812.4 313.1L813.4 328.1L811.3 342.7L808.4 357.2L808.0 372.0"/></svg>
 <p class="credit"><a href="https://skip.design" target="_blank" rel="noopener">Made by <img class="sfav" src="skip-fav.png" alt="" aria-hidden="true" style="display:inline-block"> <span class="u">Skip Design</span><svg class="arr" viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a><br>With love for Dirty Hands ♥</p>
+<button type="button" class="totop" aria-label="Back to the top"><svg viewBox="0 0 10 10" width="11" height="11" aria-hidden="true"><path d="M5 9V1M1.5 4.5 5 1l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></button>
 </div></section>
 <div class="veil" aria-hidden="true"></div>
 
@@ -332,7 +339,7 @@ window.preDone = new Promise(done => {
   (function step(now) { const k = Math.min(1, (now - t1) / DUR), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;   // slow in, slow out
     advance(e * total + (k >= 1 ? 1 : 0)); c.render();
     if (k < 1) return requestAnimationFrame(step);
-    setTimeout(() => { pre.style.pointerEvents = 'none'; pre.style.transition = 'background-color .6s cubic-bezier(.4, 0, .2, 1)'; pre.style.backgroundColor = 'transparent'; document.documentElement.style.overflow = ''; done(); if (c.soak) c.soak(0, () => pre.remove()); else { pre.style.transition = 'opacity 1.2s ease'; pre.style.opacity = 0; setTimeout(() => pre.remove(), 1300); } }, 250); })(t1);   // (an older clay.js from the cache: it simply fades)   // the sheet goes and the page appears; the DH soaks away like any clay mark, gone by the time the top row has come in   // the sheet goes and the page appears; the DH stays and soaks away by itself, as every clay mark on the site does
+    setTimeout(() => { pre.classList.add('going'); pre.style.pointerEvents = 'none'; pre.style.transition = 'background-color .6s cubic-bezier(.4, 0, .2, 1)'; pre.style.backgroundColor = 'transparent'; document.documentElement.style.overflow = ''; done(); if (c.soak) c.soak(0, () => pre.remove()); else { pre.style.transition = 'opacity 1.2s ease'; pre.style.opacity = 0; setTimeout(() => pre.remove(), 1300); } }, 250); })(t1);   // (an older clay.js from the cache: it simply fades)   // the sheet goes and the page appears; the DH soaks away like any clay mark, gone by the time the top row has come in   // the sheet goes and the page appears; the DH stays and soaks away by itself, as every clay mark on the site does
 });
 </script>
 <script>
@@ -380,24 +387,31 @@ window.preDone = new Promise(done => {
     if (p <= 0) { pile.style.visibility = 'hidden'; cats.forEach(c => c.style.visibility = ''); if (titleReady) { chs.forEach(c => { c._t = 0; }); glideTitle(); } return; }   // back at the top (after the page starts over too) the title stands whole again
     if (titleReady) { chs.forEach((c, k) => { const e = clamp(p * 1.15 - k * .04); c._t = -e * e * (3 - 2 * e) * 130; }); glideTitle(); }   // the title leaves letter by letter, as it came, each letter gliding after the scroll (see glideTitle)
     pile.style.visibility = ''; cats.forEach(c => c.style.visibility = 'hidden');
-    const tr = tbl.getBoundingClientRect(), endShift = 0, gone = clamp((tr.bottom - V * .42) / (V * .22)); pile.style.opacity = gone.toFixed(3);   // at the end of the table the pile melts away where it stands: chasing the page with the script made it shake on the iPhone
+    const tr = tbl.getBoundingClientRect(), endShift = 0, gone = 1; pile.style.opacity = '';   /* the gymnasts no longer melt away at the end of the table: they go on down the page */   // at the end of the table the pile melts away where it stands: chasing the page with the script made it shake on the iPhone
     let top = 0, bd = 1e9; const mid = V * .34 + W * .23; trs.forEach((r, k) => { const b = r.getBoundingClientRect(), d = Math.abs((b.top + b.bottom) / 2 - mid); if (d < bd) { bd = d; top = k; } }); top = 0;   /* only the gymnasts, the whole length of the text */   // the work of the paragraph whose middle is nearest the middle of the work
     const S = W * .46, PX = 16, PY = V * .34, flip = clamp((p - .56) / .3), flip2 = clamp((p - .86) / .14), lay = Math.sin(Math.PI * e), spin = Math.max(0, scrollY - hero.offsetHeight * .75) * .22;   /* the gymnasts turn slowly with the scroll once they are alone */   // lay: each work askew on the way, all of them exactly on one another once gathered
     pcs.forEach((el, k) => { const c = cats[k].getBoundingClientRect(), dk = Math.min(5, Math.abs(k - top)), sk = SKEW[k];
       const x = c.left + (PX + sk[0] * dk * lay - c.left) * e, y = c.top + (PY + sk[1] * dk * lay + endShift - c.top) * e, w = c.width + (S - c.width) * e, h = c.height + (S - c.height) * e;
       const f = (flip + (k === 0 ? flip2 : 0)) * 180, back = f > 90, side = f > 270 ? 2 : back ? 1 : 0;   /* every work turns over to its cut-out on the way; the panel once more, to only its ladies */ if (el._side !== side) { el._side = side; el.classList.toggle('back', back); el.style.backgroundImage = `url('${side === 2 ? 'photos/panel-gymnastics-ladies.webp' : back ? CUT[k] : PHOTO[k]}')`; }   // edge-on half way, and on its back the work without its background
+      let X = x, Y = y; if (k === 0 && e >= 1) { const pr = document.getElementById('pots').getBoundingClientRect(), t = clamp((V - pr.top) / V), te = t * t * (3 - 2 * t); X = x + (pr.left + pr.width / 2 - w / 2 - x) * te; Y = Math.min(y, pr.top + pr.height / 2 - h / 2); }   // past the photo (behind it) to the place of the pots: they stay in the middle of the screen until the pots come up to them, then go on with the page
       el.style.width = w + 'px'; el.style.height = h + 'px'; el.style.zIndex = 10 - dk;
-      el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) perspective(800px) rotateY(${((f + 90) % 180 - 90).toFixed(1)}deg) rotate(${(sk[2] * dk * lay * .6 + (k === 0 ? spin : 0)).toFixed(1)}deg)`;
+      el.style.transform = `translate(${X.toFixed(1)}px,${Y.toFixed(1)}px) perspective(800px) rotateY(${((f + 90) % 180 - 90).toFixed(1)}deg) rotate(${(sk[2] * dk * lay * .6 + (k === 0 ? spin : 0)).toFixed(1)}deg)`;
       el.style.opacity = k === top || flip < .5 ? 1 : 0; });
     if (window.gymGL && !pileTick._gym) pileTick._gym = gymGL(pcs[0], ['photos/gym-1.webp', 'photos/gym-2.webp', 'photos/gym-3.webp']) || 1; if (pileTick._gym && pileTick._gym.set) pileTick._gym.set(pcs[0]._side === 2, spin);   /* the gymnasts through their shader once they are alone */   // the moment they stand edge-on, only the one on top is left   // they gather into one solid pile; once gathered the ones under it go, and only the top one turns over
-    flowTable(gone > .5 ? pcs.filter(el => +el.style.opacity > .05).map(el => ({ r: el.getBoundingClientRect(), k: el === pcs[top] && flip >= 1 && !spin ? top : -1 })) : null); }   // the lines go round every work in sight from the first moment, even while they fly in (by its own outline once it has turned over)   // the lines go round the work on top, on both sides
+    { const g = pcs[0], gr = g.getBoundingClientRect(), on = g._side === 2 && gr.width > 2, box = on ? { l: gr.left + gr.width * .12, r: gr.right - gr.width * .12, t: gr.top + gr.height * .1, b: gr.bottom - gr.height * .1 } : null;   // the About text steps aside, line by line, where the gymnasts pass over it (the title is left alone)
+      document.querySelectorAll('.about p .ln-in, .about .aw li > span:first-child').forEach(el => { const p = el._push || 0, r = el.getBoundingClientRect(), l = r.left - p, rr = r.right - p; let goal = 0;
+        if (box && r.bottom > box.t - 4 && r.top < box.b + 4 && rr > box.l - 10 && l < box.r + 10) goal = (l + rr) / 2 >= (box.l + box.r) / 2 ? box.r + 10 - l : box.l - 10 - rr;
+        goal = Math.max(-innerWidth * .5, Math.min(innerWidth * .5, goal)); const n = p + (goal - p) * .25; el._push = Math.abs(n) < .3 && !goal ? 0 : n; el.style.translate = el._push ? `${el._push.toFixed(1)}px 0` : ''; }); }
+    flowTable(pcs.filter(el => +el.style.opacity > .05).map(el => { const r = el.getBoundingClientRect(), sh = el === pcs[0] && el._side === 2 ? ladiesShape(spin) : null;
+      if (!sh) return { r, k: el === pcs[top] && flip >= 1 && !spin ? top : -1 };
+      const w = el.offsetWidth, h = el.offsetHeight, cx = r.left + r.width / 2, cy = r.top + r.height / 2; return { r: { left: cx - w / 2, right: cx + w / 2, width: w, top: cy - h * .6, bottom: cy + h * .6, height: h * 1.2 }, sh }; })); }   // the lines go round the gymnasts' own turned outline, as on the full page   // the lines go round every work in sight from the first moment, even while they fly in (by its own outline once it has turned over)   // the lines go round the work on top, on both sides
   pcs.forEach((el, k) => el.style.backgroundImage = `url('${PHOTO[k]}')`);
   addEventListener('scroll', () => requestAnimationFrame(pileTick), { passive: true }); addEventListener('resize', pileTick); one('#cats').addEventListener('scroll', pileTick, { passive: true }); pileTick();
   // the cases, under the clients' names
   one('#caselist').innerHTML = CASES.map(([n, t, cap], k) => `<article class="case" data-c="${k}"><h3 class="vh">${n}</h3><button type="button" class="pic rv" data-c="${k}" style="background-image:url('${SRC(k)}');background-position:${POS(k)}" aria-label="${n}"></button><div class="meta"><p class="type lab in">${t}</p><p class="cap"><span>${cap}</span></p></div></article>`).join('');
     // the media: four, the rest behind a button
   one('#allmedia').addEventListener('click', e => { one('#media').classList.add('all'); e.currentTarget.remove(); });   // the first four entries, the rest on a tap
-  one('#medialist').innerHTML = MEDIA.map(([d, o, t, im], k) => `<div class="mi${k > 3 ? ' more' : ''}"><span class="d in">${d}</span><div><i class="rvz" style="aspect-ratio:1"><b style="background-image:url('${im}')"></b></i><p><b class="in">${o}</b><span class="mt">${t}</span></p></div></div>`).join('');
+  one('#medialist').innerHTML = MEDIA.map(([d, o, t, im], k) => `<div class="mi${k > 3 ? ' more' : ''}"><div class="mh"><b class="in">${o}</b><span class="d in">${d}</span></div><div class="mb"><i class="sth"><b style="background-image:url('${im}')"></b></i><span class="mt">${t}</span></div></div>`).join('');
 
   // every paragraph cut into its own lines, so they come in one after another as on the full page
   function splitLines(el) { if (el._split || !el.textContent.trim() || el.querySelector('a, svg')) return;   // a paragraph holding a link or an icon stays as it is (cutting it into lines lost the arrow)
@@ -410,8 +424,15 @@ window.preDone = new Promise(done => {
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { $('.tr p, .about p, .case .cap span, .mi:not(.more) .mt').forEach(splitLines); reveal(); });
 
   // coming into view: a short rise, once
-  const io = new IntersectionObserver(es => { let d = 0; es.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top || a.boundingClientRect.left - b.boundingClientRect.left).forEach(e => { e.target.style.transitionDelay = (d * 90) + 'ms'; if (e.target.classList.contains('rvz')) e.target.firstChild.style.transitionDelay = (d * 90 + 250) + 'ms'; d++; e.target.classList.add('on');   /* a picture opens in its frame after the frame, at its own turn */ io.unobserve(e.target); }); }, { rootMargin: '0px 0px -8% 0px' });   // what comes in together comes in from the top down, one after another
-  const reveal = () => $('.in:not(.on), .ln-in:not(.on), .rv:not(.on), .rvz:not(.on)').forEach(el => io.observe(el));
+  const io = new IntersectionObserver(es => { let d = 0; es.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top || a.boundingClientRect.left - b.boundingClientRect.left).forEach(e => { e.target.style.transitionDelay = (d * 90) + 'ms'; e.target.style.setProperty('--d', (d * 90) + 'ms'); if (e.target.classList.contains('rvz')) e.target.firstChild.style.transitionDelay = (d * 90 + 250) + 'ms'; d++; e.target.classList.add('on');   /* a picture opens in its frame after the frame, at its own turn */ io.unobserve(e.target); }); }, { rootMargin: '0px 0px -8% 0px' });   // what comes in together comes in from the top down, one after another
+  const splitIn = el => {   // a text block cut into its lines (each in its own mask), so they can come up one after another
+    if (el.matches('.tr p, .about p, .case .cap span, .mt, .ln-in') || el.querySelector('.ln-in')) return;   /* these are cut into lines by splitLines already */
+    if (el._sp || el.classList.contains('on') || !el.textContent.trim() || [...el.children].some(c => !/^(SVG|B|I|EM|SPAN)$/i.test(c.tagName) || c.querySelector('img, button'))) return; const ic = el.querySelector(':scope > svg'), icon = ic ? ic.outerHTML : '';
+    if ([...el.children].some(c => c.tagName.toLowerCase() !== 'svg')) return;   /* only plain text (an arrow at the end may ride on the last line) */
+    const words = el.textContent.trim().split(/\s+/); el.innerHTML = words.map(w => `<span style="white-space:nowrap">${w.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</span>`).join(' ');
+    const rows = []; [...el.children].forEach(sp => { const t = sp.offsetTop; (rows.length && rows[rows.length - 1].t === t) ? rows[rows.length - 1].w.push(sp.textContent) : rows.push({ t, w: [sp.textContent] }); });
+    el.innerHTML = rows.map((r, i) => `<span class="lm"><span class="lmi" style="--i:${i}">${r.w.join(' ')}${i === rows.length - 1 ? icon : ''}</span></span>`).join(''); el._sp = true; el.classList.add('sp'); };
+  const reveal = () => { $('.in:not(.on)').forEach(splitIn); $('.in:not(.on), .ln-in:not(.on), .rv:not(.on), .rvz:not(.on)').forEach(el => io.observe(el)); };
   reveal();
   { const hd = one('.hands'), ho = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { hd.classList.add('on'); ho.disconnect(); } }, { rootMargin: '0px 0px -40% 0px', threshold: 1 }); ho.observe(hd); }   // drawn when they reach the upper part of the screen, so the line is seen being drawn
 
@@ -451,9 +472,17 @@ window.preDone = new Promise(done => {
       const N = 48, W = 96, cv = document.createElement('canvas'); cv.width = cv.height = W; const g = cv.getContext('2d'), sc = Math.min(W / img.width, W / img.height); g.drawImage(img, (W - img.width * sc) / 2, (W - img.height * sc) / 2, img.width * sc, img.height * sc);
       const d = g.getImageData(0, 0, W, W).data, rows = []; for (let r = 0; r < N; r++) { let L = -1, R = -1; for (let y = Math.floor(r * W / N); y < Math.floor((r + 1) * W / N); y++) for (let x = 0; x < W; x++) if (d[(y * W + x) * 4 + 3] > 40) { if (L < 0 || x < L) L = x; if (x > R) R = x; } rows.push(R < 0 ? null : [L / W, (R + 1) / W]); }
       shapes[k] = rows; if (CUT.every((_, j) => shapes[j])) reserveTable(); pileTick(); }; img.src = CUT[k]; return null; }   // with every outline read, the room is laid out again, tighter
+  // the gymnasts' own outline, turned by a (degrees), as on the full page: their points turned about the middle of their picture and read row by row
+  let LADY_PTS = null; const LADY_CACHE = new Map();
+  { const im = new Image(); im.onload = () => { const n = 64, cv = document.createElement('canvas'); cv.width = cv.height = n; const g = cv.getContext('2d'); g.drawImage(im, 0, 0, n, n); const d = g.getImageData(0, 0, n, n).data; LADY_PTS = [];
+      for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (d[(y * n + x) * 4 + 3] > 40) LADY_PTS.push((x + .5) / n, (y + .5) / n); }; im.src = 'photos/panel-gymnastics-ladies.webp'; }
+  function ladiesShape(a) { if (!LADY_PTS) return null; a = Math.round(a); const key = ((a % 360) + 360) % 360; if (LADY_CACHE.has(key)) return LADY_CACHE.get(key);
+    const N = 56, c = Math.cos(a * Math.PI / 180), s = Math.sin(a * Math.PI / 180), rows = Array.from({ length: N }, () => null);
+    for (let k = 0; k < LADY_PTS.length; k += 2) { const x = LADY_PTS[k] - .5, y = LADY_PTS[k + 1] - .5, X = .5 + x * c - y * s, Y = .5 + x * s + y * c, r = Math.floor((Y + .1) / 1.2 * N); if (r < 0 || r >= N) continue; const R = rows[r]; if (!R) rows[r] = [X - .01, X + .01]; else { R[0] = Math.min(R[0], X - .01); R[1] = Math.max(R[1], X + .01); } }
+    LADY_CACHE.set(key, rows); return rows; }
   function around(y0, y1, ob) {   // where the work is across the band y0..y1 of the screen: [left, right], or null (for several works: from the leftmost to the rightmost of those beside the band)
     if (Array.isArray(ob)) { let L = Infinity, R = -Infinity; ob.forEach(o => { const a = around(y0, y1, o); if (a) { L = Math.min(L, a[0]); R = Math.max(R, a[1]); } }); return R > L ? [L, R] : null; }
-    if (!ob || y1 < ob.r.top - 6 || y0 > ob.r.bottom + 6) return null; const sh = shapes[ob.k]; if (!sh) return [ob.r.left, ob.r.right];
+    if (!ob || y1 < ob.r.top - 6 || y0 > ob.r.bottom + 6) return null; const sh = ob.sh || shapes[ob.k]; if (!sh) return [ob.r.left, ob.r.right];
     let L = Infinity, R = -Infinity; sh.forEach((e, i) => { const a = ob.r.top + i / sh.length * ob.r.height, b = a + ob.r.height / sh.length; if (!e || b < y0 - LHP || a > y1 + LHP) return; L = Math.min(L, ob.r.left + e[0] * ob.r.width); R = Math.max(R, ob.r.left + e[1] * ob.r.width); });
     return R > L ? [L, R] : null; }
   function reserveTable() {   // the most lines each paragraph can take: laid out with the work's whole square at every height beside it
@@ -491,6 +520,79 @@ window.preDone = new Promise(done => {
       if (best !== act) { act = best; cases.forEach((c, k) => c.classList.toggle('act', k === best)); showName(best); } }   // the client in front, held under the menu
     { const r = formsEl.getBoundingClientRect(), p = clamp((V - r.top) / (V * .9)), e = 1 - Math.pow(1 - p, 3), DX = [-28, 30, 22]; words.forEach((w, k) => { w.style.transform = `translateX(${(DX[k] * (1 - e)).toFixed(2)}vw)`; w.style.opacity = clamp(p * 1.4 - k * .15).toFixed(3); }); }
   }
+  // the cases' pictures through the shader of the full page: a slightly domed, glazed surface that leans as it passes the middle of the screen
+  function shaderPicture(el, src, fy = .5) {
+    const cv = document.createElement('canvas'); cv.className = 'pic-gl';
+    const gl = cv.getContext('webgl', { antialias: true });
+    if (!gl) return null;
+    const mk = (type, code) => { const sh = gl.createShader(type); gl.shaderSource(sh, code); gl.compileShader(sh); return gl.getShaderParameter(sh, gl.COMPILE_STATUS) ? sh : (console.warn(gl.getShaderInfoLog(sh)), null); };
+    const vs = mk(gl.VERTEX_SHADER, 'attribute vec2 a; varying vec2 v; void main(){ v = a * .5 + .5; gl_Position = vec4(a, 0., 1.); }');
+    const fs = mk(gl.FRAGMENT_SHADER, `precision highp float;
+      uniform sampler2D tex; uniform vec2 res; uniform vec2 rot; uniform float imgAspect; uniform float fy; varying vec2 v;
+      mat3 rotY(float a){ float c = cos(a), s = sin(a); return mat3(c, 0., -s, 0., 1., 0., s, 0., c); }
+      mat3 rotX(float a){ float c = cos(a), s = sin(a); return mat3(1., 0., 0., 0., c, s, 0., -s, c); }
+      void main(){
+        float asp = res.x / res.y;
+        vec2 sc = (v * 2. - 1.) * vec2(asp, 1.);                       // the point of the screen
+        mat3 R = rotY(rot.y) * rotX(rot.x);
+        const float DOME = .176, CAM = 2.6;   // the bulge of the picture, a fifth less than it was
+        vec2 q = sc;
+        for (int i = 0; i < 7; i++) {                                    // find which point of the surface is seen here
+          vec2 qn = q / vec2(asp, 1.);
+          vec3 P = R * vec3(q, DOME * (1. - dot(qn, qn)));
+          vec2 S = P.xy * CAM / (CAM - P.z);
+          q += sc - S;
+        }
+        vec2 qn = q / vec2(asp, 1.);
+        vec3 n = normalize(R * normalize(vec3(2. * DOME * qn.x / asp, 2. * DOME * qn.y, 1.)));
+        vec3 L = normalize(vec3(-.35, .55, .75));
+        float diff = .78 + .26 * max(dot(n, L), 0.);
+        float spec = pow(max(dot(n, normalize(L + vec3(0., 0., 1.))), 0.), 36.) * .2;      // the gloss of the glaze, kept soft
+        vec2 cover = asp > imgAspect ? vec2(1., imgAspect / asp) : vec2(asp / imgAspect, 1.);
+        vec2 uv = qn * .5 * .84 * cover + .5; float room = (1. - .84 * cover.y) * .5; uv.y += clamp(.5 - fy, -room, room);   // the crop held where the work is
+        vec4 c = texture2D(tex, vec2(uv.x, 1. - uv.y));
+        gl_FragColor = vec4(c.rgb * diff + spec, 1.);
+      }`);
+    if (!vs || !fs) return null;
+    const pr = gl.createProgram(); gl.attachShader(pr, vs); gl.attachShader(pr, fs); gl.linkProgram(pr);
+    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return null;
+    gl.useProgram(pr);
+    const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    const u = n => gl.getUniformLocation(pr, n);
+    const api = { ready: false, rx: 0, ry: 0 };
+    const img = new Image(); img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.uniform1f(u('imgAspect'), img.naturalWidth / img.naturalHeight); gl.uniform1f(u('fy'), fy);
+      el.appendChild(cv); el.classList.add('gl'); api.ready = true; api.draw();
+    };
+    img.onerror = () => {};                                              // no picture: the CSS version stays
+    img.src = src;
+    api.draw = (rx = api.rx, ry = api.ry) => {
+      api.rx = rx; api.ry = ry; if (!api.ready) return;
+      const dpr = Math.min(2, devicePixelRatio || 1), w = Math.round(el.clientWidth * dpr), h = Math.round(el.clientHeight * dpr);
+      if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; gl.viewport(0, 0, w, h); }
+      gl.uniform2f(u('res'), w, h); gl.uniform2f(u('rot'), rx, ry);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    };
+    return api;
+  }
+  const casePics = $('.case .pic'), caseGL = casePics.map((el, k) => { const f = CASE_FOCUS[CASE_KEY[k]]; return shaderPicture(el, SRC(k), f ? f[0] : .5); });
+  function casesScroll() { const V = innerHeight;   // and each opens from a small square at its corner to its full size as it comes up, as the Story's pictures do
+    casePics.forEach((el, k) => { const r = el.getBoundingClientRect(); if (r.bottom < -50 || r.top > V + 50) return; const e0 = clamp((V * .95 - r.top) / (V * .45)), e = e0 * e0 * (3 - 2 * e0), q = ((1 - e) * 60).toFixed(2);
+      el.style.transition = 'none'; const qq = (q / 2).toFixed(2); el.style.clipPath = e >= 1 ? 'none' : `inset(${qq}% ${qq}% ${qq}% ${qq}%)`;   /* from the middle out */ const p = Math.max(-1, Math.min(1, (r.top + r.height / 2 - V / 2) / V)); if (caseGL[k]) caseGL[k].draw(-p * 0.42, p * (k % 2 ? -0.5 : 0.5)); }); }
+  function storyScroll() { const V = innerHeight;
+    $('#medialist .mi').forEach(mi => { const th = mi.querySelector('.sth'), tx = mi.querySelector('.mt'); if (!th || mi.offsetParent === null) return; const r = th.getBoundingClientRect(); if (r.bottom < -50 || r.top > V + 50) return;
+      const e0 = clamp((V * .95 - r.top) / (V * .4)), e = e0 * e0 * (3 - 2 * e0), q = ((1 - e) * 72).toFixed(2); th.style.clipPath = e >= 1 ? 'none' : `inset(0 ${q}% ${q}% 0)`; th.firstChild.style.transform = e >= 1 ? '' : `scale(${(1.3 - .3 * e).toFixed(4)})`;
+      if (tx) [...(tx.children.length ? tx.children : [tx])].forEach((ln, i) => { const ei = clamp(e0 * 1.25 - i * .07), ee = ei * ei * (3 - 2 * ei); ln.style.translate = ee >= 1 ? '' : `${(-(1 - ee) * r.width * .72).toFixed(1)}px 0`; }); }); }   // the text pushed aside line by line as the picture opens beside it
+  addEventListener('scroll', storyScroll, { passive: true }); addEventListener('resize', storyScroll); storyScroll();
+  { const sf = one('.sfilm'); const filmScroll = () => { if (!sf) return; const r = sf.getBoundingClientRect(), V = innerHeight; if (r.bottom < -50 || r.top > V + 50) return; const e0 = clamp((V * .95 - r.top) / (V * .45)), e = e0 * e0 * (3 - 2 * e0), q = ((1 - e) * 30).toFixed(2); sf.style.clipPath = e >= 1 ? 'none' : `inset(${q}% ${q}% ${q}% ${q}%)`; };   // the film opens from its middle as it comes up
+    addEventListener('scroll', filmScroll, { passive: true }); filmScroll(); }
+  addEventListener('scroll', casesScroll, { passive: true }); addEventListener('resize', casesScroll); casesScroll();
   addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
 
   // the forms: one grey line that slowly turns from one work into the next (all outlines share the same points)
@@ -507,7 +609,7 @@ window.preDone = new Promise(done => {
   function hide() { if (closing || !open) return; closing = true;
     const blocks = [...view.querySelectorAll('.head .lab, .big, .face, .gal, .mid, .rows, .txt, .strip, .shelves, .foot')].reverse(), chs = view.querySelectorAll('.head .h .ch, .shelf .h');
     gsap.to(blocks, { opacity: 0, y: -16, duration: .35, ease: 'power2.in', stagger: .06 });
-    gsap.to(chs, { yPercent: 110, opacity: 0, duration: .4, ease: 'power2.in', stagger: { each: .03, from: 'end' }, delay: blocks.length * .06 * .6 });
+    gsap.to(chs, { yPercent: -110, opacity: 0, duration: .4, ease: 'power2.in', stagger: { each: .03, from: 'start' }, delay: blocks.length * .06 * .6 });
     setTimeout(() => { closing = false; shut(); }, 380 + blocks.length * 60 * .6 + 120); }
   function shut() { view.classList.remove('open'); view.setAttribute('aria-hidden', 'true'); x.hidden = true; open = false; Object.assign(document.body.style, { position: '', top: '', left: '', right: '' }); scrollTo({ top: lockY, behavior: 'instant' }); if (location.hash === '#order') history.replaceState(null, '', location.pathname); if (window.muffle) muffle(false); }
   x.addEventListener('click', hide); addEventListener('keydown', e => { if (e.key === 'Escape' && open) hide(); });
@@ -561,7 +663,7 @@ window.preDone = new Promise(done => {
     gsap.fromTo(view.querySelectorAll('.txt p, .strip'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .8, ease: EASE, stagger: .12, delay: .9 }); }
 
   // order, as on the full page: the title on three shelves that turn when swiped, a tap lets the next work fall onto a free place on them, and a black silhouette stands in the text
-  function openOrder() { const W = ['tattoo-relief-up', 'panel-eva', 'shelf-spine', 'mirror-beetles', 'bust', 'urban-angel', 'vase-brutskin', 'table-cubeball'];
+  function openOrder() { const W = ['tattoo-relief-up', ...['panel-eva', 'shelf-spine', 'mirror-beetles', 'bust', 'urban-angel', 'vase-brutskin', 'table-cubeball', 'panel-gymnastics', 'table-studs', 'vase-bubbles', 'table-slab', 'ord-cone-table', 'ord-red-table', 'ord-red-bottle', 'ord-ring-vase', 'ord-petal-vase', 'ord-pyramid-vase', 'ord-orange-vase', 'ord-yellow-vase', 'ord-blue-vase', 'ord-house', 'ord-hand', 'ord-mirror', 'ord-urban-green', 'ord-urban-brown', 'ord-urban-grey'].sort(() => Math.random() - .5)];   // all the works, the tattooed figure first, the rest in a new order each time
     show(`<div class="head" style="padding-bottom:var(--s3)"></div><div class="shelves"><div class="shelf"><span class="h">Order</span></div><div class="shelf"><span class="h">and</span></div><div class="shelf"><span class="h">cooperation</span></div></div><div class="txt otxt"><p>DirtyHands creates custom ceramic panels and art objects based on original sketches and technical specifications. We work with projects of any complexity, carefully immersing ourselves in the concept and architecture of the space.</p><p>We're open to collaboration with designers, decorators and architects. Together we create unique ceramic solutions for interiors and exteriors: entrances, facades, private and public spaces.</p><p>If your project needs more than decor, an expressive artistic accent, we'd love to hear from you.</p></div><div class="foot"><a class="mail" href="mailto:order@dirtyhands.ru"><span>Order now</span><svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true" style="margin-top:.3em"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a><button type="button" class="sil" aria-label="Put the next work on a shelf"></button></div>`);
     gsap.fromTo(view.querySelectorAll('.shelf .h'), { opacity: 0, x: (i, t) => (innerWidth / 2 - (t.offsetLeft + t.offsetWidth / 2)) }, { opacity: 1, x: 0, duration: 1.3, ease: 'power3.out', stagger: .12, delay: .15 });   // the three words open out from the middle of the screen to their places
     const shelves = [...view.querySelectorAll('.shelf')], SW = innerWidth, DIR = [1, -.8, .6], off = [0, 0, 0], to = [0, 0, 0], stood = [[], [], []]; let wi = 0;
@@ -575,13 +677,26 @@ window.preDone = new Promise(done => {
     box.addEventListener('touchmove', e => { const xx = e.touches[0].clientX, d = xx - last; last = xx; to.forEach((v, b) => { to[b] += d * DIR[b] * 1.4; }); if (window.soundNudge) soundNudge(Math.min(1, Math.abs(d) / 20)); }, { passive: true });   // a swipe turns the shelves, each its own way, and they glide on a little after the finger
     box.addEventListener('touchend', () => { const v = last - (sx ?? last); to.forEach((_, b) => { to[b] += v * DIR[b] * .6; }); sx = null; }, { passive: true });
     const free = () => { for (let tries = 0; tries < 60; tries++) { const b = (Math.random() * 3) | 0, xx = Math.random() * SW, h = shelves[b].querySelector('.h').getBoundingClientRect(), sx_ = wrap(xx, off[b]);
-        if (sx_ > h.left - 40 && sx_ < h.right + 40) continue; if (stood[b].some(it => Math.abs(wrap(it.x, off[b]) - sx_) < innerWidth * .16)) continue; return { b, x: xx }; } return null; };
+        const half = innerWidth * .07 + 12; if (shelves[b]._h.some(w => { const r = w.getBoundingClientRect(); return sx_ > r.left - half && sx_ < r.right + half; })) continue;   /* never on a word (nor on its copy going round): clear of it by half the work's width */ if (stood[b].some(it => Math.abs(wrap(it.x, off[b]) - sx_) < innerWidth * .16)) continue; return { b, x: xx }; } return null; };
     const sil = view.querySelector('.sil'), nextSrc = () => `photos/${W[wi % W.length]}.webp`; sil.style.backgroundImage = `url('${nextSrc()}')`;
-    sil.addEventListener('click', () => { const spot = free(); if (!spot) { gsap.fromTo(sil, { x: -4 }, { x: 0, duration: .4, ease: 'elastic.out(1, .3)' }); return; }   // the shelves are full: it only shakes
-      const src = nextSrc(); wi++; sil.style.backgroundImage = `url('${nextSrc()}')`; const a = sil.getBoundingClientRect(), f = document.createElement('i'); f.className = 'fall'; f.style.backgroundImage = `url('${src}')`; document.body.append(f);
+    const dip = (s, x) => { const sv = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), W = innerWidth, H = 24, sr = s.getBoundingClientRect(); sv.setAttribute('class', 'sdip'); sv.setAttribute('viewBox', `0 0 ${W} ${H}`); sv.innerHTML = '<path fill="none" stroke="#d9d9d9" stroke-width="1"/>'; Object.assign(sv.style, { position: 'fixed', left: 0, top: (sr.bottom - H / 2 - .5) + 'px', width: W + 'px', height: H + 'px', pointerEvents: 'none', zIndex: 63 }); document.body.append(sv); s.style.borderBottomColor = 'transparent';
+      const t0 = performance.now(); (function f(now) { const t = (now - t0) / 1000; if (t > 1.3 || !open) { sv.remove(); s.style.borderBottomColor = ''; return; } const top = s.getBoundingClientRect().bottom - H / 2 - .5; sv.style.top = top + 'px'; let d = ''; for (let k = 0; k <= 80; k++) { const xx = W * k / 80, dx = xx - x, y = H / 2 + 4 * Math.exp(-(dx * dx) / (60 * 60)) * Math.exp(-t / .3) * Math.cos(t * 17); d += (k ? 'L' : 'M') + xx.toFixed(1) + ' ' + y.toFixed(2); } sv.firstChild.setAttribute('d', d); requestAnimationFrame(f); })(t0); };   // the line dips under the work and springs back
+    const launch = a => { const spot = free(); if (!spot) { gsap.fromTo(sil, { x: -4 }, { x: 0, duration: .4, ease: 'elastic.out(1, .3)' }); return; }   // the shelves are full: it only shakes
+      const src = nextSrc(); wi++; sil.style.backgroundImage = `url('${nextSrc()}')`; const f = document.createElement('i'); f.className = 'fall'; f.style.backgroundImage = `url('${src}')`; document.body.append(f);
       const s = shelves[spot.b], sr = s.getBoundingClientRect(), tx = wrap(spot.x, off[spot.b]) - innerWidth * .07, ty = sr.bottom - 1 - innerWidth * .14, lift = Math.min(a.top, sr.top) - 80;
       const pt = { t: 0 }; gsap.to(pt, { t: 1, duration: .9, ease: 'power1.inOut', onUpdate() { const t = pt.t, u = 1 - t; f.style.left = (u * u * a.left + 2 * u * t * ((a.left + tx) / 2) + t * t * tx).toFixed(1) + 'px'; f.style.top = (u * u * a.top + 2 * u * t * lift + t * t * ty).toFixed(1) + 'px'; f.style.transform = `rotate(${(Math.sin(t * Math.PI) * 25).toFixed(1)}deg)`; },   // it flies up out of the silhouette in an arc and comes down on its place
-        onComplete() { f.remove(); const el = document.createElement('i'); el.className = 'w dark'; el.style.backgroundImage = `url('${src}')`; s.append(el); stood[spot.b].push({ el, x: spot.x }); place(); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove('dark'))); gsap.fromTo(el, { y: -6 }, { y: 0, duration: .4, ease: 'bounce.out' }); if (window.placeSound) placeSound(); } }); });   // set down, it takes its own colours
+        onComplete() { f.remove(); const el = document.createElement('i'); el.className = 'w dark'; el.style.backgroundImage = `url('${src}')`; s.append(el); stood[spot.b].push({ el, x: spot.x }); place(); dip(s, tx + innerWidth * .07); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove('dark'))); gsap.fromTo(el, { y: -6 }, { y: 0, duration: .4, ease: 'bounce.out' }); if (window.placeSound) placeSound(); } }); };   // set down, it takes its own colours
+    // tap: the next work goes up onto a shelf; hold and drag: the works follow the finger in a trail, as they follow the pointer on the full page, and the first of them goes up when it is let go
+    let drag = null;
+    sil.addEventListener('touchstart', e => { e.preventDefault(); const t = e.touches[0]; drag = { x: t.clientX, y: t.clientY, x0: t.clientX, y0: t.clientY, moved: false, its: [] };
+      for (let k = 0; k < 4; k++) { const el = document.createElement('i'); el.className = 'trl'; el.style.backgroundImage = `url('photos/${W[(wi + k) % W.length]}.webp')`; document.body.append(el); drag.its.push({ el, x: t.clientX, y: t.clientY }); }
+      (function follow() { if (!drag) return; drag.its.forEach((it, k) => { const lead = k ? drag.its[k - 1] : drag, f = k ? .22 : .3; it.x += (lead.x - it.x) * f; it.y += (lead.y - it.y) * f; const S = innerWidth * .14, r = (lead.x - it.x) * .15;
+        it.el.style.transform = `translate(${(it.x - S / 2).toFixed(1)}px,${(it.y - S / 2).toFixed(1)}px) rotate(${r.toFixed(1)}deg)`; it.el.style.opacity = drag.moved ? 1 : 0; }); requestAnimationFrame(follow); })(); }, { passive: false });
+    sil.addEventListener('touchmove', e => { if (!drag) return; e.preventDefault(); const t = e.touches[0]; drag.x = t.clientX; drag.y = t.clientY; if (Math.hypot(drag.x - drag.x0, drag.y - drag.y0) > 8) { drag.moved = true; sil.style.opacity = .25; } if (window.soundNudge) soundNudge(.15); }, { passive: false });
+    const endDrag = () => { if (!drag) return; const d = drag; drag = null; sil.style.opacity = ''; const head = d.its[0].el.getBoundingClientRect();
+      launch(d.moved ? head : sil.getBoundingClientRect()); d.its.forEach(it => { it.el.style.transition = 'opacity .3s'; it.el.style.opacity = 0; setTimeout(() => it.el.remove(), 320); }); };
+    sil.addEventListener('touchend', endDrag); sil.addEventListener('touchcancel', endDrag);
+    sil.addEventListener('click', () => launch(sil.getBoundingClientRect()));   // (a mouse click)
   }
   $('.ord').forEach(a => a.addEventListener('click', e => { e.preventDefault(); openOrder(); }));
   if (location.hash === '#order') openOrder();
@@ -592,11 +707,8 @@ window.preDone = new Promise(done => {
   view.addEventListener('touchmove', e => { if (!sw0) return; const dx = Math.abs(e.touches[0].clientX - sw0.x), dy = Math.abs(e.touches[0].clientY - sw0.y); if (!sw0.on && dx > 6 && dx > dy) { sw0.on = true; view.style.overflowY = 'hidden'; } }, { passive: true });
   const swEnd = () => { if (sw0 && sw0.on) view.style.overflowY = ''; sw0 = null; }; view.addEventListener('touchend', swEnd, { passive: true }); view.addEventListener('touchcancel', swEnd, { passive: true });
 
-  // scrolled to the very end and still pulling: the page starts over, as the full one loops
-  const veil = one('.veil'); let endT = 0;
-  addEventListener('scroll', () => { const d = document.documentElement; if (open || d.scrollHeight - (scrollY + innerHeight) > 2) { clearTimeout(endT); endT = 0; return; }
-    if (endT) return; endT = setTimeout(() => { veil.style.opacity = 1;   // held at the end a moment: the page goes white, starts over at the top, and comes back
-      setTimeout(() => { d.style.overflow = 'hidden'; scrollTo({ top: 0, behavior: 'instant' }); requestAnimationFrame(() => requestAnimationFrame(() => { d.style.overflow = ''; scrollTo({ top: 0, behavior: 'instant' }); veil.style.opacity = 0; endT = 0; })); }, 650); }, 700); }, { passive: true });   // the jump at once, never a glide through the whole page
+  // at the end: an arrow back to the top (the page no longer starts over by itself)
+  one('.totop').addEventListener('click', () => scrollTo({ top: 0, behavior: 'smooth' }));
 
   makeClay();   // the clay, as on the full page: a finger leaves marks and smears them, also while the page scrolls (on the phone they dry sooner)
 })();
