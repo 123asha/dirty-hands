@@ -1039,7 +1039,8 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   // the lines close into their middles and the drawn vessel folds away (all of it seen over the film in inverse); then only the film is left, with Play under the pointer, and the page goes on
   const sFilm = one('.rest > .sfilm'), sGroup = [...$('.rest > .hl'), ...$('.rest > .bigrow'), one('.rest > .olink'), one('.rest > .morph')].filter(Boolean);
   const playCur = Object.assign(document.createElement('div'), { className: 'close-cursor play-cursor', innerHTML: 'Play<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg>' }); playCur.setAttribute('aria-hidden', 'true'); document.body.append(playCur); curShow(playCur, false);
-  if (sFilm) { sFilm.addEventListener('pointermove', e => { playCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`; curShow(playCur, true); }); sFilm.addEventListener('pointerleave', () => curShow(playCur, false)); }   // Play under the pointer over the film; off it, it goes letter by letter
+  const setCurLabel = (el, text) => { if (el._label === text) return; el._label = text; splitCur(el); const w = el.querySelector('span'); if (w) w.innerHTML = [...text].map((ch, k) => `<span class="lt" style="--i:${k}">${ch}</span>`).join(''); };   // the word under the pointer says what a click will do
+  if (sFilm) { sFilm.addEventListener('pointermove', e => { playCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`; setCurLabel(playCur, sFilm.classList.contains('playing') ? 'Pause' : 'Play'); curShow(playCur, true); }); sFilm.addEventListener('pointerleave', () => curShow(playCur, false)); }   // Play under the pointer over the film; off it, it goes letter by letter
   function formsScene() {
     if (!sFilm) return; const rest = one('.rest'), rt = rest.getBoundingClientRect().top + scrollY, W = document.documentElement.clientWidth, H = innerHeight, u = W / 1400;
     const S0 = rt + 4130 * u - H / 2, P = .9 * H, h = Math.max(0, Math.min(P, scrollY - S0)), k = h / P, e = ease(k), fold = ease(clamp((k - .05) / .8));   // full screen exactly at the end: from there it scrolls on with the page
@@ -1438,7 +1439,8 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     if (!PT || !texts.length) return;
     const fs = parseFloat(getComputedStyle(texts[0]).fontSize);
     if (fs !== prepFs) { prepFs = fs; flowSig = ''; preps = texts.map(p => PT.prepareWithSegments(p.dataset.text, `${fs}px "CoFo Sans"`, { letterSpacing: -0.01 * fs })); }
-    const sig = ob ? ob.map(o => `${Math.round(o.cx)},${Math.round(o.top)},${o.shape ? 's' : 'box'}${o.a != null ? '@' + Math.round(o.a / 2) : ''}`).join('|') + `|${U}` : `-|${U}`;   // where every picture is, and whether its outline is read yet
+    const Q = 6, qz = v => Math.round(v / Q) * Q;   // the lines are laid out again only when a picture has moved a good step, not on every pixel: the same look, a fraction of the work
+    const sig = ob ? ob.map(o => `${qz(o.cx)},${qz(o.top)},${o.shape ? 's' : 'box'}${o.a != null ? '@' + Math.round(o.a / 6) : ''}`).join('|') + `|${U}` : `-|${U}`;
     if (sig === flowSig) return; flowSig = sig;
     let y0 = 196;
     texts.forEach((p, j) => {
