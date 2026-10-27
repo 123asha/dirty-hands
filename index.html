@@ -216,6 +216,9 @@
   .gray.no-left::before, .gray.no-right::after { opacity: 0; }
   .hc.gym-on { background-image: none !important; } .hc.gym-on .hs i { visibility: hidden; }   /* the gymnasts are drawn by their shader (gym-gl.js) */
   .rest > .sfilm { overflow: hidden; background: #f2f2f2; z-index: 30; cursor: none; }
+  .sfilm .fcap { position: absolute; left: 50%; bottom: calc(40 * var(--u)); width: calc(440 * var(--u)); translate: -50% 0; z-index: 3; margin: 0; color: #fff; font-size: var(--t18); line-height: calc(19 * var(--u)); letter-spacing: -.01em; text-align: center; pointer-events: none; opacity: 0; transition: opacity .5s var(--ease);
+    background: repeating-linear-gradient(to bottom, rgba(255,255,255,.6) 0 1px, transparent 1px calc(19 * var(--u))); border-bottom: 1px solid rgba(255,255,255,.6); }   /* the words of the film, white on it, two columns wide, on ruled lines as everywhere else */
+  .sfilm.playing .fcap { opacity: 1; }
   .rest > .bigrow .fl { display: inline-block; }   /* the letters of the big words, each going on its own */
   .rest > .bigrow, .rest > .olink, .rest > .hl, .rest > .morph { z-index: 31; } .rest > .bigrow, .rest > .olink { color: #fff; mix-blend-mode: difference; } .rest > .hl { border-top-color: #262626; mix-blend-mode: difference; }   /* over the film the words and the lines are seen in inverse */
   .playcur { position: fixed; left: 0; top: 0; z-index: 3000; pointer-events: none; color: #fff; mix-blend-mode: difference; font-size: var(--t18); line-height: 1; letter-spacing: -.01em; display: inline-flex; gap: .3em; align-items: center; opacity: 0; transition: opacity .25s; margin: -.5em 0 0 -1em; } .playcur.on { opacity: 1; }   /* Play under the pointer, over the film */ .gray { z-index: 30; }   /* the gymnasts go behind the photo of Karen and Lisa and behind the film */   /* the studio film, playing silently between the forms and the Story; a click opens it whole, with sound */
@@ -388,7 +391,7 @@
   <a class="t18 shop olink" href="shop.html" style="display:block;width:max-content;left:calc(940 * var(--u));top:calc(4256 * var(--u));">Order and cooperation<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a>
   <div class="bigrow" style="left:calc(480 * var(--u));top:calc(4147.7 * var(--u));height:calc(98 * var(--u));"><p class="t name2">forms</p></div>
 
-  <div class="sfilm" data-inline aria-label="Film about the studio" style="left:calc(250 * var(--u));top:calc(4400 * var(--u));width:calc(900 * var(--u));height:calc(506.25 * var(--u));"><i class="vid"><iframe src="https://www.youtube-nocookie.com/embed/yCrqIWHZplI?autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=yCrqIWHZplI&amp;controls=0&amp;playsinline=1&amp;modestbranding=1&amp;rel=0&amp;disablekb=1&amp;iv_load_policy=3&amp;enablejsapi=1" title="DirtyHands, studio of art ceramics" tabindex="-1" allow="autoplay; encrypted-media" loading="lazy"></iframe></i></div>
+  <div class="sfilm" data-inline aria-label="Film about the studio" style="left:calc(250 * var(--u));top:calc(4400 * var(--u));width:calc(900 * var(--u));height:calc(506.25 * var(--u));"><p class="fcap">A film about the studio: Lisa and Karen at the wheel and the kiln, from wet clay to a fired piece.</p><i class="vid"><iframe src="https://www.youtube-nocookie.com/embed/yCrqIWHZplI?autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=yCrqIWHZplI&amp;controls=0&amp;playsinline=1&amp;modestbranding=1&amp;rel=0&amp;disablekb=1&amp;iv_load_policy=3&amp;enablejsapi=1" title="DirtyHands, studio of art ceramics" tabindex="-1" allow="autoplay; encrypted-media" loading="lazy"></iframe></i></div>
   <div class="tagged" style="left:calc(20 * var(--u));top:calc(5153 * var(--u) + var(--fsh, 0px));"><h2 class="t big2">Story</h2><span class="yr" aria-hidden="true"></span></div>
   <p class="t18" data-year="2019" style="left:calc(810 * var(--u));top:calc(5173 * var(--u));width:calc(210 * var(--u));">The studio opens</p>
   <p class="t18 mdesc" style="left:calc(830 * var(--u));top:calc(5173 * var(--u));width:calc(320 * var(--u));">Lisa and Karen start DirtyHands, a studio of art ceramics made by hand.</p>
@@ -815,6 +818,9 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       const gf = gr.querySelector('.gfilm'); if (gf) Object.assign(gf.style, { top: (oy - 160 * U) + 'px', height: ih + 'px' }); }   // the film in exactly the photo's frame, moving with it
     // the title stays pinned to the bottom while the whole table goes over it; then it leaves with the page
     ttlBox.style.height = (one('.s2').offsetTop / U + 880 + 182.6) * U + 'px';   // pinned until the whole table (880 high) has gone up past its top edge
+    { const tail = one('.tail'), bar0 = $('.rest > .bar')[0];   // the last screens are made exactly long enough for the strips to climb to their place at the top: there the page opens again
+      if (tail && bar0) { tail.style.height = '0px'; const need = bar0.getBoundingClientRect().top + scrollY - 20 * U, base = document.documentElement.scrollHeight - innerHeight;
+        tail.style.height = Math.max(0, Math.round(need - base)) + 'px'; } }
   }
 
   // ---- motion (GSAP + ScrollTrigger): the ruled lines draw first, then the text comes in line by line from under its mask; scrolling back plays it in reverse
@@ -1477,12 +1483,9 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
 
   // ---- the two hands over the credit: a thin outline, drawn in line by line once scrolled to (as the outline of the urban over About)
   { const eye = one('.rest > .eye'), crs = $('.rest > .credit'), grp = [eye, ...crs].filter(Boolean); let held = 0;
-    const endHold = () => { if (!eye) return; const V = innerHeight, a = eye.getBoundingClientRect().top - held, b = (crs[crs.length - 1] || eye).getBoundingClientRect().bottom - held, mid = (a + b) / 2;   // where the hands and the credit would be, unheld
-      held = Math.round(Math.max(0, Math.min(V, V * .46 - mid)));   /* whole pixels; held in the middle for one whole screen of scrolling */
-      const pin = held > 0 && held < V, midDoc = mid + scrollY;   /* while held they stand fixed on the screen: moved by the script against the scroll they shook, in Safari most */
-      grp.forEach(el => { if (pin) { if (el.style.position !== 'fixed') { el._topCss = el.style.top; el._doc = el.getBoundingClientRect().top + scrollY - (el._tf || 0); } el.style.transform = ''; el._tf = 0; el.style.position = 'fixed'; el.style.top = Math.round(el._doc - midDoc + V * .46) + 'px'; }
-        else { if (el.style.position === 'fixed') { el.style.position = ''; el.style.top = el._topCss; } el._tf = held; el.style.transform = held ? `translate3d(0,${held}px,0)` : ''; } });   // once they reach the middle of the screen they stay there a while, then go on up
-      if (!eye.classList.contains('on') && mid + held < V * .62) eye.classList.add('on');   // the hands are drawn once they have come up to the middle, so they are seen being drawn
+    const endHold = () => { if (!eye) return; const V = innerHeight, a = eye.getBoundingClientRect().top, b = (crs[crs.length - 1] || eye).getBoundingClientRect().bottom, mid = (a + b) / 2;   // the end of the page scrolls like any other part of it: nothing is held, nothing shakes
+      grp.forEach(el => { if (el.style.position === 'fixed') { el.style.position = ''; el.style.top = el._topCss || ''; } el.style.transform = ''; el._tf = 0; });
+      if (!eye.classList.contains('on') && mid < V * .72) eye.classList.add('on');   // the hands are drawn as they come up, so they are seen being drawn
       if (scrollY < V) eye.classList.remove('on'); };   // back at the top (the page starting over): drawn again next time
     addEventListener('scroll', endHold, { passive: true }); addEventListener('resize', endHold); if (lenis) lenis.on('scroll', endHold); endHold(); }   // placed in the same frame as the smooth scroll moves the page: held still, never a frame late
 
@@ -1771,7 +1774,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     })(t1);
   }
   addEventListener('scroll', () => {
-    if (!looping && introDone && scrollY >= scrollMax() - one('.tail').offsetHeight * 0.25 && scrollMax() > innerHeight) {   // once three quarters of the last screen are scrolled, the strips snap up on their own
+    if (!looping && introDone && scrollMax() > innerHeight && scrollY >= scrollMax() - 2) {   // only when the strips have climbed to the very top of the screen: there they pull the title up behind them and the page opens again
       looping = true; converge(restart); }
     else if (looping && scrollY < innerHeight) looping = false;
   }, { passive: true });
