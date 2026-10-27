@@ -50,11 +50,11 @@ function startSound() {
     src.connect(lp); lp.connect(e); e.connect(bus); th.connect(te); te.connect(bus); src.start(t, Math.random() * 3, .2); th.start(t); th.stop(t + .1);
     setTimeout(crack, (12 + Math.random() * 16) * 1000); })();
   // clay baking in the kiln: a faint hot hiss and a thick scatter of tiny dry pops, like slip drying and sizzling on a hot surface; it swells and settles slowly, under everything else
-  { const hs = C.createBufferSource(); hs.buffer = nb; hs.loop = true; const hp = C.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 3500; const hg = C.createGain(); hg.gain.value = .0016;
-    const lf = C.createOscillator(), lg = C.createGain(); lf.frequency.value = .07; lg.gain.value = .0012; lf.connect(lg); lg.connect(hg.gain); lf.start();   // the heat breathes
+  { const hs = C.createBufferSource(); hs.buffer = nb; hs.loop = true; const hp = C.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 3500; const hg = C.createGain(); hg.gain.value = .0046;
+    const lf = C.createOscillator(), lg = C.createGain(); lf.frequency.value = .07; lg.gain.value = .0032; lf.connect(lg); lg.connect(hg.gain); lf.start();   // the heat breathes
     hs.connect(hp); hp.connect(hg); hg.connect(bus); hs.start(); sBake = lf; }
   (function bake() { const t = C.currentTime, heat = .55 + .45 * Math.sin(t * .44) * Math.sin(t * .13), n = Math.random() < heat * .6 ? 1 + Math.floor(Math.random() * 2 * heat) : 0;
-    for (let i = 0; i < n; i++) pop(t + Math.random() * .04, .0026 + Math.random() * .007 * heat);   // light, in the background, but heard
+    for (let i = 0; i < n; i++) pop(t + Math.random() * .04, .006 + Math.random() * .016 * heat);   // light, in the background, but heard
     setTimeout(bake, 40 + Math.random() * 70); })();
   // dry leaves: short crackly grains of bright noise, scattered left and right
   sLeafBuf = C.createBuffer(1, C.sampleRate * .5, C.sampleRate); { const d = sLeafBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (Math.random() < .3 ? 1 : .35); }   // uneven: the clicks of leaves, not a smooth hiss
@@ -112,7 +112,7 @@ function soundNudge(v) {                                               // a swip
   if (t - (soundNudge._l || 0) < .15) return; soundNudge._l = t;   // a scroll sends many events: one handful of leaves at most every 150 ms
   const n = 3 + Math.round(9 * k); for (let i = 0; i < n; i++) leaf(t + .03 + Math.random() * (.2 + .3 * k), .025 + .035 * k);   // and a handful of leaves stirred by it
 }
-function muffle(on) { sInside = on; if (!sLp) return; const t = actx.currentTime; sLp.frequency.cancelScheduledValues(t); sLp.frequency.setValueAtTime(sLp.frequency.value, t); sLp.frequency.exponentialRampToValueAtTime(on ? 160 : 2600, t + 1.2); if (sOn) { sMaster.gain.cancelScheduledValues(t); sMaster.gain.setValueAtTime(sMaster.gain.value, t); sMaster.gain.linearRampToValueAtTime(on ? 1.05 : 1.7, t + 1.2); }   /* inside a view: as if a door were shut, the room heard through it, low and quieter */ sLp.Q.cancelScheduledValues(t); sLp.Q.setValueAtTime(sLp.Q.value, t); sLp.Q.linearRampToValueAtTime(on ? .9 : .5, t + 1.2);
+function muffle(on) { sInside = on; if (!sLp) return; const t = actx.currentTime; sLp.frequency.cancelScheduledValues(t); sLp.frequency.setValueAtTime(sLp.frequency.value, t); sLp.frequency.exponentialRampToValueAtTime(on ? 85 : 2600, t + .9);   // inside: as if the door had closed and the room were heard through it if (sOn) { sMaster.gain.cancelScheduledValues(t); sMaster.gain.setValueAtTime(sMaster.gain.value, t); sMaster.gain.linearRampToValueAtTime(on ? .58 : 1.7, t + .9); }   /* inside a view: as if a door were shut, the room heard through it, low and quieter */ sLp.Q.cancelScheduledValues(t); sLp.Q.setValueAtTime(sLp.Q.value, t); sLp.Q.linearRampToValueAtTime(on ? .9 : .5, t + 1.2);
   sWob.gain.cancelScheduledValues(t); sWob.gain.setValueAtTime(sWob.gain.value, t); sWob.gain.linearRampToValueAtTime(0, t + 1.5);
   sInG.gain.cancelScheduledValues(t); sInG.gain.setValueAtTime(sInG.gain.value, t); sInG.gain.linearRampToValueAtTime(0, t + 2); }   // inside: softer and closer, an octave lower, with a warm fifth under it
 const wave = sndBtn.querySelector('path');

@@ -237,6 +237,7 @@
   .sv-item { display: none; position: absolute; top: 0; width: calc(210 * var(--u)); text-align: left; will-change: transform, opacity; }   /* the years sit on a sphere: the one in the middle faces us, the others turn away, shrink and fade */
   .sv-tx { color: rgba(0, 0, 0, var(--f, 1)); } .sv-tx .sv-dot { opacity: var(--f, 1); }   /* a strip of text fades by its letters' colour */
   .sv-strip { position: absolute; top: calc(-12 * var(--u)); height: calc(420 * var(--u)); overflow: hidden; backface-visibility: hidden; }
+  .sv-start { position: absolute; left: 0; top: calc(300 * var(--u)); font-size: var(--t18); line-height: 1.15; letter-spacing: -.01em; opacity: .4; }   /* under the first year: where the story starts */
   .sv-in { position: absolute; top: calc(12 * var(--u)); width: calc(260 * var(--u)); text-align: left; }
   .sv-pin { position: absolute; top: 0; height: 100%; background: #eee center / cover no-repeat; }
   .sv-photo { position: absolute; left: 0; top: calc(-284 * var(--u)); width: 100%; height: calc(260 * var(--u)); background: #eee center / cover no-repeat; backface-visibility: hidden; }   /* the photographs are glued to the cylinder with the text */
@@ -501,7 +502,7 @@ window.preDone = new Promise(done => {
     setTimeout(() => { pre.classList.add('going'); pre.style.pointerEvents = 'none'; pre.style.transition = 'background-color .6s cubic-bezier(.4, 0, .2, 1)'; pre.style.backgroundColor = 'transparent'; done(); if (c.soak) c.soak(0, () => pre.remove()); else { pre.style.transition = 'opacity 1.2s ease'; pre.style.opacity = 0; setTimeout(() => pre.remove(), 1300); } }, 750); })(t1);   // (an older clay.js from the cache: it simply fades)   // the sheet goes and the page appears; the DH soaks away like any clay mark, gone by the time the top row has come in   // the sheet goes and the page appears; the DH stays and soaks away by itself, as every clay mark on the site does
 });
 </script>
-<script src="sound.js?v=18"></script>
+<script src="sound.js?v=19"></script>
 <script src="gym-gl.js"></script>
 <script src="outline.js"></script>
 <script>
@@ -1087,7 +1088,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     data.forEach((d, i) => {
       { const TS = Math.max(4, Math.round(16 * U)), KT = Math.ceil(TW / TS), RTX = 720 * U;   // the text layer: cut into thin strips like the photos, each on its own angle, so the text is round on its drum too; every strip overlaps the next by a pixel, so no seam breaks a letter
         for (let k = 0; k < KT; k++) { const el = document.createElement('div'); el.className = 'sv-strip sv-tx';
-          el.innerHTML = `<div class="sv-in" style="left:${-k * TS}px;width:${TW.toFixed(1)}px"><i class="sv-dot"></i><span class="sv-year">${d.date}</span><span class="sv-out">${d.out}</span><p class="t18 sv-lead">${d.lead}</p></div>`;
+          el.innerHTML = `<div class="sv-in" style="left:${-k * TS}px;width:${TW.toFixed(1)}px"><i class="sv-dot"></i><span class="sv-year">${d.date}</span>${i ? '' : '<span class="sv-start">Start</span>'}<span class="sv-out">${d.out}</span><p class="t18 sv-lead">${d.lead}</p></div>`;
           el.style.width = TS + 'px'; host.append(el); strips.push({ el, i, a: (k + .5) * TS - TW / 2, R: RTX, C: RTX, w: TS, tx: true }); } }   /* the texts on a wider drum: flat plates turning gently, never the corners of a box */   /* the text a little wider than the photos, so a fuller thesis still fits on the screen */
       for (let k = 0; k < KS; k++) {                                                                    // the photo layer: smaller, so the photographs sit further in
         const el = document.createElement('div'); el.className = 'sv-strip sv-ph';

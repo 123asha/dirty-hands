@@ -85,7 +85,7 @@
 <div class="grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 <script>{ const grid = document.querySelector('.grid'); try { if (sessionStorage.getItem('grid') === '1') grid.classList.add('on'); } catch (e) {}   // the grid stays on or off from page to page
   addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.code === 'KeyG') { e.preventDefault(); if (!e.repeat) { const on = grid.classList.toggle('on'); try { sessionStorage.setItem('grid', on ? '1' : '0'); } catch (er) {} } } }); }</script>
-<script src="sound.js?v=16"></script>
+<script src="sound.js?v=19"></script>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
 <script type="module">
   // ---- the clay mirror: the camera sees the visitor's hands and eyes (only those) and the page models them in dark clay, larger than life, as real objects in space: every bone of a finger a smooth capsule, the palm a full rounded body, the eyes almond-shaped with the iris standing out; a soft light from the upper left and their shadow on the white. Fired, they turn to light bisque and fall to the foot of the screen. Nothing leaves the computer.
@@ -112,7 +112,7 @@
   const CLAY = new THREE.Color(0xc9b294), BISQUE = new THREE.Color(0xeee6da), KILN = new THREE.Color(0xff5a1a);   // raw clay, warm and pale; fired, a light bisque
   const clay = new THREE.MeshStandardMaterial({ color: CLAY, roughness: .93, metalness: 0, envMapIntensity: .3 });
   const white = new THREE.MeshPhysicalMaterial({ color: 0xf3f0ea, roughness: .22, clearcoat: .8, clearcoatRoughness: .15, envMapIntensity: .9 });   // the eye white, glazed
-  const irisM = new THREE.MeshPhysicalMaterial({ color: 0x3a4652, roughness: .3, clearcoat: .7, envMapIntensity: .8 }), dark = new THREE.MeshStandardMaterial({ color: 0x121112, roughness: .4 });
+  const irisM = clay, dark = clay;   // the iris and the pupil of the same clay as everything else: the pupil is only pressed into it, never painted
   const CYL = new THREE.CylinderGeometry(1, 1, 1, 28, 1, true), BALL = new THREE.SphereGeometry(1, 40, 28);
   const up = new THREE.Vector3(0, 1, 0), tmp = new THREE.Vector3();
   const mesh = (g, m) => { const o = new THREE.Mesh(g, m); o.castShadow = true; o.receiveShadow = true; return o; };
@@ -120,15 +120,16 @@
     tmp.subVectors(b, a); const len = Math.max(.0001, tmp.length()); o.position.addVectors(a, b).multiplyScalar(.5); o.quaternion.setFromUnitVectors(up, tmp.normalize()); o.scale.set(r, len, r); }
 
   // ---- one hand: a single flat slab of clay as a potter would cut it, the fingers close together, every edge soft: a palm slab and one rounded finger for each finger, all as thick as the slab
-  const FT = [[1, 4], [5, 8], [9, 12], [13, 16], [17, 20]], FW = [1.05, 1, 1, .95, .85];
+  const FT = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16], [17, 18, 19, 20]], FW = [1.08, 1, 1.02, .95, .84];   // every finger in three bones, so it bends where a finger bends
   function makeHand() { const g = new THREE.Group(), ud = g.userData;
-    ud.f = FT.map(() => { const a = mesh(CYL, clay), b = mesh(BALL, clay), c = mesh(BALL, clay); g.add(a, b, c); return [a, b, c]; });
+    ud.f = FT.map(() => ({ r: [0, 1, 2].map(() => { const o = mesh(CYL, clay); g.add(o); return o; }), b: [0, 1, 2, 3].map(() => { const o = mesh(BALL, clay); g.add(o); return o; }) }));
     ud.palm = mesh(new THREE.BufferGeometry(), clay); g.add(ud.palm); S.add(g); return g; }
   function poseHand(g, P) {   // P: 21 points in the scene; the slab lies flat, facing us
     const ud = g.userData, z = P.reduce((a, v) => a + v.z, 0) / 21, Q = P.map(v => new THREE.Vector3(v.x, v.y, z));
     const r = Q[5].distanceTo(Q[17]) / 6.4, th = r * .62;   // each finger as wide as its share of the knuckles: they touch
-    FT.forEach(([a, b], n) => { const A = Q[a].clone(), B = Q[b].clone(), rr = r * FW[n]; if (n === 0) A.lerp(Q[2], .35); const [rodM, ba, bb] = ud.f[n];
-      rod(rodM, A, B, rr); rodM.scale.z = th / rr * rodM.scale.x; ba.position.copy(A); bb.position.copy(B); ba.scale.set(rr, rr, th); bb.scale.set(rr, rr, th); });
+    FT.forEach((f, n) => { const rr = r * FW[n], J = f.map((i, k) => { const v = Q[i].clone(); if (n === 0 && k === 0) v.lerp(Q[2], .3); return v; }), o = ud.f[n];
+      o.r.forEach((m, k) => { const w2 = rr * (1 - k * .07); rod(m, J[k], J[k + 1], w2); m.scale.z = th / w2 * m.scale.x; });
+      o.b.forEach((m, k) => { const w2 = rr * (1 - k * .08); m.position.copy(J[k]); m.scale.set(w2, w2, th); }); });   // a bead on every knuckle, so the bends are round
     // the palm: a rounded outline through the wrist, the base of the thumb and the knuckles, cut from a slab
     const ring = [0, 1, 2, 5, 9, 13, 17].map(i => Q[i]), c = ring.reduce((a, v) => a.add(v), new THREE.Vector3()).multiplyScalar(1 / ring.length);
     const pts = ring.map(v => new THREE.Vector2(v.x - c.x, v.y - c.y)).sort((p, q) => Math.atan2(p.y, p.x) - Math.atan2(q.y, q.x)), sh = new THREE.Shape(), n = pts.length, mid = (p, q) => new THREE.Vector2((p.x + q.x) / 2, (p.y + q.y) / 2);
@@ -141,13 +142,13 @@
     for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); const a = Math.atan2(v.y, v.x), k = 1 + .07 * Math.sin(a * 5 + 1) + .05 * Math.sin(a * 11 + 2) + .03 * Math.sin(v.z * 9 + a * 3); v.multiplyScalar(k); p.setXYZ(i, v.x, v.y, v.z); }   // pressed by hand: never quite even
     g.computeVertexNormals(); return g; })();
   function makeEye() { const g = new THREE.Group(), ud = g.userData; ud.ball = mesh(BALL, white); ud.lid = mesh(LID, clay); ud.iris = mesh(BALL, irisM); ud.pupil = mesh(BALL, dark); g.add(ud.ball, ud.lid, ud.iris, ud.pupil); S.add(g); return g; }
-  function poseEye(g, a, b, iris) {   // a, b: the corners of the eye; iris: its middle
+  function poseEye(g, a, b, iris, bl = 0) {   // a, b: the corners of the eye; iris: its middle; bl: how far it is closed
     const ud = g.userData, w = a.distanceTo(b), c = new THREE.Vector3().addVectors(a, b).multiplyScalar(.5), ang = Math.atan2(b.y - a.y, b.x - a.x), z = (a.z + b.z) / 2;
-    ud.ball.position.set(c.x, c.y, z); ud.ball.scale.set(w * .5, w * .3, w * .24); ud.ball.rotation.z = ang;
-    ud.lid.position.set(c.x, c.y, z); ud.lid.scale.set(w * .56, w * .36, w * .5); ud.lid.rotation.z = ang;
+    ud.ball.position.set(c.x, c.y, z); ud.ball.scale.set(w * .5, w * .3 * (1 - bl * .88), w * .24); ud.ball.rotation.z = ang;
+    ud.lid.position.set(c.x, c.y, z); ud.lid.scale.set(w * .56, w * .36 * (1 - bl * .82), w * .5); ud.lid.rotation.z = ang;
     const ix = new THREE.Vector3().subVectors(iris, c), gx = Math.max(-w * .2, Math.min(w * .2, ix.x * 1.4)), gy = Math.max(-w * .08, Math.min(w * .08, ix.y * 1.4));
-    ud.iris.position.set(c.x + gx, c.y + gy, z + w * .2); ud.iris.scale.set(w * .17, w * .17, w * .06);
-    ud.pupil.position.set(c.x + gx, c.y + gy, z + w * .25); ud.pupil.scale.set(w * .07, w * .07, w * .025); }
+    ud.iris.position.set(c.x + gx, c.y + gy * (1 - bl), z + w * .2); ud.iris.scale.set(w * .17, w * .17 * (1 - bl * .9), w * .06);
+    ud.pupil.position.set(c.x + gx, c.y + gy * (1 - bl), z + w * .185); ud.pupil.scale.set(w * .075, w * .075 * (1 - bl * .9), w * .05); }   // a dimple pressed into the iris, not a painted dot
 
   // ---- the camera: the points of the hands and the face, mirrored as a looking-glass, larger than life, eased so nothing shakes
   let hands = null, face = null, camOn = false, seen = -1;
@@ -159,8 +160,10 @@
   const ease = (prev, P, k) => prev && prev.length === P.length ? P.map((v, i) => prev[i].clone().lerp(v, k)) : P;
   function fromCamera(hs, fs, vw0 = video.videoWidth, vh0 = video.videoHeight) {
     HANDS.forEach((g, i) => { const L = hs && hs[i]; if (!L) { g.visible = false; SM.h[i] = null; return; } let P = grow(L.map(p => toScene(p, vw0, vh0)), 1.35); P = SM.h[i] = ease(SM.h[i], P, .5); poseHand(g, P); g.visible = true; });
-    const F = fs && fs[0]; const E = [[33, 133, 468], [362, 263, 473]];
-    EYES.forEach((g, i) => { if (!F) { g.visible = false; SM.e[i] = null; return; } let P = E[i].map(j => toScene(F[j], vw0, vh0)); const c = new THREE.Vector3().addVectors(P[0], P[1]).multiplyScalar(.5); P = P.map(v => v.sub(c).multiplyScalar(1.9).add(c)); P = SM.e[i] = ease(SM.e[i], P, .5); poseEye(g, P[0], P[1], P[2]); g.visible = true; });
+    const F = fs && fs[0]; const E = [[33, 133, 468, 159, 145], [362, 263, 473, 386, 374]];
+    EYES.forEach((g, i) => { if (!F || !F[E[i][0]]) { g.visible = false; SM.e[i] = null; return; } let P = E[i].filter(j => F[j]).map(j => toScene(F[j], vw0, vh0)); const c = new THREE.Vector3().addVectors(P[0], P[1]).multiplyScalar(.5); P = P.map(v => v.sub(c).multiplyScalar(1.9).add(c)); P = SM.e[i] = ease(SM.e[i], P, .5);
+      const open = P[3] && P[4] ? P[3].distanceTo(P[4]) / Math.max(.001, P[0].distanceTo(P[1])) : .33, bl = Math.max(0, Math.min(1, 1 - open / .3));   // how far the lids have come together
+      poseEye(g, P[0], P[1], P[2], bl); g.visible = true; });
   }
   document.getElementById('go').addEventListener('click', async () => {
     say('Asking for the camera…');
@@ -190,15 +193,25 @@
   againBtn.addEventListener('click', () => { fired = false; told = false; falling = []; clay.color.copy(CLAY); clay.emissive.setRGB(0, 0, 0); clay.roughness = .78;
     [...HANDS, ...EYES].forEach(g => { g.visible = false; g.rotation.set(0, 0, 0); Object.assign(g.userData, { px: 0, py: 0, jv: 0, sq: 0, sqv: 0 }); }); SM.h = [null, null]; SM.e = [null, null]; keepBtn.hidden = againBtn.hidden = true; fireBtn.hidden = false; say('Wet clay again. Nothing from the camera leaves your computer.'); });
 
-  // ?demo: an open pair of hands and a pair of eyes, as the camera would see them, to look at the clay without a camera
-  const DEMO = /demo/.test(location.search + location.hash) ? (() => { const H = [[.5,.85],[.42,.8],[.36,.73],[.32,.66],[.29,.6],[.45,.6],[.44,.5],[.435,.43],[.43,.37],[.5,.58],[.5,.47],[.5,.39],[.5,.32],[.55,.6],[.56,.5],[.565,.43],[.57,.37],[.6,.64],[.615,.56],[.625,.51],[.63,.46]];
-    const hand = (dx, flip, t) => H.map(([x, y], i) => ({ x: (flip ? 1 - x : x) * .55 + dx + Math.sin(t / 900 + i * .2) * .004, y: y * .8 + .12, z: -(.85 - y) * .08 }));
-    const F = []; F[33] = { x: .45, y: .22, z: 0 }; F[133] = { x: .485, y: .225, z: 0 }; F[468] = { x: .468, y: .222, z: 0 }; F[362] = { x: .515, y: .225, z: 0 }; F[263] = { x: .55, y: .22, z: 0 }; F[473] = { x: .532, y: .222, z: 0 };
-    return { h: t => [hand(-.02, false, t), hand(.47, true, t)], f: F }; })() : null;
+  // without a camera: the same pair of hands and pair of eyes, moved by the pointer — the eyes follow it and blink now and then, the hands go where it goes; the camera takes over the moment it is on
+  const DEMO = (() => { const H = [[.5,.85],[.42,.8],[.36,.73],[.32,.66],[.29,.6],[.45,.6],[.44,.5],[.435,.43],[.43,.37],[.5,.58],[.5,.47],[.5,.39],[.5,.32],[.55,.6],[.56,.5],[.565,.43],[.57,.37],[.6,.64],[.615,.56],[.625,.51],[.63,.46]];
+    const fromScreen = (px, py) => { const k = Math.max(innerWidth / 640, innerHeight / 480), w = 640 * k, h = 480 * k, ox = (innerWidth - w) / 2, oy = (innerHeight - h) / 2;
+      return { x: (innerWidth - px - ox) / w, y: (py - oy) / h }; };   // the other way round from toScene: a point on the screen back into the camera's own frame
+    let hx = .5, hy = .5; const P = { x: innerWidth / 2, y: innerHeight * .62 };
+    addEventListener('pointermove', e => { P.x = e.clientX; P.y = e.clientY; }, { passive: true });
+    const hand = (side, t) => { const n = fromScreen(P.x, P.y); hx += (n.x - hx) * .12; hy += (n.y - hy) * .12;   // the hands follow the pointer, a little behind it
+      return H.map(([x, y], i) => ({ x: (side < 0 ? x : 1 - x) * .34 + hx + side * .085 - .17 + Math.sin(t / 900 + i * .2) * .003, y: (y - .6) * .34 + hy + .02, z: 0 })); };
+    const F = [], put = (i, x, y) => { F[i] = { x, y, z: 0 }; };
+    const face = t => { const n = fromScreen(P.x, P.y), gx = Math.max(-.012, Math.min(.012, (n.x - .5) * .09)), gy = Math.max(-.006, Math.min(.006, (n.y - .3) * .05));
+      const b = Math.max(0, Math.sin(t / 2400) - .972) * 36, open = .013 * (1 - Math.min(1, b));   // now and then it blinks
+      put(33, .452, .24); put(133, .487, .243); put(468, .4695 + gx, .2415 + gy); put(159, .4695, .2415 - open); put(145, .4695, .2415 + open);
+      put(362, .513, .243); put(263, .548, .24); put(473, .5305 + gx, .2415 + gy); put(386, .5305, .2415 - open); put(374, .5305, .2415 + open); return F; };
+    return { h: t => [hand(-1, t), hand(1, t)], f: face }; })();
   // ---- a tap makes a thing jump, stretching as it leaves and squashing as it lands, like soft clay; every thing turns and squashes about its own middle
   const ALL = [...HANDS, ...EYES]; ALL.forEach(g => Object.assign(g.userData, { px: 0, py: 0, jv: 0, sq: 0, sqv: 0 }));
   const cOf = g => { const c = new THREE.Vector3(); let n = 0; g.children.forEach(o => { if (o.geometry && o.geometry.attributes.position && o.geometry.attributes.position.count) { c.add(o.position); n++; } }); return n ? c.multiplyScalar(1 / n) : c; };
-  function place(g) { const ud = g.userData, c = cOf(g), sx = 1 - ud.sq * .45, sy = 1 + ud.sq; g.scale.set(sx, sy, 1); const v = c.clone().multiply(g.scale).applyEuler(g.rotation); g.position.set(ud.px + c.x - v.x, ud.py + c.y - v.y, c.z - v.z); }
+  // fired clay keeps its shape: a thing jumps and turns, it never squashes or stretches
+  function place(g) { const ud = g.userData, c = cOf(g); g.scale.set(1, 1, 1); const v = c.clone().applyEuler(g.rotation); g.position.set(ud.px + c.x - v.x, ud.py + c.y - v.y, c.z - v.z); }
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
   cv.addEventListener('pointerdown', e => { ndc.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(ndc, CAM);
     const hit = ray.intersectObjects(ALL.filter(g => g.visible), true)[0]; if (!hit) return; let g = hit.object; while (g.parent && !ALL.includes(g)) g = g.parent; const ud = g.userData;
@@ -207,7 +220,7 @@
   let last = performance.now(), mx = 0, my = 0; addEventListener('pointermove', e => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; });
   (function loop(now) {
     const dt = Math.min(.05, (now - last) / 1000); last = now;
-    if (DEMO && !fired) fromCamera(DEMO.h(now), [DEMO.f], 640, 480);
+    if (DEMO && !fired && !camOn) fromCamera(DEMO.h(now), [DEMO.f(now)], 640, 480);   // until the camera is on, the pointer moves them
     if (!fired && camOn && hands && video.readyState >= 2 && video.currentTime !== seen) { seen = video.currentTime; const ts = performance.now(); fromCamera(hands.detectForVideo(video, ts).landmarks, face.detectForVideo(video, ts).faceLandmarks); }
     if (fired && !falling.length && !told) { const t = Math.min(1, (now - fireStart) / 1600), e = t * t * (3 - 2 * t);
       clay.color.copy(CLAY).lerp(BISQUE, e); clay.roughness = .78 + .1 * e; clay.emissive.copy(KILN).multiplyScalar(Math.sin(Math.PI * Math.min(1, t * 1.3)) * .12);
