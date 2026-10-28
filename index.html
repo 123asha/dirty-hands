@@ -177,7 +177,7 @@
   .partner.on .pf .c { background-position: 0 0, 0 0; }
   .partner.pinned { mix-blend-mode: difference; z-index: 6; }   /* held over the cases: white letters in difference read black on white and white on the photos */
   .partner.pinned .pf .c { background-image: linear-gradient(90deg, #fff 44%, transparent 52%), linear-gradient(#373737, #373737); }
-  .partner { cursor: pointer; }
+  .partner { cursor: pointer; pointer-events: none; } .partner .pf { pointer-events: auto; }   /* the row is the full width (the name centred in it): only the name itself takes the pointer, the pictures under the row stay clickable */
   .plab-in { transition: opacity .4s var(--ease); position: sticky; top: calc(50vh + 164 * var(--u)); height: calc(20 * var(--u)); }
   .plab-in > p, .plab-in > .quote { position: absolute; top: 0; }
   .quote .rules { position: absolute; }
@@ -242,6 +242,7 @@
   .sv-item { display: none; position: absolute; top: 0; width: calc(210 * var(--u)); text-align: left; will-change: transform, opacity; }   /* the years sit on a sphere: the one in the middle faces us, the others turn away, shrink and fade */
   .sv-tx { color: rgba(0, 0, 0, var(--f, 1)); } .sv-tx .sv-dot { opacity: var(--f, 1); }   /* a strip of text fades by its letters' colour */
   .sv-strip { position: absolute; top: calc(-12 * var(--u)); height: calc(420 * var(--u)); overflow: hidden; backface-visibility: hidden; }
+  .sv-line { position: absolute; left: 0; top: calc(66 * var(--u)); height: calc(226 * var(--u)); width: 1px; background: currentColor; opacity: .25; }   /* a thin line down the left edge, from the level of the first lead line to Start */
   .sv-start { position: absolute; left: 0; top: calc(300 * var(--u)); font-size: var(--t18); line-height: 1.15; letter-spacing: -.01em; opacity: .4; }   /* under the first year: where the story starts */
   .sv-in { position: absolute; top: calc(12 * var(--u)); width: calc(260 * var(--u)); text-align: left; }
   .sv-pin { position: absolute; top: 0; height: 100%; background: #eee center / cover no-repeat; }
@@ -357,14 +358,14 @@
   </div>
 
   <div class="plab" style="left:0;top:calc(463 * var(--u));width:100%;height:calc(709 * var(--u));"><div class="plab-in">
-    <p class="t18" style="left:calc(20 * var(--u));opacity:.4">Our projects</p>
-    <div class="quote" style="left:calc(250 * var(--u));width:calc(210 * var(--u));"><div class="rules" data-n="3" data-step="19" style="left:0;top:0;width:100%;height:calc(38 * var(--u));"></div><p class="t18 q" style="line-height:calc(19 * var(--u));"></p></div>
+    <p class="t18" style="left:0;width:100%;text-align:center;opacity:.4">Our projects</p>
+    <div class="quote" style="display:none;left:calc(250 * var(--u));width:calc(210 * var(--u));"><div class="rules" data-n="3" data-step="19" style="left:0;top:0;width:100%;height:calc(38 * var(--u));"></div><p class="t18 q" style="line-height:calc(19 * var(--u));"></p></div>
   </div></div>
-  <h3 class="t name2 partner" style="left:calc(706 * var(--u));top:calc(471.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">Brera</span></h3>
-  <h3 class="t name2 partner" style="left:calc(706 * var(--u));top:calc(588.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">AVA</span></h3>
-  <h3 class="t name2 partner" style="left:calc(706 * var(--u));top:calc(705.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">The Greeks</span></h3>
-  <h3 class="t name2 partner" style="left:calc(706 * var(--u));top:calc(822.6 * var(--u));width:calc(674 * var(--u));"><span class="pf">Novikov</span></h3>
-  <h3 class="t name2 partner" style="display:none;left:calc(706 * var(--u));top:calc(949.8 * var(--u));width:calc(674 * var(--u));"><span class="pf">Rodina</span></h3>
+  <h3 class="t name2 partner" style="left:0;text-align:center;top:calc(471.6 * var(--u));width:100%;"><span class="pf">Brera</span></h3>
+  <h3 class="t name2 partner" style="left:0;text-align:center;top:calc(588.6 * var(--u));width:100%;"><span class="pf">AVA</span></h3>
+  <h3 class="t name2 partner" style="left:0;text-align:center;top:calc(705.6 * var(--u));width:100%;"><span class="pf">The Greeks</span></h3>
+  <h3 class="t name2 partner" style="left:0;text-align:center;top:calc(822.6 * var(--u));width:100%;"><span class="pf">Novikov</span></h3>
+  <h3 class="t name2 partner" style="display:none;left:0;text-align:center;top:calc(949.8 * var(--u));width:100%;"><span class="pf">Rodina</span></h3>
 
   <div class="ph pic" id="cases" style="left:calc(20 * var(--u));top:calc(1295 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
   <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(1258 * var(--u))">Restaurant</span>
@@ -516,7 +517,7 @@ window.preDone = new Promise(done => {
 const HASH0 = location.hash; if (HASH0) history.replaceState(null, '', location.pathname + location.search);   // #cases or #about: the browser must not jump there under the preloader; the page glides there itself after the intro
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scrollTo(0, 0);   // the page always starts from the top: the intro is built for it
 // smooth scroll for the whole page (Lenis): the wheel glides on with a little inertia, the page itself still reads scrollY as before. It rests whenever the page is locked (the intro, an open view, the ending)
-const lenis = window.Lenis ? new Lenis({ lerp: 0.085, smoothWheel: true, wheelMultiplier: 0.9 }) : null;
+const lenis = window.Lenis ? new Lenis({ lerp: 0.14, smoothWheel: true, wheelMultiplier: 0.9 }) : null;
 if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.update());
   (function lr(t) { const r = document.documentElement.style, lock = window.scrollLocked || r.overflow === 'hidden' || r.overflowY === 'hidden'; if (lock && !lenis.isStopped) lenis.stop(); else if (!lock && lenis.isStopped) lenis.start(); lenis.raf(t); requestAnimationFrame(lr); })(performance.now()); }
 (() => {
@@ -1108,7 +1109,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     data.forEach((d, i) => {
       { const TS = Math.max(4, Math.round(16 * U)), KT = Math.ceil(TW / TS), RTX = 720 * U;   // the text layer: cut into thin strips like the photos, each on its own angle, so the text is round on its drum too; every strip overlaps the next by a pixel, so no seam breaks a letter
         for (let k = 0; k < KT; k++) { const el = document.createElement('div'); el.className = 'sv-strip sv-tx';
-          el.innerHTML = `<div class="sv-in" style="left:${-k * TS}px;width:${TW.toFixed(1)}px"><i class="sv-dot"></i><span class="sv-year">${d.date}</span>${i ? '' : '<span class="sv-start">Start</span>'}<span class="sv-out">${d.out}</span><p class="t18 sv-lead">${d.lead}</p></div>`;
+          el.innerHTML = `<div class="sv-in" style="left:${-k * TS}px;width:${TW.toFixed(1)}px"><i class="sv-dot"></i><span class="sv-year">${d.date}</span>${i ? '' : '<i class="sv-line"></i><span class="sv-start">Start</span>'}<span class="sv-out">${d.out}</span><p class="t18 sv-lead">${d.lead}</p></div>`;
           el.style.width = TS + 'px'; host.append(el); strips.push({ el, i, a: (k + .5) * TS - TW / 2, R: RTX, C: RTX, w: TS, tx: true }); } }   /* the texts on a wider drum: flat plates turning gently, never the corners of a box */   /* the text a little wider than the photos, so a fuller thesis still fits on the screen */
       for (let k = 0; k < KS; k++) {                                                                    // the photo layer: smaller, so the photographs sit further in
         const el = document.createElement('div'); el.className = 'sv-strip sv-ph';
@@ -1738,7 +1739,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       const S0 = pinY0 + 100, n = shownP.length, yN = tick._yN;   // with more inertia than the cards: the names follow the scroll well behind and settle softly
       plab.style.opacity = (1 - clamp((yN - S0) / 120)).toFixed(3);    // the clients' words go as the names move over
     { const V2 = innerHeight; $('.mthumb').forEach(t => { const r = t.getBoundingClientRect(); if (r.bottom < -60 || r.top > V2 + 60) return;
-        t.style.backgroundPositionY = (30 + (clamp((r.top + r.height / 2) / V2) - .5) * 18).toFixed(1) + '%'; }); }   // inside its frame every small photograph drifts a little as the page moves
+        const b = t.firstElementChild; if (b) b.style.transform = `scale(1.3) translateY(${((clamp((r.top + r.height / 2) / V2) - .5) * -18).toFixed(2)}%)`; }); }   // inside its frame every small photograph drifts a little as the page moves
       shownP.forEach((el, k) => { if (el._held) return;
         const e = ease(clamp((yN - S0 - k * 40) / 480));
         if (e === 0 || el._w == null) { const L = el.firstElementChild, a = L.firstElementChild.getBoundingClientRect(), b = L.lastElementChild.getBoundingClientRect(); if (e === 0) { el._x0 = a.left / U; el._w = (b.right - a.left) / U; } }   // measured while it stands in its own place
