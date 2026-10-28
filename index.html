@@ -1286,13 +1286,13 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
         p.strips.forEach(s => {
           const phi = (at + s.a - arcAt(pos)) / R, c = Math.cos(phi);
           s.el.style.transform = `translate3d(0,${dy.toFixed(1)}px,${(-R).toFixed(1)}px) rotateY(${phi.toFixed(4)}rad) translate3d(0,0,${R.toFixed(1)}px)`;
-          s.f = c <= 0.02 ? 0 : Math.pow(c, 0.9); if (s.f > most) most = s.f;
+          s.f = c <= 0.02 ? 0 : .45 + .55 * Math.pow(c, 0.9); if (s.f > most) most = s.f;   /* never paler than about half: the pictures at the sides stay readable */
         });
         const far = Math.abs(at - arcAt(pos)), seam = 1 - ease(clamp((far - (Ltot / 2 - p.pw - GAP)) / (p.pw + GAP)));   // near the far side of the round, where its copy takes over on the other side, a picture fades away softly instead of vanishing
         const sx = Math.abs(innerWidth / 2 - (cx + Math.sin((at - arcAt(pos)) / R) * R)) / (innerWidth / 2), edge = 1 - ease(clamp((sx - .9) / .14));   // and it thins out as it goes into the edge of the screen
         most *= seam * edge;
         p.g.style.opacity = most.toFixed(3);                                    // the brightest strip sets the picture's opacity, the others are made paler to their own share of it
-        p.strips.forEach(s => { s.el.style.opacity = s.f ? 1 : 0; s.el.style.setProperty('--w', most ? (1 - s.f / most).toFixed(3) : 0); });
+        p.strips.forEach(s => { s.el.style.opacity = s.f ? 1 : 0; s.el.style.setProperty('--w', most ? ((1 - s.f / most) * .5).toFixed(3) : 0); });   /* the turned-away strips only a little paler */
       });
     };
     let closing = false;
