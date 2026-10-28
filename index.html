@@ -54,7 +54,7 @@
   .card2 .m { overflow: visible; }   /* the cards' lines and letters fade up whole, never cut by a mask */
   .rest > a.credit { left: 0 !important; right: 0; margin: 0 auto; width: max-content; translate: none !important; }   /* centred by its margins: no translate, which motion or a browser could double or clear */
   .rest > .eye { position: absolute; left: 0; right: 0; margin: 0 auto; translate: none !important; width: calc(160 * var(--u)); height: calc(87 * var(--u)); display: block; pointer-events: none; }   /* a pair of small hands over the credit, a thin outline; only a drawing, not a link */
-  .rest > .eye svg { width: 100%; height: 100%; display: block; overflow: visible; } .rest > .eye path { fill: none; stroke: #000; stroke-width: 4.2; stroke-linejoin: miter; stroke-linecap: round;   /* chopped corners, the lines themselves a little unsteady, as drawn by hand */ stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 2.4s cubic-bezier(.4, 0, .2, 1); } .rest > .eye.on path { stroke-dashoffset: 0; } .rest > .eye.on path + path { transition-delay: .5s; }   /* an eye drawn in clay over the credit: it opens the page where you draw with your finger */
+  .rest > .eye svg { width: 100%; height: 100%; display: block; overflow: visible; } .rest > .eye path { fill: none; stroke: #000; stroke-width: 4.2; stroke-linejoin: miter; stroke-linecap: round;   /* chopped corners, the lines themselves a little unsteady, as drawn by hand */ stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.3s cubic-bezier(.4, 0, .2, 1); } .rest > .eye.on path { stroke-dashoffset: 0; } .rest > .eye.on path + path { transition-delay: .5s; }   /* an eye drawn in clay over the credit: it opens the page where you draw with your finger */
   .rest > .eye canvas { display: none; }   /* centred from the stylesheet: the motion clears inline translate, which used to throw it off centre */
   .credit a, a.credit { text-decoration: none; } .credit .u { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; padding-bottom: .12em; transition: background-size .4s var(--ease, cubic-bezier(.2,.8,.2,1)); } .credit a:hover .u, a.credit:hover .u { background-size: 100% 1px; } .credit .arr { margin-left: .25em; vertical-align: .02em; } .credit a:hover .arr, a.credit:hover .arr { animation: arrowSwap .55s cubic-bezier(.4, 0, .2, 1); }   /* Skip Design: an arrow as on the other links; on hover a line draws in under the name and the arrow flies off and comes back */
   .credit .sfav { display: inline-block; height: .83em; width: auto; vertical-align: -.07em; }   /* the Skip Design mark, a couple of pixels bigger than the heart */
@@ -218,7 +218,7 @@
   .gray.no-left::before, .gray.no-right::after { opacity: 0; }
   .hc.gym-on { background-image: none !important; } .hc.gym-on .hs i { visibility: hidden; }   /* the gymnasts are drawn by their shader (gym-gl.js) */
   .rest > .sfilm { overflow: hidden; background: #f2f2f2; z-index: 30; cursor: none; }
-  .sfilm .fcap { position: absolute; left: 50%; bottom: calc(40 * var(--u)); width: calc(210 * var(--u)); translate: -50% 0; z-index: 3; margin: 0; color: #fff; line-height: calc(19 * var(--u)); text-align: center; pointer-events: none;
+  .sfilm .fcap { position: absolute; left: 50%; bottom: calc(40 * var(--u)); width: calc(210 * var(--u)); translate: -50% 0; z-index: 3; margin: 0; color: #fff; line-height: calc(19 * var(--u)); text-align: center; pointer-events: none; padding-bottom: 1px;   /* room for one more ruled line under the last words */
     background: repeating-linear-gradient(to bottom, rgba(255,255,255,.75) 0 1px, transparent 1px calc(19 * var(--u))) 0 0 / 100% 100% no-repeat; }   /* the words of the film: one column wide in the middle, always on their ruled lines */
   .sfilm.playing .fcap { background-size: 100% 100%; }
   .sfilm .fcap .m { overflow: visible; }
@@ -258,7 +258,7 @@
   .cd-slider { position: absolute; left: 0; width: 100%; overflow: hidden; cursor: grab; touch-action: pan-y; }
   .cd-track { display: flex; align-items: flex-start; gap: calc(10 * var(--u)); padding-left: calc(20 * var(--u)); width: max-content; will-change: transform; }
   .cd-s { flex: none; height: calc(70 * var(--u)); background: var(--gray) center / cover no-repeat; cursor: pointer; }
-  .cd-alt { position: absolute; inset: 0; background: center / cover no-repeat; opacity: 0; transition: opacity .35s var(--ease); pointer-events: none; } .cd-alt.on { opacity: 1; }   /* the preview pointed at, over the big picture */
+  .cd-alt { position: absolute; inset: 0; background: center / cover no-repeat; opacity: 0; clip-path: inset(50% 50%); transform: scale(1.12); transition: opacity .15s linear .5s, clip-path .65s cubic-bezier(.65, 0, .35, 1), transform .9s var(--ease); pointer-events: none; } .cd-alt.on { opacity: 1; clip-path: inset(0); transform: none; transition: opacity .1s linear, clip-path .65s cubic-bezier(.65, 0, .35, 1), transform .9s var(--ease); }   /* the preview pointed at opens over the big picture from its middle out, settling from a slight zoom, as the cases open on the page; off it, it closes back into the middle */
   .cd-end { position: absolute; left: 0; width: 1px; height: 1px; }
   #catView .cat-cyl { position: absolute; inset: 0; perspective: calc(2200 * var(--u)); perspective-origin: 50% 45%; transform-origin: 50% 45%; }
   .cat-ph { position: absolute; inset: 0; perspective: inherit; perspective-origin: inherit; will-change: opacity; }   /* one picture: its strips fade together, so where they overlap no darker seam shows */
@@ -368,19 +368,19 @@
   <h3 class="t name2 partner" style="left:0;text-align:center;top:calc(822.6 * var(--u));width:100%;"><span class="pf">Novikov</span></h3>
   <h3 class="t name2 partner" style="display:none;left:0;text-align:center;top:calc(949.8 * var(--u));width:100%;"><span class="pf">Rodina</span></h3>
 
-  <div class="ph pic" id="cases" style="left:calc(20 * var(--u));top:calc(1295 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
+  <div class="ph pic" id="cases" style="left:calc(20 * var(--u));top:calc(1295 * var(--u));width:calc(670 * var(--u));height:calc(419 * var(--u));"></div>
   <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(1258 * var(--u))">Restaurant</span>
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(1295 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
   <p class="t18" style="left:calc(710 * var(--u));top:calc(1295 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">A ceramic triptych at the very centre of an Italian restaurant.</p>
-  <div class="ph pic" style="left:calc(250 * var(--u));top:calc(1988 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
+  <div class="ph pic" style="left:calc(250 * var(--u));top:calc(1988 * var(--u));width:calc(440 * var(--u));height:calc(275 * var(--u));"></div>
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(1988 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
   <p class="t18" style="left:calc(710 * var(--u));top:calc(1988 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Two large panels, below and above, over a kitchen open to the guests.</p>
   <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(1951 * var(--u))">Restaurant</span>
-  <div class="ph pic" style="left:calc(20 * var(--u));top:calc(2603 * var(--u));width:calc(670 * var(--u));height:calc(536 * var(--u));"></div>
+  <div class="ph pic" style="left:calc(20 * var(--u));top:calc(2603 * var(--u));width:calc(670 * var(--u));height:calc(419 * var(--u));"></div>
   <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(2566 * var(--u))">Restaurant</span>
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(2603 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
   <p class="t18" style="left:calc(710 * var(--u));top:calc(2603 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Smooth, rounded slabs like Mediterranean stones on three sides of the bar.</p>
-  <div class="ph pic" style="left:calc(250 * var(--u));top:calc(3296 * var(--u));width:calc(440 * var(--u));height:calc(458 * var(--u));"></div>
+  <div class="ph pic" style="left:calc(250 * var(--u));top:calc(3296 * var(--u));width:calc(440 * var(--u));height:calc(275 * var(--u));"></div>
   <div class="rules cap" data-n="4" data-step="19" style="left:calc(710 * var(--u));top:calc(3296 * var(--u));width:calc(210 * var(--u));height:calc(57 * var(--u));"></div>
   <p class="t18" style="left:calc(710 * var(--u));top:calc(3296 * var(--u));width:calc(210 * var(--u));line-height:calc(19 * var(--u))">Half-round ceramic panels on the columns, and planters for several pots.</p>
   <span class="n" style="text-align:right;left:calc(483 * var(--u));width:calc(200 * var(--u));top:calc(3259 * var(--u))">Restaurant</span>
