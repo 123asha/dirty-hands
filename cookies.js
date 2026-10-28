@@ -13,5 +13,6 @@
   box.innerHTML = '<p>This site uses only essential cookies and your browser’s storage, to keep a few settings such as the sound. Nothing is used to track you.</p><button type="button">OK</button>';
   const show = () => { document.head.append(css); document.body.append(box); requestAnimationFrame(() => requestAnimationFrame(() => box.classList.add('on'))); };
   box.querySelector('button').addEventListener('click', () => { try { localStorage.setItem('dh-cookies', '1'); } catch (e) {} box.classList.remove('on'); setTimeout(() => box.remove(), 600); });
-  if (document.readyState === 'loading') addEventListener('DOMContentLoaded', () => setTimeout(show, 1200)); else setTimeout(show, 1200);
+  const go = () => (window.preDone || Promise.resolve()).then(() => setTimeout(show, 1400));   // after the preloader has gone, never over it or over the first words
+  if (document.readyState === 'loading') addEventListener('DOMContentLoaded', go); else go();
 })();
