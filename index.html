@@ -175,7 +175,7 @@
   .partner .pf { display: inline-block; will-change: transform; overflow: visible; padding: .06em .14em .14em; margin: -.06em -.14em -.14em; vertical-align: top; }   /* the mask the letters come down from, as in the headings */
   .partner .pf .c { display: inline-block; white-space: pre; color: transparent; background: linear-gradient(90deg, #000 44%, transparent 52%) 100% 0 / 300% 100% no-repeat, linear-gradient(#c8c8c8, #c8c8c8) 0 0 / 100% 100% no-repeat; -webkit-background-clip: text; background-clip: text; transition: background-position .5s var(--ease) calc(var(--i, 0) * 45ms); transform: translateY(60%); opacity: 0; }   /* each letter fills with black in its turn, with a soft edge, one after another */
   .partner.pinned { mix-blend-mode: difference; z-index: 6; }   /* held over the cases: white letters in difference read black on white and white on the photos */
-  .partner.on .pf .c { background-position: 0 0, 0 0; }
+  .partner.on .pf .c, .partner.ink .pf .c { background-position: 0 0, 0 0; }   /* black as they come in; once moved over to the right only the case on screen stays black */
   .partner.pinned .pf .c { background-image: linear-gradient(90deg, #fff 44%, transparent 52%), linear-gradient(#373737, #373737); }
   .rest > p.lr > .m { transition: translate .4s cubic-bezier(.25,.8,.3,1); } .aw li > span:first-child { transition: opacity .7s cubic-bezier(.2,.8,.2,1) calc(var(--i) * .12s + .15s), translate .7s cubic-bezier(.2,.8,.2,1) calc(var(--i) * .12s + .15s), transform .4s cubic-bezier(.25,.8,.3,1); }   /* the lines and the awards glide aside round the gymnasts and back, never jump */
   .partner { cursor: pointer; pointer-events: none; } .partner .pf { pointer-events: auto; }   /* the row is the full width (the name centred in it): only the name itself takes the pointer, the pictures under the row stay clickable */
@@ -219,7 +219,7 @@
   .hc.gym-on { background-image: none !important; } .hc.gym-on .hs i { visibility: hidden; }   /* the gymnasts are drawn by their shader (gym-gl.js) */
   .rest > .sfilm { overflow: hidden; background: #f2f2f2; z-index: 30; cursor: none; }
   .sfilm .fcap { position: absolute; left: 50%; bottom: calc(40 * var(--u)); width: calc(210 * var(--u)); translate: -50% 0; z-index: 3; margin: 0; color: #fff; line-height: calc(19 * var(--u)); text-align: left; pointer-events: none;
-    background: repeating-linear-gradient(to bottom, rgba(255,255,255,.75) 0 1px, transparent 1px calc(19 * var(--u))) 0 0 / 0% 100% no-repeat; transition: background-size .8s var(--ease); }   /* the words of the film: one column wide, on ruled lines drawn in as it starts */
+    background: repeating-linear-gradient(to bottom, rgba(255,255,255,.75) 0 1px, transparent 1px calc(19 * var(--u))) 0 0 / 100% 100% no-repeat; }   /* the words of the film: one column wide in the middle, always on their ruled lines */
   .sfilm.playing .fcap { background-size: 100% 100%; }
   .sfilm .fcap .m { overflow: visible; }
   .rest > .bigrow .fl { display: inline-block; }   /* the letters of the big words, each going on its own */
@@ -350,11 +350,11 @@
 </section>
 
 <section class="rest">
-  <h2 class="t18" id="about" style="left:calc(250 * var(--u));top:calc(52 * var(--u));width:calc(440 * var(--u));opacity:.4;line-height:1">Clay with something to say</h2>
+  <h2 class="t18" id="about" style="left:calc(20 * var(--u));top:calc(52 * var(--u));width:calc(440 * var(--u));opacity:.4;line-height:1">Clay with something to say</h2>
   <p class="t18 lr" style="left:calc(710 * var(--u));top:calc(52 * var(--u));width:calc(440 * var(--u));padding-right:calc(40 * var(--u));">We create original design pieces — from tabletop art objects and wall panels to sculptural forms and interior accents that enhance spaces and set their emotional tone.</p>
   <div class="ph" style="left:calc(618 * var(--u));top:calc(272.25 * var(--u));width:calc(164 * var(--u));height:calc(157.5 * var(--u));"></div>
   <div class="stack" style="left:calc(710 * var(--u));top:calc(170 * var(--u));width:calc(440 * var(--u));">
-    <ul class="t18 aw" aria-label="Awards" style="margin-left:calc(230 * var(--u));"><li><span>RPA Awards</span><span class="an">01</span></li><li><span>ADD Awards</span><span class="an">02</span></li><li><span>Kandinsky Prize</span><span class="an">03</span></li><li><span>Art Zverev Prize</span><span class="an">04</span></li></ul>
+    <ul class="t18 aw" aria-label="Awards" style="margin-left:calc(230 * var(--u));width:calc(440 * var(--u));"><li><span>RPA Awards</span><span class="an">01</span></li><li><span>ADD Awards</span><span class="an">02</span></li><li><span>Kandinsky Prize</span><span class="an">03</span></li><li><span>Art Zverev Prize</span><span class="an">04</span></li></ul>
     <a class="t18 shop" style="display:block;width:max-content;margin-top:calc(40 * var(--u));margin-left:calc(230 * var(--u));" href="#story">Our story<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a>
   </div>
 
@@ -395,7 +395,7 @@
   <a class="t18 shop olink" href="shop.html" style="display:block;width:max-content;left:calc(940 * var(--u));top:calc(4256 * var(--u));">Order and cooperation<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></a>
   <div class="bigrow" style="left:calc(480 * var(--u));top:calc(4147.7 * var(--u));height:calc(98 * var(--u));"><p class="t name2">forms</p></div>
 
-  <div class="sfilm" data-inline aria-label="Film about the studio" style="left:calc(250 * var(--u));top:calc(4482.3 * var(--u));width:calc(900 * var(--u));height:calc(506.25 * var(--u));"><p class="t18 fcap">A film about the studio, from clay to kiln.</p><i class="vid"><iframe src="https://www.youtube-nocookie.com/embed/yCrqIWHZplI?autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=yCrqIWHZplI&amp;controls=0&amp;playsinline=1&amp;modestbranding=1&amp;rel=0&amp;disablekb=1&amp;iv_load_policy=3&amp;enablejsapi=1" title="DirtyHands, studio of art ceramics" tabindex="-1" allow="autoplay; encrypted-media" loading="lazy"></iframe></i></div>
+  <div class="sfilm" data-inline aria-label="Film about the studio" style="left:calc(250 * var(--u));top:calc(4482.3 * var(--u));width:calc(900 * var(--u));height:calc(506.25 * var(--u));"><p class="t18 fcap">A film about the studio, from clay to kiln.</p><i class="vid"><iframe src="https://www.youtube-nocookie.com/embed/yCrqIWHZplI?autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=yCrqIWHZplI&amp;controls=0&amp;playsinline=1&amp;modestbranding=1&amp;rel=0&amp;disablekb=1&amp;iv_load_policy=3&amp;enablejsapi=1&amp;cc_load_policy=0" title="DirtyHands, studio of art ceramics" tabindex="-1" allow="autoplay; encrypted-media" loading="lazy"></iframe></i></div>
   <div class="tagged" style="left:calc(20 * var(--u));top:calc(5153 * var(--u) + var(--fsh, 0px));"><h2 class="t big2">Story</h2><span class="yr" aria-hidden="true"></span></div>
   <p class="t18" data-year="2019" style="left:calc(810 * var(--u));top:calc(5173 * var(--u));width:calc(210 * var(--u));">The studio opens</p>
   <p class="t18 mdesc" style="left:calc(830 * var(--u));top:calc(5173 * var(--u));width:calc(320 * var(--u));">Lisa and Karen start DirtyHands, a studio of art ceramics made by hand.</p>
@@ -742,7 +742,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       if (h1el && typeof whisper === 'function') { const y = (h1el._sink || 0) * 40; if (h1y !== null && Math.abs(y - h1y) > 1.5) whisper(Math.abs(y - h1y) / 25); h1y = y; }   // the title's letters going: a breath of air
       sheets.forEach(s => { const r = s.card.getBoundingClientRect(); if (r.bottom < -50 || r.top > innerHeight + 50) return;   // only the sheets on the screen
         if ((s.dirty && fr % 3 === 0) || s.H !== s.card.offsetHeight || !s.strips.length) build(s);
-        const vk = s.k ? (hist[0] ?? vs) : vs, target = REST + Math.min(.45, Math.abs(vk) * .013 * (s.k ? 1.15 : 1)); s.va += (target - s.a) * (s.k ? .035 : .045); s.va *= .9; s.a += s.va;   // Karen's sheet first, Lisa's a moment later (about a fifth of a second); the air bows it, a spring lets it down again
+        const vk = s.k ? (hist[0] ?? vs) : vs, target = REST + Math.min(.2, Math.abs(vk) * .006 * (s.k ? 1.15 : 1)); s.va += (target - s.a) * (s.k ? .025 : .03); s.va *= .8;   /* a lighter lift, settling without a bounce */ s.a += s.va;   // Karen's sheet first, Lisa's a moment later (about a fifth of a second); the air bows it, a spring lets it down again
         const H = s.H, sh = H / N, c = Math.max(1e-4, s.a) / H;
         if (Math.abs(c - (s._lc ?? -1)) > Math.max(1e-6, Math.abs(c) * .006)) { s._lc = c;   // only when the sheet has really bent further: a still sheet costs nothing
           s.strips.forEach((st, j) => { const d = H - (j + 1) * sh, dy = d - Math.sin(c * d) / c, dz = (1 - Math.cos(c * d)) / c; st.style.transform = `translate3d(0,${dy.toFixed(2)}px,${dz.toFixed(2)}px) rotateX(${(-c * d).toFixed(4)}rad)`; }); }
@@ -1003,6 +1003,10 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     if (quoteIdx >= 0) { const k = quoteIdx; quoteIdx = -1; setQuote(k, true); }
     ScrollTrigger.refresh();
     pairs.forEach(({ st, tl }) => { if (scrollY >= st.start && scrollY > 0) tl.progress(1); });     // what is already above the screen stays shown
+    // a safety net: a text that has been on the screen a moment and whose reveal has still not begun (a trigger missed in a fast scroll or a jump of the page) is played then
+    clearInterval(buildMotion._guard); buildMotion._guard = setInterval(() => { if (openView || !introDone) return; pairs.forEach(({ st, tl }) => { const el = st && st.trigger; if (!el || !el.isConnected || !tl || typeof tl.isActive !== 'function' || tl.isActive() || tl.progress() > 0) { if (el) el._idle = 0; return; }
+      const r = el.getBoundingClientRect(); if (r.width < 1 || r.bottom < 0 || r.top > innerHeight * .85 || getComputedStyle(el).display === 'none') { el._idle = 0; return; }
+      if ((el._idle = (el._idle || 0) + 1) >= 2) { el._idle = 0; tl.timeScale(1).play(); } }); }, 600);
   }
 
 
@@ -1070,7 +1074,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     sGroup.forEach(el => { if (el.style.position !== 'fixed' && (el._top0 == null || formsScene._w !== W)) el._top0 = el.offsetTop ?? cssPx(el, 'top');   /* its place in the page, read while it is not fixed */
       const side = 0, dy = pin ? 0 : h;
       if (el.classList.contains('bigrow')) { const wd = el.querySelector('.name2'); if (wd && !wd._lt) { wd._lt = [...wd.textContent].map(ch => Object.assign(document.createElement('span'), { className: 'fl', textContent: ch })); wd.textContent = ''; wd.append(...wd._lt); }
-        const wi = $('.rest > .bigrow').indexOf(el), dir = wi === 0 ? -1 : 1, pw = clamp((k - .04 - wi * .07) / .86), n = wd ? wd._lt.length : 1;   // they take most of the scene to go, and cross the film on their way   // the words go off sideways along their lines, whole, Unconventional to the left, ceramic and forms to the right; gone before the film reaches them
+        const wi = $('.rest > .bigrow').indexOf(el), dir = wi === 0 ? -1 : 1, pw = clamp((k - .04 - wi * .07) / 1.05), n = wd ? wd._lt.length : 1;   // they take most of the scene to go, and cross the film on their way   // the words go off sideways along their lines, whole, Unconventional to the left, ceramic and forms to the right; gone before the film reaches them
         const lw = ease(pw); if (wd) wd._lt.forEach((sp, j) => { const ord = dir < 0 ? n - 1 - j : j; sp.style.translate = lw ? `${(dir * lw * (W * .7 + ord * 1.5)).toFixed(1)}px 0` : ''; sp.style.opacity = lw > .88 ? (1 - (lw - .88) / .12).toFixed(3) : ''; });   /* the word goes off whole, as it came; its letters part only by a hair */
         if (wi === 2) formsScene._formsGo = pw; if (wi === 1) formsScene._ceramicGo = pw; }
       if (el._topCss == null) el._topCss = el.style.top;   /* its own top, kept before it is ever fixed */
@@ -1745,6 +1749,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
         const e = ease(clamp((yN - S0 - k * 40) / 480));
         if (e === 0 || el._w == null) { const L = el.firstElementChild, a = L.firstElementChild.getBoundingClientRect(), b = L.lastElementChild.getBoundingClientRect(); if (e === 0) { el._x0 = a.left / U; el._w = (b.right - a.left) / U; } }   // measured while it stands in its own place
         const T = PIN_TOP - (n - 1 - k) * 117, D = V / 2 - ((n - 1) * 82 + 69) / 2 + k * 82 - 20,   /* the column 20 above the middle */ fs = 108 + (75.6 - 108) * e;
+        el.classList.toggle('ink', e === 0);
         if (e === 0) { if (el._shifted) { el._shifted = false; gsap.set(el, { x: 0, y: 0, scale: 1 }); } return; }
         el._shifted = true; gsap.set(el, { x: (1380 - el._x0 - el._w * fs / 108) * e * U, y: (D - T) * e * U, scale: fs / 108, transformOrigin: `${(el._x0 * U).toFixed(1)}px 0`, force3D: true });   /* scaled about the name's own left edge (the row is the full width now) */   // smaller by scale, not by font size: no letters snapping from size to size
       }); }
@@ -2143,7 +2148,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
 <script src="cookies.js"></script>
 <script src="film.js"></script>
 <script>
-  { const aw = document.querySelector('.aw'); if (aw) { aw.querySelectorAll('li').forEach((li, i) => li.style.setProperty('--i', i)); const o = new IntersectionObserver(es => { if (es[0].isIntersecting) { aw.classList.add('on'); o.disconnect(); } }, { rootMargin: '0px 0px -12% 0px' }); o.observe(aw); } }   // the awards come in one after another once they are in sight
+  { const aw = document.querySelector('.aw'); if (aw) { aw.querySelectorAll('li').forEach((li, i) => li.style.setProperty('--i', i)); const o = new IntersectionObserver(es => { const e = es[0]; if (e.isIntersecting) aw.classList.add('on'); else if (e.boundingClientRect.top > 0) aw.classList.remove('on'); }, { rootMargin: '0px 0px -12% 0px' }); o.observe(aw); } }   // the awards rise in one after another as they come up with the scroll, and go again when scrolled back below, as the other text does
 </script>
 </body>
 </html>
