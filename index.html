@@ -1743,7 +1743,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       shownP.forEach((el, k) => { if (el._held) return;
         const e = ease(clamp((yN - S0 - k * 40) / 480));
         if (e === 0 || el._w == null) { const L = el.firstElementChild, a = L.firstElementChild.getBoundingClientRect(), b = L.lastElementChild.getBoundingClientRect(); if (e === 0) { el._x0 = a.left / U; el._w = (b.right - a.left) / U; } }   // measured while it stands in its own place
-        const T = PIN_TOP - (n - 1 - k) * 117, D = V / 2 - ((n - 1) * 82 + 69) / 2 + k * 82, fs = 108 + (75.6 - 108) * e;
+        const T = PIN_TOP - (n - 1 - k) * 117, D = V / 2 - ((n - 1) * 82 + 69) / 2 + k * 82 - 20,   /* the column 20 above the middle */ fs = 108 + (75.6 - 108) * e;
         if (e === 0) { if (el._shifted) { el._shifted = false; gsap.set(el, { x: 0, y: 0, scale: 1 }); } return; }
         el._shifted = true; gsap.set(el, { x: (1380 - el._x0 - el._w * fs / 108) * e * U, y: (D - T) * e * U, scale: fs / 108, transformOrigin: `${(el._x0 * U).toFixed(1)}px 0`, force3D: true });   /* scaled about the name's own left edge (the row is the full width now) */   // smaller by scale, not by font size: no letters snapping from size to size
       }); }
