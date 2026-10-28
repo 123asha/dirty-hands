@@ -1442,6 +1442,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       const range = PT.layoutNextLineRange(abPrep, w * U, cur); if (!range) break; rows.push({ x: x0 - L, t: PT.materializeLineRange(abPrep, range).text }); cur = range.end; }
     while (rows.length && rows[rows.length - 1] === null) rows.pop();
     while (all.length < rows.length) { const m = all[all.length - 1].cloneNode(true); m._clone = true; p.appendChild(m); all.push(m); }
+    { const last = all.find(m => !m._clone && m.nextElementSibling && m.nextElementSibling._clone) || all[0], src = last.firstElementChild.style.cssText; all.forEach(m => { if (m._clone) m.firstElementChild.style.cssText = src; }); }   // an added line shows exactly as the last of the paragraph's own lines does: not stuck half-way through the reveal it was copied in
     all.forEach((m, i) => { const r = rows[i]; if (i >= rows.length) { m.style.display = m._clone ? 'none' : ''; if (!m._clone) { m.firstElementChild.textContent = '\u00a0'; m.style.translate = ''; } return; }
       m.style.display = ''; m.firstElementChild.textContent = r ? r.t : '\u00a0'; m.style.translate = r && r.x ? `${(r.x * U).toFixed(1)}px 0` : ''; });
   }
@@ -1816,14 +1817,16 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     if (q >= .94 && !looping) { looping = true;   // the last strip nearly home: it is drawn the last bit of the way, as if by a magnet, and then the page opens again
       bars.forEach(b => { const cur = b.getBoundingClientRect().top; Object.assign(b.style, { transition: 'none', transform: 'none', position: 'fixed', top: cur.toFixed(1) + 'px' }); });   // held to the screen itself for the last bit: the page may still be moving under them (a fast scroll), and they must neither overshoot the top row nor jump
       requestAnimationFrame(() => bars.forEach(b => { b.style.transition = 'top .28s cubic-bezier(.2,.9,.3,1)'; b.style.top = home.toFixed(1) + 'px'; }));
+      const unfix = () => bars.forEach(b => { b.style.transition = ''; b.style.position = ''; b.style.top = ''; b.style.opacity = ''; b.style.transform = ''; b._ty = 0; });   // the strips back in their own place at the end of the page
       setTimeout(() => { if (endT) { endT.remove(); endT = null; } bars.forEach(b => { b.style.transform = ''; b._ty = 0; }); endQ = -1;
-      restart();
+      setTimeout(unfix, 450); endBars._unfix = unfix;   // (set to go before anything else: whatever happens in the restart, the strips never stay stuck to the screen)
       bars.forEach(b => { b.style.transition = 'opacity .3s linear .1s'; b.style.opacity = '0'; });   // the strips stay on the top row a moment longer, over the cards growing out of the very same place, and only then go: nothing is seen to swap
-      setTimeout(() => bars.forEach(b => { b.style.transition = ''; b.style.position = ''; b.style.top = ''; b.style.opacity = ''; }), 450); gsap.to(endMenu(), { opacity: 1, duration: .7, ease: 'power2.out', onComplete: () => gsap.set(endMenu(), { clearProps: 'opacity' }) }); }, 300); }
+      try { restart(); } catch (err) { console.warn(err); unfix(); } gsap.to(endMenu(), { opacity: 1, duration: .7, ease: 'power2.out', onComplete: () => gsap.set(endMenu(), { clearProps: 'opacity' }) }); }, 300); }
   }
   addEventListener('scroll', endPull, { passive: true }); addEventListener('resize', endPull); if (lenis) lenis.on('scroll', endPull);
   addEventListener('scroll', () => {
     if (looping && scrollY < innerHeight) looping = false;
+    if (!looping && endBars[0] && endBars[0].style.position === 'fixed' && scrollY > innerHeight) { if (endBars._unfix) endBars._unfix(); else endBars.forEach(b => { b.style.position = ''; b.style.top = ''; b.style.opacity = ''; b.style.transition = ''; }); }   // a safety net: strips still held to the screen once the page is being read again are let go at once
   }, { passive: true });
 
   // a scroll lock that leaves the scrollbar alone (with Lenis it just pauses it): taking the scrollbar away and back made the whole page shift and flicker at the restart
