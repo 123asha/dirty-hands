@@ -162,7 +162,7 @@
   .mi.more { display: none; } .media.all .mi.more { display: block; }
   .allbtn { display: block; margin: var(--s4) auto 0; text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
 
-  .fin { margin-top: var(--s5); } .fin::after { content: ''; display: block; height: 65svh; }   /* the end: the hands and the credit come right after Media, stop a little above the middle of the screen, and stay there a while before the page starts over */
+  .fin { margin-top: calc(var(--s5) * 2); } .fin::after { content: ''; display: block; height: 65svh; }   /* the end: the hands and the credit come right after Media, stop a little above the middle of the screen, and stay there a while before the page starts over */
   .totop { all: unset; cursor: pointer; margin-top: var(--s4); width: 48px; height: 48px; display: grid; place-items: center; }   /* back to the top: a big target round a small arrow */
   .fin-in { position: sticky; top: calc(42svh - 76px); display: flex; flex-direction: column; align-items: center; }
   .veil { position: fixed; inset: 0; z-index: 2500; background: #fff; opacity: 0; pointer-events: none; transition: opacity .6s var(--ease); }
