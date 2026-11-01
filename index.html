@@ -223,6 +223,7 @@
   .sfilm.playing .fcap { background-size: 100% 100%; }
   .sfilm .fcap .m { overflow: visible; }
   .rest > .bigrow .fl { display: inline-block; }   /* the letters of the big words, each going on its own */
+  .rest > .bigrow, .rest > .hl { pointer-events: none; }   /* only drawn over the film: their empty boxes must not take its Play */
   .rest > .bigrow, .rest > .olink, .rest > .hl, .rest > .morph { z-index: 31; } .rest > .bigrow, .rest > .olink { color: #fff; mix-blend-mode: difference; } .rest > .hl { border-top-color: #262626; mix-blend-mode: difference; }   /* over the film the words and the lines are seen in inverse */
   .playcur { position: fixed; left: 0; top: 0; z-index: 3000; pointer-events: none; color: #fff; mix-blend-mode: difference; font-size: var(--t18); line-height: 1; letter-spacing: -.01em; display: inline-flex; gap: .3em; align-items: center; opacity: 0; transition: opacity .25s; margin: -.5em 0 0 -1em; } .playcur.on { opacity: 1; }   /* Play under the pointer, over the film */ .gray { z-index: 30; }   /* the gymnasts go behind the photo of Karen and Lisa and behind the film */   /* the studio film, playing silently between the forms and the Story; a click opens it whole, with sound */
   .gray > .gfilm { left: 0; top: 0; width: 100%; height: 100%; z-index: 1; overflow: hidden; transform: translateY(var(--py, 0px)); } .gfilm .vid { will-change: transform; } .gfilm .vid iframe { width: 112%; height: auto; aspect-ratio: 16 / 9; }   /* the film after the photo, coming up from below inside the block; cover, its player bars outside */
@@ -1625,7 +1626,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     // block 2 scrolls under the wheel: its centre stays in the middle of the screen until the table's last line has come up to it
     const py = Math.min(PY1, Math.max(PY0, yc + MID - s2Top));
     // the wheel: six cut-outs on a flat circle, upright like the cabins of a big wheel; the scroll turns it so that the work of the paragraph level with its centre stands at three o'clock, right beside the text
-    const phL = one('.rest > .ph:not(.pic):not(.bar)'), aboutA = one('.stack .shop'), stk = one('.stack'), aboutEnd = stk.offsetTop + aboutA.offsetTop + aboutA.offsetHeight, breraTop = partners[0] ? partners[0].offsetTop : aboutEnd + 200 * U, landY = restTop0 + (aboutEnd + breraTop) / 2 / U - 70, landX = (phL.offsetLeft + phL.offsetWidth / 2) / U;   // where the gymnasts end: halfway between the About link and Brera
+    const phL = one('.rest > .ph:not(.pic):not(.bar)'), aboutA = one('.stack .shop'), stk = one('.stack'), aboutEnd = stk.offsetTop + aboutA.offsetTop + aboutA.offsetHeight, breraTop = partners[0] && partners[0]._d != null ? partners[0]._d * U : aboutEnd + 200 * U,   /* its place in the layout, not its offsetTop: that changes the moment the names are fixed to the screen, and the gymnasts leapt up and vanished */ landY = restTop0 + (aboutEnd + breraTop) / 2 / U - 70, landX = (phL.offsetLeft + phL.offsetWidth / 2) / U;   // where the gymnasts end: halfway between the About link and Brera
     const R = Math.max(150, Math.min(250, V / 2 - 60 - PH / 2)), toLand = ease(clamp((yc + MID - (landY - 600)) / 600)), WX = PX - R + (landX - PX) * toLand, WY = (() => { const a = landY, b = yc + MID, K = 90; return Math.min(a, b) - K * Math.log1p(Math.exp(-Math.abs(a - b) / K)); })();   // they stay in the middle of the screen past the photo and the film, drift over to the vessels as they come near, and settle there softly (a soft limit, never a sudden halt), turning on as you scroll   // centre in page coordinates, mid-screen from the start: three o'clock is where the single picture used to be held
     const pc = texts.map(p => +p.dataset.c0);                         // fixed middles: the flow moves the paragraphs, but must not move the wheel
     let p = 0; for (let j = 0; j < pc.length - 1; j++) if (py > pc[j]) p = j + Math.min(1, (py - pc[j]) / (pc[j + 1] - pc[j]));
@@ -1772,7 +1773,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   const scrollMax = () => document.documentElement.scrollHeight - innerHeight;
   let looping = false;
   function restart() {
-    scrollTo(0, 0); if (lenis) lenis.scrollTo(0, { immediate: true, force: true }); tick._yN = null; yS = 0; mv = 0; rA = 1; prevY = 0;   // no inertia carried over from the bottom of the page: the cards are at the top at once
+    lockScroll(true); intro._top = true; scrollTo(0, 0); if (lenis) lenis.scrollTo(0, { immediate: true, force: true }); tick._yN = null; yS = 0; mv = 0; rA = 1; prevY = 0;   // no inertia carried over from the bottom of the page: the cards are at the top at once
     document.querySelectorAll('.ttl .h1 .ch').forEach(el => { el.style.animation = 'none'; el.style.transform = 'none'; el.style.opacity = '1'; el._t = el._c = 0; el.style.translate = ''; });   // already pulled up by the steps
     document.querySelectorAll('.hero > .nav a').forEach(a => { a.classList.remove('shown'); a.style.animation = 'none'; a.style.transform = ''; a.style.opacity = ''; void a.offsetWidth; a.style.animation = ''; });   // the menu comes in again in its own place, word by word, as when the page loads
     navCur.fill(0); navTarget = 0; navLinks.forEach(a => { a.style.translate = ''; });   // the menu starts again from its own place
@@ -1837,8 +1838,9 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   function lockScroll(on) { if (lenis) window.scrollLocked = on; else root.style.overflowY = on ? 'hidden' : ''; }
   function intro(now) {
     lockScroll(true);                                // no scrolling while the cards drop and unfold
+    if (intro._top && scrollY !== 0) { scrollTo(0, 0); if (lenis) lenis.scrollTo(0, { immediate: true, force: true }); }   // after the restart the page stays at the very top until the intro is over: the wheel's last inertia must not carry it on, or the cards start shrinking into the pile (small squares) and the label passes its line
     tick(now);
-    if (now - t0 < INTRO) requestAnimationFrame(intro); else { introDone = true; lockScroll(false); if (HASH0 && !intro._hash) { intro._hash = 1; const el = HASH0 === '#about' ? one('.gray') : document.querySelector(HASH0); if (el) setTimeout(() => glideTo(el), 100); }   /* coming from the shop to About or Cases: after the intro the page glides there */ tick(); const tail = n => { tick(n); if (n - t0 < INTRO + 700) requestAnimationFrame(tail); }; requestAnimationFrame(tail); }   // keep laying out for a moment: the label of the row fades in after the cards have dropped
+    if (now - t0 < INTRO) requestAnimationFrame(intro); else { introDone = true; intro._top = false; lockScroll(false); if (HASH0 && !intro._hash) { intro._hash = 1; const el = HASH0 === '#about' ? one('.gray') : document.querySelector(HASH0); if (el) setTimeout(() => glideTo(el), 100); }   /* coming from the shop to About or Cases: after the intro the page glides there */ tick(); const tail = n => { tick(n); if (n - t0 < INTRO + 700) requestAnimationFrame(tail); }; requestAnimationFrame(tail); }   // keep laying out for a moment: the label of the row fades in after the cards have dropped
   }
 
   measure(); buildMotion();
@@ -2121,7 +2123,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   addEventListener('resize', size); size();
   const PRINTS = false;     // clay prints on a click are switched off for now
   addEventListener('pointerdown', e => {
-    if (!PRINTS || e.button !== 0 || e.target.closest('a, button')) return;
+    if (!PRINTS || e.button !== 0 || e.target.closest('a, button, [data-inline]')) return;   /* (a click on the film is Play: no clay on the picture) */
     const p = stamp(e.pageX, e.pageY);
     drag = { p, x: e.pageX * dpr, y: e.pageY * dpr, run: 0, w: R(16, 22) * unit() };
   });
