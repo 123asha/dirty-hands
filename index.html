@@ -244,8 +244,8 @@
   .sv-item { display: none; position: absolute; top: 0; width: calc(210 * var(--u)); text-align: left; will-change: transform, opacity; }   /* the years sit on a sphere: the one in the middle faces us, the others turn away, shrink and fade */
   .sv-tx { color: rgba(0, 0, 0, var(--f, 1)); } .sv-tx .sv-dot { opacity: var(--f, 1); }   /* a strip of text fades by its letters' colour */
   .sv-strip { position: absolute; top: calc(-12 * var(--u)); height: calc(420 * var(--u)); overflow: hidden; backface-visibility: hidden; }
-  .sv-line { position: absolute; left: 0; top: calc(66 * var(--u)); height: calc(226 * var(--u)); width: 1px; background: currentColor; opacity: .25; }   /* a thin line down the left edge, from the level of the first lead line to Start */
-  .sv-start { position: absolute; left: 0; top: calc(300 * var(--u)); font-size: var(--t18); line-height: 1.15; letter-spacing: -.01em; opacity: .4; }   /* under the first year: where the story starts */
+  .sv-line { position: absolute; left: 0; top: calc(66 * var(--u)); height: max(calc(40 * var(--u)), min(calc(226 * var(--u)), calc(50vh - 216 * var(--u))));   /* shorter on a low screen, so Start under it is always in sight */ width: 1px; background: currentColor; opacity: .25; }   /* a thin line down the left edge, from the level of the first lead line to Start */
+  .sv-start { position: absolute; left: 0; top: max(calc(114 * var(--u)), min(calc(300 * var(--u)), calc(50vh - 142 * var(--u))));   /* never below the bottom of the screen: at most 40 above it */ font-size: var(--t18); line-height: 1.15; letter-spacing: -.01em; opacity: .4; }   /* under the first year: where the story starts */
   .sv-in { position: absolute; top: calc(12 * var(--u)); width: calc(260 * var(--u)); text-align: left; }
   .sv-pin { position: absolute; top: 0; height: 100%; background: #eee center / cover no-repeat; }
   .sv-photo { position: absolute; left: 0; top: calc(-284 * var(--u)); width: 100%; height: calc(260 * var(--u)); background: #eee center / cover no-repeat; backface-visibility: hidden; }   /* the photographs are glued to the cylinder with the text */
@@ -788,7 +788,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   const DUR = 600, GAP = 90, LEAD = 150;   // ms: one speed for every animation (same as --dur in the CSS)
   const INTRO = LEAD + 5 * GAP + DUR;   // ms until the last card has dropped
 
-  const CARD_SPEED = 1.5;              // how fast the content of Lisa's and Karen's cards comes in (1 = the original speed)
+  const CARD_SPEED = 2.2;              // how fast the content of Lisa's and Karen's cards comes in (1 = the original speed): quick enough to be read while the card passes
   const fsOf = e => 108 + (75.6 - 108) * e;
   const PGAP = 80;                     // design px the lowest partner names are pushed away from their place
   const LH = 18;                       // design line height, used as a margin around the picture
@@ -967,11 +967,11 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
       const tl = gsap.timeline({ paused: true });
       fanIn(tl, top, { each: .045, at: 0, dur: .9 });                   // the ruled lines fan out one after another, as in the table
       const soft = (els, at, each) => tl.fromTo(els, { yPercent: 70, opacity: 0 }, { yPercent: 0, opacity: 1, duration: .9, ease: EASE, stagger: each }, at);   // up from below out of nothing: no mask, nothing seen in pieces
-      [...c.querySelectorAll('.row')].forEach((row, r) => { const at = .7 + r * .45;   // then the text, tidily: the first paragraph with its number, then the second
+      [...c.querySelectorAll('.row')].forEach((row, r) => { const at = .35 + r * .3;   // then the text, tidily: the first paragraph with its number, then the second
         fadeIn(tl, row.querySelector('.n'), .3, at, { dur: .6 }); soft([...row.querySelectorAll('p .mi')], at, .1); });
-      soft(nm, 1.6, .06);                                                 // and the name rises letter by letter
-      const cf = c.querySelector('.cf'); if (cf) { touched.push(cf); fadeIn(tl, cf, .4, 1.9, { dur: .6 }); }   // and Co-founder under it
-      fanIn(tl, bot, { each: .08, at: 1.6, dur: .8 });
+      soft(nm, 1, .05);                                                   // and the name rises letter by letter
+      const cf = c.querySelector('.cf'); if (cf) { touched.push(cf); fadeIn(tl, cf, .4, 1.25, { dur: .6 }); }   // and Co-founder under it
+      fanIn(tl, bot, { each: .08, at: 1, dur: .8 });
       c._tl = tl; pairs.push({ st: { kill() {}, start: Infinity }, tl });
       if (c._on) tl.progress(1);
     });
@@ -1072,16 +1072,16 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     sGroup.forEach(el => { if (el.style.position !== 'fixed' && (el._top0 == null || formsScene._w !== W)) el._top0 = el.offsetTop ?? cssPx(el, 'top');   /* its place in the page, read while it is not fixed */
       const side = 0, dy = pin ? 0 : h;
       if (el.classList.contains('bigrow')) { const wd = el.querySelector('.name2'); if (wd && !wd._lt) { wd._lt = [...wd.textContent].map(ch => Object.assign(document.createElement('span'), { className: 'fl', textContent: ch })); wd.textContent = ''; wd.append(...wd._lt); }
-        const wi = $('.rest > .bigrow').indexOf(el), dir = wi === 1 ? 1 : -1,   /* ceramic to the right; Unconventional and forms to the left, away from the vessel going right */ pw = clamp((k - .04 - wi * .07) / .78), n = wd ? wd._lt.length : 1;   // they take most of the scene to go, and cross the film on their way   // the words go off sideways along their lines, whole, Unconventional to the left, ceramic and forms to the right; gone before the film reaches them
+        const wi = $('.rest > .bigrow').indexOf(el), dir = wi === 1 ? 1 : -1,   /* ceramic to the right; Unconventional and forms to the left, the vessel going with forms */ pw = clamp((k - .04 - wi * .07) / .78), n = wd ? wd._lt.length : 1;   // they take most of the scene to go, and cross the film on their way   // the words go off sideways along their lines, whole, Unconventional to the left, ceramic and forms to the right; gone before the film reaches them
         const lw = ease(pw); if (wd) wd._lt.forEach((sp, j) => { const ord = dir < 0 ? n - 1 - j : j; sp.style.translate = lw ? `${(dir * lw * (W * 1.1 + ord * 1.5)).toFixed(1)}px 0` : '';   /* a whole screen's width and more: nothing of a word is left at the edge */ sp.style.opacity = lw > .88 ? (1 - (lw - .88) / .12).toFixed(3) : ''; });   /* the word goes off whole, as it came; its letters part only by a hair */
         if (wi === 2) formsScene._formsGo = pw; if (wi === 1) formsScene._ceramicGo = pw; }
       if (el._topCss == null) el._topCss = el.style.top;   /* its own top, kept before it is ever fixed */
       if (pin) { el.style.position = 'fixed'; el.style.top = (el._top0 + rt - S0) + 'px'; } else if (el.style.position === 'fixed') { el.style.position = ''; el.style.top = el._topCss || ''; }
       el.style.translate = dy || side ? `${side.toFixed(1)}px ${dy.toFixed(1)}px` : '';
       if (el.classList.contains('hl')) { const lf = ease(clamp((k - .03) / .35)); el.style.scale = lf ? `${(1 - lf).toFixed(4)} 1` : ''; el.style.transformOrigin = fold ? '50% 50%' : ''; }   // the lines close into their middles
-      if (el.classList.contains('morph')) { const fw = one('.rest > .bigrow:nth-of-type(1)'), frm = $('.rest > .bigrow')[2], fr = frm && frm.getBoundingClientRect(), sf = ease(clamp(k / .12)), go = ease(clamp((formsScene._formsGo || 0) * 1.3)) * W * .6;   // the drawn vessel shrinks quickly to the size of "forms", stands beside it on its line and goes off to the right with it
+      if (el.classList.contains('morph')) { const fw = one('.rest > .bigrow:nth-of-type(1)'), frm = $('.rest > .bigrow')[2], fr = frm && frm.getBoundingClientRect(), sf = ease(clamp(k / .12)), go = ease(clamp((formsScene._formsGo || 0) * 1.3)) * W * .6;   // the drawn vessel shrinks quickly to the size of "forms", stands beside it on its line and goes off to the left with it, the way forms goes
         const mcx = cssPx(el, 'left') + cssPx(el, 'width') / 2, mcy = el._top0 + rt - S0 + cssPx(el, 'height') / 2, tx = fr ? fr.right + 30 * u + fr.height * .2 : mcx, ty = fr ? fr.top + fr.height / 2 + (pin ? 0 : 0) : mcy, sc = 1 - sf * (1 - (fr ? fr.height / cssPx(el, 'height') : .3));
-        el.style.translate = dy || sf ? `${((tx - mcx) * sf + go).toFixed(1)}px ${(dy + (ty - mcy) * sf).toFixed(1)}px` : ''; el.style.scale = sf ? sc.toFixed(4) : '';
+        el.style.translate = dy || sf ? `${((tx - mcx) * sf - go).toFixed(1)}px ${(dy + (ty - mcy) * sf).toFixed(1)}px` : ''; el.style.scale = sf ? sc.toFixed(4) : '';
         el.style.setProperty('--ms', (1.6 / Math.max(.08, sf ? sc : 1)).toFixed(3));   // the line keeps the thickness it had: the shrinking of the whole drawing is taken out of the stroke
         el.style.opacity = go > W * .62 ? '0' : ''; }   // it may cross the film on its way out, and read inverted over it
       if (el.classList.contains('olink')) { const cg = ease(clamp((formsScene._ceramicGo || 0) * 1.3)); el.style.translate = cg || dy ? `${(cg * W * .6).toFixed(1)}px ${dy.toFixed(1)}px` : ''; el.style.opacity = cg > .7 ? (1 - (cg - .7) / .3).toFixed(3) : ''; } });   // Order and cooperation goes off to the right with ceramic
@@ -1290,11 +1290,11 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
           s.el.style.transform = `translate3d(0,${dy.toFixed(1)}px,${(-R).toFixed(1)}px) rotateY(${phi.toFixed(4)}rad) translate3d(0,0,${R.toFixed(1)}px)`;
           s.f = c <= 0.02 ? 0 : .8 + .2 * Math.pow(c, 0.9); if (s.f > most) most = s.f;   /* never paler than about half: the pictures at the sides stay readable */
         });
-        const far = Math.abs(at - arcAt(pos)), seam = 1 - ease(clamp((far - (Ltot / 2 - (p.pw + GAP) * .5)) / ((p.pw + GAP) * .5)));   // near the far side of the round, where its copy takes over on the other side, a picture fades away softly instead of vanishing
+        const far = Math.abs(at - arcAt(pos)), seam = 1 - ease(clamp((far - (Ltot / 2 - (p.pw + GAP) * .18)) / ((p.pw + GAP) * .18)));   // only right at the far side of the round, where its copy takes over on the other side, a picture fades away softly instead of vanishing (the pictures at the sides stay clearly visible)
         const sx = Math.abs(innerWidth / 2 - (cx + Math.sin((at - arcAt(pos)) / R) * R)) / (innerWidth / 2), edge = 1 - ease(clamp((sx - .96) / .1));   // and it thins out as it goes into the edge of the screen
-        most *= seam * edge;
+        const raw = most; most *= seam * edge;
         p.g.style.opacity = most.toFixed(3);                                    // the brightest strip sets the picture's opacity, the others are made paler to their own share of it
-        p.strips.forEach(s => { s.el.style.opacity = s.f ? 1 : 0; s.el.style.setProperty('--w', most ? ((1 - s.f / most) * .35).toFixed(3) : 0); });   /* the turned-away strips only a little paler */
+        p.strips.forEach(s => { s.el.style.opacity = s.f ? 1 : 0; s.el.style.setProperty('--w', raw ? ((1 - s.f / raw) * .35).toFixed(3) : 0); });   /* the turned-away strips only a little paler */
       });
     };
     let closing = false;
@@ -1725,7 +1725,8 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     [[lisa, cardMarks[0]], [karen, cardMarks[1]]].forEach(([el, m]) => {
       const top = s3Top + parseFloat(el.style.top) / U - y;              // on the screen, design px
       drawMark(m, (V * 0.95 - top) / (V * 0.45));                        // the clay mark draws in while the card comes up
-      if (!el._on && top < V * 0.97) { el._on = true; el._tl && el._tl.timeScale(CARD_SPEED).play(); } else if (el._on && top >= V) { el._on = false; el._tl && el._tl.timeScale(CARD_SPEED * 2).reverse(); }
+      if (!el._on && top < V * 1.05) { el._on = true;   // starting just before the card comes in, so its text is there while it passes
+        el._tl && el._tl.timeScale(CARD_SPEED).play(); } else if (el._on && top >= V * 1.15) { el._on = false; el._tl && el._tl.timeScale(CARD_SPEED * 2).reverse(); }   // (a little lower than it starts, so it never flickers between the two)
     });
     // the photos on the background follow the cards: with Lisa the left one melts into grey; when Karen comes, it is the right one that goes grey and the left one is back
     // (the halves of the photo no longer melt into grey: for now the cards simply scroll over the photo)
