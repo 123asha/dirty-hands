@@ -1720,15 +1720,16 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     const gr_ = one('.gray'), pyN = (gp - .5) * ((1080 + V) * .2 + 512), Tn = s3Top + (gr_._ft || 0) + pyN - y, hold = 0;   // once the photo's frame is in the middle of the screen it is held there for one screen of scrolling
     gr_.style.setProperty('--py', ((pyN + hold) * U).toFixed(1) + 'px');   // the photo goes up 20% slower than it did, so the cards have time to come over it
     if (grayGL) grayGL.draw(gp);   // the light moves across them with the scroll
-    lisa.style.top = (380 - (gp - 0.5) * 120) * U + 'px';            // (the #lisa card carries Karen's name: it is the first one) a screen lower: the cards come only after the film
-    karen.style.top = (640 - (gp - 0.5) * 460) * U + 'px';            // Lisa's card quicker than Karen's: the two never move as one
+    lisa.style.top = (380 + (gp - 0.5) * 640) * U + 'px';   // the cards drift down a little against the scroll, so they stay on the screen long enough to be read (and never past the foot of the photo)
+               // (the #lisa card carries Karen's name: it is the first one) a screen lower: the cards come only after the film
+    karen.style.top = (500 + (gp - 0.5) * 360) * U + 'px';            // Lisa's card quicker than Karen's: the two never move as one
     [[lisa, cardMarks[0]], [karen, cardMarks[1]]].forEach(([el, m]) => {
       const top = s3Top + parseFloat(el.style.top) / U - y;              // on the screen, design px
       { const land = ease(clamp((V * 1.08 - top) / (V * .62))), k = el === lisa ? [70, 1.8] : [110, 1.2];   // like sheets of paper: while it comes up it also slides in a little from the right, slightly turned, and settles straight in its place
         el.style.translate = land < 1 ? `${((1 - land) * k[0] * U).toFixed(1)}px 0` : ''; el.style.rotate = land < 1 ? `${((1 - land) * k[1]).toFixed(3)}deg` : ''; }
       drawMark(m, (V * 0.95 - top) / (V * 0.45));                        // the clay mark draws in while the card comes up
-      if (!el._on && top < V * 1.05) { el._on = true;   // starting just before the card comes in, so its text is there while it passes
-        el._tl && el._tl.timeScale(CARD_SPEED).play(); } else if (el._on && top >= V * 1.15) { el._on = false; el._tl && el._tl.timeScale(CARD_SPEED * 2).reverse(); }   // (a little lower than it starts, so it never flickers between the two)
+      if (!el._on && top < V * 1.3) { el._on = true;   // starting just before the card comes in, so its text is there while it passes
+        el._tl && el._tl.timeScale(CARD_SPEED).play(); } else if (el._on && top >= V * 1.45) { el._on = false; el._tl && el._tl.timeScale(CARD_SPEED * 2).reverse(); }   // (a little lower than it starts, so it never flickers between the two)
     });
     // the photos on the background follow the cards: with Lisa the left one melts into grey; when Karen comes, it is the right one that goes grey and the left one is back
     // (the halves of the photo no longer melt into grey: for now the cards simply scroll over the photo)
