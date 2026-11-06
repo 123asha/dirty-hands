@@ -1288,13 +1288,13 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
         p.strips.forEach(s => {
           const phi = (at + s.a - arcAt(pos)) / R, c = Math.cos(phi);
           s.el.style.transform = `translate3d(0,${dy.toFixed(1)}px,${(-R).toFixed(1)}px) rotateY(${phi.toFixed(4)}rad) translate3d(0,0,${R.toFixed(1)}px)`;
-          s.f = c <= 0.02 ? 0 : .8 + .2 * Math.pow(c, 0.9); if (s.f > most) most = s.f;   /* never paler than about half: the pictures at the sides stay readable */
+          const sc = clamp(c / .45); s.f = c <= 0 ? 0 : (.8 + .2 * Math.pow(c, 0.9)) * sc * sc * (3 - 2 * sc); if (s.f > most) most = s.f;   /* readable at the sides; as it turns away round the drum it fades out over a long stretch, never all at once */
         });
         const far = Math.abs(at - arcAt(pos)), seam = 1 - ease(clamp((far - (Ltot / 2 - (p.pw + GAP) * .18)) / ((p.pw + GAP) * .18)));   // only right at the far side of the round, where its copy takes over on the other side, a picture fades away softly instead of vanishing (the pictures at the sides stay clearly visible)
-        const sx = Math.abs(innerWidth / 2 - (cx + Math.sin((at - arcAt(pos)) / R) * R)) / (innerWidth / 2), edge = 1 - ease(clamp((sx - .96) / .1));   // and it thins out as it goes into the edge of the screen
+        const sx = Math.abs(innerWidth / 2 - (cx + Math.sin((at - arcAt(pos)) / R) * R)) / (innerWidth / 2), edge = 1 - ease(clamp((sx - .72) / .4));   // and it thins out as it goes into the edge of the screen
         const raw = most; most *= seam * edge;
         p.g.style.opacity = most.toFixed(3);                                    // the brightest strip sets the picture's opacity, the others are made paler to their own share of it
-        p.strips.forEach(s => { s.el.style.opacity = s.f ? 1 : 0; s.el.style.setProperty('--w', raw ? ((1 - s.f / raw) * .35).toFixed(3) : 0); });   /* the turned-away strips only a little paler */
+        p.strips.forEach(s => { s.el.style.opacity = s.f ? 1 : 0; s.el.style.setProperty('--w', raw ? (1 - Math.sqrt(s.f / raw)).toFixed(3) : 0); });   /* the turned-away strips a little paler, melting into the white as they go round, so none of them blinks out */
       });
     };
     let closing = false;
@@ -1724,6 +1724,8 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
     karen.style.top = (640 - (gp - 0.5) * 460) * U + 'px';            // Lisa's card quicker than Karen's: the two never move as one
     [[lisa, cardMarks[0]], [karen, cardMarks[1]]].forEach(([el, m]) => {
       const top = s3Top + parseFloat(el.style.top) / U - y;              // on the screen, design px
+      { const land = ease(clamp((V * 1.08 - top) / (V * .62))), k = el === lisa ? [70, 1.8] : [110, 1.2];   // like sheets of paper: while it comes up it also slides in a little from the right, slightly turned, and settles straight in its place
+        el.style.translate = land < 1 ? `${((1 - land) * k[0] * U).toFixed(1)}px 0` : ''; el.style.rotate = land < 1 ? `${((1 - land) * k[1]).toFixed(3)}deg` : ''; }
       drawMark(m, (V * 0.95 - top) / (V * 0.45));                        // the clay mark draws in while the card comes up
       if (!el._on && top < V * 1.05) { el._on = true;   // starting just before the card comes in, so its text is there while it passes
         el._tl && el._tl.timeScale(CARD_SPEED).play(); } else if (el._on && top >= V * 1.15) { el._on = false; el._tl && el._tl.timeScale(CARD_SPEED * 2).reverse(); }   // (a little lower than it starts, so it never flickers between the two)
