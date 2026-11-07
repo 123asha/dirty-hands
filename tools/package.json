@@ -1,0 +1,7 @@
+{
+  "name": "dirty-hands-build",
+  "private": true,
+  "description": "Builds the published copy of the site: every script minified. Run: npm --prefix tools install && node tools/build.mjs",
+  "type": "module",
+  "devDependencies": { "terser": "5.36.0" }
+}

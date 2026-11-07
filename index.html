@@ -1,7 +1,9 @@
 <!doctype html>
+<!-- © 2026 Dirty Hands. All rights reserved. The design, code, texts, photographs and film of this site may not be copied or reused without written permission. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="copyright" content="© 2026 Dirty Hands. All rights reserved.">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if (innerWidth < 768) location.replace('m.html' + location.hash);   // phones get their own page</script>
 <title>Dirty Hands — interior ceramics studio</title>
@@ -990,7 +992,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
 
     // all other text: line by line, one paragraph after another
     const items = [];
-    $('.rest p.t18, .rest a.t18:not(.credit), .rest #about').forEach(el => {
+    $('.rest p.t18:not(.credit), .rest a.t18:not(.credit), .rest #about').forEach(el => {   /* (the credit lines come in with the hands, whole: cut into lines they would lose their links) */
       if (done.has(el) || el.closest('.plab-in') || el.closest('.bigrow')) return;
       const tl = gsap.timeline({ paused: true }); riseIn(tl, splitMask(el), { each: .09 }); items.push({ el, tl });
     });
