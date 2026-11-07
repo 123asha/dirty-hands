@@ -4,7 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 [ -f _build/index.html ] && [ -f _build/CNAME ] || { echo "run node tools/build.mjs first"; exit 1; }
 git fetch -q origin
-IDX=$(mktemp); trap 'rm -f "$IDX"' EXIT
+IDX=$(mktemp -u); trap 'rm -f "$IDX"' EXIT
 GIT_INDEX_FILE=$IDX git --work-tree=_build add -A .
 TREE=$(GIT_INDEX_FILE=$IDX git write-tree)
 PARENT=$(git rev-parse -q --verify origin/gh-pages || true)
