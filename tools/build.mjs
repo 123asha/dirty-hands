@@ -13,6 +13,7 @@ const opts = { compress: { passes: 2 }, mangle: true, format: { comments: false,
 fs.rmSync(out, { recursive: true, force: true }); fs.mkdirSync(out);
 execSync(`git archive HEAD | tar -x -C "${out}"`, { cwd: root, stdio: 'inherit', shell: '/bin/bash' });   // exactly what is committed, nothing else (no originals, no local edits)
 fs.rmSync(path.join(out, 'tools'), { recursive: true, force: true }); fs.rmSync(path.join(out, '.gitignore'), { force: true });
+fs.writeFileSync(path.join(out, '.nojekyll'), '');   // GitHub Pages serves the files exactly as they are, without its own processing
 
 let before = 0, after = 0;
 for (const f of fs.readdirSync(out).filter(f => f.endsWith('.js'))) {
