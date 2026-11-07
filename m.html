@@ -115,7 +115,7 @@
   .aw li > span { opacity: 0; translate: 0 .5em; transition: opacity .7s cubic-bezier(.2,.8,.2,1) calc(var(--i) * .12s + .15s), translate .7s cubic-bezier(.2,.8,.2,1) calc(var(--i) * .12s + .15s); }
   .aw.on li::before, .aw.on li:last-child::after { transform: none; } .aw.on li > span { opacity: 1; translate: 0 0; } .aw.on li > .an { opacity: .4; }
   .sfilm { position: relative; width: 100%; aspect-ratio: 16 / 9; } .sfilm .vid iframe { width: 100%; height: 100%; translate: none; left: 0; top: 0; }   /* the whole picture, not cut at the top or the bottom */   /* the studio film between the forms and the Story, playing silently; a tap opens it with sound */
-  .vid { position: absolute; inset: 0; overflow: hidden; background: #f2f2f2; } .vid iframe { position: absolute; left: 50%; top: 50%; width: 118%; height: 118%; translate: -50% -50%; border: 0; pointer-events: none; }   /* the studio film, silent and looping, a little larger than its frame so the player's own bars stay outside; a click opens it whole, with sound */
+  .vid { position: absolute; inset: 0; overflow: hidden; background: #f2f2f2; } .vid iframe { position: absolute; left: 50%; top: 50%; width: 118%; height: 118%; translate: -50% -50%; border: 0; pointer-events: none; } .vid video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }   /* the studio film, silent and looping, a little larger than its frame so the player's own bars stay outside; a click opens it whole, with sound */
   .about .shift { padding-left: calc(100vw / 3); }   /* the second paragraph a third of the screen in */
   .pots { position: relative; width: var(--col); aspect-ratio: 1; margin: var(--s3) 0 var(--s2); }
   .pots { perspective: 700px; }
@@ -278,7 +278,7 @@
   <svg viewBox="0 0 52 52" aria-hidden="true"><path id="form" d=""/></svg>
 </section>
 
-<section class="wrap sec sfilm-sec"><div class="sfilm" data-inline aria-label="Film about the studio"><i class="vid"><iframe src="https://www.youtube-nocookie.com/embed/yCrqIWHZplI?autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=yCrqIWHZplI&amp;controls=0&amp;playsinline=1&amp;modestbranding=1&amp;rel=0&amp;disablekb=1&amp;iv_load_policy=3&amp;enablejsapi=1&amp;cc_load_policy=0" title="DirtyHands, studio of art ceramics" tabindex="-1" allow="autoplay; encrypted-media"></iframe></i></div></section>
+<section class="wrap sec sfilm-sec"><div class="sfilm" data-inline aria-label="Film about the studio"><i class="vid"><video src="film/studio-720.mp4" poster="film/studio-poster.jpg" muted loop playsinline preload="metadata" aria-label="DirtyHands, studio of art ceramics"></video></i></div></section>
 
 <section class="wrap sec media" id="media">
   <h2 class="h in">Story</h2>
@@ -724,7 +724,7 @@ window.preDone = new Promise(done => {
 })();
 </script>
 <script src="cookies.js"></script>
-<script src="film.js"></script>
+<script src="film.js?v=2"></script>
 <script>
   { const aw = document.querySelector('.aw'); if (aw) { aw.querySelectorAll('li').forEach((li, i) => li.style.setProperty('--i', i)); const o = new IntersectionObserver(es => { const e = es[0]; if (e.isIntersecting) aw.classList.add('on'); else if (e.boundingClientRect.top > 0) aw.classList.remove('on'); }, { rootMargin: '0px 0px -12% 0px' }); o.observe(aw); } }   // the awards come in one after another once they are in sight
 </script>
