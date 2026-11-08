@@ -8,12 +8,12 @@
     .film iframe { display: block; width: 100%; height: 100%; border: 0; }
     .film .x { all: unset; cursor: pointer; position: absolute; left: 16px; top: calc(14px + env(safe-area-inset-top)); font-family: "CoFo Sans", -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 15px; line-height: 19px; letter-spacing: -.01em; display: flex; align-items: center; gap: 6px; }
     [data-film] { cursor: pointer; }
-    .fbar { position: absolute; left: 0; right: 0; bottom: 0; height: 28px; z-index: 5; cursor: pointer !important; opacity: 0; transition: opacity .4s cubic-bezier(.2,.8,.2,1); touch-action: none; }
+    .fbar { position: absolute; left: 16px; right: 16px; bottom: 14px; height: 32px; z-index: 5; cursor: pointer !important; opacity: 0; transition: opacity .4s cubic-bezier(.2,.8,.2,1); touch-action: none; mix-blend-mode: difference; }   /* inside the picture, clear of its edge (on the edge the white line ran into the white page), and in difference: it reads on the light parts of the picture as well as on the dark */
     [data-inline].playing .fbar { opacity: 1; }
-    .fbar i { position: absolute; left: 0; bottom: 0; height: 1px; background: #fff; transition: height .25s cubic-bezier(.2,.8,.2,1); }
-    .fbar .fbar-t { right: 0; opacity: .35; } .fbar .fbar-p { right: 0; transform-origin: 0 50%; transform: scaleX(var(--p, 0)); }
-    .fbar .fbar-k { left: calc(var(--p, 0) * 100%); width: 1px; height: 11px; transition: none; }
-    .fbar:hover i:not(.fbar-k), .fbar.drag i:not(.fbar-k) { height: 3px; }`;   /* the film's slider: a thin white line along its foot, filled as it plays; pointed at, it thickens; click or drag to go to any moment */
+    .fbar i { position: absolute; left: 0; bottom: 0; height: 3px; background: #fff; transition: height .25s cubic-bezier(.2,.8,.2,1); }
+    .fbar .fbar-t { right: 0; opacity: .45; } .fbar .fbar-p { right: 0; transform-origin: 0 50%; transform: scaleX(var(--p, 0)); }
+    .fbar .fbar-k { left: calc(var(--p, 0) * 100%); width: 2px; margin-left: -1px; height: 15px; transition: none; }
+    .fbar:hover i:not(.fbar-k), .fbar.drag i:not(.fbar-k) { height: 6px; }`;   /* the film's slider: a thin white line along its foot, filled as it plays; pointed at, it thickens; click or drag to go to any moment */
   document.head.append(css);
   let box = null, back = null;
   function close() {
