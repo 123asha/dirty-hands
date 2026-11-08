@@ -509,7 +509,7 @@ const recent = [];
 const room = (x, y) => { const t = now(); for (let i = recent.length - 1; i >= 0; i--) if (t - recent[i].t > HOLD + 1) recent.splice(i, 1);
   return 3 - recent.reduce((n, r) => n + (Math.hypot(r.x - x, r.y - y) < 170 ? r.n : 0), 0); };
 addEventListener('pointerdown', e => {
-  if (e.button) return;
+  if (e.button || (e.target.closest && e.target.closest('[data-inline]'))) return;   // a click on the film is Play (or its slider): no clay on the picture
   const left = room(e.clientX, e.clientY), keep = n => recent.push({ x: e.clientX, y: e.clientY, t: now(), n });
   if ((window.clayBlocked && window.clayBlocked()) || !empty(e.target)) {   // on a link, a picture or in a view: a quick print that goes sooner, no smear
     if (left >= 1) { (Math.random() < 0.5 ? variants[0] : variants[4]).run(e.clientX, e.clientY); keep(1); quick(e.clientX, e.clientY, 140); }

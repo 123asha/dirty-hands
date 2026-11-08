@@ -218,7 +218,8 @@
   .shelf .w { position: absolute; bottom: 1px; width: 14vw; height: 14vw; background: center bottom / contain no-repeat; z-index: 1; }
   .sil { position: absolute; z-index: 62; right: var(--m); top: calc(var(--lh) / 2); translate: 0 -50%; width: 14vw; height: 14vw; background: center bottom / contain no-repeat; filter: brightness(0); transition: transform .25s var(--ease); }   /* the next work, a black silhouette at the bottom right: a tap sends it flying onto a shelf */
   .sil:active { transform: scale(.9); }
-  .otxt .ow { display: inline-block; }   /* a word that can step aside */
+  .otxt .ow { display: inline-block; }
+  .ov .shelves, .ov .otxt, .ov .head, .sil, .trl, .fall { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }   /* on Order the text is never selected when a work is tapped or dragged */   /* a word that can step aside */
   .trl { position: fixed; left: 0; top: 0; z-index: 70; width: 14vw; height: 14vw; background: center bottom / contain no-repeat; filter: brightness(0); pointer-events: none; opacity: 0; }   /* the works trailing the finger, as silhouettes */
   .sil { top: 0; translate: 0 -78%; touch-action: none; }   /* up level with Order now, and held by the finger without scrolling the page */
   .fall { filter: brightness(0); } .shelf .w { transition: filter .7s var(--ease); } .shelf .w.dark { filter: brightness(0); }
@@ -300,7 +301,7 @@
 <button type="button" class="x" id="close" aria-label="Close" hidden><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1 1 13" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></button>
 
 <script>window.clayFast = true;   // on the phone the marks dry sooner</script>
-<script src="clay.js?v=9"></script>
+<script src="clay.js?v=10"></script>
 <script src="sound.js?v=19"></script>
 <script src="gym-gl.js"></script>
 <script src="outline.js"></script>
@@ -402,7 +403,7 @@ window.preDone = new Promise(done => {
       el.style.transform = `translate(${X.toFixed(1)}px,${Y.toFixed(1)}px) perspective(800px) rotateY(${((f + 90) % 180 - 90).toFixed(1)}deg) rotate(${(sk[2] * dk * lay * .6 + (k === 0 ? spin : 0)).toFixed(1)}deg)`;
       el.style.opacity = k === top || flip < .5 ? 1 : 0; });
     if (window.gymGL && !pileTick._gym) pileTick._gym = gymGL(pcs[0], ['photos/gym-1.webp', 'photos/gym-2.webp', 'photos/gym-3.webp']) || 1; if (pileTick._gym && pileTick._gym.set) pileTick._gym.set(pcs[0]._side === 2, spin);   /* the gymnasts through their shader once they are alone */   // the moment they stand edge-on, only the one on top is left   // they gather into one solid pile; once gathered the ones under it go, and only the top one turns over
-    { const g = pcs[0], gr = g.getBoundingClientRect(), on = g._side === 2 && gr.width > 2, box = on ? { l: gr.left + gr.width * .12, r: gr.right - gr.width * .12, t: gr.top + gr.height * .1, b: gr.bottom - gr.height * .1 } : null;   // the About text steps aside, line by line, where the gymnasts pass over it (the title is left alone)
+    { const box = null;   /* past the photo the gymnasts no longer push the About text aside: it stays still (lines already moved glide back) */   // the About text steps aside, line by line, where the gymnasts pass over it (the title is left alone)
       const M = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--m')) || 16, rg = document.createRange();
       document.querySelectorAll('.about .lab, .about p .ln-in, .about .aw li > span:first-child, .about .ourstory').forEach(el => { const p = el._push || 0; rg.selectNodeContents(el); const r = rg.getBoundingClientRect(), l = r.left - p, rr = r.right - p; let goal = 0;   // the words themselves, not the box of the line
         if (box && r.bottom > box.t - 4 && r.top < box.b + 4 && rr > box.l - 10 && l < box.r + 10) goal = (l + rr) / 2 >= (box.l + box.r) / 2 ? box.r + 10 - l : box.l - 10 - rr;
@@ -692,7 +693,7 @@ window.preDone = new Promise(done => {
         ws.forEach(w => { const goal = hit ? ((w._l + w._r) / 2 < (head.left + head.right) / 2 ? gl : gr) : 0, p = w._push || 0, n = p + (goal - p) * .18; w._push = Math.abs(n) < .3 && !goal ? 0 : n; if (w._push) busy = true; w.style.transform = w._push ? `translateX(${w._push.toFixed(1)}px)` : ''; }); });
       view.querySelectorAll('.shelf .h').forEach(el => { const p = el._push || 0, r = el.getBoundingClientRect(), l = r.left - p, rr = r.right - p; let goal = 0;   // and the three words of the title step aside too
         if (head && r.bottom > head.top - 4 && r.top < head.bottom + 4 && rr > head.left - 8 && l < head.right + 8) goal = (l + rr) / 2 >= (head.left + head.right) / 2 ? head.right + 8 - l : head.left - 8 - rr;
-        const n = p + (goal - p) * .18; el._push = Math.abs(n) < .3 && !goal ? 0 : n; if (el._push) busy = true; el.style.transform = el._push ? `translateX(${el._push.toFixed(1)}px)` : ''; }); return busy; };
+        const n = p + (goal - p) * .18; el._push = Math.abs(n) < .3 && !goal ? 0 : n; if (el._push) busy = true; el.style.marginLeft = el._push ? `${el._push.toFixed(1)}px` : ''; }); return busy; };   /* by its margin: its transform holds the lift that sets it on its shelf, and clearing it dropped the word under the line */
     const sil = view.querySelector('.sil'), nextSrc = () => `photos/${W[wi % W.length]}.webp`; sil.style.backgroundImage = `url('${nextSrc()}')`;
     const dip = (s, x) => { const sv = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), W = innerWidth, H = 24, sr = s.getBoundingClientRect(); sv.setAttribute('class', 'sdip'); sv.setAttribute('viewBox', `0 0 ${W} ${H}`); sv.innerHTML = '<path fill="none" stroke="#d9d9d9" stroke-width="1"/>'; Object.assign(sv.style, { position: 'fixed', left: 0, top: (sr.bottom - H / 2 - .5) + 'px', width: W + 'px', height: H + 'px', pointerEvents: 'none', zIndex: 63 }); document.body.append(sv); s.style.borderBottomColor = 'transparent';
       const t0 = performance.now(); (function f(now) { const t = (now - t0) / 1000; if (t > 1.3 || !open) { sv.remove(); s.style.borderBottomColor = ''; return; } const top = s.getBoundingClientRect().bottom - H / 2 - .5; sv.style.top = top + 'px'; let d = ''; for (let k = 0; k <= 80; k++) { const xx = W * k / 80, dx = xx - x, y = H / 2 + 4 * Math.exp(-(dx * dx) / (60 * 60)) * Math.exp(-t / .3) * Math.cos(t * 17); d += (k ? 'L' : 'M') + xx.toFixed(1) + ' ' + y.toFixed(2); } sv.firstChild.setAttribute('d', d); requestAnimationFrame(f); })(t0); };   // the line dips under the work and springs back
@@ -700,7 +701,7 @@ window.preDone = new Promise(done => {
       const src = nextSrc(); wi++; sil.style.backgroundImage = `url('${nextSrc()}')`; const f = document.createElement('i'); f.className = 'fall'; f.style.backgroundImage = `url('${src}')`; document.body.append(f);
       const s = shelves[spot.b], sr = s.getBoundingClientRect(), tx = wrap(spot.x, off[spot.b]) - innerWidth * .07, ty = sr.bottom - 1 - innerWidth * .14, lift = Math.min(a.top, sr.top) - 80;
       const hold = { el: null, x: spot.x }; stood[spot.b].push(hold);   /* the place is taken from this moment: two quick taps never land on one spot */ const pt = { t: 0 }; gsap.to(pt, { t: 1, duration: .9, ease: 'power1.inOut', onUpdate() { const t = pt.t, u = 1 - t; f.style.left = (u * u * a.left + 2 * u * t * ((a.left + tx) / 2) + t * t * tx).toFixed(1) + 'px'; f.style.top = (u * u * a.top + 2 * u * t * lift + t * t * ty).toFixed(1) + 'px'; f.style.transform = `rotate(${(Math.sin(t * Math.PI) * 25).toFixed(1)}deg)`; },   // it flies up out of the silhouette in an arc and comes down on its place
-        onComplete() { f.remove(); const el = document.createElement('i'); el.className = 'w dark'; el.style.backgroundImage = `url('${src}')`; s.append(el); hold.el = el; place(); dip(s, tx + innerWidth * .07); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove('dark'))); gsap.fromTo(el, { y: -6 }, { y: 0, duration: .4, ease: 'bounce.out' }); if (window.placeSound) placeSound(); } }); };   // set down, it takes its own colours
+        onComplete() { f.remove(); const el = document.createElement('i'); el.className = 'w dark'; el.style.backgroundImage = `url('${src}')`; s.append(el); hold.el = el; place(); dip(s, tx + innerWidth * .07); if (navigator.vibrate) navigator.vibrate(14); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove('dark'))); gsap.fromTo(el, { y: -6 }, { y: 0, duration: .4, ease: 'bounce.out' }); if (window.placeSound) placeSound(); } }); };   // set down, it takes its own colours
     // tap: the next work goes up onto a shelf; hold and drag: the works follow the finger in a trail, as they follow the pointer on the full page, and the first of them goes up when it is let go
     let drag = null;
     sil.addEventListener('touchstart', e => { e.preventDefault(); const t = e.touches[0]; drag = { x: t.clientX, y: t.clientY, x0: t.clientX, y0: t.clientY, moved: false, its: [] };
@@ -726,7 +727,7 @@ window.preDone = new Promise(done => {
 })();
 </script>
 <script src="cookies.js"></script>
-<script src="film.js?v=2"></script>
+<script src="film.js?v=3"></script>
 <script>
   { const aw = document.querySelector('.aw'); if (aw) { aw.querySelectorAll('li').forEach((li, i) => li.style.setProperty('--i', i)); const o = new IntersectionObserver(es => { const e = es[0]; if (e.isIntersecting) aw.classList.add('on'); else if (e.boundingClientRect.top > 0) aw.classList.remove('on'); }, { rootMargin: '0px 0px -12% 0px' }); o.observe(aw); } }   // the awards come in one after another once they are in sight
 </script>

@@ -7,7 +7,13 @@
     .film.on .fr { translate: 0 0; }
     .film iframe { display: block; width: 100%; height: 100%; border: 0; }
     .film .x { all: unset; cursor: pointer; position: absolute; left: 16px; top: calc(14px + env(safe-area-inset-top)); font-family: "CoFo Sans", -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 15px; line-height: 19px; letter-spacing: -.01em; display: flex; align-items: center; gap: 6px; }
-    [data-film] { cursor: pointer; }`;
+    [data-film] { cursor: pointer; }
+    .fbar { position: absolute; left: 0; right: 0; bottom: 0; height: 28px; z-index: 5; cursor: pointer !important; opacity: 0; transition: opacity .4s cubic-bezier(.2,.8,.2,1); touch-action: none; }
+    [data-inline].playing .fbar { opacity: 1; }
+    .fbar i { position: absolute; left: 0; bottom: 0; height: 1px; background: #fff; transition: height .25s cubic-bezier(.2,.8,.2,1); }
+    .fbar .fbar-t { right: 0; opacity: .35; } .fbar .fbar-p { right: 0; transform-origin: 0 50%; transform: scaleX(var(--p, 0)); }
+    .fbar .fbar-k { left: calc(var(--p, 0) * 100%); width: 1px; height: 11px; transition: none; }
+    .fbar:hover i:not(.fbar-k), .fbar.drag i:not(.fbar-k) { height: 3px; }`;   /* the film's slider: a thin white line along its foot, filled as it plays; pointed at, it thickens; click or drag to go to any moment */
   document.head.append(css);
   let box = null, back = null;
   function close() {
@@ -28,11 +34,20 @@
   // Play starts it from the beginning with its sound, where it stands, without moving the page; a second click stops it there, and scrolling past it takes only the sound away
   const vidOf = b => b.querySelector('video');
   const stopInline = (b, hold) => { const v = vidOf(b); if (v) { v.muted = true; if (hold) v.pause(); else v.play().catch(() => {}); } b._playing = false; b.classList.remove('playing'); if (typeof muffle === 'function') muffle(false); };   // scrolled past, only the sound goes and the film plays on; stopped by hand, it holds where it is
-  document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-inline]'); if (!b) return; e.preventDefault(); e.stopPropagation(); const v = vidOf(b); if (!v) return;
+  document.addEventListener('click', e => { if (e.target.closest && e.target.closest('.fbar')) { e.stopPropagation(); return; }   // the slider is not Play
+    const b = e.target.closest && e.target.closest('[data-inline]'); if (!b) return; e.preventDefault(); e.stopPropagation(); const v = vidOf(b); if (!v) return;
     if (b._playing) { stopInline(b, true); return; }   // a second click stops it where it stands
     v.currentTime = 0; v.muted = false; v.volume = 1; const go = v.play(); if (go && go.catch) go.catch(() => { v.muted = true; v.play().catch(() => {}); });   // Play: from the beginning, with its sound (a browser that refuses the sound still gets the picture)
     b._playing = true; b._t = performance.now(); b.classList.add('playing'); if (typeof muffle === 'function') muffle(true); }, true);   // while the film speaks, the room's sound goes quiet behind it
   const watch = () => document.querySelectorAll('[data-inline]').forEach(b => { if (b._io) return; const v = vidOf(b); if (!v) return; v.muted = true; v.loop = true; v.playsInline = true;
+    const bar = document.createElement('div'); bar.className = 'fbar'; bar.setAttribute('aria-hidden', 'true'); bar.innerHTML = '<i class="fbar-t"></i><i class="fbar-p"></i><i class="fbar-k"></i>'; b.append(bar);
+    const show = () => { if (v.duration) bar.style.setProperty('--p', (v.currentTime / v.duration).toFixed(4)); if (!v.paused) requestAnimationFrame(show); };
+    v.addEventListener('play', () => requestAnimationFrame(show)); v.addEventListener('seeked', show); v.addEventListener('timeupdate', show);
+    let drag = false; const seek = e => { const r = bar.getBoundingClientRect(), k = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)); if (v.duration) { v.currentTime = k * v.duration; bar.style.setProperty('--p', k.toFixed(4)); } };
+    bar.addEventListener('pointerdown', e => { e.stopPropagation(); e.preventDefault(); drag = true; bar.classList.add('drag'); bar.setPointerCapture(e.pointerId); seek(e); });
+    bar.addEventListener('pointermove', e => { if (drag) seek(e); });
+    const up = e => { if (!drag) return; drag = false; bar.classList.remove('drag'); try { bar.releasePointerCapture(e.pointerId); } catch (_) {} b._t = performance.now(); };
+    bar.addEventListener('pointerup', up); bar.addEventListener('pointercancel', up);
     b._io = new IntersectionObserver(es => es.forEach(en => { if (b._playing && performance.now() - b._t > 1200 && en.intersectionRatio < .45) stopInline(b, false); else if (!b._playing && en.intersectionRatio > .05) v.play().catch(() => {}); else if (!b._playing && en.intersectionRatio === 0) v.pause(); }), { threshold: [0, .05, .45] }); b._io.observe(b); });   // silent and playing while in sight, resting off the screen
   if (document.readyState === 'loading') addEventListener('DOMContentLoaded', watch); else watch();
   document.addEventListener('click', e => { const el = e.target.closest && e.target.closest('[data-film]'); if (!el) return; e.preventDefault(); e.stopPropagation(); open(el.dataset.film); }, true);

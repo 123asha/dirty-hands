@@ -471,7 +471,7 @@
 <div class="close-cursor" aria-hidden="true">Close<svg viewBox="0 0 10 10" width="9" height="9"><path d="M1.5 1.5 8.5 8.5M8.5 1.5 1.5 8.5" fill="none" stroke="currentColor" stroke-width="1.1"/></svg></div>
 <div class="grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 
-<script src="clay.js?v=9"></script>
+<script src="clay.js?v=10"></script>
 <script>
 // the preloader: a white sheet; one finger loaded with clay is drawn across it from left to right, then the sheet fades away and the page begins as it always does
 window.preDone = new Promise(done => {
@@ -1065,7 +1065,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   const playCur = Object.assign(document.createElement('div'), { className: 'close-cursor play-cursor', innerHTML: 'Play<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M1.5 8.5 8.5 1.5M3 1.5h5.5V7" fill="none" stroke="currentColor" stroke-width="1.1"/></svg>' }); playCur.setAttribute('aria-hidden', 'true'); document.body.append(playCur); curShow(playCur, false);
   const setCurLabel = (el, text) => { if (el._label === text) return; el._label = text; splitCur(el); const w = el.querySelector('span'); if (w) w.innerHTML = [...text].map((ch, k) => `<span class="lt" style="--i:${k}">${ch}</span>`).join(''); };   // the word under the pointer says what a click will do
   // (the words of the film rise with the scroll as every other text does, on their ruled lines)
-  if (sFilm) { sFilm.addEventListener('pointermove', e => { playCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`; setCurLabel(playCur, sFilm.classList.contains('playing') ? 'Pause' : 'Play'); curShow(playCur, true); }); sFilm.addEventListener('pointerleave', () => curShow(playCur, false)); }   // Play under the pointer over the film; off it, it goes letter by letter
+  if (sFilm) { sFilm.addEventListener('pointermove', e => { if (e.target.closest('.fbar')) { curShow(playCur, false); return; }   /* over the slider the pointer is the plain one */ playCur.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 12}px)`; setCurLabel(playCur, sFilm.classList.contains('playing') ? 'Pause' : 'Play'); curShow(playCur, true); }); sFilm.addEventListener('pointerleave', () => curShow(playCur, false)); }   // Play under the pointer over the film; off it, it goes letter by letter
   function formsScene() {
     if (!sFilm) return; const rest = one('.rest'), rt = rest.getBoundingClientRect().top + scrollY, W = document.documentElement.clientWidth, H = innerHeight, u = W / 1400;
     const S0 = rt + 3530 * u - H / 2, P = .9 * H, h = Math.max(0, Math.min(P, scrollY - S0)), k = h / P, e = ease(k), fold = ease(clamp((k - .05) / .8));   // full screen exactly at the end: from there it scrolls on with the page
@@ -2159,7 +2159,7 @@ if (lenis) { if (window.ScrollTrigger) lenis.on('scroll', () => ScrollTrigger.up
   addEventListener('popstate', () => close('', true)); }   // the browser's Back closes it too
 </script>
 <script src="cookies.js"></script>
-<script src="film.js?v=2"></script>
+<script src="film.js?v=3"></script>
 <script>
   { const aw = document.querySelector('.aw'); if (aw) { aw.querySelectorAll('li').forEach((li, i) => li.style.setProperty('--i', i)); const o = new IntersectionObserver(es => { const e = es[0]; if (e.isIntersecting) aw.classList.add('on'); else if (e.boundingClientRect.top > 0) aw.classList.remove('on'); }, { rootMargin: '0px 0px -12% 0px' }); o.observe(aw); } }   // the awards rise in one after another as they come up with the scroll, and go again when scrolled back below, as the other text does
 </script>

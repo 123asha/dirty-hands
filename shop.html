@@ -65,6 +65,7 @@
   .mail { animation: fade .8s var(--ease) 1.1s both; } @keyframes fade { from { opacity: 0; } }
   .mid h1 { margin: 0 0 calc(38 * var(--u)); font-family: "CoFo Cinema", "CoFo Sans", sans-serif; font-weight: 400; font-size: calc(72 * var(--u)); line-height: .91; letter-spacing: -.01em; text-transform: uppercase; }
   .flow p { text-indent: calc(40 * var(--u)); }
+  body { -webkit-user-select: none; user-select: none; }   /* the works are dragged through the text: it is never selected */
   .flow p { margin: 0 0 calc(19 * var(--u)); font-size: var(--t18); line-height: var(--l18); letter-spacing: -.01em; }
   .mail { position: fixed; left: 50%; bottom: calc(20 * var(--u)); translate: -50% 0; z-index: 6; font-size: var(--t18); line-height: .91; letter-spacing: -.01em; color: #fff; mix-blend-mode: difference; padding-bottom: .12em; background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat; }
   .mail { background-position: 100% 100%; transition: background-size .9s cubic-bezier(.4, 0, .2, 1); } .mail:hover { background-size: 0 1px; } .mail svg { margin-left: .3em; vertical-align: .05em; }   /* the line is always there; pointed at, it slowly goes */
@@ -105,7 +106,7 @@
 <div class="grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 <script>{ const grid = document.querySelector('.grid'); try { if (sessionStorage.getItem('grid') === '1') grid.classList.add('on'); } catch (e) {}   // the grid stays on or off from page to page
   addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.code === 'KeyG') { e.preventDefault(); if (!e.repeat) { const on = grid.classList.toggle('on'); try { sessionStorage.setItem('grid', on ? '1' : '0'); } catch (er) {} } } }); }</script>
-<script src="clay.js?v=9"></script>
+<script src="clay.js?v=10"></script>
 <script src="sound.js?v=19"></script>
 <script>
 (() => {
