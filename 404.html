@@ -102,7 +102,7 @@
   const S = new THREE.Scene(), CAM = new THREE.PerspectiveCamera(30, 1, .1, 60);
   S.environment = new THREE.PMREMGenerator(R).fromScene(new RoomEnvironment(), .04).texture;
   S.add(new THREE.HemisphereLight(0xffffff, 0xd8d2ca, .8));
-  const key = new THREE.DirectionalLight(0xfffaf4, 2); key.position.set(-1.6, 3, 9); key.castShadow = true; key.shadow.mapSize.set(1024, 1024); key.shadow.radius = 14; key.shadow.blurSamples = 24; key.shadow.bias = -.0004;   // from the front and a little above: the shadow lies close under each thing, soft
+  const key = new THREE.DirectionalLight(0xfffaf4, 2); key.position.set(-1.6, 3, 9); key.castShadow = true; key.shadow.mapSize.set(1024, 1024); key.shadow.radius = 14; key.shadow.blurSamples = 24; key.shadow.bias = -.0004; key.shadow.normalBias = .03;   /* no speckles of self-shadow on the fingertips */   // from the front and a little above: the shadow lies close under each thing, soft
   S.add(key); S.add(key.target);
   // the white page behind them takes only their shadow
   const wall = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: .13 })); wall.position.z = -.7; wall.receiveShadow = true; S.add(wall);
@@ -136,16 +136,16 @@
   const _vx = new THREE.Vector3(), _vy = new THREE.Vector3(), _vz = new THREE.Vector3(), _m = new THREE.Matrix4();
   const frame = (W, I, P, M, q) => { _vy.subVectors(M, W).normalize(); _vx.subVectors(I, P); _vz.crossVectors(_vx, _vy).normalize(); _vx.crossVectors(_vy, _vz).normalize(); return q.setFromRotationMatrix(_m.makeBasis(_vx, _vy, _vz)); };   // the palm's own axes: across the knuckles, along the hand, out of it
   const MODELS = {}, loader = new GLTFLoader();
-  ['left', 'right'].forEach(side => loader.load(`models/hand-${side}.glb`, gl => { MODELS[side] = gl.scene; HANDS.forEach(g => addRig(g, side)); }));
-  function addRig(g, side) { const root = MODELS[side].clone(true), bones = {}, rig = new THREE.Group(); let skin = null;   // (each of the two hands on the screen can be a left or a right one)
+  loader.load('models/hand-left.glb', gl => { MODELS.left = gl.scene; HANDS.forEach(g => { addRig(g, 'left'); addRig(g, 'right'); }); });   // one model for both: the right hand is the left one in a looking-glass (the right model cracked at the last joints)
+  function addRig(g, side) { const root = MODELS.left.clone(true), bones = {}, rig = new THREE.Group(); let skin = null;   // (each of the two hands on the screen can be a left or a right one)
     // a clone of a skinned mesh still holds the bones of the original: give it its own
-    const src = []; MODELS[side].traverse(o => src.push(o)); const dst = []; root.traverse(o => dst.push(o)); const map = new Map(src.map((o, i) => [o, dst[i]]));
+    const src = []; MODELS.left.traverse(o => src.push(o)); const dst = []; root.traverse(o => dst.push(o)); const map = new Map(src.map((o, i) => [o, dst[i]]));
     root.traverse(o => { if (o.isBone) bones[o.name] = o; if (o.isSkinnedMesh) { skin = o; const sk = src[dst.indexOf(o)].skeleton; o.skeleton = new THREE.Skeleton(sk.bones.map(b => map.get(b)), sk.boneInverses); o.bind(o.skeleton, o.bindMatrix);
-      o.material = clay; o.castShadow = o.receiveShadow = true; o.frustumCulled = false; o.geometry = o.geometry.clone(); o.geometry.computeVertexNormals(); } });
+      o.material = clay; o.castShadow = o.receiveShadow = true; o.frustumCulled = false; }   /* the model's own normals: recomputed, the seams at the fingertips showed as dark specks */ });
     rig.add(root); rig.updateMatrixWorld(true);
     const r = {}; Object.keys(bones).forEach(n => { r[n] = bones[n].getWorldPosition(new THREE.Vector3()); bones[n].userData.q0 = bones[n].quaternion.clone(); });   // where every joint is at rest
     const q0 = frame(r.wrist, r['index-finger-phalanx-proximal'], r['pinky-finger-phalanx-proximal'], r['middle-finger-phalanx-proximal'], new THREE.Quaternion()).invert();
-    rig.visible = false; g.add(rig); g.userData.rigs[side] = { rig, bones, skin, r, q0, len: r.wrist.distanceTo(r['middle-finger-phalanx-proximal']) }; }
+    const holder = new THREE.Group(); holder.add(rig); rig.visible = false; g.add(holder); g.userData.rigs[side] = { rig, holder, mirror: side === 'right', bones, skin, r, q0, len: r.wrist.distanceTo(r['middle-finger-phalanx-proximal']) }; }
   function makeHand() { const g = new THREE.Group(); g.userData.rigs = {}; g.userData.c = new THREE.Vector3(); S.add(g); return g; }
   const _a = new THREE.Vector3(), _b = new THREE.Vector3(), _d = new THREE.Vector3(), _q = new THREE.Quaternion(), _wq = new THREE.Quaternion(), _pq = new THREE.Quaternion(), _fq = new THREE.Quaternion();
   function aim(bone, child, dir) {   // turn a bone, with all that hangs on it, so that it points along dir
@@ -158,10 +158,12 @@
     if (want !== ud.want) { ud.want = want; ud.wantN = 0; } ud.wantN++;
     if (!ud.side || (ud.wantN > 5 && ud.side !== want)) ud.side = want;   // a name must hold for a few frames before the hand is turned into the other one
     const R = ud.rigs[ud.side]; Object.keys(ud.rigs).forEach(k => { ud.rigs[k].rig.visible = k === ud.side; }); if (!R) return false;
+    if (R.mirror) { R.holder.scale.x = 1; R.holder.updateMatrixWorld(true); P = P.map(v => new THREE.Vector3(-v.x, v.y, v.z)); frame(P[0], P[5], P[17], P[9], _fq); }   // posed as a left hand to the points seen in the glass, then the glass is put back
     const s = P[0].distanceTo(P[9]) / R.len; R.rig.quaternion.copy(_fq).multiply(R.q0); R.rig.scale.setScalar(s);
     R.rig.position.copy(R.r.wrist).multiplyScalar(s).applyQuaternion(R.rig.quaternion).negate().add(P[0]);   // the wrist on the wrist
     CHAINS.forEach(ch => ch.forEach(([n]) => { const b = R.bones[n]; if (b) b.quaternion.copy(b.userData.q0); }));
     CHAINS.forEach(ch => { for (let k = 0; k < ch.length - 1; k++) { const b = R.bones[ch[k][0]], c = R.bones[ch[k + 1][0]]; if (!b || !c) continue; _d.subVectors(P[ch[k + 1][1]], P[ch[k][1]]); if (_d.lengthSq() < 1e-10) continue; aim(b, c, _d.normalize()); } });
+    if (R.mirror) { R.holder.scale.x = -1; R.holder.updateMatrixWorld(true); P = P.map(v => new THREE.Vector3(-v.x, v.y, v.z)); }
     ud.c.addVectors(P[0], P[9]).multiplyScalar(.5); return true; }
 
   // ---- one eye: a glazed white eyeball held in a lumpy lid of clay, the iris and the pupil standing on it and looking where you look
@@ -234,8 +236,8 @@
     let hx = .5, hy = .5; const P = { x: innerWidth / 2, y: innerHeight * .62 };
     addEventListener('pointermove', e => { P.x = e.clientX; P.y = e.clientY; }, { passive: true });
     const hand = (side, t) => { const n = fromScreen(P.x, P.y); hx += (n.x - hx) * .12; hy += (n.y - hy) * .12;   // the hands follow the pointer, a little behind it
-      const B = H.map(([x, y]) => ({ x: ((side < 0 ? x : 1 - x) * .34 + hx + side * .085 - .17) * 640, y: ((y - .6) * .34 + hy + .02) * 480, z: 0 }));   // flat, in the camera's own pixels
-      FT.forEach((f, fn) => { const amp = (fn ? .3 : .16) + (fn ? .22 : .1) * Math.sin(t / 1500 + fn * .7 + side * 1.3); let th = 0, prev = B[f[0]], p0 = { ...prev };   // each finger curls a little towards us and opens again, one after another: a hand at rest, alive
+      const B = H.map(([x0, y], i) => { const x = i > 4 ? .5 + (x0 - .5) * .72 : x0; return { x: ((side < 0 ? x : 1 - x) * .34 + hx + side * .085 - .17) * 640, y: ((y - .6) * .34 + hy + .02) * 480, z: 0 }; });   // flat, in the camera's own pixels; the four fingers closer together, as a hand at rest holds them
+      FT.forEach((f, fn) => { const amp = (fn ? .14 : .08) + (fn ? .1 : .05) * Math.sin(t / 1500 + fn * .7 + side * 1.3);   /* a gentle curl: bent further, the clay of the model opens at the last joint */ let th = 0, prev = B[f[0]], p0 = { ...prev };   // each finger curls a little towards us and opens again, one after another: a hand at rest, alive
         for (let k = 1; k < f.length; k++) { const q = { ...B[f[k]] }, dx = q.x - p0.x, dy = q.y - p0.y, l = Math.hypot(dx, dy); th += amp * [.55, 1, .8][k - 1]; p0 = q;
           const o = B[f[k]]; o.x = prev.x + dx * Math.cos(th); o.y = prev.y + dy * Math.cos(th); o.z = prev.z + l * Math.sin(th); prev = o; } });
       return B.map(o => ({ x: o.x / 640, y: o.y / 480, z: -o.z / 640 })); };
