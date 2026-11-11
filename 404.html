@@ -177,10 +177,10 @@
     ud.lid.position.set(c.x, c.y, z); ud.lid.scale.set(w * .56, w * .36, w * .5); ud.lid.rotation.z = ang;
     ud.top.position.set(c.x, c.y, z); ud.top.scale.set(w * .53, w * .33, w * .31); ud.top.rotation.z = ang;   // the upper lid, a little bigger than the eye, rolls down over it as it closes
     ud.cap.rotation.x = -.75 + bl * 2.35;
-    const ix = new THREE.Vector3().subVectors(iris, c), gx = Math.max(-w * .2, Math.min(w * .2, ix.x * 1.4)), gy = Math.max(-w * .08, Math.min(w * .08, ix.y * 1.4));
+    const ix = new THREE.Vector3().subVectors(iris, c), gx = Math.max(-w * .12, Math.min(w * .12, ix.x * 1.4)), gy = Math.max(-w * .035, Math.min(w * .035, ix.y * 1.4));   /* the look moves only as far as the iris stays inside the lids */
     const sink = 1 - bl * .75;   // under the closed lid the iris sinks back, so nothing shows through it
-    ud.iris.position.set(c.x + gx, c.y + gy, z + w * .2 * sink); ud.iris.scale.set(w * .17, w * .17, w * .06 * sink);
-    ud.pupil.position.set(c.x + gx, c.y + gy, z + w * .185 * sink); ud.pupil.scale.set(w * .075, w * .075, w * .05 * sink); }   // a dimple pressed into the iris, not a painted dot
+    ud.iris.position.set(c.x + gx, c.y + gy, z + w * .2 * sink); ud.iris.scale.set(w * .15, w * .15, w * .06 * sink);
+    ud.pupil.position.set(c.x + gx, c.y + gy, z + w * .185 * sink); ud.pupil.scale.set(w * .065, w * .065, w * .05 * sink); }   // a dimple pressed into the iris, not a painted dot
 
   // ---- the camera: the points of the hands and the face, mirrored as a looking-glass, larger than life, eased so nothing shakes
   let hands = null, face = null, camOn = false, seen = -1;
