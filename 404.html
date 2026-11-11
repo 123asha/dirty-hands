@@ -80,7 +80,7 @@
 <div class="intro">
   <h1>404</h1>
   <p>This page is not here: it has gone back to clay.</p>
-  <p>While you are here, the clay can take your hands and your eyes, larger than life, as on our panels. Turn on the camera and raise your hands. Fire them when you like them, and keep the tile.</p>
+  <p>While you are here, the clay can take your eyes, larger than life, as on our panels. Turn on the camera and look at the clay. Fire them when you like them, and keep the tile.</p>
   <button type="button" class="btn" id="go">Turn on the camera</button><a class="btn" href="./">Back to Dirty Hands</a>
 </div>
 <div class="bar"><span class="st" aria-live="polite">Nothing from the camera leaves your computer.</span><span class="acts"><button type="button" id="fire">Fire</button><button type="button" id="keep" hidden>Keep it</button><button type="button" id="again" hidden>Again</button></span></div>
@@ -136,7 +136,7 @@
   const _vx = new THREE.Vector3(), _vy = new THREE.Vector3(), _vz = new THREE.Vector3(), _m = new THREE.Matrix4();
   const frame = (W, I, P, M, q) => { _vy.subVectors(M, W).normalize(); _vx.subVectors(I, P); _vz.crossVectors(_vx, _vy).normalize(); _vx.crossVectors(_vy, _vz).normalize(); return q.setFromRotationMatrix(_m.makeBasis(_vx, _vy, _vz)); };   // the palm's own axes: across the knuckles, along the hand, out of it
   const MODELS = {}, loader = new GLTFLoader();
-  loader.load('models/hand-left.glb', gl => { MODELS.left = gl.scene; HANDS.forEach(g => { addRig(g, 'left'); addRig(g, 'right'); }); });   // one model for both: the right hand is the left one in a looking-glass (the right model cracked at the last joints)
+  if (false) loader.load('models/hand-left.glb', gl => { MODELS.left = gl.scene; HANDS.forEach(g => { addRig(g, 'left'); addRig(g, 'right'); }); });   // one model for both: the right hand is the left one in a looking-glass (the right model cracked at the last joints)
   function addRig(g, side) { const root = MODELS.left.clone(true), bones = {}, rig = new THREE.Group(); let skin = null;   // (each of the two hands on the screen can be a left or a right one)
     // a clone of a skinned mesh still holds the bones of the original: give it its own
     const src = []; MODELS.left.traverse(o => src.push(o)); const dst = []; root.traverse(o => dst.push(o)); const map = new Map(src.map((o, i) => [o, dst[i]]));
@@ -186,7 +186,7 @@
 
   // ---- the camera: the points of the hands and the face, mirrored as a looking-glass, larger than life, eased so nothing shakes
   let hands = null, face = null, camOn = false, seen = -1;
-  const HANDS = [makeHand(), makeHand()], EYES = [makeEye(), makeEye()]; HANDS.forEach(h => h.visible = false); EYES.forEach(e => e.visible = false);
+  const HANDS = [], EYES = [makeEye(), makeEye()]; HANDS.forEach(h => h.visible = false); EYES.forEach(e => e.visible = false);
   const SM = { h: [null, null], e: [null, null] };
   function toScene(p, vw0, vh0) { const k = Math.max(innerWidth / vw0, innerHeight / vh0), w = vw0 * k, h = vh0 * k, ox = (innerWidth - w) / 2, oy = (innerHeight - h) / 2;
     const sx = innerWidth - (ox + p.x * w), sy = oy + p.y * h; return new THREE.Vector3((sx / innerWidth - .5) * vw, (.5 - sy / innerHeight) * vh, -p.z * w / innerWidth * vw); }
@@ -212,12 +212,12 @@
         HandLandmarker.createFromOptions(files, { baseOptions: { modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task', delegate: 'GPU' }, runningMode: 'VIDEO', numHands: 2 }),
         FaceLandmarker.createFromOptions(files, { baseOptions: { modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task', delegate: 'GPU' }, runningMode: 'VIDEO', numFaces: 1 })]);
     } catch (e) { say('The clay could not see you: check the connection and reload the page.'); return; }
-    camOn = true; say('Raise your hands and look at the clay. Nothing from the camera leaves your computer.');
+    camOn = true; say('Look at the clay. Nothing from the camera leaves your computer.');
   });
 
   // ---- firing: the hands and the eyes glow in the kiln and turn to light bisque, then each falls as a whole to the foot of the screen
   let fired = false, fireStart = 0, falling = [], told = false;
-  fireBtn.addEventListener('click', () => { if (fired) return; if (![...HANDS, ...EYES].some(g => g.visible)) { say('Nothing to fire yet: turn on the camera and raise your hands.'); return; }
+  fireBtn.addEventListener('click', () => { if (fired) return; if (![...HANDS, ...EYES].some(g => g.visible)) { say('Nothing to fire yet: turn on the camera and look at the clay.'); return; }
     fired = true; fireStart = performance.now(); fireBtn.hidden = true; say('In the kiln…'); if (typeof placeSound === 'function') placeSound(); else nudge(.6); });
   const no = () => String(Math.floor(Math.random() * 9000) + 1000);
   function afterFire() { const d = new Date(), m = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
